@@ -1,0 +1,29 @@
+{
+    "name": "sourcebroker/restify",
+    "type": "typo3-cms-extension",
+    "description": "REST API",
+    "authors": [
+        {
+            "name": "SourceBroker Team",
+            "role": "Developer"
+        }
+    ],
+    "version": "1.0.0",
+    "require": {
+        "typo3/cms-core": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "SourceBroker\\Restify\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SourceBroker\\Restify\\Tests\\": "Tests"
+        }
+    },
+    "replace": {
+        "restify": "self.version",
+        "typo3-ter/restify": "self.version"
+    }
+}
