@@ -10,7 +10,9 @@
     ],
     "require": {
         "typo3/cms-core": "^9.5",
-        "jms/serializer": "^2.3"
+        "jms/serializer": "^2.3",
+        "symfony/routing": "^4.1",
+        "symfony/http-foundation": "^4.1"
     },
     "autoload": {
         "psr-4": {

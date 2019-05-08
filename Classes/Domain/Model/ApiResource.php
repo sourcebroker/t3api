@@ -3,6 +3,7 @@
 namespace SourceBroker\Restify\Domain\Model;
 
 use SourceBroker\Restify\Annotation\ApiResource as ApiResourceAnnotation;
+use Symfony\Component\Routing\RouteCollection;
 
 /**
  * Class ApiResource
@@ -26,20 +27,45 @@ class ApiResource
     protected $collectionOperations = [];
 
     /**
+     * @var RouteCollection
+     */
+    protected $routes;
+
+    /**
+     * @var AbstractOperation[]
+     */
+    protected $routeNameToOperation;
+
+    /**
      * @param string $entity
      * @param ApiResourceAnnotation $apiResourceAnnotation
      */
     public function __construct(string $entity, ApiResourceAnnotation $apiResourceAnnotation)
     {
         $this->entity = $entity;
+        $this->routes = new RouteCollection();
 
         foreach ($apiResourceAnnotation->getItemOperations() as $operationKey => $operationData) {
-            $this->itemOperations[] = new ItemOperation($operationKey, $operationData);
+            $this->itemOperations[] = new ItemOperation($operationKey, $this,$operationData);
         }
 
         foreach ($apiResourceAnnotation->getCollectionOperations() as $operationKey => $operationData) {
-            $this->collectionOperations[] = new CollectionOperation($operationKey, $operationData);
+            $this->collectionOperations[] = new CollectionOperation($operationKey, $this,$operationData);
         }
+
+        /** @var AbstractOperation $operation */
+        foreach ($this->getOperations() as $operation) {
+            $this->routes->add($operation->getRoute()->getPath(), $operation->getRoute());
+            $this->routeNameToOperation[$operation->getRoute()->getPath()] = $operation;
+        }
+    }
+
+    /**
+     * @return AbstractOperation[]
+     */
+    public function getOperations(): array
+    {
+        return array_merge($this->getItemOperations(), $this->getCollectionOperations());
     }
 
     /**
@@ -56,5 +82,27 @@ class ApiResource
     public function getCollectionOperations(): array
     {
         return $this->collectionOperations;
+    }
+
+    /**
+     * @return RouteCollection
+     */
+    public function getRoutes(): RouteCollection
+    {
+        return $this->routes;
+    }
+
+    /**
+     * @param string $routeName
+     *
+     * @return AbstractOperation
+     */
+    public function getOperationByRouteName(string $routeName): AbstractOperation
+    {
+        if (!isset($this->routeNameToOperation[$routeName])) {
+            throw new \InvalidArgumentException(sprintf('Operation for %s not found', $routeName), 1557217180348);
+        }
+
+        return $this->routeNameToOperation[$routeName];
     }
 }

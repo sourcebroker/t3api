@@ -6,6 +6,11 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use SourceBroker\Restify\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\Restify\Domain\Model\AbstractOperation;
 use SourceBroker\Restify\Domain\Model\ApiResource;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
+use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
@@ -14,58 +19,39 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 class Bootstrap
 {
+    /**
+     * @throws RouteNotFoundException
+     */
     public function process()
     {
         $apiResources = $this->getAllApiResources();
-        $currentRoute = $this->getCurrentRoute();
+        $context = (new RequestContext())->fromRequest(Request::createFromGlobals());
 
         foreach ($apiResources as $apiResource) {
-            /** @var AbstractOperation[] $operations */
-            $operations = array_merge($apiResource->getItemOperations(), $apiResource->getCollectionOperations());
-
-            foreach ($operations as $operation) {
-                DebuggerUtility::var_dump($operation);
-                if ($this->routeMatchesOperation($currentRoute, $operation)) {
-                    $this->processOperation($apiResource, $operation);
-                }
+            try {
+                $urlMatcher = new UrlMatcher($apiResource->getRoutes(), $context);
+                $matchedRoute = $urlMatcher->match($context->getPathInfo());
+                $this->processOperation($apiResource->getOperationByRouteName($matchedRoute['_route']));
+            } catch (ResourceNotFoundException $resourceNotFoundException) {
             }
         }
 
-        die('NO ROUTE FOUND');
+        throw new RouteNotFoundException('Restify resource not found for current route', 1557217186441);
     }
 
     /**
      * @param AbstractOperation $operation
      */
-    private function processOperation(ApiResource $apiResource, AbstractOperation $operation)
+    private function processOperation(AbstractOperation $operation)
     {
-        DebuggerUtility::var_dump($apiResource, 'THIS RESOURCE WILL BE PROCESSED');
         DebuggerUtility::var_dump($operation, 'THIS OPERATION WILL BE PROCESSED');
         die();
     }
 
     /**
-     * @param string $route
-     * @param AbstractOperation $operation
-     * @todo move to more appropriate place
-     * @todo implement support for routes with params
-     */
-    private function routeMatchesOperation(string $route, AbstractOperation $operation): bool
-    {
-        return $operation->getPath() === $route;
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getCurrentRoute()
-    {
-        return '/' . preg_replace('/^' . preg_quote(RESTIFY_BASE_PATH, '/') . '/', '', $_SERVER['REQUEST_URI']);
-    }
-
-    /**
      * @return ApiResource[]
      * @todo move to more appropriate place
+     * @todo add caching
      */
     private function getAllApiResources()
     {
