@@ -74,4 +74,12 @@ abstract class AbstractOperation
         return $this->route;
     }
 
+    /**
+     * @return ApiResource
+     */
+    public function getApiResource(): ApiResource
+    {
+        return $this->apiResource;
+    }
+
 }

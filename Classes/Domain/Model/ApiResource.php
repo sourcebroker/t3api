@@ -61,6 +61,14 @@ class ApiResource
     }
 
     /**
+     * @return string
+     */
+    public function getEntity(): string
+    {
+        return $this->entity;
+    }
+
+    /**
      * @return AbstractOperation[]
      */
     public function getOperations(): array

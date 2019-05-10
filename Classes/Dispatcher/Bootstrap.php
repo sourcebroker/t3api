@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SourceBroker\Restify\Dispatcher;
 
@@ -6,12 +7,17 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use SourceBroker\Restify\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\Restify\Domain\Model\AbstractOperation;
 use SourceBroker\Restify\Domain\Model\ApiResource;
+use SourceBroker\Restify\Domain\Model\CollectionOperation;
+use SourceBroker\Restify\Domain\Model\ItemOperation;
+use SourceBroker\Restify\Domain\Repository\CommonRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
@@ -31,7 +37,7 @@ class Bootstrap
             try {
                 $urlMatcher = new UrlMatcher($apiResource->getRoutes(), $context);
                 $matchedRoute = $urlMatcher->match($context->getPathInfo());
-                $this->processOperation($apiResource->getOperationByRouteName($matchedRoute['_route']));
+                $this->processOperation($apiResource->getOperationByRouteName($matchedRoute['_route']), $matchedRoute);
             } catch (ResourceNotFoundException $resourceNotFoundException) {
             }
         }
@@ -41,10 +47,25 @@ class Bootstrap
 
     /**
      * @param AbstractOperation $operation
+     * @param array $matchedRoute
+     * @throws \Exception
      */
-    private function processOperation(AbstractOperation $operation)
+    private function processOperation(AbstractOperation $operation, array $matchedRoute)
     {
+        $repository = GeneralUtility::makeInstance(ObjectManager::class)->get(CommonRepository::class);
+        $repository->setObjectType($operation->getApiResource()->getEntity());
+
+        if ($operation instanceof ItemOperation) {
+            $result = $repository->findByUid((int)$matchedRoute['id']);
+        } else if ($operation instanceof CollectionOperation) {
+            $result = $repository->findAll();
+        } else {
+            // @todo throw appropriate exception
+            throw new \Exception('Unknown operation', 1557506987081);
+        }
+
         DebuggerUtility::var_dump($operation, 'THIS OPERATION WILL BE PROCESSED');
+        DebuggerUtility::var_dump($result, 'THIS WILL BE THE RESULT OF RESPONSE');
         die();
     }
 
