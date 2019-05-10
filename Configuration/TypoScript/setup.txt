@@ -1,0 +1,15 @@
+restifyResponse = PAGE
+restifyResponse {
+	typeNum = 1557300854213
+
+	config {
+		disableAllHeaderCode = 1
+		additionalHeaders.10.header = Content-type:application/json
+		xhtml_cleaning = 0
+		admPanel = 0
+		debug = 0
+	}
+
+	10 = USER_INT
+	10.userFunc = SourceBroker\Restify\Dispatcher\Bootstrap->process
+}
