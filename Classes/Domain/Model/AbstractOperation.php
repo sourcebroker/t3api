@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SourceBroker\Restify\Domain\Model;
 
@@ -48,6 +49,14 @@ abstract class AbstractOperation
         $this->path = $params['path'] ?? $this->path;
         // @todo base path should be read from route enhancer configuration when RESTIFY_BASE_PATH is finally removed
         $this->route = new Route(rtrim(RESTIFY_BASE_PATH, '/') . $this->path);
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey(): string
+    {
+        return $this->key;
     }
 
     /**

@@ -4,6 +4,12 @@ declare(strict_types=1);
 namespace SourceBroker\Restify\Dispatcher;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use SourceBroker\Restify\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\Restify\Domain\Model\AbstractOperation;
 use SourceBroker\Restify\Domain\Model\ApiResource;
@@ -19,7 +25,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class Bootstrap
@@ -58,6 +64,11 @@ class Bootstrap
 
         if ($operation instanceof ItemOperation) {
             $result = $repository->findByUid((int)$matchedRoute['id']);
+
+            if (!$result) {
+                // @todo throw appropriate exception
+                throw new \InvalidArgumentException('Item not found');
+            }
         } else if ($operation instanceof CollectionOperation) {
             $result = $repository->findAll();
         } else {
@@ -65,9 +76,8 @@ class Bootstrap
             throw new \Exception('Unknown operation', 1557506987081);
         }
 
-        DebuggerUtility::var_dump($operation, 'THIS OPERATION WILL BE PROCESSED');
-        DebuggerUtility::var_dump($result, 'THIS WILL BE THE RESULT OF RESPONSE');
-        die();
+        // @todo avoid die if easily possible
+        die($this->getSerializer($operation)->serialize($result, 'json'));
     }
 
     /**
@@ -118,5 +128,61 @@ class Bootstrap
                 return is_subclass_of($class, AbstractEntity::class);
             }
         );
+    }
+
+    /**
+     * @param AbstractOperation $operation
+     * @return SerializerInterface
+     * @todo refactor - move to appropriate place
+     */
+    private function getSerializer(AbstractOperation $operation): SerializerInterface
+    {
+        // @todo use TYPO3 API to create directory
+        $cacheDirectory = PATH_site.'/typo3temp/var/cache/code/restify/jms-serializer';
+        mkdir($cacheDirectory, 0777, true);
+        GeneralUtility::fixPermissions($cacheDirectory);
+
+        return SerializerBuilder::create()
+            ->setCacheDir($cacheDirectory)
+            ->setDebug(GeneralUtility::getApplicationContext()->isDevelopment())
+            ->setSerializationContextFactory(function() use ($operation) {
+                return SerializationContext::create()
+                    ->setSerializeNull(true)
+                    ->setGroups($this->buildContextGroupsFromOperation($operation));
+            })
+            ->configureHandlers(function(HandlerRegistry $registry) {
+                $registry->registerHandler(
+                    \JMS\Serializer\GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                    ObjectStorage::class,
+                    'json',
+                    function($visitor, ObjectStorage $objectStorage, array $type) {
+                        return $objectStorage->toArray();
+                    }
+                );
+            })
+            ->setPropertyNamingStrategy(
+                new SerializedNameAnnotationStrategy(
+                    new IdenticalPropertyNamingStrategy()
+                )
+            )
+            ->build();
+    }
+
+    /**
+     * @param AbstractOperation $operation
+     *
+     * @return array
+     */
+    private function buildContextGroupsFromOperation(AbstractOperation $operation): array
+    {
+        $prefix = 'api';
+        $operationKey = $operation->getKey();
+        $operationType = $operation instanceof ItemOperation ? 'item' : 'collection';
+        $entity =  $operation->getApiResource()->getEntity();
+
+        return array_map('mb_strtolower', [
+            implode('_', [$prefix, $operationType, $operationKey]),
+            implode('_', [$prefix, $operationType, $operationKey, $entity]),
+        ]);
     }
 }
