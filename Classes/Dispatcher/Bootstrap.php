@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -100,11 +101,15 @@ class Bootstrap
     /**
      * @return string[]
      * @todo move to more appropriate place
+     * @todo add caching
      */
     private function getAllDomainModels()
     {
-        foreach (glob(PATH_site.'typo3conf/ext/*/Classes/Domain/Model/*.php') as $domainModelClassFile) {
-            require_once $domainModelClassFile;
+        foreach (ExtensionManagementUtility::getLoadedExtensionListArray() as $extKey) {
+            $extPath = ExtensionManagementUtility::extPath($extKey);
+            foreach (glob($extPath.'Classes/Domain/Model/*.php') as $domainModelClassFile) {
+                require_once $domainModelClassFile;
+            }
         }
 
         return array_filter(
