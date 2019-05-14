@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SourceBroker\Restify\Domain\Model;
 
@@ -8,4 +9,12 @@ namespace SourceBroker\Restify\Domain\Model;
 class ItemOperation extends AbstractOperation
 {
     protected $path = '/{id}';
+
+    /**
+     * @inheritdoc
+     */
+    protected function getType(): string
+    {
+        return 'item';
+    }
 }

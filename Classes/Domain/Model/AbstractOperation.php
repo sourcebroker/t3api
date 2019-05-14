@@ -36,6 +36,11 @@ abstract class AbstractOperation
     protected $route;
 
     /**
+     * @var array
+     */
+    protected $normalizationContext = [];
+
+    /**
      * AbstractOperation constructor.
      *
      * @param string $key
@@ -47,6 +52,9 @@ abstract class AbstractOperation
         $this->apiResource = $apiResource;
         $this->method = $params['method'] ?? $this->method;
         $this->path = $params['path'] ?? $this->path;
+        $this->normalizationContext = isset($params['normalizationContext'])
+            ? array_replace_recursive($this->normalizationContext, $params['normalizationContext'])
+            : $this->normalizationContext;
         // @todo base path should be read from route enhancer configuration when RESTIFY_BASE_PATH is finally removed
         $this->route = new Route(rtrim(RESTIFY_BASE_PATH, '/') . $this->path);
     }
@@ -91,4 +99,17 @@ abstract class AbstractOperation
         return $this->apiResource;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getContextGroups(): array
+    {
+        return $this->normalizationContext['groups'] ?? [];
+    }
+
+    /**
+     * Return type of the operation
+     * @return string
+     */
+    abstract protected function getType(): string;
 }

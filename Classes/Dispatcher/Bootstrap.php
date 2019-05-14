@@ -70,7 +70,7 @@ class Bootstrap
                 throw new \InvalidArgumentException('Item not found');
             }
         } else if ($operation instanceof CollectionOperation) {
-            $result = $repository->findAll();
+            $result = $repository->findAll()->toArray();
         } else {
             // @todo throw appropriate exception
             throw new \Exception('Unknown operation', 1557506987081);
@@ -146,9 +146,14 @@ class Bootstrap
             ->setCacheDir($cacheDirectory)
             ->setDebug(GeneralUtility::getApplicationContext()->isDevelopment())
             ->setSerializationContextFactory(function() use ($operation) {
-                return SerializationContext::create()
-                    ->setSerializeNull(true)
-                    ->setGroups($this->buildContextGroupsFromOperation($operation));
+                $serializationContext = SerializationContext::create()
+                    ->setSerializeNull(true);
+
+                if (!empty($operation->getContextGroups())) {
+                    $serializationContext->setGroups($operation->getContextGroups());
+                }
+
+                return $serializationContext;
             })
             ->configureHandlers(function(HandlerRegistry $registry) {
                 $registry->registerHandler(
@@ -166,23 +171,5 @@ class Bootstrap
                 )
             )
             ->build();
-    }
-
-    /**
-     * @param AbstractOperation $operation
-     *
-     * @return array
-     */
-    private function buildContextGroupsFromOperation(AbstractOperation $operation): array
-    {
-        $prefix = 'api';
-        $operationKey = $operation->getKey();
-        $operationType = $operation instanceof ItemOperation ? 'item' : 'collection';
-        $entity =  $operation->getApiResource()->getEntity();
-
-        return array_map('mb_strtolower', [
-            implode('_', [$prefix, $operationType, $operationKey]),
-            implode('_', [$prefix, $operationType, $operationKey, $entity]),
-        ]);
     }
 }
