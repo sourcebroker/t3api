@@ -11,6 +11,11 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class CommonRepository extends Repository
 {
+    /**
+     * CommonRepository constructor.
+     *
+     * @param \TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager
+     */
     public function __construct(\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager)
     {
         parent::__construct($objectManager);

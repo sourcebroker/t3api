@@ -16,6 +16,7 @@ use SourceBroker\Restify\Domain\Model\ApiResource;
 use SourceBroker\Restify\Domain\Model\CollectionOperation;
 use SourceBroker\Restify\Domain\Model\ItemOperation;
 use SourceBroker\Restify\Domain\Repository\CommonRepository;
+use SourceBroker\Restify\Hydra\CollectionResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -55,6 +56,7 @@ class Bootstrap
     /**
      * @param AbstractOperation $operation
      * @param array $matchedRoute
+     *
      * @throws \Exception
      */
     private function processOperation(AbstractOperation $operation, array $matchedRoute)
@@ -69,8 +71,8 @@ class Bootstrap
                 // @todo throw appropriate exception
                 throw new \InvalidArgumentException('Item not found');
             }
-        } else if ($operation instanceof CollectionOperation) {
-            $result = $repository->findAll()->toArray();
+        } elseif ($operation instanceof CollectionOperation) {
+            $result = new CollectionResponse($repository->findAll());
         } else {
             // @todo throw appropriate exception
             throw new \Exception('Unknown operation', 1557506987081);
@@ -124,7 +126,7 @@ class Bootstrap
 
         return array_filter(
             get_declared_classes(),
-            function($class) {
+            function ($class) {
                 return is_subclass_of($class, AbstractEntity::class);
             }
         );
@@ -132,6 +134,7 @@ class Bootstrap
 
     /**
      * @param AbstractOperation $operation
+     *
      * @return SerializerInterface
      * @todo refactor - move to appropriate place
      */
@@ -145,7 +148,7 @@ class Bootstrap
         return SerializerBuilder::create()
             ->setCacheDir($cacheDirectory)
             ->setDebug(GeneralUtility::getApplicationContext()->isDevelopment())
-            ->setSerializationContextFactory(function() use ($operation) {
+            ->setSerializationContextFactory(function () use ($operation) {
                 $serializationContext = SerializationContext::create()
                     ->setSerializeNull(true);
 
@@ -155,12 +158,12 @@ class Bootstrap
 
                 return $serializationContext;
             })
-            ->configureHandlers(function(HandlerRegistry $registry) {
+            ->configureHandlers(function (HandlerRegistry $registry) {
                 $registry->registerHandler(
                     \JMS\Serializer\GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                     ObjectStorage::class,
                     'json',
-                    function($visitor, ObjectStorage $objectStorage, array $type) {
+                    function ($visitor, ObjectStorage $objectStorage, array $type) {
                         return $objectStorage->toArray();
                     }
                 );
