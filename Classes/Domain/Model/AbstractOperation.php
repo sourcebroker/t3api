@@ -56,7 +56,7 @@ abstract class AbstractOperation
             ? array_replace_recursive($this->normalizationContext, $params['normalizationContext'])
             : $this->normalizationContext;
         // @todo base path should be read from route enhancer configuration when RESTIFY_BASE_PATH is finally removed
-        $this->route = new Route(rtrim(RESTIFY_BASE_PATH, '/') . $this->path);
+        $this->route = new Route(rtrim(RESTIFY_BASE_PATH, '/').$this->path);
     }
 
     /**
@@ -106,10 +106,4 @@ abstract class AbstractOperation
     {
         return $this->normalizationContext['groups'] ?? [];
     }
-
-    /**
-     * Return type of the operation
-     * @return string
-     */
-    abstract protected function getType(): string;
 }

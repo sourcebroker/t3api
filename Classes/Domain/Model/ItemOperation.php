@@ -9,12 +9,4 @@ namespace SourceBroker\Restify\Domain\Model;
 class ItemOperation extends AbstractOperation
 {
     protected $path = '/{id}';
-
-    /**
-     * @inheritdoc
-     */
-    protected function getType(): string
-    {
-        return 'item';
-    }
 }
