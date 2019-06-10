@@ -13,11 +13,11 @@ use TYPO3\CMS\Core\Routing\RouteCollection;
  *   Restify:
  *     type: RestifyResourceEnhancer
  *     basePath: '_api'
- *
- * @todo configurable `basePath` is not working yet
  */
 class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterface
 {
+    const ENHANCER_NAME = 'RestifyResourceEnhancer';
+
     /**
      * @var array
      */
@@ -25,9 +25,8 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
 
     /**
      * @var string
-     * @todo set empty string when RESTIFY_BASE_PATH is finally removed
      */
-    protected $basePath = RESTIFY_BASE_PATH;
+    protected $basePath;
 
     /**
      * ResourceEnhancer constructor.
@@ -37,8 +36,7 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
     public function __construct(array $configuration)
     {
         $this->configuration = $configuration;
-        // @todo uncomment when RESTIFY_BASE_PATH is finally removed
-//        $this->basePath = $this->configuration['basePath'] ?? '';
+        $this->basePath = $this->configuration['basePath'] ?? '';
     }
 
     /**
