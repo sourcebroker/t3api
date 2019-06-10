@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Domain\Model;
 
+use SourceBroker\Restify\Routing\Enhancer\ResourceEnhancer;
 use Symfony\Component\Routing\Route;
+use TYPO3\CMS\Core\Routing\RouteNotFoundException;
+use TYPO3\CMS\Core\Site\Entity\Site;
 
 /**
  * Class AbstractOperation
@@ -42,9 +45,11 @@ abstract class AbstractOperation
 
     /**
      * AbstractOperation constructor.
-     *
      * @param string $key
+     * @param ApiResource $apiResource
      * @param array $params
+     *
+     * @throws RouteNotFoundException
      */
     public function __construct(string $key, ApiResource $apiResource, array $params)
     {
@@ -55,8 +60,19 @@ abstract class AbstractOperation
         $this->normalizationContext = isset($params['normalizationContext'])
             ? array_replace_recursive($this->normalizationContext, $params['normalizationContext'])
             : $this->normalizationContext;
-        // @todo base path should be read from route enhancer configuration when RESTIFY_BASE_PATH is finally removed
-        $this->route = new Route(rtrim(RESTIFY_BASE_PATH, '/').$this->path);
+        /** @var Site $site */
+        $site = $GLOBALS['TYPO3_REQUEST']->getAttribute('site');
+        $routeEnhancers = $site->getConfiguration()['routeEnhancers'] ?? [];
+        foreach ($routeEnhancers as $routeEnhancer) {
+            if ($routeEnhancer['type'] == ResourceEnhancer::ENHANCER_NAME && isset($routeEnhancer['basePath'])) {
+                $this->route = new Route(rtrim($routeEnhancer['basePath'], '/') . $this->path);
+                break;
+            }
+        }
+
+        if (empty($this->route)) {
+            throw new RouteNotFoundException('Route not found for restify extension', 1757217286469);
+        }
     }
 
     /**
