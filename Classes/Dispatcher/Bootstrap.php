@@ -10,6 +10,7 @@ use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
+use SourceBroker\Restify\Accessor\AccessorStrategy;
 use SourceBroker\Restify\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\Restify\Domain\Model\AbstractOperation;
 use SourceBroker\Restify\Domain\Model\ApiResource;
@@ -166,6 +167,7 @@ class Bootstrap
                 );
             })
             ->addDefaultHandlers()
+            ->setAccessorStrategy(new AccessorStrategy())
             ->setPropertyNamingStrategy(
                 new SerializedNameAnnotationStrategy(
                     new IdenticalPropertyNamingStrategy()
