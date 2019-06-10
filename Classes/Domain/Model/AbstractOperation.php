@@ -122,10 +122,4 @@ abstract class AbstractOperation
     {
         return $this->normalizationContext['groups'] ?? [];
     }
-
-    /**
-     * Return type of the operation
-     * @return string
-     */
-    abstract protected function getType(): string;
 }

@@ -46,11 +46,11 @@ class ApiResource
         $this->routes = new RouteCollection();
 
         foreach ($apiResourceAnnotation->getItemOperations() as $operationKey => $operationData) {
-            $this->itemOperations[] = new ItemOperation($operationKey, $this,$operationData);
+            $this->itemOperations[] = new ItemOperation($operationKey, $this, $operationData);
         }
 
         foreach ($apiResourceAnnotation->getCollectionOperations() as $operationKey => $operationData) {
-            $this->collectionOperations[] = new CollectionOperation($operationKey, $this,$operationData);
+            $this->collectionOperations[] = new CollectionOperation($operationKey, $this, $operationData);
         }
 
         /** @var AbstractOperation $operation */
