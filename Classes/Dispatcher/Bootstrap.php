@@ -165,6 +165,7 @@ class Bootstrap
                     }
                 );
             })
+            ->addDefaultHandlers()
             ->setPropertyNamingStrategy(
                 new SerializedNameAnnotationStrategy(
                     new IdenticalPropertyNamingStrategy()
