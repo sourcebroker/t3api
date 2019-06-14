@@ -19,20 +19,6 @@ class CollectionResponse
     protected $queryResult;
 
     /**
-     * @var array
-     * @Serializer\SerializedName("hydra:member")
-     * @Serializer\Groups({"__hydra_collection_response"})
-     */
-    protected $members;
-
-    /**
-     * @var integer
-     * @Serializer\SerializedName("hydra:totalItems")
-     * @Serializer\Groups({"__hydra_collection_response"})
-     */
-    protected $totalItems;
-
-    /**
      * CollectionResponse constructor.
      *
      * @param QueryResultInterface $queryResult
@@ -40,7 +26,27 @@ class CollectionResponse
     public function __construct(QueryResultInterface $queryResult)
     {
         $this->queryResult = $queryResult;
-        $this->members = $this->queryResult->toArray();
-        $this->totalItems = $this->queryResult->count();
+    }
+
+    /**
+     * @return array
+     * @Serializer\SerializedName("hydra:member")
+     * @Serializer\VirtualProperty()
+     * @Serializer\Groups({"__hydra_collection_response"})
+     */
+    public function getMembers(): array
+    {
+        return $this->queryResult->toArray();
+    }
+
+    /**
+     * @return int
+     * @Serializer\SerializedName("hydra:totalItems")
+     * @Serializer\VirtualProperty()
+     * @Serializer\Groups({"__hydra_collection_response"})
+     */
+    public function getTotalItems(): int
+    {
+        return $this->queryResult->count();
     }
 }
