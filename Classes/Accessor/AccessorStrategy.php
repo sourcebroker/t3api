@@ -106,7 +106,7 @@ class AccessorStrategy implements AccessorStrategyInterface
         }
 
         if (null === $metadata->setter) {
-            $setter = sprintf('get%s', ucfirst($metadata->serializedName));
+            $setter = sprintf('set%s', ucfirst($metadata->serializedName));
             if (method_exists($object, $setter)) {
                 $metadata->setter = $setter;
             }
