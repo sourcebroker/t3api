@@ -18,6 +18,7 @@ use SourceBroker\Restify\Domain\Model\CollectionOperation;
 use SourceBroker\Restify\Domain\Model\ItemOperation;
 use SourceBroker\Restify\Domain\Repository\CommonRepository;
 use SourceBroker\Restify\Hydra\CollectionResponse;
+use SourceBroker\Restify\Serializer\Handler\TransformerHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -27,13 +28,25 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class Bootstrap
  */
 class Bootstrap
 {
+    /**
+     * @var ObjectManager
+     */
+    protected $objectManager;
+
+    /**
+     * Bootstrap constructor.
+     */
+    public function __construct()
+    {
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+    }
+
     /**
      * @throws RouteNotFoundException
      */
@@ -62,7 +75,7 @@ class Bootstrap
      */
     private function processOperation(AbstractOperation $operation, array $matchedRoute)
     {
-        $repository = GeneralUtility::makeInstance(ObjectManager::class)->get(CommonRepository::class);
+        $repository = $this->objectManager->get(CommonRepository::class);
         $repository->setObjectType($operation->getApiResource()->getEntity());
 
         if ($operation instanceof ItemOperation) {
@@ -160,17 +173,10 @@ class Bootstrap
                 return $serializationContext;
             })
             ->configureHandlers(function (HandlerRegistry $registry) {
-                $registry->registerHandler(
-                    \JMS\Serializer\GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                    ObjectStorage::class,
-                    'json',
-                    function ($visitor, ObjectStorage $objectStorage, array $type) {
-                        return $objectStorage->toArray();
-                    }
-                );
+                $registry->registerSubscribingHandler($this->objectManager->get(TransformerHandler::class));
             })
             ->addDefaultHandlers()
-            ->setAccessorStrategy(new AccessorStrategy())
+            ->setAccessorStrategy($this->objectManager->get(AccessorStrategy::class))
             ->setPropertyNamingStrategy(
                 new SerializedNameAnnotationStrategy(
                     new IdenticalPropertyNamingStrategy()
