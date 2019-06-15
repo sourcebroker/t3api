@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Serializer\Handler;
 
-use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
-use SourceBroker\Restify\Transformer\TransformerInterface;
+use JMS\Serializer\SerializationContext;
+use SourceBroker\Restify\Transformer\AbstractTransformer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -50,24 +50,28 @@ class TransformerHandler implements SubscribingHandlerInterface
      * @param JsonSerializationVisitor $visitor
      * @param mixed $value
      * @param array $type
-     * @param Context $context
+     * @param SerializationContext $context
+     *
+     * @return mixed
      */
-    public function serialize(JsonSerializationVisitor $visitor, $value, array $type, Context $context)
+    public function serialize(JsonSerializationVisitor $visitor, $value, array $type, SerializationContext $context)
     {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['transformers'] as $transformerConfig) {
             if ($transformerConfig['type'] === $type['name']) {
-                /** @var TransformerInterface $transformer */
-                $transformer = $this->objectManager->get($transformerConfig['class']);
+                /** @var AbstractTransformer $transformer */
+                $transformer = $this->objectManager->get($transformerConfig['class'], $visitor, $context, $type['params']);
 
-                if (!$transformer instanceof TransformerInterface) {
+                if (!$transformer instanceof AbstractTransformer) {
                     throw new \InvalidArgumentException(
-                        sprintf('%s is not an instance of TransformerInterface', get_class($transformer)),
+                        sprintf('%s is not an instance of AbstractTransformer', get_class($transformer)),
                         1560409736743
                     );
                 }
 
-                return call_user_func_array([$transformer, 'serialize'], array_merge([$value], $type['params']));
+                return $transformer->serialize($value);
             }
         }
+
+        return $value;
     }
 }

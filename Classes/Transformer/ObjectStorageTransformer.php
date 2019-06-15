@@ -7,18 +7,15 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class ObjectStorageTransformer
- *
- * @package SourceBroker\Restify\Transformator
  */
-class ObjectStorageTransformer implements TransformerInterface
+class ObjectStorageTransformer extends AbstractTransformer
 {
     /**
      * @param ObjectStorage $objectStorage
-     * @param array $params
      *
      * @return array
      */
-    public function serialize($objectStorage, ...$params)
+    public function serialize($objectStorage)
     {
         return $objectStorage->toArray();
     }

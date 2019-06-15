@@ -8,18 +8,15 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 
 /**
  * Class FileReferenceTransformer
- *
- * @package SourceBroker\Restify\Transformator
  */
-class FileReferenceTransformer implements TransformerInterface
+class FileReferenceTransformer extends AbstractTransformer
 {
     /**
      * @param FileReference $fileReference
-     * @param array $params
      *
      * @return array
      */
-    public function serialize($fileReference, ...$params)
+    public function serialize($fileReference)
     {
         return [
             'uid' => $fileReference->getUid(),
