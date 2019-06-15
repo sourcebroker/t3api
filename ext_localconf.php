@@ -21,6 +21,10 @@ call_user_func(
                 'type' => \SourceBroker\Restify\Transformer\ProcessedImageTransformer::TYPE_NAME,
                 'class' => \SourceBroker\Restify\Transformer\ProcessedImageTransformer::class,
             ],
+            [
+                'type' => \SourceBroker\Restify\Transformer\RecordUriTransformer::TYPE_NAME,
+                'class' => \SourceBroker\Restify\Transformer\RecordUriTransformer::class,
+            ],
         ];
     }
 );
