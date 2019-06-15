@@ -12,8 +12,9 @@ interface TransformerInterface
 {
     /**
      * @param mixed $property
+     * @param array $params
      *
      * @return mixed
      */
-    public function serialize($property);
+    public function serialize($property, ...$params);
 }

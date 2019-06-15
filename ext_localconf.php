@@ -17,6 +17,10 @@ call_user_func(
                 'type' => \TYPO3\CMS\Extbase\Domain\Model\FileReference::class,
                 'class' => \SourceBroker\Restify\Transformer\FileReferenceTransformer::class,
             ],
+            [
+                'type' => \SourceBroker\Restify\Type\ProcessedImage::class,
+                'class' => \SourceBroker\Restify\Transformer\ProcessedImageTransformer::class,
+            ],
         ];
     }
 );

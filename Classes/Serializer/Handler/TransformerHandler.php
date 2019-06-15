@@ -55,7 +55,7 @@ class TransformerHandler implements SubscribingHandlerInterface
     public function serialize(JsonSerializationVisitor $visitor, $value, array $type, Context $context)
     {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['transformers'] as $transformerConfig) {
-            if ($transformerConfig['type'] === get_class($value)) {
+            if ($transformerConfig['type'] === $type['name']) {
                 /** @var TransformerInterface $transformer */
                 $transformer = $this->objectManager->get($transformerConfig['class']);
 
@@ -66,9 +66,7 @@ class TransformerHandler implements SubscribingHandlerInterface
                     );
                 }
 
-                $params = [$value];
-
-                return call_user_func_array([$transformer, 'serialize'], $params);
+                return call_user_func_array([$transformer, 'serialize'], array_merge([$value], $type['params']));
             }
         }
     }

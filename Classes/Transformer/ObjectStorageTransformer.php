@@ -14,10 +14,11 @@ class ObjectStorageTransformer implements TransformerInterface
 {
     /**
      * @param ObjectStorage $objectStorage
+     * @param array $params
      *
      * @return array
      */
-    public function serialize($objectStorage)
+    public function serialize($objectStorage, ...$params)
     {
         return $objectStorage->toArray();
     }

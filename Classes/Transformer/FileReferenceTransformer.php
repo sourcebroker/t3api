@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Transformer;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 
 /**
@@ -14,14 +15,16 @@ class FileReferenceTransformer implements TransformerInterface
 {
     /**
      * @param FileReference $fileReference
+     * @param array $params
      *
      * @return array
      */
-    public function serialize($fileReference)
+    public function serialize($fileReference, ...$params)
     {
         return [
             'uid' => $fileReference->getUid(),
-            'url' => $fileReference->getOriginalResource()->getPublicUrl(),
+            'url' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL')
+                . $fileReference->getOriginalResource()->getPublicUrl(),
         ];
     }
 }
