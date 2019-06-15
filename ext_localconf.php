@@ -18,7 +18,7 @@ call_user_func(
                 'class' => \SourceBroker\Restify\Transformer\FileReferenceTransformer::class,
             ],
             [
-                'type' => \SourceBroker\Restify\Type\ProcessedImage::class,
+                'type' => \SourceBroker\Restify\Transformer\ProcessedImageTransformer::TYPE_NAME,
                 'class' => \SourceBroker\Restify\Transformer\ProcessedImageTransformer::class,
             ],
         ];

@@ -14,6 +14,8 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
  */
 class ProcessedImageTransformer implements TransformerInterface
 {
+    const TYPE_NAME = 'ProcessedImage';
+
     /**
      * @param FileReference $fileReference
      * @param array $params
