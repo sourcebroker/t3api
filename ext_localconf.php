@@ -7,24 +7,11 @@ call_user_func(
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\SourceBroker\Restify\Routing\Enhancer\ResourceEnhancer::ENHANCER_NAME] =
             \SourceBroker\Restify\Routing\Enhancer\ResourceEnhancer::class;
 
-        // @todo add transformers prioritization?
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['transformers'] = [
-            [
-                'type' => \TYPO3\CMS\Extbase\Persistence\ObjectStorage::class,
-                'class' => \SourceBroker\Restify\Transformer\ObjectStorageTransformer::class,
-            ],
-            [
-                'type' => \TYPO3\CMS\Extbase\Domain\Model\FileReference::class,
-                'class' => \SourceBroker\Restify\Transformer\FileReferenceTransformer::class,
-            ],
-            [
-                'type' => \SourceBroker\Restify\Transformer\ProcessedImageTransformer::TYPE_NAME,
-                'class' => \SourceBroker\Restify\Transformer\ProcessedImageTransformer::class,
-            ],
-            [
-                'type' => \SourceBroker\Restify\Transformer\RecordUriTransformer::TYPE_NAME,
-                'class' => \SourceBroker\Restify\Transformer\RecordUriTransformer::class,
-            ],
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['serializerHandlers'] = [
+            \SourceBroker\Restify\Serializer\Handler\ObjectStorageHandler::class,
+            \SourceBroker\Restify\Serializer\Handler\FileReferenceHandler::class,
+            \SourceBroker\Restify\Serializer\Handler\ProcessedImageHandler::class,
+            \SourceBroker\Restify\Serializer\Handler\RecordUriHandler::class,
         ];
     }
 );

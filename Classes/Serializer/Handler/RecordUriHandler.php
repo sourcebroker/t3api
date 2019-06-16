@@ -1,49 +1,55 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Transformer;
+namespace SourceBroker\Restify\Serializer\Handler;
 
-use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
- * Class RecordUriTransformer
+ * Class RecordUriHandler
+ *
+ * @package SourceBroker\Restify\Serializer\Handler
  */
-class RecordUriTransformer extends AbstractTransformer
+class RecordUriHandler implements SubscribingHandlerInterface
 {
-    const TYPE_NAME = 'RecordUri';
-
     /**
-     * @var string
+     * {@inheritdoc}
      */
-    protected $linkHandlerIdentifier = '';
-
-    /**
-     * RecordUriAbstractTransformer constructor.
-     *
-     * @param JsonSerializationVisitor $visitor
-     * @param SerializationContext $context
-     * @param $typeParams
-     */
-    public function __construct(JsonSerializationVisitor $visitor, SerializationContext $context, $typeParams)
+    public static function getSubscribingMethods()
     {
-        parent::__construct($visitor, $context, $typeParams);
-        $this->linkHandlerIdentifier = $typeParams[0] ?? $this->linkHandlerIdentifier;
+        return [
+            [
+                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                'type' => 'RecordUri',
+                'format' => 'json',
+                'method' => 'serialize',
+            ],
+        ];
     }
 
     /**
-     * @param mixed $value
+     * @param SerializationVisitorInterface $visitor
+     * @param $value
+     * @param array $type
+     * @param SerializationContext $context
      *
      * @return string
      */
-    public function serialize($value)
-    {
+    public function serialize(
+        SerializationVisitorInterface $visitor,
+        $value,
+        array $type,
+        SerializationContext $context
+    ) {
         $uid = null;
 
-        foreach ($this->context->getVisitingSet() as $item) {
+        foreach ($context->getVisitingSet() as $item) {
             if ($item instanceof AbstractEntity) {
                 $uid = $item->getUid();
             }
@@ -56,7 +62,7 @@ class RecordUriTransformer extends AbstractTransformer
         return rtrim(GeneralUtility::getIndpEnv('TYPO3_SITE_URL'), '/')
             . $this->getContentObjectRenderer()->getTypoLink_URL(sprintf(
                 't3://record?identifier=%s&uid=%s',
-                $this->linkHandlerIdentifier,
+                $type['params'][0],
                 $uid
             ));
     }

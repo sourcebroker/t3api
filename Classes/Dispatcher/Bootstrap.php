@@ -5,6 +5,7 @@ namespace SourceBroker\Restify\Dispatcher;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
@@ -18,7 +19,6 @@ use SourceBroker\Restify\Domain\Model\CollectionOperation;
 use SourceBroker\Restify\Domain\Model\ItemOperation;
 use SourceBroker\Restify\Domain\Repository\CommonRepository;
 use SourceBroker\Restify\Hydra\CollectionResponse;
-use SourceBroker\Restify\Serializer\Handler\TransformerHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -73,7 +73,7 @@ class Bootstrap
      *
      * @throws \Exception
      */
-    private function processOperation(AbstractOperation $operation, array $matchedRoute)
+    protected function processOperation(AbstractOperation $operation, array $matchedRoute)
     {
         $repository = $this->objectManager->get(CommonRepository::class);
         $repository->setObjectType($operation->getApiResource()->getEntity());
@@ -101,7 +101,7 @@ class Bootstrap
      * @todo move to more appropriate place
      * @todo add caching
      */
-    private function getAllApiResources()
+    protected function getAllApiResources()
     {
         $domainModels = $this->getAllDomainModels();
         $annotationReader = new AnnotationReader();
@@ -129,7 +129,7 @@ class Bootstrap
      * @todo move to more appropriate place
      * @todo add caching
      */
-    private function getAllDomainModels()
+    protected function getAllDomainModels()
     {
         foreach (ExtensionManagementUtility::getLoadedExtensionListArray() as $extKey) {
             $extPath = ExtensionManagementUtility::extPath($extKey);
@@ -152,7 +152,7 @@ class Bootstrap
      * @return SerializerInterface
      * @todo refactor - move to appropriate place
      */
-    private function getSerializer(AbstractOperation $operation): SerializerInterface
+    protected function getSerializer(AbstractOperation $operation): SerializerInterface
     {
         // @todo use TYPO3 API to create directory
         $cacheDirectory = PATH_site.'/typo3temp/var/cache/code/restify/jms-serializer';
@@ -173,7 +173,11 @@ class Bootstrap
                 return $serializationContext;
             })
             ->configureHandlers(function (HandlerRegistry $registry) {
-                $registry->registerSubscribingHandler($this->objectManager->get(TransformerHandler::class));
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['serializerHandlers'] ?? [] as $handlerClass) {
+                    /** @var SubscribingHandlerInterface $handler */
+                    $handler = $this->objectManager->get($handlerClass);
+                    $registry->registerSubscribingHandler($handler);
+                }
             })
             ->addDefaultHandlers()
             ->setAccessorStrategy($this->objectManager->get(AccessorStrategy::class))
