@@ -88,7 +88,7 @@ class Bootstrap
                 throw new InvalidArgumentException('Item not found');
             }
         } elseif ($operation instanceof CollectionOperation) {
-            $result = new CollectionResponse($repository->findAll());
+            $result = new CollectionResponse($repository->findFiltered($operation->getFilters()));
         } else {
             // @todo throw appropriate exception
             throw new Exception('Unknown operation', 1557506987081);

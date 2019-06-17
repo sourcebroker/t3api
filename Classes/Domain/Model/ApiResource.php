@@ -113,4 +113,14 @@ class ApiResource
 
         return $this->routeNameToOperation[$routeName];
     }
+
+    /**
+     * @param ApiFilter $apiFilter
+     */
+    public function addFilter(ApiFilter $apiFilter)
+    {
+        foreach ($this->getCollectionOperations() as $collectionOperation) {
+            $collectionOperation->addFilter($apiFilter);
+        }
+    }
 }

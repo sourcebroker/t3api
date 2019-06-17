@@ -9,6 +9,27 @@ namespace SourceBroker\Restify\Domain\Model;
 class CollectionOperation extends AbstractOperation
 {
     /**
+     * @var ApiFilter[]
+     */
+    protected $filters = [];
+
+    /**
+     * @param ApiFilter $apiFilter
+     */
+    public function addFilter(ApiFilter $apiFilter)
+    {
+        $this->filters[] = $apiFilter;
+    }
+
+    /**
+     * @return ApiFilter[]
+     */
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
+    /**
      * @return string[]
      */
     public function getContextGroups(): array

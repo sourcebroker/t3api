@@ -5,7 +5,9 @@ namespace SourceBroker\Restify\Domain\Repository;
 
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
+use SourceBroker\Restify\Annotation\ApiFilter as ApiFilterAnnotation;
 use SourceBroker\Restify\Annotation\ApiResource as ApiResourceAnnotation;
+use SourceBroker\Restify\Domain\Model\ApiFilter;
 use SourceBroker\Restify\Domain\Model\ApiResource;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
@@ -34,20 +36,36 @@ class ApiResourceRepository
 
         foreach ($this->getAllDomainModels() as $domainModel) {
             try {
+                $modelReflection = new ReflectionClass($domainModel);
+
                 /** @var ApiResourceAnnotation $apiResourceAnnotation */
                 $apiResourceAnnotation = $annotationReader->getClassAnnotation(
-                    new ReflectionClass($domainModel),
+                    $modelReflection,
                     ApiResourceAnnotation::class
                 );
+
+                if (!$apiResourceAnnotation) {
+                    continue;
+                }
+
+                $apiResource = new ApiResource($domainModel, $apiResourceAnnotation);
+                $apiResources[] = $apiResource;
+
+                $filterAnnotations = array_filter(
+                    $annotationReader->getClassAnnotations($modelReflection),
+                    function ($annotation) {
+                        return $annotation instanceof ApiFilterAnnotation;
+                    }
+                );
+
+                foreach ($filterAnnotations as $filterAnnotation) {
+                    foreach (ApiFilter::createFromAnnotations($filterAnnotation) as $apiFilter) {
+                        $apiResource->addFilter($apiFilter);
+                    }
+                }
             } catch (ReflectionException $exception) {
                 // @todo log error to TYPO3
             }
-
-            if (!$apiResourceAnnotation) {
-                continue;
-            }
-
-            $apiResources[] = new ApiResource($domainModel, $apiResourceAnnotation);
         }
 
         return $apiResources;
