@@ -18,6 +18,8 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
  */
 class ProcessedImageHandler implements SubscribingHandlerInterface
 {
+    const TYPE = 'ProcessedImage';
+
     /**
      * {@inheritdoc}
      */
@@ -26,7 +28,7 @@ class ProcessedImageHandler implements SubscribingHandlerInterface
         return [
             [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => 'ProcessedImage',
+                'type' => self::TYPE,
                 'format' => 'json',
                 'method' => 'serialize',
             ],

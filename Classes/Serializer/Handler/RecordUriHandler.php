@@ -18,6 +18,8 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class RecordUriHandler implements SubscribingHandlerInterface
 {
+    const TYPE = 'RecordUri';
+
     /**
      * {@inheritdoc}
      */
@@ -26,7 +28,7 @@ class RecordUriHandler implements SubscribingHandlerInterface
         return [
             [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => 'RecordUri',
+                'type' => self::TYPE,
                 'format' => 'json',
                 'method' => 'serialize',
             ],

@@ -11,7 +11,7 @@ use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
-use SourceBroker\Restify\Accessor\AccessorStrategy;
+use SourceBroker\Restify\Serializer\Accessor\AccessorStrategy;
 use SourceBroker\Restify\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\Restify\Domain\Model\AbstractOperation;
 use SourceBroker\Restify\Domain\Model\ApiResource;
@@ -182,8 +182,9 @@ class Bootstrap
             ->addDefaultHandlers()
             ->setAccessorStrategy($this->objectManager->get(AccessorStrategy::class))
             ->setPropertyNamingStrategy(
-                new SerializedNameAnnotationStrategy(
-                    new IdenticalPropertyNamingStrategy()
+                $this->objectManager->get(
+                    SerializedNameAnnotationStrategy::class,
+                    $this->objectManager->get(IdenticalPropertyNamingStrategy::class)
                 )
             )
             ->build();

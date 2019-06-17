@@ -13,5 +13,10 @@ call_user_func(
             \SourceBroker\Restify\Serializer\Handler\ProcessedImageHandler::class,
             \SourceBroker\Restify\Serializer\Handler\RecordUriHandler::class,
         ];
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['typesWithAllowedReflectionGetter'] = [
+            \SourceBroker\Restify\Serializer\Handler\ProcessedImageHandler::TYPE,
+            \SourceBroker\Restify\Serializer\Handler\RecordUriHandler::TYPE,
+        ];
     }
 );
