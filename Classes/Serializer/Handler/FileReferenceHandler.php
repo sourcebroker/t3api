@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Serializer\Handler;
 
-use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -13,22 +11,12 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 /**
  * Class FileReferenceHandler
  */
-class FileReferenceHandler implements SubscribingHandlerInterface
+class FileReferenceHandler extends AbstractHandler
 {
     /**
-     * {@inheritdoc}
+     * @var string[]
      */
-    public static function getSubscribingMethods()
-    {
-        return [
-            [
-                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => FileReference::class,
-                'format' => 'json',
-                'method' => 'serialize',
-            ],
-        ];
-    }
+    protected static $supportedTypes = [FileReference::class];
 
     /**
      * @param SerializationVisitorInterface $visitor
@@ -40,7 +28,7 @@ class FileReferenceHandler implements SubscribingHandlerInterface
      */
     public function serialize(
         SerializationVisitorInterface $visitor,
-        FileReference $fileReference,
+        $fileReference,
         array $type,
         SerializationContext $context
     ) {

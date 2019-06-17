@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Serializer\Handler;
 
-use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -16,31 +14,26 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
  *
  * @package SourceBroker\Restify\Serializer\Handler
  */
-class ProcessedImageHandler implements SubscribingHandlerInterface
+class ProcessedImageHandler extends AbstractHandler
 {
     const TYPE = 'ProcessedImage';
 
     /**
-     * {@inheritdoc}
+     * @var string[]
      */
-    public static function getSubscribingMethods()
-    {
-        return [
-            [
-                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => self::TYPE,
-                'format' => 'json',
-                'method' => 'serialize',
-            ],
-        ];
-    }
+    protected static $supportedTypes = [self::TYPE];
 
     /**
-     * @return string
+     * @param SerializationVisitorInterface $visitor
+     * @param FileReference $fileReference
+     * @param array $type
+     * @param SerializationContext $context
+     *
+     * @return array|string
      */
     public function serialize(
         SerializationVisitorInterface $visitor,
-        FileReference $fileReference,
+        $fileReference,
         array $type,
         SerializationContext $context
     ) {

@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Serializer\Handler;
 
-use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -13,27 +11,15 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Class RecordUriHandler
- *
- * @package SourceBroker\Restify\Serializer\Handler
  */
-class RecordUriHandler implements SubscribingHandlerInterface
+class RecordUriHandler extends AbstractHandler
 {
     const TYPE = 'RecordUri';
 
     /**
-     * {@inheritdoc}
+     * @var string[]
      */
-    public static function getSubscribingMethods()
-    {
-        return [
-            [
-                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => self::TYPE,
-                'format' => 'json',
-                'method' => 'serialize',
-            ],
-        ];
-    }
+    protected static $supportedTypes = [self::TYPE];
 
     /**
      * @param SerializationVisitorInterface $visitor

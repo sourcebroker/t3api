@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Serializer\Handler;
 
-use JMS\Serializer\GraphNavigatorInterface;
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -12,29 +10,24 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 /**
  * Class ObjectStorageHandler
  */
-class ObjectStorageHandler implements SubscribingHandlerInterface
+class ObjectStorageHandler extends AbstractHandler
 {
     /**
-     * {@inheritdoc}
+     * @var string[]
      */
-    public static function getSubscribingMethods()
-    {
-        return [
-            [
-                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => ObjectStorage::class,
-                'format' => 'json',
-                'method' => 'serialize',
-            ],
-        ];
-    }
+    protected static $supportedTypes = [ObjectStorage::class];
 
     /**
-     * @return array|\ArrayObject
+     * @param SerializationVisitorInterface $visitor
+     * @param ObjectStorage $objectStorage
+     * @param array $type
+     * @param SerializationContext $context
+     *
+     * @return array
      */
     public function serialize(
         SerializationVisitorInterface $visitor,
-        ObjectStorage $objectStorage,
+        $objectStorage,
         array $type,
         SerializationContext $context
     ) {
