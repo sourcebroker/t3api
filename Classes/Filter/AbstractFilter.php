@@ -14,6 +14,11 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 abstract class AbstractFilter implements SingletonInterface
 {
     /**
+     * @var array
+     */
+    public static $defaultArguments = [];
+
+    /**
      * @param string $property
      * @param mixed $values
      * @param QueryInterface $query
@@ -26,5 +31,5 @@ abstract class AbstractFilter implements SingletonInterface
         $values,
         QueryInterface $query,
         ApiFilter $apiFilter
-    ): ConstraintInterface;
+    ): ?ConstraintInterface;
 }

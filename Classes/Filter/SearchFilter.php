@@ -15,7 +15,7 @@ class SearchFilter extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function filterProperty($property, $values, QueryInterface $query, ApiFilter $apiFilter): ConstraintInterface
+    public function filterProperty($property, $values, QueryInterface $query, ApiFilter $apiFilter): ?ConstraintInterface
     {
         $values = (array)$values;
 

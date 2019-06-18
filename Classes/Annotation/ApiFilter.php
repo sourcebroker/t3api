@@ -30,6 +30,11 @@ class ApiFilter
     protected $properties = [];
 
     /**
+     * @var array
+     */
+    protected $arguments = [];
+
+    /**
      * ApiFilter constructor.
      *
      * @param array $options
@@ -40,7 +45,9 @@ class ApiFilter
             throw new InvalidArgumentException('This annotation needs a value representing the filter class.');
         }
 
-        if (!is_a($options['value'], AbstractFilter::class, true)) {
+        $filterClass = $options['value'];
+
+        if (!is_a($filterClass, AbstractFilter::class, true)) {
             throw new InvalidArgumentException(sprintf(
                 'The filter class "%s" does not extends "%s".',
                 $options['value'],
@@ -48,9 +55,10 @@ class ApiFilter
             ));
         }
 
-        $this->filterClass = $options['value'];
+        $this->filterClass = $filterClass;
         $this->properties = $options['properties'] ?? $this->properties;
         $this->strategy = $options['strategy'] ?? $this->strategy;
+        $this->arguments = $options['arguments'] ?? $this->arguments;
     }
 
     /**
@@ -78,5 +86,13 @@ class ApiFilter
     public function getFilterClass(): string
     {
         return $this->filterClass;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArguments(): array
+    {
+        return $this->arguments;
     }
 }

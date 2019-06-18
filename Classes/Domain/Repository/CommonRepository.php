@@ -7,6 +7,7 @@ use SourceBroker\Restify\Domain\Model\ApiFilter;
 use SourceBroker\Restify\Filter\AbstractFilter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use \TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
@@ -54,7 +55,6 @@ class CommonRepository extends Repository
      * @param ApiFilter[] $apiFilters
      *
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     * @todo use better way to read values from $_GET array
      */
     public function findFiltered(array $apiFilters)
     {
@@ -62,18 +62,26 @@ class CommonRepository extends Repository
         $constraints = [];
 
         foreach ($apiFilters as $apiFilter) {
-            if (isset($_GET[$apiFilter->getProperty()])) {
+            if (isset($GLOBALS['TYPO3_REQUEST']->getQueryParams()[$apiFilter->getParameterName()])) {
                 /** @var AbstractFilter $filter */
                 $filter = $this->objectManager->get($apiFilter->getFilterClass());
-                $constraints[] = $filter->filterProperty(
+                $constraint = $filter->filterProperty(
                     $apiFilter->getProperty(),
-                    $_GET[$apiFilter->getProperty()],
+                    $GLOBALS['TYPO3_REQUEST']->getQueryParams()[$apiFilter->getParameterName()],
                     $query,
                     $apiFilter
                 );
+
+                if ($constraint instanceof ConstraintInterface) {
+                    $constraints[] = $constraint;
+                }
             }
         }
 
-        return $query->matching($query->logicalAnd($constraints))->execute();
+        if (!empty($constraints)) {
+            $query->matching($query->logicalAnd($constraints));
+        }
+
+        return $query->execute();
     }
 }
