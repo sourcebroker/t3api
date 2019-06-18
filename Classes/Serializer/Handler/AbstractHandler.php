@@ -23,14 +23,34 @@ abstract class AbstractHandler implements SubscribingHandlerInterface
      */
     public static function getSubscribingMethods()
     {
-        return array_map(function ($supportedType) {
-            return [
-                'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'type' => $supportedType,
-                'format' => 'json',
-                'method' => 'serialize',
-            ];
-        }, static::$supportedTypes);
+        return array_merge(
+            ...array_map(
+                function ($supportedType) {
+                    $methods = [];
+
+                    if (is_subclass_of(static::class, SerializeHandlerInterface::class)) {
+                        $methods[] = [
+                            'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
+                            'type' => $supportedType,
+                            'format' => 'json',
+                            'method' => 'serialize',
+                        ];
+                    }
+
+                    if (is_subclass_of(static::class, DeserializeHandlerInterface::class)) {
+                        $methods[] = [
+                            'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
+                            'type' => $supportedType,
+                            'format' => 'json',
+                            'method' => 'deserialize',
+                        ];
+                    }
+
+                    return $methods;
+                },
+                static::$supportedTypes
+            )
+        );
     }
 
     /**

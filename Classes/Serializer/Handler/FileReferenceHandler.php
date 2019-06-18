@@ -11,7 +11,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 /**
  * Class FileReferenceHandler
  */
-class FileReferenceHandler extends AbstractHandler
+class FileReferenceHandler extends AbstractHandler implements SerializeHandlerInterface
 {
     /**
      * @var string[]

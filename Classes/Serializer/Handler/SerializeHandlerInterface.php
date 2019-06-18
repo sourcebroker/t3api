@@ -8,15 +8,10 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
- * Class ObjectStorageHandler
+ * Interface SerializeHandlerInterface
  */
-class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerInterface
+interface SerializeHandlerInterface
 {
-    /**
-     * @var string[]
-     */
-    protected static $supportedTypes = [ObjectStorage::class];
-
     /**
      * @param SerializationVisitorInterface $visitor
      * @param ObjectStorage $objectStorage
@@ -30,13 +25,5 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
         $objectStorage,
         array $type,
         SerializationContext $context
-    ) {
-        $type['name'] = 'array';
-
-        $context->stopVisiting($objectStorage);
-        $result = $visitor->visitArray($objectStorage->toArray(), $type);
-        $context->startVisiting($objectStorage);
-
-        return $result;
-    }
+    );
 }

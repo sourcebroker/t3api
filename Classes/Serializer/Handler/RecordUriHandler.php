@@ -12,7 +12,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 /**
  * Class RecordUriHandler
  */
-class RecordUriHandler extends AbstractHandler
+class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterface
 {
     const TYPE = 'RecordUri';
 
