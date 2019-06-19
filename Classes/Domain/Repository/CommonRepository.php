@@ -10,7 +10,8 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\Repository;
-use \TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Class CommonRepository
@@ -27,6 +28,8 @@ class CommonRepository extends Repository
     {
         $repository = GeneralUtility::makeInstance(ObjectManager::class)->get(self::class);
         $repository->setObjectType($entity);
+
+        // @todo add signal for customization of repository (e.g. change of the default query settings)
 
         return $repository;
     }
@@ -54,7 +57,7 @@ class CommonRepository extends Repository
     /**
      * @param ApiFilter[] $apiFilters
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
      */
     public function findFiltered(array $apiFilters)
     {
