@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Routing\RouteCollection;
  */
 class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterface
 {
-    const ENHANCER_NAME = 'RestifyResourceEnhancer';
+    public const ENHANCER_NAME = 'RestifyResourceEnhancer';
 
     /**
      * @var array

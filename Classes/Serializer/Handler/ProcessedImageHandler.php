@@ -16,7 +16,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
  */
 class ProcessedImageHandler extends AbstractHandler implements SerializeHandlerInterface
 {
-    const TYPE = 'ProcessedImage';
+    public const TYPE = 'ProcessedImage';
 
     /**
      * @var string[]
