@@ -79,10 +79,10 @@ class Pagination
     /**
      * @return int
      */
-    public function getItemsPerPageNumber(): int
+    public function getNumberOfItemsPerPage(): int
     {
         return min(array_filter(
-            [$this->maximumItemsPerPage, $this->getClientItemsPerPageNumber() ?? $this->itemsPerPage],
+            [$this->maximumItemsPerPage, $this->getClientNumberOfItemsPerPage() ?? $this->itemsPerPage],
             function (?int $itemsPerPage) {
                 return !empty($itemsPerPage);
             }
@@ -92,9 +92,27 @@ class Pagination
     /**
      * @return int
      */
+    public function getPage(): int
+    {
+        return (isset($GLOBALS['TYPO3_REQUEST']->getQueryParams()[$this->pageParameterName]))
+            ? (int)$GLOBALS['TYPO3_REQUEST']->getQueryParams()[$this->pageParameterName]
+            : 1;
+    }
+
+    /**
+     * @return int
+     */
     public function getOffset(): int
     {
-        return ($this->getPage() - 1) * $this->getItemsPerPageNumber();
+        return ($this->getPage() - 1) * $this->getNumberOfItemsPerPage();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPageParameterName(): string
+    {
+        return $this->pageParameterName;
     }
 
     /**
@@ -116,7 +134,7 @@ class Pagination
     /**
      * @return int|null
      */
-    protected function getClientItemsPerPageNumber(): ?int
+    protected function getClientNumberOfItemsPerPage(): ?int
     {
         if (
             $this->clientItemsPerPage
@@ -126,15 +144,5 @@ class Pagination
         }
 
         return null;
-    }
-
-    /**
-     * @return int
-     */
-    protected function getPage(): int
-    {
-        return (isset($GLOBALS['TYPO3_REQUEST']->getQueryParams()[$this->pageParameterName]))
-            ? (int)$GLOBALS['TYPO3_REQUEST']->getQueryParams()[$this->pageParameterName]
-            : 1;
     }
 }

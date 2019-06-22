@@ -26,6 +26,16 @@ abstract class AbstractCollectionResponse
     protected $query;
 
     /**
+     * @var array|null
+     */
+    protected $membersCache = null;
+
+    /**
+     * @var int|null
+     */
+    protected $totalItemsCache = null;
+
+    /**
      * CollectionResponse constructor.
      *
      * @param CollectionOperation $operation
@@ -42,7 +52,11 @@ abstract class AbstractCollectionResponse
      */
     public function getMembers(): array
     {
-        return $this->applyPagination()->execute()->toArray();
+        if ($this->membersCache === null) {
+            $this->membersCache = $this->applyPagination()->execute()->toArray();
+        }
+
+        return $this->membersCache;
     }
 
     /**
@@ -50,7 +64,11 @@ abstract class AbstractCollectionResponse
      */
     public function getTotalItems(): int
     {
-        return $this->query->execute()->count();
+        if ($this->totalItemsCache === null) {
+            $this->totalItemsCache = $this->query->execute()->count();
+        }
+
+        return $this->totalItemsCache;
     }
 
     /**
@@ -64,7 +82,7 @@ abstract class AbstractCollectionResponse
         }
 
         $query = clone $this->query;
-        return $query->setLimit($pagination->getItemsPerPageNumber())
+        return $query->setLimit($pagination->getNumberOfItemsPerPage())
             ->setOffset($pagination->getOffset());
     }
 }
