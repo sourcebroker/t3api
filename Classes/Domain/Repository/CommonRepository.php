@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Domain\Repository;
 
-use SourceBroker\Restify\Domain\Model\ApiFilter;
 use SourceBroker\Restify\Filter\AbstractFilter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -11,7 +10,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * Class CommonRepository
@@ -55,9 +54,9 @@ class CommonRepository extends Repository
     }
 
     /**
-     * @param ApiFilter[] $apiFilters
+     * @param array $apiFilters
      *
-     * @return array|QueryResultInterface
+     * @return QueryInterface
      */
     public function findFiltered(array $apiFilters)
     {
@@ -85,6 +84,6 @@ class CommonRepository extends Repository
             $query->matching($query->logicalAnd($constraints));
         }
 
-        return $query->execute();
+        return $query;
     }
 }

@@ -8,7 +8,7 @@ use SourceBroker\Restify\Domain\Model\CollectionOperation;
 use SourceBroker\Restify\Domain\Model\ItemOperation;
 use SourceBroker\Restify\Domain\Repository\ApiResourceRepository;
 use SourceBroker\Restify\Domain\Repository\CommonRepository;
-use SourceBroker\Restify\Hydra\CollectionResponse;
+use SourceBroker\Restify\Response\CollectionResponse;
 use SourceBroker\Restify\Service\SerializerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -88,7 +88,11 @@ class Bootstrap
                 throw new InvalidArgumentException('Item not found');
             }
         } elseif ($operation instanceof CollectionOperation) {
-            $result = new CollectionResponse($repository->findFiltered($operation->getFilters()));
+            $result = $this->objectManager->get(
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['collectionResponseClass'],
+                $operation,
+                $repository->findFiltered($operation->getFilters())
+            );
         } else {
             // @todo throw appropriate exception
             throw new Exception('Unknown operation', 1557506987081);

@@ -18,5 +18,8 @@ call_user_func(
             \SourceBroker\Restify\Serializer\Handler\ProcessedImageHandler::TYPE,
             \SourceBroker\Restify\Serializer\Handler\RecordUriHandler::TYPE,
         ];
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['collectionResponseClass'] =
+            \SourceBroker\Restify\Response\HydraCollectionResponse::class;
     }
 );

@@ -1,33 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Hydra;
+namespace SourceBroker\Restify\Response;
 
 use JMS\Serializer\Annotation as Serializer;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Class CollectionResponse
  */
-class CollectionResponse
+class HydraCollectionResponse extends AbstractCollectionResponse
 {
-
-    /**
-     * @var QueryResultInterface
-     * @Serializer\Exclude()
-     */
-    protected $queryResult;
-
-    /**
-     * CollectionResponse constructor.
-     *
-     * @param QueryResultInterface $queryResult
-     */
-    public function __construct(QueryResultInterface $queryResult)
-    {
-        $this->queryResult = $queryResult;
-    }
-
     /**
      * @return array
      * @Serializer\SerializedName("hydra:member")
@@ -36,7 +18,7 @@ class CollectionResponse
      */
     public function getMembers(): array
     {
-        return $this->queryResult->toArray();
+        return parent::getMembers();
     }
 
     /**
@@ -47,6 +29,6 @@ class CollectionResponse
      */
     public function getTotalItems(): int
     {
-        return $this->queryResult->count();
+        return parent::getTotalItems();
     }
 }
