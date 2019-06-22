@@ -21,5 +21,16 @@ call_user_func(
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['collectionResponseClass'] =
             \SourceBroker\Restify\Response\HydraCollectionResponse::class;
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['pagination'] = [
+            'pagination_enabled' => true,
+            'pagination_client_enabled' => false,
+            'pagination_items_per_page' => 30,
+            'maximum_items_per_page' => 9999999,
+            'pagination_client_items_per_page' => false,
+            'items_per_page_parameter_name' => 'itemsPerPage',
+            'enabled_parameter_name' => 'pagination',
+            'page_parameter_name' => 'page',
+        ];
     }
 );

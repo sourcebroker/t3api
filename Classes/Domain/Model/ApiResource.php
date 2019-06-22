@@ -37,6 +37,11 @@ class ApiResource
     protected $routeNameToOperation;
 
     /**
+     * @var Pagination
+     */
+    protected $pagination;
+
+    /**
      * @param string $entity
      * @param ApiResourceAnnotation $apiResourceAnnotation
      */
@@ -58,6 +63,8 @@ class ApiResource
             $this->routes->add($operation->getRoute()->getPath(), $operation->getRoute());
             $this->routeNameToOperation[$operation->getRoute()->getPath()] = $operation;
         }
+
+        $this->pagination = new Pagination($apiResourceAnnotation);
     }
 
     /**
@@ -122,5 +129,13 @@ class ApiResource
         foreach ($this->getCollectionOperations() as $collectionOperation) {
             $collectionOperation->addFilter($apiFilter);
         }
+    }
+
+    /**
+     * @return Pagination
+     */
+    public function getPagination(): Pagination
+    {
+        return $this->pagination;
     }
 }

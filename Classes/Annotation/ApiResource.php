@@ -26,14 +26,20 @@ class ApiResource
     protected $collectionOperations = [];
 
     /**
+     * @var array
+     */
+    protected $attributes = [];
+
+    /**
      * ApiResource constructor.
      *
      * @param array $values
      */
     public function __construct(array $values = [])
     {
-        $this->itemOperations = $values['itemOperations'] ?? [];
-        $this->collectionOperations = $values['collectionOperations'] ?? [];
+        $this->itemOperations = $values['itemOperations'] ?? $this->itemOperations;
+        $this->collectionOperations = $values['collectionOperations'] ?? $this->collectionOperations;
+        $this->attributes = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['pagination'], $values['attributes'] ?? []);
     }
 
     /**
@@ -50,5 +56,13 @@ class ApiResource
     public function getCollectionOperations(): array
     {
         return $this->collectionOperations;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
     }
 }

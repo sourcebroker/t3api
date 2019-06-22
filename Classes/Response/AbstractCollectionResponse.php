@@ -42,7 +42,7 @@ abstract class AbstractCollectionResponse
      */
     public function getMembers(): array
     {
-        return $this->query->execute()->toArray();
+        return $this->applyPagination()->execute()->toArray();
     }
 
     /**
@@ -51,5 +51,20 @@ abstract class AbstractCollectionResponse
     public function getTotalItems(): int
     {
         return $this->query->execute()->count();
+    }
+
+    /**
+     * @return QueryInterface
+     */
+    protected function applyPagination(): QueryInterface
+    {
+        $pagination = $this->operation->getApiResource()->getPagination();
+        if (!$pagination->isEnabled()) {
+            return $this->query;
+        }
+
+        $query = clone $this->query;
+        return $query->setLimit($pagination->getItemsPerPageNumber())
+            ->setOffset($pagination->getOffset());
     }
 }
