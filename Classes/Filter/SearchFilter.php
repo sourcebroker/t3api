@@ -3,7 +3,11 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Filter;
 
+use http\Exception\RuntimeException;
 use SourceBroker\Restify\Domain\Model\ApiFilter;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -32,9 +36,49 @@ class SearchFilter extends AbstractFilter
                     )
                 );
                 break;
+            case 'matchAgainst':
+                $ids = $this->matchAgainstFindIds($property, $values, $query);
+                if (!$ids) {
+                    return $query->equals('uid', 0);
+                }
+
+                return $query->in('uid', $ids);
+                break;
             case 'exact':
             default:
                 return $query->in($property, $values);
         }
+    }
+
+    public function matchAgainstFindIds(string $property, array $values, QueryInterface $query): array
+    {
+        $source = $query->getSource();
+        if (!($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface)) {
+            throw new RuntimeException('Query source does not implement SelectorInterface.', 1561557242370);
+        }
+
+        $tableName = $source->getSelectorName();
+
+        $condtions = [];
+        $binds = [];
+
+        foreach ($values as $i => $value) {
+            $key = ':text_ma_' . ((int)$i);
+            $condtions[] = "MATCH(`$property`) AGAINST ($key IN NATURAL LANGUAGE MODE)";
+            $binds[$key] = $value;
+        }
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $connection = $objectManager->get(ConnectionPool::class);
+        $queryBuilder = $connection->getQueryBuilderForTable($tableName);
+
+        $ids = $queryBuilder->select('uid')
+            ->from($tableName)
+            ->andWhere(...$condtions)
+            ->setParameters($binds)
+            ->execute()
+            ->fetchAll(\Doctrine\DBAL\FetchMode::COLUMN);
+
+        return $ids;
     }
 }
