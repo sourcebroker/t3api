@@ -37,7 +37,9 @@ class SearchFilter extends AbstractFilter
                 );
                 break;
             case 'matchAgainst':
-                $ids = $this->matchAgainstFindIds($property, $values, $query);
+                $withQueryExpansion = (bool) $apiFilter->getArgument('withQueryExpansion');
+
+                $ids = $this->matchAgainstFindIds($property, $values, $query, $withQueryExpansion);
                 if (!$ids) {
                     return $query->equals('uid', 0);
                 }
@@ -50,7 +52,7 @@ class SearchFilter extends AbstractFilter
         }
     }
 
-    public function matchAgainstFindIds(string $property, array $values, QueryInterface $query): array
+    public function matchAgainstFindIds(string $property, array $values, QueryInterface $query, bool $queryExpansion = false): array
     {
         $source = $query->getSource();
         if (!($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface)) {
@@ -64,7 +66,7 @@ class SearchFilter extends AbstractFilter
 
         foreach ($values as $i => $value) {
             $key = ':text_ma_' . ((int)$i);
-            $condtions[] = "MATCH(`$property`) AGAINST ($key IN NATURAL LANGUAGE MODE)";
+            $condtions[] = "MATCH(`$property`) AGAINST ($key IN NATURAL LANGUAGE MODE" . ($queryExpansion ? ' WITH QUERY EXPANSION' : '') .")";
             $binds[$key] = $value;
         }
 
