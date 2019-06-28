@@ -60,23 +60,43 @@ class CommonRepository extends Repository
      */
     public function findFiltered(array $apiFilters)
     {
-        $query = $this->createQuery();
-        $constraints = [];
+        $queryParams = $GLOBALS['TYPO3_REQUEST']->getQueryParams();
 
-        foreach ($apiFilters as $apiFilter) {
-            if (isset($GLOBALS['TYPO3_REQUEST']->getQueryParams()[$apiFilter->getParameterName()])) {
+        $query = $this->createQuery();
+        $constraintGroups = [];
+
+        /** @var ApiFilter $apiFilter */
+        foreach ($apiFilters as $groupKey => $apiFilter) {
+            // allow params grouping by namespace (for example "page" constraint -> constraint[page])
+            $parameterNamespace = $apiFilter->getArgument('parameterNamespace') ?? null;
+            $namespacedQueryParams = $parameterNamespace
+                ? $queryParams[$parameterNamespace]
+                : $queryParams;
+
+            if ($parameterNamespace) {
+                $groupKey = $parameterNamespace;
+            }
+
+            if (isset($namespacedQueryParams[$apiFilter->getParameterName()])) {
                 /** @var AbstractFilter $filter */
                 $filter = $this->objectManager->get($apiFilter->getFilterClass());
                 $constraint = $filter->filterProperty(
                     $apiFilter->getProperty(),
-                    $GLOBALS['TYPO3_REQUEST']->getQueryParams()[$apiFilter->getParameterName()],
+                    $namespacedQueryParams[$apiFilter->getParameterName()],
                     $query,
                     $apiFilter
                 );
 
                 if ($constraint instanceof ConstraintInterface) {
-                    $constraints[] = $constraint;
+                    $constraintGroups[$groupKey][] = $constraint;
                 }
+            }
+        }
+
+        $constraints = [];
+        foreach ($constraintGroups as $constraintGroup) {
+            if (!empty($constraintGroup)) {
+                $query->matching($query->logicalOr($constraintGroup));
             }
         }
 
