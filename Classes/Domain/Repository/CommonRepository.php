@@ -97,7 +97,7 @@ class CommonRepository extends Repository
         $constraints = [];
         foreach ($constraintGroups as $constraintGroup) {
             if (!empty($constraintGroup)) {
-                $query->matching($query->logicalOr($constraintGroup));
+                $constraints[] = $query->logicalOr($constraintGroup);
             }
         }
 
