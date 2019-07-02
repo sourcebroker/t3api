@@ -69,12 +69,13 @@ class CommonRepository extends Repository
         foreach ($apiFilters as $groupKey => $apiFilter) {
             // allow params grouping by namespace (for example "page" constraint -> constraint[page])
             $parameterNamespace = $apiFilter->getArgument('parameterNamespace') ?? null;
+            $parameterName = $apiFilter->getParameterName();
             $namespacedQueryParams = $parameterNamespace
                 ? $queryParams[$parameterNamespace]
                 : $queryParams;
 
-            if ($parameterNamespace) {
-                $groupKey = $parameterNamespace;
+            if ($parameterName) {
+                $groupKey = $parameterName;
             }
 
             if (isset($namespacedQueryParams[$apiFilter->getParameterName()])) {
@@ -82,7 +83,7 @@ class CommonRepository extends Repository
                 $filter = $this->objectManager->get($apiFilter->getFilterClass());
                 $constraint = $filter->filterProperty(
                     $apiFilter->getProperty(),
-                    $namespacedQueryParams[$apiFilter->getParameterName()],
+                    $namespacedQueryParams[$parameterName],
                     $query,
                     $apiFilter
                 );
