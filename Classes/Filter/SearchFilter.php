@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace SourceBroker\Restify\Filter;
 
 use RuntimeException;
-use InvalidArgumentException;
 use SourceBroker\Restify\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use Doctrine\DBAL\FetchMode;
@@ -45,13 +45,6 @@ class SearchFilter extends AbstractFilter
                     )
                 );
             case 'matchAgainst':
-                if (strpos($property, '.') !== false) {
-                    throw new InvalidArgumentException(
-                        '`matchAgainst` strategy does not support searching in nested properties yet',
-                        1562140187815
-                    );
-                }
-
                 $ids = $this->matchAgainstFindIds(
                     $property,
                     $values,
@@ -97,23 +90,35 @@ class SearchFilter extends AbstractFilter
         $tableName = $source->getSelectorName();
         $conditions = [];
         $binds = [];
+        $rootAlias = 'o';
+        $queryBuilder = GeneralUtility::makeInstance(ObjectManager::class)
+            ->get(ConnectionPool::class)
+            ->getQueryBuilderForTable($tableName);
+
+        if ($this->isPropertyNested($property)) {
+            $joinedProperty = $this->addJoinsForNestedProperty($property, $rootAlias, $query, $queryBuilder);
+            $tableAlias = $joinedProperty[0];
+            $propertyName = $joinedProperty[1];
+        } else {
+            $tableAlias = $rootAlias;
+            $propertyName = $property;
+        }
 
         foreach ($values as $i => $value) {
             $key = ':text_ma_' . ((int)$i);
             $conditions[] = sprintf(
-                'MATCH(`%s`) AGAINST (%s IN NATURAL LANGUAGE MODE  %s)',
-                $property,
+                'MATCH(`%s`.`%s`) AGAINST (%s IN NATURAL LANGUAGE MODE %s)',
+                $tableAlias,
+                $this->getObjectManager()->get(DataMapper::class)->convertPropertyNameToColumnName($propertyName),
                 $key,
                 $queryExpansion ? ' WITH QUERY EXPANSION ' : ''
             );
             $binds[$key] = $value;
         }
 
-        return GeneralUtility::makeInstance(ObjectManager::class)
-            ->get(ConnectionPool::class)
-            ->getQueryBuilderForTable($tableName)
-            ->select('uid')
-            ->from($tableName)
+        return $queryBuilder
+            ->select($rootAlias . '.uid')
+            ->from($tableName, $rootAlias)
             ->andWhere(...$conditions)
             ->setParameters($binds)
             ->execute()
