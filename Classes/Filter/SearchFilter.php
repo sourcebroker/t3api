@@ -111,9 +111,11 @@ class SearchFilter extends AbstractFilter
         foreach ($values as $i => $value) {
             $key = ':text_ma_' . ((int)$i);
             $conditions[] = sprintf(
-                'MATCH(`%s`.`%s`) AGAINST (%s IN NATURAL LANGUAGE MODE %s)',
-                $tableAlias,
-                $this->getObjectManager()->get(DataMapper::class)->convertPropertyNameToColumnName($propertyName),
+                'MATCH(%s) AGAINST (%s IN NATURAL LANGUAGE MODE %s)',
+                $queryBuilder->quoteIdentifier(
+                    $tableAlias . '.' . $this->getObjectManager()->get(DataMapper::class)
+                        ->convertPropertyNameToColumnName($propertyName)
+                ),
                 $key,
                 $queryExpansion ? ' WITH QUERY EXPANSION ' : ''
             );
@@ -123,7 +125,7 @@ class SearchFilter extends AbstractFilter
         return $queryBuilder
             ->select($rootAlias . '.uid')
             ->from($tableName, $rootAlias)
-            ->andWhere(...$conditions)
+            ->andWhere($queryBuilder->expr()->orX(...$conditions))
             ->setParameters($binds)
             ->execute()
             ->fetchAll(FetchMode::COLUMN);
