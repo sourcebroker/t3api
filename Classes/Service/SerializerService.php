@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Service;
 
+use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -70,6 +72,13 @@ class SerializerService implements SingletonInterface
                     /** @var SubscribingHandlerInterface $handler */
                     $handler = $this->objectManager->get($handlerClass);
                     $registry->registerSubscribingHandler($handler);
+                }
+            })
+            ->configureListeners(function (EventDispatcher $dispatcher) {
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['serializerSubscribers'] ?? [] as $subscriberClass) {
+                    /** @var EventSubscriberInterface $subscriber */
+                    $subscriber = $this->objectManager->get($subscriberClass);
+                    $dispatcher->addSubscriber($subscriber);
                 }
             })
             ->addDefaultHandlers()

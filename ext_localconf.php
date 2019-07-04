@@ -2,6 +2,7 @@
 
 use SourceBroker\Restify\Routing\Enhancer\ResourceEnhancer;
 use SourceBroker\Restify\Serializer\Handler as Handler;
+use SourceBroker\Restify\Serializer\Subscriber as Subscriber;
 use SourceBroker\Restify\Response\HydraCollectionResponse;
 
 defined('TYPO3_MODE') || die('Access denied.');
@@ -20,6 +21,14 @@ call_user_func(
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['typesWithAllowedReflectionGetter'] = [
             Handler\ProcessedImageHandler::TYPE,
             Handler\RecordUriHandler::TYPE,
+        ];
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['serializerSubscribers'] = [
+            Subscriber\AbstractEntitySubscriber::class,
+        ];
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['forceEntityProperties'] = [
+            'uid',
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['collectionResponseClass'] = HydraCollectionResponse::class;
