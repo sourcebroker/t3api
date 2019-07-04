@@ -16,6 +16,7 @@ use Doctrine\DBAL\FetchMode;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\Selector;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 
 /**
  * Class SearchFilter
@@ -25,6 +26,7 @@ class SearchFilter extends AbstractFilter
     /**
      * @inheritDoc
      * @throws InvalidQueryException
+     * @throws UnexpectedTypeException
      */
     public function filterProperty(
         $property,
@@ -66,6 +68,8 @@ class SearchFilter extends AbstractFilter
      * @param bool $queryExpansion
      *
      * @return array
+     *
+     * @throws UnexpectedTypeException
      */
     protected function matchAgainstFindIds(
         string $property,
