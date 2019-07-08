@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Domain\Repository;
 
+use SourceBroker\Restify\Domain\Model\ApiFilter;
 use SourceBroker\Restify\Filter\AbstractFilter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -54,7 +55,7 @@ class CommonRepository extends Repository
     }
 
     /**
-     * @param array $apiFilters
+     * @param ApiFilter[] $apiFilters
      *
      * @return QueryInterface
      */
@@ -68,15 +69,10 @@ class CommonRepository extends Repository
         /** @var ApiFilter $apiFilter */
         foreach ($apiFilters as $groupKey => $apiFilter) {
             // allow params grouping by namespace (for example "page" constraint -> constraint[page])
-            $parameterNamespace = $apiFilter->getArgument('parameterNamespace') ?? null;
-            $parameterName = $apiFilter->getParameterName();
-            $namespacedQueryParams = $parameterNamespace
-                ? $queryParams[$parameterNamespace]
+            $namespacedQueryParams = !empty($apiFilter->getArgument('parameterNamespace'))
+                ? $queryParams[$apiFilter->getArgument('parameterNamespace')]
                 : $queryParams;
-
-            if ($parameterName) {
-                $groupKey = $parameterName;
-            }
+            $parameterName = $apiFilter->getParameterName();
 
             if (isset($namespacedQueryParams[$apiFilter->getParameterName()])) {
                 /** @var AbstractFilter $filter */
@@ -89,7 +85,10 @@ class CommonRepository extends Repository
                 );
 
                 if ($constraint instanceof ConstraintInterface) {
-                    $constraintGroups[$groupKey][] = $constraint;
+                    $constraintGroups[$apiFilter->getParameterName()] = array_merge(
+                        $constraintGroups[$apiFilter->getParameterName()] ?? [],
+                        [$constraint]
+                    );
                 }
             }
         }
