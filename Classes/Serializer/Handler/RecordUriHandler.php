@@ -5,11 +5,10 @@ namespace SourceBroker\Restify\Serializer\Handler;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
-use SourceBroker\Restify\Utility\TSConfig;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use InvalidArgumentException;
 
 /**
  * Class RecordUriHandler
@@ -37,41 +36,22 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
         array $type,
         SerializationContext $context
     ) {
-        $uid = null;
+        /** @var AbstractEntity $entity */
+        $entity = $context->getObject();
 
-        foreach ($context->getVisitingSet() as $item) {
-            if ($item instanceof AbstractEntity) {
-                $uid = $item->getUid();
-            }
-        };
-
-        if (!$uid) {
-            return '';
+        if (!$entity instanceof AbstractEntity) {
+            throw new InvalidArgumentException(
+                sprintf('Object has to extend %s to build URI', AbstractEntity::class),
+                1562229270419
+            );
         }
 
-        $url = rtrim(GeneralUtility::getIndpEnv('TYPO3_SITE_URL'), '/');
-
-        $parameter = $type['params'][1] ?? null;
-        if ($parameter) {
-            if (!is_numeric($parameter)) {
-                $parameter = $this->getParameterFromConfig($parameter);
-            }
-
-            $url .= $this->getContentObjectRenderer()->getTypoLink_URL(sprintf(
-                't3://record?identifier=%s&parameter=%u&uid=%s',
-                $type['params'][0],
-                $parameter,
-                $uid
-            ));
-        } else {
-            $url .= $this->getContentObjectRenderer()->getTypoLink_URL(sprintf(
+        return rtrim(GeneralUtility::getIndpEnv('TYPO3_SITE_URL'), '/')
+            . $this->getContentObjectRenderer()->getTypoLink_URL(sprintf(
                 't3://record?identifier=%s&uid=%s',
                 $type['params'][0],
-                $uid
+                $entity->getUid()
             ));
-        }
-
-        return $url;
     }
 
     /**
@@ -86,17 +66,5 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
         }
 
         return $contentObjectRenderer;
-    }
-
-    protected function getParameterFromConfig($configPath)
-    {
-        static $tsConfig;
-
-        if (!$tsConfig instanceof TSConfig) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $tsConfig = $objectManager->get(TSConfig::class);
-        }
-
-        return (int) $tsConfig->getValue($configPath);
     }
 }

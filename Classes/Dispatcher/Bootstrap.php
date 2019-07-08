@@ -8,7 +8,6 @@ use SourceBroker\Restify\Domain\Model\CollectionOperation;
 use SourceBroker\Restify\Domain\Model\ItemOperation;
 use SourceBroker\Restify\Domain\Repository\ApiResourceRepository;
 use SourceBroker\Restify\Domain\Repository\CommonRepository;
-use SourceBroker\Restify\Response\CollectionResponse;
 use SourceBroker\Restify\Service\SerializerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -41,6 +40,11 @@ class Bootstrap
     protected $apiResourceRepository;
 
     /**
+     * @var string
+     */
+    protected $output = '';
+
+    /**
      * Bootstrap constructor.
      */
     public function __construct()
@@ -51,32 +55,44 @@ class Bootstrap
     }
 
     /**
+     * @return void
      * @throws RouteNotFoundException
      * @throws Exception
      */
-    public function process()
+    public function process(): void
     {
         $context = (new RequestContext())->fromRequest(Request::createFromGlobals());
+        $matchedRoute = null;
 
         foreach ($this->apiResourceRepository->getAll() as $apiResource) {
             try {
                 $urlMatcher = new UrlMatcher($apiResource->getRoutes(), $context);
                 $matchedRoute = $urlMatcher->match($context->getPathInfo());
-                $this->processOperation($apiResource->getOperationByRouteName($matchedRoute['_route']), $matchedRoute);
+                $this->processOperation(
+                    $apiResource->getOperationByRouteName($matchedRoute['_route']),
+                    $matchedRoute
+                );
+                break;
             } catch (ResourceNotFoundException $resourceNotFoundException) {
             }
         }
 
-        throw new RouteNotFoundException('Restify resource not found for current route', 1557217186441);
+        if (!$matchedRoute) {
+            throw new RouteNotFoundException('Restify resource not found for current route', 1557217186441);
+        }
+
+        $this->output();
     }
 
     /**
      * @param AbstractOperation $operation
      * @param array $matchedRoute
      *
+     * @return void
+     *
      * @throws Exception
      */
-    protected function processOperation(AbstractOperation $operation, array $matchedRoute)
+    protected function processOperation(AbstractOperation $operation, array $matchedRoute): void
     {
         $repository = CommonRepository::getInstanceForEntity($operation->getApiResource()->getEntity());
 
@@ -98,8 +114,15 @@ class Bootstrap
             throw new Exception('Unknown operation', 1557506987081);
         }
 
-        // @todo avoid die if easily possible
-        die($this->serializerService->serialize($operation, $result));
+        $this->output = $this->serializerService->serialize($operation, $result);
     }
 
+    /**
+     * @return void
+     * @todo add signal/hook just before the output?
+     */
+    protected function output(): void
+    {
+        echo $this->output;
+    }
 }
