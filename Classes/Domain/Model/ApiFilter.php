@@ -28,6 +28,11 @@ class ApiFilter
     protected $property;
 
     /**
+     * @var string
+     */
+    protected $propertyNamespace;
+
+    /**
      * @var array
      */
     protected $arguments = [];
@@ -123,7 +128,7 @@ class ApiFilter
                 $plainParameterName = $this->getArgument('orderParameterName');
                 break;
             default:
-                $plainParameterName = $this->getProperty();
+                $plainParameterName = $this->getArgument('parameterName') ?? $this->getProperty();
         }
 
         // PHP automatically replaces some characters in variable names, which also affects GET parameters

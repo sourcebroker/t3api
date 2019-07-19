@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\Restify\Domain\Repository;
 
+use SourceBroker\Restify\Domain\Model\ApiFilter;
 use SourceBroker\Restify\Filter\AbstractFilter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -54,29 +55,48 @@ class CommonRepository extends Repository
     }
 
     /**
-     * @param array $apiFilters
+     * @param ApiFilter[] $apiFilters
      *
      * @return QueryInterface
      */
     public function findFiltered(array $apiFilters)
     {
-        $query = $this->createQuery();
-        $constraints = [];
+        $queryParams = $GLOBALS['TYPO3_REQUEST']->getQueryParams();
 
-        foreach ($apiFilters as $apiFilter) {
-            if (isset($GLOBALS['TYPO3_REQUEST']->getQueryParams()[$apiFilter->getParameterName()])) {
+        $query = $this->createQuery();
+        $constraintGroups = [];
+
+        /** @var ApiFilter $apiFilter */
+        foreach ($apiFilters as $groupKey => $apiFilter) {
+            // allow params grouping by namespace (for example "page" constraint -> constraint[page])
+            $namespacedQueryParams = !empty($apiFilter->getArgument('parameterNamespace'))
+                ? $queryParams[$apiFilter->getArgument('parameterNamespace')]
+                : $queryParams;
+            $parameterName = $apiFilter->getParameterName();
+
+            if (isset($namespacedQueryParams[$apiFilter->getParameterName()])) {
                 /** @var AbstractFilter $filter */
                 $filter = $this->objectManager->get($apiFilter->getFilterClass());
                 $constraint = $filter->filterProperty(
                     $apiFilter->getProperty(),
-                    $GLOBALS['TYPO3_REQUEST']->getQueryParams()[$apiFilter->getParameterName()],
+                    $namespacedQueryParams[$parameterName],
                     $query,
                     $apiFilter
                 );
 
                 if ($constraint instanceof ConstraintInterface) {
-                    $constraints[] = $constraint;
+                    $constraintGroups[$apiFilter->getParameterName()] = array_merge(
+                        $constraintGroups[$apiFilter->getParameterName()] ?? [],
+                        [$constraint]
+                    );
                 }
+            }
+        }
+
+        $constraints = [];
+        foreach ($constraintGroups as $constraintGroup) {
+            if (!empty($constraintGroup)) {
+                $constraints[] = $query->logicalOr($constraintGroup);
             }
         }
 
