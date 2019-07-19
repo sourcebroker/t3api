@@ -16,6 +16,7 @@ call_user_func(
             Handler\FileReferenceHandler::class,
             Handler\ProcessedImageHandler::class,
             Handler\RecordUriHandler::class,
+            Handler\TypolinkHandler::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['typesWithAllowedReflectionGetter'] = [
