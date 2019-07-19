@@ -10,7 +10,7 @@ use SourceBroker\Restify\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\Restify\Domain\Model\ApiFilter;
 use SourceBroker\Restify\Domain\Model\ApiResource;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use ReflectionClass;
 use ReflectionException;
 
@@ -87,7 +87,7 @@ class ApiResourceRepository
         return array_filter(
             get_declared_classes(),
             function ($class) {
-                return is_subclass_of($class, AbstractEntity::class);
+                return is_subclass_of($class, AbstractDomainObject::class);
             }
         );
     }

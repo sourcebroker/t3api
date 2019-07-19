@@ -5,7 +5,7 @@ namespace SourceBroker\Restify\Serializer\Subscriber;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\JsonSerializationVisitor;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
@@ -33,11 +33,11 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
      */
     public function onPostSerialize(ObjectEvent $event)
     {
-        if (!$event->getObject() instanceof AbstractEntity) {
+        if (!$event->getObject() instanceof AbstractDomainObject) {
             return;
         }
 
-        /** @var AbstractEntity $entity */
+        /** @var AbstractDomainObject $entity */
         $entity = $event->getObject();
 
         /** @var JsonSerializationVisitor $visitor */
