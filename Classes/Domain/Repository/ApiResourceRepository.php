@@ -77,18 +77,56 @@ class ApiResourceRepository
      */
     protected function getAllDomainModels()
     {
+        $classes = [];
         foreach (ExtensionManagementUtility::getLoadedExtensionListArray() as $extKey) {
             $extPath = ExtensionManagementUtility::extPath($extKey);
             foreach (glob($extPath . 'Classes/Domain/Model/*.php') as $domainModelClassFile) {
-                require_once $domainModelClassFile;
+                $classes[] = $this->getClassNameFromFile($domainModelClassFile);
             }
         }
 
-        return array_filter(
-            get_declared_classes(),
-            function ($class) {
-                return is_subclass_of($class, AbstractDomainObject::class);
-            }
+        return array_values(
+            array_filter(
+                $classes,
+                function ($class) {
+                    return is_subclass_of($class, AbstractDomainObject::class);
+                }
+            )
         );
+    }
+
+    /**
+     * @param string $filePath
+     *
+     * @return string|null
+     */
+    protected function getClassNameFromFile(string $filePath): ?string
+    {
+        $tokens = token_get_all(file_get_contents($filePath));
+        $count = count($tokens);
+        $i = 0;
+        $namespace = '';
+        $namespaceFound = false;
+        while ($i < $count) {
+            $token = $tokens[$i];
+            if (is_array($token) && $token[0] === T_NAMESPACE) {
+                while (++$i < $count) {
+                    if ($tokens[$i] === ';') {
+                        $namespaceFound = true;
+                        $namespace = trim($namespace);
+                        break;
+                    }
+                    $namespace .= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
+                }
+                break;
+            }
+            $i++;
+        }
+
+        if ($namespaceFound) {
+            return $namespace . '\\' . basename($filePath, '.php');
+        }
+
+        return null;
     }
 }
