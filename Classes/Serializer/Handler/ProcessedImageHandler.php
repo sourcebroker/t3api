@@ -5,9 +5,11 @@ namespace SourceBroker\Restify\Serializer\Handler;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class ProcessedImageHandler
@@ -25,7 +27,7 @@ class ProcessedImageHandler extends AbstractHandler implements SerializeHandlerI
 
     /**
      * @param SerializationVisitorInterface $visitor
-     * @param FileReference $fileReference
+     * @param FileReference|int $fileReference
      * @param array $type
      * @param SerializationContext $context
      *
@@ -37,7 +39,17 @@ class ProcessedImageHandler extends AbstractHandler implements SerializeHandlerI
         array $type,
         SerializationContext $context
     ) {
-        $file = $fileReference->getOriginalResource()->getOriginalFile();
+        $fileResource = null;
+
+        if (is_int($fileReference)) {
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $fileRepository = $objectManager->get(FileRepository::class);
+            $fileResource = $fileRepository->findFileReferenceByUid($fileReference);
+        } else {
+            $fileResource = $fileReference->getOriginalResource();
+        }
+
+        $file = $fileResource->getOriginalFile();
         $file = $file->process(ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, [
             'width' => $type['params'][0] ?? '',
             'height' => $type['params'][1] ?? '',
