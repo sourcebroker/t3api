@@ -9,10 +9,13 @@ use SourceBroker\Restify\Annotation\ApiFilter as ApiFilterAnnotation;
 use SourceBroker\Restify\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\Restify\Domain\Model\ApiFilter;
 use SourceBroker\Restify\Domain\Model\ApiResource;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use ReflectionClass;
 use ReflectionException;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 
 /**
  * Class ApiResourceRepository
@@ -20,12 +23,33 @@ use ReflectionException;
 class ApiResourceRepository
 {
     /**
-     * @return ApiResource[]
+     * @var FrontendInterface
+     */
+    private $cache;
+
+    /**
+     * @param CacheManager $cacheManager
      *
-     * @todo add caching
+     * @throws NoSuchCacheException
+     */
+    public function injectCache(CacheManager $cacheManager): void
+    {
+        $this->cache = $cacheManager->getCache('restify');
+    }
+
+    /**
+     * @return ApiResource[]
      */
     public function getAll()
     {
+        $cacheIdentifier = 'ApiResourceRepository__getAll';
+
+        $apiResources = $this->cache->get($cacheIdentifier);
+
+        if ($apiResources !== false) {
+            return $apiResources;
+        }
+
         try {
             $annotationReader = new AnnotationReader();
         } catch (AnnotationException $exception) {
@@ -68,12 +92,13 @@ class ApiResourceRepository
             }
         }
 
+        $this->cache->set($cacheIdentifier, $apiResources);
+
         return $apiResources;
     }
 
     /**
      * @return string[]
-     * @todo add caching
      */
     protected function getAllDomainModels()
     {

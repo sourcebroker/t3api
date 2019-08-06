@@ -4,6 +4,8 @@ use SourceBroker\Restify\Routing\Enhancer\ResourceEnhancer;
 use SourceBroker\Restify\Serializer\Handler as Handler;
 use SourceBroker\Restify\Serializer\Subscriber as Subscriber;
 use SourceBroker\Restify\Response\HydraCollectionResponse;
+use TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 
 defined('TYPO3_MODE') || die('Access denied.');
 
@@ -44,5 +46,16 @@ call_user_func(
             'enabled_parameter_name' => 'pagination',
             'page_parameter_name' => 'page',
         ];
+
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['restify'])) {
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['restify'] = [
+                'frontend' => VariableFrontend::class,
+                'backend' => SimpleFileBackend::class,
+                'options' => [
+                    'defaultLifetime' => 0,
+                ],
+                'groups' => ['system'],
+            ];
+        }
     }
 );
