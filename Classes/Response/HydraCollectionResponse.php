@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Response;
+namespace SourceBroker\T3Api\Response;
 
 use JMS\Serializer\Annotation as Serializer;
 

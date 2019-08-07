@@ -1,5 +1,5 @@
 {
-    "name": "sourcebroker/restify",
+    "name": "sourcebroker/t3api",
     "type": "typo3-cms-extension",
     "description": "REST API",
     "authors": [
@@ -16,16 +16,16 @@
     },
     "autoload": {
         "psr-4": {
-            "SourceBroker\\Restify\\": "Classes"
+            "SourceBroker\\T3Api\\": "Classes"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SourceBroker\\Restify\\Tests\\": "Tests"
+            "SourceBroker\\T3Api\\Tests\\": "Tests"
         }
     },
     "replace": {
-        "restify": "self.version",
-        "typo3-ter/restify": "self.version"
+        "t3api": "self.version",
+        "typo3-ter/t3api": "self.version"
     }
 }

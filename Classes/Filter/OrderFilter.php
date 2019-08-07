@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Filter;
+namespace SourceBroker\T3Api\Filter;
 
-use SourceBroker\Restify\Domain\Model\ApiFilter;
+use SourceBroker\T3Api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use InvalidArgumentException;

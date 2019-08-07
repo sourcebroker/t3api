@@ -1,8 +1,8 @@
 <?php
 
-namespace SourceBroker\Restify\Domain\Model;
+namespace SourceBroker\T3Api\Domain\Model;
 
-use SourceBroker\Restify\Annotation\ApiResource as ApiResourceAnnotation;
+use SourceBroker\T3Api\Annotation\ApiResource as ApiResourceAnnotation;
 use Symfony\Component\Routing\RouteCollection;
 
 /**

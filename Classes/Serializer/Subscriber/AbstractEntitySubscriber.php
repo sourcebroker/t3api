@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Serializer\Subscriber;
+namespace SourceBroker\T3Api\Serializer\Subscriber;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
@@ -43,7 +43,7 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         /** @var JsonSerializationVisitor $visitor */
         $visitor = $event->getVisitor();
 
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['forceEntityProperties'] as $property) {
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['forceEntityProperties'] as $property) {
             if (!$visitor->hasData($property)) {
                 $visitor->setData($property, ObjectAccess::getProperty($entity, $property));
             }

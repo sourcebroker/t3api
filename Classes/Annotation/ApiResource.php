@@ -1,6 +1,6 @@
 <?php
 
-namespace SourceBroker\Restify\Annotation;
+namespace SourceBroker\T3Api\Annotation;
 
 /**
  * ApiResource annotation.
@@ -39,7 +39,7 @@ class ApiResource
     {
         $this->itemOperations = $values['itemOperations'] ?? $this->itemOperations;
         $this->collectionOperations = $values['collectionOperations'] ?? $this->collectionOperations;
-        $this->attributes = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['pagination'], $values['attributes'] ?? []);
+        $this->attributes = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['pagination'], $values['attributes'] ?? []);
     }
 
     /**

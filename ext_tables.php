@@ -5,7 +5,7 @@ call_user_func(
     function()
     {
 
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('restify', 'Configuration/TypoScript', 'Restify');
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('t3api', 'Configuration/TypoScript', 'T3Api');
 
     }
 );

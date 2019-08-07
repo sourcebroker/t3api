@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Domain\Model;
+namespace SourceBroker\T3Api\Domain\Model;
 
-use SourceBroker\Restify\Routing\Enhancer\ResourceEnhancer;
+use SourceBroker\T3Api\Routing\Enhancer\ResourceEnhancer;
 use Symfony\Component\Routing\Route;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -71,7 +71,7 @@ abstract class AbstractOperation
         }
 
         if (empty($this->route)) {
-            throw new RouteNotFoundException('Route not found for restify extension', 1757217286469);
+            throw new RouteNotFoundException('Route not found for t3api extension', 1757217286469);
         }
     }
 

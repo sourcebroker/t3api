@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Response;
+namespace SourceBroker\T3Api\Response;
 
 use JMS\Serializer\Annotation as Serializer;
-use SourceBroker\Restify\Domain\Model\CollectionOperation;
+use SourceBroker\T3Api\Domain\Model\CollectionOperation;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 

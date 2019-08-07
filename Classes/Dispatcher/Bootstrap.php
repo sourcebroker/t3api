@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Dispatcher;
+namespace SourceBroker\T3Api\Dispatcher;
 
-use SourceBroker\Restify\Domain\Model\AbstractOperation;
-use SourceBroker\Restify\Domain\Model\CollectionOperation;
-use SourceBroker\Restify\Domain\Model\ItemOperation;
-use SourceBroker\Restify\Domain\Repository\ApiResourceRepository;
-use SourceBroker\Restify\Domain\Repository\CommonRepository;
-use SourceBroker\Restify\Service\SerializerService;
+use SourceBroker\T3Api\Domain\Model\AbstractOperation;
+use SourceBroker\T3Api\Domain\Model\CollectionOperation;
+use SourceBroker\T3Api\Domain\Model\ItemOperation;
+use SourceBroker\T3Api\Domain\Repository\ApiResourceRepository;
+use SourceBroker\T3Api\Domain\Repository\CommonRepository;
+use SourceBroker\T3Api\Service\SerializerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -78,7 +78,7 @@ class Bootstrap
         }
 
         if (!$matchedRoute) {
-            throw new RouteNotFoundException('Restify resource not found for current route', 1557217186441);
+            throw new RouteNotFoundException('T3Api resource not found for current route', 1557217186441);
         }
 
         $this->output();
@@ -105,7 +105,7 @@ class Bootstrap
             }
         } elseif ($operation instanceof CollectionOperation) {
             $result = $this->objectManager->get(
-                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['collectionResponseClass'],
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'],
                 $operation,
                 $repository->findFiltered($operation->getFilters())
             );

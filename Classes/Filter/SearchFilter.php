@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Filter;
+namespace SourceBroker\T3Api\Filter;
 
 use RuntimeException;
-use SourceBroker\Restify\Domain\Model\ApiFilter;
+use SourceBroker\T3Api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;

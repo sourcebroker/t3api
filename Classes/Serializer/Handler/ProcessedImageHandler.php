@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Serializer\Handler;
+namespace SourceBroker\T3Api\Serializer\Handler;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -13,8 +13,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class ProcessedImageHandler
- *
- * @package SourceBroker\Restify\Serializer\Handler
  */
 class ProcessedImageHandler extends AbstractHandler implements SerializeHandlerInterface
 {

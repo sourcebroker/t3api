@@ -1,5 +1,5 @@
-restifyResponse = PAGE
-restifyResponse {
+T3ApiResponse = PAGE
+T3ApiResponse {
 	typeNum = 1557300854213
 
 	config {
@@ -11,5 +11,5 @@ restifyResponse {
 	}
 
 	10 = USER_INT
-	10.userFunc = SourceBroker\Restify\Dispatcher\Bootstrap->process
+	10.userFunc = SourceBroker\T3Api\Dispatcher\Bootstrap->process
 }

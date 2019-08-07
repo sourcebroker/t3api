@@ -9,7 +9,7 @@
 ---
 conf.py:
   copyright: 2019
-  project: Restify
+  project: T3Api
   version: 1.0.0
   release: 1.0.0
   intersphinx_mapping:
@@ -18,8 +18,8 @@ conf.py:
     - null
   latex_documents:
   - - Index
-    - restify.tex
-    - Restify
+    - t3api.tex
+    - T3Api
     - SourceBroker Team
     - manual
   latex_elements:

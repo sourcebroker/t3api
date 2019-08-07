@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Service;
+namespace SourceBroker\T3Api\Service;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
@@ -12,8 +12,8 @@ use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
-use SourceBroker\Restify\Domain\Model\AbstractOperation;
-use SourceBroker\Restify\Serializer\Accessor\AccessorStrategy;
+use SourceBroker\T3Api\Domain\Model\AbstractOperation;
+use SourceBroker\T3Api\Serializer\Accessor\AccessorStrategy;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -68,14 +68,14 @@ class SerializerService implements SingletonInterface
                 return $serializationContext;
             })
             ->configureHandlers(function (HandlerRegistry $registry) {
-                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['serializerHandlers'] ?? [] as $handlerClass) {
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] ?? [] as $handlerClass) {
                     /** @var SubscribingHandlerInterface $handler */
                     $handler = $this->objectManager->get($handlerClass);
                     $registry->registerSubscribingHandler($handler);
                 }
             })
             ->configureListeners(function (EventDispatcher $dispatcher) {
-                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['serializerSubscribers'] ?? [] as $subscriberClass) {
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] ?? [] as $subscriberClass) {
                     /** @var EventSubscriberInterface $subscriber */
                     $subscriber = $this->objectManager->get($subscriberClass);
                     $dispatcher->addSubscriber($subscriber);
@@ -98,7 +98,7 @@ class SerializerService implements SingletonInterface
      */
     protected function getSerializerCacheDirectory(): string
     {
-        $cacheDirectory = PATH_site . '/typo3temp/var/cache/code/restify/jms-serializer';
+        $cacheDirectory = PATH_site . '/typo3temp/var/cache/code/t3api/jms-serializer';
         if (!file_exists($cacheDirectory)) {
             mkdir($cacheDirectory, 0777, true);
         }

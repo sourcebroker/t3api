@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Domain\Model;
+namespace SourceBroker\T3Api\Domain\Model;
 
 /**
  * Class ItemOperation

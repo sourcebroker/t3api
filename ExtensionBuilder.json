@@ -15,8 +15,8 @@
             "targetVersion": "9.5.0-9.5.99",
             "version": "1.0.0"
         },
-        "extensionKey": "restify",
-        "name": "Restify",
+        "extensionKey": "t3api",
+        "name": "T3Api",
         "originalExtensionKey": "",
         "originalVendorName": "",
         "persons": [

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Routing\Enhancer;
+namespace SourceBroker\T3Api\Routing\Enhancer;
 
 use TYPO3\CMS\Core\Routing\Enhancer\AbstractEnhancer;
 use TYPO3\CMS\Core\Routing\Enhancer\RoutingEnhancerInterface;
@@ -10,13 +10,13 @@ use TYPO3\CMS\Core\Routing\RouteCollection;
 
 /**
  * routeEnhancers:
- *   Restify:
- *     type: RestifyResourceEnhancer
+ *   T3Api:
+ *     type: T3ApiResourceEnhancer
  *     basePath: '_api'
  */
 class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterface
 {
-    public const ENHANCER_NAME = 'RestifyResourceEnhancer';
+    public const ENHANCER_NAME = 'T3ApiResourceEnhancer';
 
     /**
      * @var array

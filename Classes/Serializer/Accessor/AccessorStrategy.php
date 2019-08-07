@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\Restify\Serializer\Accessor;
+namespace SourceBroker\T3Api\Serializer\Accessor;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\DeserializationContext;
@@ -73,7 +73,7 @@ class AccessorStrategy implements AccessorStrategyInterface
     {
         return in_array(
             $type,
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['typesWithAllowedReflectionGetter']
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['typesWithAllowedReflectionGetter']
         );
     }
 }

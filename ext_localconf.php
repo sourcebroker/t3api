@@ -1,9 +1,9 @@
 <?php
 
-use SourceBroker\Restify\Routing\Enhancer\ResourceEnhancer;
-use SourceBroker\Restify\Serializer\Handler as Handler;
-use SourceBroker\Restify\Serializer\Subscriber as Subscriber;
-use SourceBroker\Restify\Response\HydraCollectionResponse;
+use SourceBroker\T3Api\Routing\Enhancer\ResourceEnhancer;
+use SourceBroker\T3Api\Serializer\Handler as Handler;
+use SourceBroker\T3Api\Serializer\Subscriber as Subscriber;
+use SourceBroker\T3Api\Response\HydraCollectionResponse;
 use TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 
@@ -13,7 +13,7 @@ call_user_func(
     function () {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][ResourceEnhancer::ENHANCER_NAME] = ResourceEnhancer::class;
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['serializerHandlers'] = [
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] = [
             Handler\ObjectStorageHandler::class,
             Handler\FileReferenceHandler::class,
             Handler\ProcessedImageHandler::class,
@@ -21,22 +21,22 @@ call_user_func(
             Handler\TypolinkHandler::class,
         ];
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['typesWithAllowedReflectionGetter'] = [
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['typesWithAllowedReflectionGetter'] = [
             Handler\ProcessedImageHandler::TYPE,
             Handler\RecordUriHandler::TYPE,
         ];
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['serializerSubscribers'] = [
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] = [
             Subscriber\AbstractEntitySubscriber::class,
         ];
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['forceEntityProperties'] = [
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['forceEntityProperties'] = [
             'uid',
         ];
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['collectionResponseClass'] = HydraCollectionResponse::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'] = HydraCollectionResponse::class;
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['restify']['pagination'] = [
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['pagination'] = [
             'pagination_enabled' => true,
             'pagination_client_enabled' => false,
             'pagination_items_per_page' => 30,
@@ -47,8 +47,8 @@ call_user_func(
             'page_parameter_name' => 'page',
         ];
 
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['restify'])) {
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['restify'] = [
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['t3api'])) {
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['t3api'] = [
                 'frontend' => VariableFrontend::class,
                 'backend' => SimpleFileBackend::class,
                 'options' => [
