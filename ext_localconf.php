@@ -1,9 +1,9 @@
 <?php
 
-use SourceBroker\T3Api\Routing\Enhancer\ResourceEnhancer;
-use SourceBroker\T3Api\Serializer\Handler as Handler;
-use SourceBroker\T3Api\Serializer\Subscriber as Subscriber;
-use SourceBroker\T3Api\Response\HydraCollectionResponse;
+use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
+use SourceBroker\T3api\Serializer\Handler as Handler;
+use SourceBroker\T3api\Serializer\Subscriber as Subscriber;
+use SourceBroker\T3api\Response\HydraCollectionResponse;
 use TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 

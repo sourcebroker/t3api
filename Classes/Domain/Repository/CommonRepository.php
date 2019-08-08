@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\T3Api\Domain\Repository;
+namespace SourceBroker\T3api\Domain\Repository;
 
-use SourceBroker\T3Api\Domain\Model\ApiFilter;
-use SourceBroker\T3Api\Filter\AbstractFilter;
+use SourceBroker\T3api\Domain\Model\ApiFilter;
+use SourceBroker\T3api\Filter\AbstractFilter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;

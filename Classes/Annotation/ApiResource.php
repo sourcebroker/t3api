@@ -1,6 +1,6 @@
 <?php
 
-namespace SourceBroker\T3Api\Annotation;
+namespace SourceBroker\T3api\Annotation;
 
 /**
  * ApiResource annotation.

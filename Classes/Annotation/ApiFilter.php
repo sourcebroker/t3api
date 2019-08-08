@@ -1,8 +1,8 @@
 <?php
 
-namespace SourceBroker\T3Api\Annotation;
+namespace SourceBroker\T3api\Annotation;
 
-use SourceBroker\T3Api\Filter\AbstractFilter;
+use SourceBroker\T3api\Filter\AbstractFilter;
 use InvalidArgumentException;
 
 /**

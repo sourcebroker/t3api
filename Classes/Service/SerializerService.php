@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\T3Api\Service;
+namespace SourceBroker\T3api\Service;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
@@ -12,8 +12,8 @@ use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
-use SourceBroker\T3Api\Domain\Model\AbstractOperation;
-use SourceBroker\T3Api\Serializer\Accessor\AccessorStrategy;
+use SourceBroker\T3api\Domain\Model\AbstractOperation;
+use SourceBroker\T3api\Serializer\Accessor\AccessorStrategy;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;

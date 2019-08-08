@@ -11,7 +11,7 @@
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'T3Api',
+    'title' => 'T3api',
     'description' => 'REST API',
     'category' => 'plugin',
     'author' => 'SourceBroker Team',

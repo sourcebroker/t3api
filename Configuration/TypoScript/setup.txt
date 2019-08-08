@@ -1,5 +1,5 @@
-T3ApiResponse = PAGE
-T3ApiResponse {
+T3apiResponse = PAGE
+T3apiResponse {
 	typeNum = 1557300854213
 
 	config {
@@ -11,5 +11,5 @@ T3ApiResponse {
 	}
 
 	10 = USER_INT
-	10.userFunc = SourceBroker\T3Api\Dispatcher\Bootstrap->process
+	10.userFunc = SourceBroker\T3api\Dispatcher\Bootstrap->process
 }

@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\T3Api\Domain\Repository;
+namespace SourceBroker\T3api\Domain\Repository;
 
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
-use SourceBroker\T3Api\Annotation\ApiFilter as ApiFilterAnnotation;
-use SourceBroker\T3Api\Annotation\ApiResource as ApiResourceAnnotation;
-use SourceBroker\T3Api\Domain\Model\ApiFilter;
-use SourceBroker\T3Api\Domain\Model\ApiResource;
+use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
+use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
+use SourceBroker\T3api\Domain\Model\ApiFilter;
+use SourceBroker\T3api\Domain\Model\ApiResource;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;

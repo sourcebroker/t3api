@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\T3Api\Domain\Model;
+namespace SourceBroker\T3api\Domain\Model;
 
-use SourceBroker\T3Api\Annotation\ApiFilter as ApiFilterAnnotation;
-use SourceBroker\T3Api\Filter\AbstractFilter;
-use SourceBroker\T3Api\Filter\OrderFilter;
+use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
+use SourceBroker\T3api\Filter\AbstractFilter;
+use SourceBroker\T3api\Filter\OrderFilter;
 
 /**
  * Class ApiFilter

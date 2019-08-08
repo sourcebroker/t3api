@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\T3Api\Domain\Model;
+namespace SourceBroker\T3api\Domain\Model;
 
-use SourceBroker\T3Api\Annotation\ApiResource as ApiResourceAnnotation;
+use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
 
 /**
  * Class Pagination

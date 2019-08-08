@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\T3Api\Domain\Model;
+namespace SourceBroker\T3api\Domain\Model;
 
-use SourceBroker\T3Api\Routing\Enhancer\ResourceEnhancer;
+use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use Symfony\Component\Routing\Route;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;

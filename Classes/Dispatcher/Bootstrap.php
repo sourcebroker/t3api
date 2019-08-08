@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\T3Api\Dispatcher;
+namespace SourceBroker\T3api\Dispatcher;
 
-use SourceBroker\T3Api\Domain\Model\AbstractOperation;
-use SourceBroker\T3Api\Domain\Model\CollectionOperation;
-use SourceBroker\T3Api\Domain\Model\ItemOperation;
-use SourceBroker\T3Api\Domain\Repository\ApiResourceRepository;
-use SourceBroker\T3Api\Domain\Repository\CommonRepository;
-use SourceBroker\T3Api\Service\SerializerService;
+use SourceBroker\T3api\Domain\Model\AbstractOperation;
+use SourceBroker\T3api\Domain\Model\CollectionOperation;
+use SourceBroker\T3api\Domain\Model\ItemOperation;
+use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
+use SourceBroker\T3api\Domain\Repository\CommonRepository;
+use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -78,7 +78,7 @@ class Bootstrap
         }
 
         if (!$matchedRoute) {
-            throw new RouteNotFoundException('T3Api resource not found for current route', 1557217186441);
+            throw new RouteNotFoundException('T3api resource not found for current route', 1557217186441);
         }
 
         $this->output();

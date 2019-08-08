@@ -9,7 +9,7 @@
 ---
 conf.py:
   copyright: 2019
-  project: T3Api
+  project: T3api
   version: 1.0.0
   release: 1.0.0
   intersphinx_mapping:
@@ -19,7 +19,7 @@ conf.py:
   latex_documents:
   - - Index
     - t3api.tex
-    - T3Api
+    - T3api
     - SourceBroker Team
     - manual
   latex_elements:

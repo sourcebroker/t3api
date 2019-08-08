@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\T3Api\Serializer\Accessor;
+namespace SourceBroker\T3api\Serializer\Accessor;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\DeserializationContext;

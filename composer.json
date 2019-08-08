@@ -16,12 +16,12 @@
     },
     "autoload": {
         "psr-4": {
-            "SourceBroker\\T3Api\\": "Classes"
+            "SourceBroker\\T3api\\": "Classes"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SourceBroker\\T3Api\\Tests\\": "Tests"
+            "SourceBroker\\T3api\\Tests\\": "Tests"
         }
     },
     "replace": {
