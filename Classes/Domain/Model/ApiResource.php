@@ -100,6 +100,18 @@ class ApiResource
     }
 
     /**
+     * @return CollectionOperation|null
+     *
+     * @todo for now first collection operation is treated as main, maybe in future it should be configurable
+     */
+    public function getMainCollectionOperation(): ?CollectionOperation
+    {
+        if (!empty($this->getCollectionOperations())) {
+            return array_shift($this->getCollectionOperations());
+        }
+    }
+
+    /**
      * @return RouteCollection
      */
     public function getRoutes(): RouteCollection

@@ -6,6 +6,7 @@ use SourceBroker\T3api\Serializer\Subscriber as Subscriber;
 use SourceBroker\T3api\Response\HydraCollectionResponse;
 use TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
+use SourceBroker\T3api\Response\MainEndpointResponse;
 
 defined('TYPO3_MODE') || die('Access denied.');
 
@@ -35,6 +36,8 @@ call_user_func(
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'] = HydraCollectionResponse::class;
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'] = MainEndpointResponse::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['pagination'] = [
             'pagination_enabled' => true,
