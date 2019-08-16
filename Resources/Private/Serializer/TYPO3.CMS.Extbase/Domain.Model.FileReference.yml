@@ -1,0 +1,6 @@
+TYPO3\CMS\Extbase\Domain\Model\FileReference:
+  properties:
+    uidLocal:
+      exclude: true
+    configurationManager:
+      exclude: true

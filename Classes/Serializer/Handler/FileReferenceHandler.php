@@ -6,7 +6,8 @@ namespace SourceBroker\T3api\Serializer\Handler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
+use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
 
 /**
  * Class FileReferenceHandler
@@ -16,11 +17,14 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
     /**
      * @var string[]
      */
-    protected static $supportedTypes = [FileReference::class];
+    protected static $supportedTypes = [
+        ExtbaseFileReference::class,
+        Typo3FileReference::class,
+    ];
 
     /**
      * @param SerializationVisitorInterface $visitor
-     * @param FileReference $fileReference
+     * @param ExtbaseFileReference|Typo3FileReference $fileReference
      * @param array $type
      * @param SerializationContext $context
      *
@@ -32,10 +36,13 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         array $type,
         SerializationContext $context
     ) {
+        $url = $fileReference instanceof ExtbaseFileReference
+            ? $fileReference->getOriginalResource()->getPublicUrl()
+            : $fileReference->getPublicUrl();
+
         return [
             'uid' => $fileReference->getUid(),
-            'url' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL')
-                . $fileReference->getOriginalResource()->getPublicUrl(),
+            'url' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $url,
         ];
     }
 }

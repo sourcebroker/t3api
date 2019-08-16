@@ -1,0 +1,4 @@
+TYPO3\CMS\Core\Resource\Folder:
+  properties:
+    fileAndFolderNameFilters:
+      exclude: true

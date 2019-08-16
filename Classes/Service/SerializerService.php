@@ -121,7 +121,8 @@ class SerializerService implements SingletonInterface
                     SerializedNameAnnotationStrategy::class,
                     $this->objectManager->get(IdenticalPropertyNamingStrategy::class)
                 )
-            );
+            )
+            ->addMetadataDirs($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerMetadataDirs'] ?? []);
 
         // @todo add signal for serializer customization
 

@@ -10,18 +10,18 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * Class AbstractCollectionResponse
+ *
+ * @Serializer\ExclusionPolicy("ALL")
  */
 abstract class AbstractCollectionResponse
 {
     /**
      * @var CollectionOperation
-     * @Serializer\Exclude()
      */
     protected $operation;
 
     /**
      * @var QueryResultInterface
-     * @Serializer\Exclude()
      */
     protected $query;
 

@@ -1,0 +1,8 @@
+TYPO3\CMS\Core\Resource\File:
+  properties:
+    metaDataLoaded:
+      exclude: true
+    metaDataProperties:
+      exclude: true
+    indexingInProgress:
+      exclude: true
