@@ -98,6 +98,24 @@ class ApiResourceRepository
     }
 
     /**
+     * @param string|object $entity Class name or object
+     *
+     * @return ApiResource|null
+     */
+    public function getByEntity($entity): ?ApiResource
+    {
+        $className = is_string($entity) ? $entity : get_class($entity);
+
+        foreach ($this->getAll() as $apiResource) {
+            if ($apiResource->getEntity() === $className) {
+                return $apiResource;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return string[]
      */
     protected function getAllDomainModels()

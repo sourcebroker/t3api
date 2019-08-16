@@ -92,6 +92,19 @@ class ApiResource
     }
 
     /**
+     * @return ItemOperation|null
+     *
+     * @todo for now first item operation is treated as main, maybe in future it should be configurable
+     */
+    public function getMainItemOperation(): ?ItemOperation
+    {
+        if (!empty($this->getItemOperations())) {
+            return array_shift($this->getItemOperations());
+        }
+    }
+
+
+    /**
      * @return CollectionOperation[]
      */
     public function getCollectionOperations(): array
