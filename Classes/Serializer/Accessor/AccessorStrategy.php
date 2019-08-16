@@ -22,25 +22,21 @@ class AccessorStrategy implements AccessorStrategyInterface
     public function getValue(object $object, PropertyMetadata $metadata, SerializationContext $context)
     {
         if (null === $metadata->getter) {
-            try {
+            if (ObjectAccess::isPropertyGettable($object, $metadata->name)) {
                 return ObjectAccess::getProperty(
                     $object,
-                    $metadata->serializedName
+                    $metadata->name
                 );
-            } catch (\Error $error) {
-                // if error was thrown it means getter for protected property does not exist
-                // to support self::TYPES_WITH_ALLOWED_REFLECTION_GETTER, get its value using reflection
-                if (!empty($metadata->type['name']) && $this->isAllowedReflectionGetter($metadata->type['name'])) {
-                    return ObjectAccess::getProperty(
-                        $object,
-                        $metadata->serializedName,
-                        true
-                    );
-                }
-
-                throw $error;
             }
 
+            throw new \RuntimeException(
+                sprintf(
+                    'Could not read property `%s` of `%s`. Use serializer `Exclude()` annotation or, if you are not allowed to overwrite class file, provide proper YAML configuration to exclude this property (search for `serializerMetadataDirs` to see how to provide it).',
+                    $metadata->name,
+                    $metadata->class
+                ),
+                1565871708259
+            );
         }
 
         return $object->{$metadata->getter}();
@@ -56,24 +52,11 @@ class AccessorStrategy implements AccessorStrategyInterface
         }
 
         if (null === $metadata->setter) {
-            ObjectAccess::setProperty($object, $metadata->serializedName, $value);
+            ObjectAccess::setProperty($object, $metadata->name, $value);
 
             return;
         }
 
         $object->{$metadata->setter}($value);
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    protected function isAllowedReflectionGetter(string $type): bool
-    {
-        return in_array(
-            $type,
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['typesWithAllowedReflectionGetter']
-        );
     }
 }

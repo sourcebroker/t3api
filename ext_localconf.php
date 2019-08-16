@@ -22,11 +22,6 @@ call_user_func(
             Handler\TypolinkHandler::class,
         ];
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['typesWithAllowedReflectionGetter'] = [
-            Handler\ProcessedImageHandler::TYPE,
-            Handler\RecordUriHandler::TYPE,
-        ];
-
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] = [
             Subscriber\AbstractEntitySubscriber::class,
         ];
