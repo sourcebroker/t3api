@@ -9,6 +9,7 @@ use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
+use Throwable;
 
 /**
  * Class AccessorStrategy
@@ -22,21 +23,23 @@ class AccessorStrategy implements AccessorStrategyInterface
     public function getValue(object $object, PropertyMetadata $metadata, SerializationContext $context)
     {
         if (null === $metadata->getter) {
-            if (ObjectAccess::isPropertyGettable($object, $metadata->name)) {
+            try {
                 return ObjectAccess::getProperty(
                     $object,
-                    $metadata->name
+                    $metadata->name,
+                    false && !ObjectAccess::isPropertyGettable($object, $metadata->name)
+                );
+            } catch (Throwable $throwable) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Could not read property `%s` of `%s`. Use serializer `Exclude()` annotation or, if you are not allowed to overwrite class file, provide proper YAML configuration to exclude this property (search for `serializerMetadataDirs` to see how to provide it).',
+                        $metadata->name,
+                        $metadata->class
+                    ),
+                    1565871708259,
+                    $throwable
                 );
             }
-
-            throw new \RuntimeException(
-                sprintf(
-                    'Could not read property `%s` of `%s`. Use serializer `Exclude()` annotation or, if you are not allowed to overwrite class file, provide proper YAML configuration to exclude this property (search for `serializerMetadataDirs` to see how to provide it).',
-                    $metadata->name,
-                    $metadata->class
-                ),
-                1565871708259
-            );
         }
 
         return $object->{$metadata->getter}();
