@@ -5,9 +5,10 @@ namespace SourceBroker\T3api\Serializer\Subscriber;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
-use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\JsonSerializationVisitor;
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
@@ -44,9 +45,11 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         $visitor = $event->getVisitor();
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['forceEntityProperties'] as $property) {
-            if (!$visitor->hasData($property)) {
-                $visitor->setData($property, ObjectAccess::getProperty($entity, $property));
-            }
+            $value = ObjectAccess::getProperty($entity, $property);
+            $visitor->visitProperty(
+                new StaticPropertyMetadata(AbstractDomainObject::class, $property, $value),
+                $value
+            );
         }
     }
 }
