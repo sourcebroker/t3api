@@ -1,5 +1,8 @@
 {
     "name": "sourcebroker/t3api",
+    "license": [
+        "GPL-2.0+"
+    ],
     "type": "typo3-cms-extension",
     "description": "REST API",
     "authors": [
