@@ -6,6 +6,7 @@ namespace SourceBroker\T3api\Serializer\Handler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage;
 
 /**
  * Class ObjectStorageHandler
@@ -15,7 +16,10 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
     /**
      * @var string[]
      */
-    protected static $supportedTypes = [ObjectStorage::class];
+    protected static $supportedTypes = [
+        ObjectStorage::class,
+        LazyObjectStorage::class,
+    ];
 
     /**
      * @param SerializationVisitorInterface $visitor

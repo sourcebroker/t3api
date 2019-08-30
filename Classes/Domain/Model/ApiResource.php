@@ -92,11 +92,36 @@ class ApiResource
     }
 
     /**
+     * @return ItemOperation|null
+     *
+     * @todo for now first item operation is treated as main, maybe in future it should be configurable
+     */
+    public function getMainItemOperation(): ?ItemOperation
+    {
+        if (!empty($this->getItemOperations())) {
+            return array_shift($this->getItemOperations());
+        }
+    }
+
+
+    /**
      * @return CollectionOperation[]
      */
     public function getCollectionOperations(): array
     {
         return $this->collectionOperations;
+    }
+
+    /**
+     * @return CollectionOperation|null
+     *
+     * @todo for now first collection operation is treated as main, maybe in future it should be configurable
+     */
+    public function getMainCollectionOperation(): ?CollectionOperation
+    {
+        if (!empty($this->getCollectionOperations())) {
+            return array_shift($this->getCollectionOperations());
+        }
     }
 
     /**

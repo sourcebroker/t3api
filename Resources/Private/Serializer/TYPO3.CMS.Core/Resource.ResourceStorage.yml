@@ -1,0 +1,16 @@
+TYPO3\CMS\Core\Resource\ResourceStorage:
+  properties:
+    driver:
+      exclude: true
+    fileProcessingService:
+      exclude: true
+    userPermissions:
+      exclude: true
+    signalSlotDispatcher:
+      exclude: true
+    fileAndFolderNameFilters:
+      exclude: true
+    isOnline:
+      exclude: true
+    isDefault:
+      exclude: true

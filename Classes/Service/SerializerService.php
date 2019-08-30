@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * Class Serializer
+ * Class SerializerService
  */
 class SerializerService implements SingletonInterface
 {
@@ -39,15 +39,25 @@ class SerializerService implements SingletonInterface
     }
 
     /**
+     * @param mixed $result
+     *
+     * @return string
+     */
+    public function serialize($result)
+    {
+        return $this->getSerializer()->serialize($result, 'json');
+    }
+
+    /**
      * @param AbstractOperation $operation
      * @param mixed $result
      *
      * @return string
      * @throws Exception
      */
-    public function serialize(AbstractOperation $operation, $result)
+    public function serializeOperation(AbstractOperation $operation, $result)
     {
-        return $this->getSerializer($operation)->serialize($result, 'json');
+        return $this->getSerializerForOperation($operation)->serialize($result, 'json');
     }
 
     /**
@@ -56,11 +66,9 @@ class SerializerService implements SingletonInterface
      * @return SerializerInterface
      * @throws Exception
      */
-    protected function getSerializer(AbstractOperation $operation): SerializerInterface
+    protected function getSerializerForOperation(AbstractOperation $operation): SerializerInterface
     {
-        return SerializerBuilder::create()
-            ->setCacheDir($this->getSerializerCacheDirectory())
-            ->setDebug(GeneralUtility::getApplicationContext()->isDevelopment())
+        return $this->getSerializerBuilder()
             ->setSerializationContextFactory(function () use ($operation) {
                 $serializationContext = SerializationContext::create()
                     ->setSerializeNull(true);
@@ -71,6 +79,31 @@ class SerializerService implements SingletonInterface
 
                 return $serializationContext;
             })
+            ->build();
+    }
+
+    /**
+     * @return SerializerInterface
+     */
+    protected function getSerializer(): SerializerInterface
+    {
+        return $this->getSerializerBuilder()->build();
+    }
+
+    /**
+     * @return SerializerBuilder
+     */
+    protected function getSerializerBuilder(): SerializerBuilder
+    {
+        static $serializerBuilder;
+
+        if (!empty($serializerBuilder)) {
+            return $serializerBuilder;
+        }
+
+        $serializerBuilder = SerializerBuilder::create()
+            ->setCacheDir($this->getSerializerCacheDirectory())
+            ->setDebug(GeneralUtility::getApplicationContext()->isDevelopment())
             ->configureHandlers(function (HandlerRegistry $registry) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] ?? [] as $handlerClass) {
                     /** @var SubscribingHandlerInterface $handler */
@@ -93,8 +126,11 @@ class SerializerService implements SingletonInterface
                     $this->objectManager->get(IdenticalPropertyNamingStrategy::class)
                 )
             )
-            // @todo add signal for serializer customization just before build
-            ->build();
+            ->addMetadataDirs($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerMetadataDirs'] ?? []);
+
+        // @todo add signal for serializer customization
+
+        return $serializerBuilder;
     }
 
     /**

@@ -1,0 +1,10 @@
+TYPO3\CMS\Core\Resource\FileReference:
+  properties:
+    propertiesOfFileReference:
+      exclude: true
+    uidOfFileReference:
+      exclude: true
+    driver:
+      exclude: true
+    mergedProperties:
+      exclude: true

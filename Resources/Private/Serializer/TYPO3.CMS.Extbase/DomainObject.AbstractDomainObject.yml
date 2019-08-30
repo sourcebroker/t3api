@@ -1,0 +1,12 @@
+TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject:
+  properties:
+    _localizedUid:
+      exclude: true
+    _languageUid:
+      exclude: true
+    _versionedUid:
+      exclude: true
+    _isClone:
+      exclude: true
+    _cleanProperties:
+      exclude: true

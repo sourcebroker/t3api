@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Domain\Model;
 
-use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
+use SourceBroker\T3api\Service\RouteService;
 use Symfony\Component\Routing\Route;
-use TYPO3\CMS\Core\Routing\RouteNotFoundException;
-use TYPO3\CMS\Core\Site\Entity\Site;
 
 /**
  * Class AbstractOperation
@@ -48,8 +46,6 @@ abstract class AbstractOperation
      * @param string $key
      * @param ApiResource $apiResource
      * @param array $params
-     *
-     * @throws RouteNotFoundException
      */
     public function __construct(string $key, ApiResource $apiResource, array $params)
     {
@@ -60,19 +56,7 @@ abstract class AbstractOperation
         $this->normalizationContext = isset($params['normalizationContext'])
             ? array_replace_recursive($this->normalizationContext, $params['normalizationContext'])
             : $this->normalizationContext;
-        /** @var Site $site */
-        $site = $GLOBALS['TYPO3_REQUEST']->getAttribute('site');
-        $routeEnhancers = $site->getConfiguration()['routeEnhancers'] ?? [];
-        foreach ($routeEnhancers as $routeEnhancer) {
-            if ($routeEnhancer['type'] == ResourceEnhancer::ENHANCER_NAME && isset($routeEnhancer['basePath'])) {
-                $this->route = new Route(rtrim($routeEnhancer['basePath'], '/') . $this->path);
-                break;
-            }
-        }
-
-        if (empty($this->route)) {
-            throw new RouteNotFoundException('Route not found for t3api extension', 1757217286469);
-        }
+        $this->route = new Route(rtrim(RouteService::getApiBasePath(), '/') . $this->path);
     }
 
     /**

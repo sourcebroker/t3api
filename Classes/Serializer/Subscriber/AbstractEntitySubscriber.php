@@ -5,9 +5,11 @@ namespace SourceBroker\T3api\Serializer\Subscriber;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
-use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\JsonSerializationVisitor;
+use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
@@ -15,6 +17,19 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
  */
 class AbstractEntitySubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var ApiResourceRepository
+     */
+    private $apiResourceRepository;
+
+    /**
+     * @param ApiResourceRepository $apiResourceRepository
+     */
+    public function injectApiResourceRepository(ApiResourceRepository $apiResourceRepository): void
+    {
+        $this->apiResourceRepository = $apiResourceRepository;
+    }
+
     /**
      * @return array
      */
@@ -43,10 +58,43 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         /** @var JsonSerializationVisitor $visitor */
         $visitor = $event->getVisitor();
 
+        $this->addForceEntityProperties($entity, $visitor);
+        $this->addIri($entity, $visitor);
+    }
+
+    /**
+     * @param AbstractDomainObject $entity
+     * @param JsonSerializationVisitor $visitor
+     *
+     * @return void
+     */
+    private function addForceEntityProperties(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
+    {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['forceEntityProperties'] as $property) {
-            if (!$visitor->hasData($property)) {
-                $visitor->setData($property, ObjectAccess::getProperty($entity, $property));
-            }
+            $value = ObjectAccess::getProperty($entity, $property);
+            $visitor->visitProperty(
+                new StaticPropertyMetadata(AbstractDomainObject::class, $property, $value),
+                $value
+            );
+        }
+    }
+
+    /**
+     * @param AbstractDomainObject $entity
+     * @param JsonSerializationVisitor $visitor
+     *
+     * @return void
+     */
+    private function addIri(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
+    {
+        $apiResource = $this->apiResourceRepository->getByEntity($entity);
+        if ($apiResource && $apiResource->getMainItemOperation()) {
+            // @todo should be generated with symfony router
+            $iri = str_replace('{id}', $entity->getUid(), $apiResource->getMainItemOperation()->getRoute()->getPath());
+            $visitor->visitProperty(
+                new StaticPropertyMetadata(AbstractDomainObject::class, '@id', $iri),
+                $iri
+            );
         }
     }
 }

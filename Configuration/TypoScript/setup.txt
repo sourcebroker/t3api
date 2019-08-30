@@ -4,7 +4,7 @@ T3apiResponse {
 
 	config {
 		disableAllHeaderCode = 1
-		additionalHeaders.10.header = Content-type:application/json
+		additionalHeaders.10.header = Content-type:application/ld+json
 		xhtml_cleaning = 0
 		admPanel = 0
 		debug = 0

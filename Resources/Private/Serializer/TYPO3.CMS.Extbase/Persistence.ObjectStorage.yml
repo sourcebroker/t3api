@@ -1,0 +1,14 @@
+TYPO3\CMS\Extbase\Persistence\ObjectStorage:
+  properties:
+    warning:
+      exclude: true
+    storage:
+      exclude: true
+    isModified:
+      exclude: true
+    addedObjectsPositions:
+      exclude: true
+    removedObjectsPositions:
+      exclude: true
+    positionCounter:
+      exclude: true

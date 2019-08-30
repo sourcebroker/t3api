@@ -8,11 +8,14 @@ use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Domain\Repository\CommonRepository;
+use SourceBroker\T3api\Service\RouteService;
 use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -64,10 +67,16 @@ class Bootstrap
         $context = (new RequestContext())->fromRequest(Request::createFromGlobals());
         $matchedRoute = null;
 
+        if ($this->isMainEndpointResponseClassDefined() && $this->isContextMatchingMainEndpointRoute($context)) {
+            $this->processMainEndpoint();
+            $this->output();
+
+            return;
+        }
+
         foreach ($this->apiResourceRepository->getAll() as $apiResource) {
             try {
-                $urlMatcher = new UrlMatcher($apiResource->getRoutes(), $context);
-                $matchedRoute = $urlMatcher->match($context->getPathInfo());
+                $matchedRoute = (new UrlMatcher($apiResource->getRoutes(), $context))->match($context->getPathInfo());
                 $this->processOperation(
                     $apiResource->getOperationByRouteName($matchedRoute['_route']),
                     $matchedRoute
@@ -114,7 +123,45 @@ class Bootstrap
             throw new Exception('Unknown operation', 1557506987081);
         }
 
-        $this->output = $this->serializerService->serialize($operation, $result);
+        $this->output = $this->serializerService->serializeOperation($operation, $result);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isMainEndpointResponseClassDefined(): bool
+    {
+        return !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass']);
+    }
+
+    /**
+     * @param RequestContext $context
+     *
+     * @return bool
+     */
+    protected function isContextMatchingMainEndpointRoute(RequestContext $context): bool
+    {
+        $routes = (new RouteCollection());
+        $routes->add('main_endpoint', new Route(rtrim(RouteService::getApiBasePath(), '/') . '/'));
+
+        try {
+            (new UrlMatcher($routes, $context))->match($context->getPathInfo());
+
+            return true;
+        } catch (ResourceNotFoundException $resourceNotFoundException) {
+        }
+
+        return false;
+    }
+
+    /**
+     * @return void
+     */
+    protected function processMainEndpoint(): void
+    {
+        $this->output = $this->serializerService->serialize(
+            $this->objectManager->get($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'])
+        );
     }
 
     /**

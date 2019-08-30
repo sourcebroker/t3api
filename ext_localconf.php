@@ -7,6 +7,8 @@ use SourceBroker\T3api\Response\HydraCollectionResponse;
 use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
+use SourceBroker\T3api\Response\MainEndpointResponse;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 defined('TYPO3_MODE') || die('Access denied.');
 
@@ -22,13 +24,13 @@ call_user_func(
             Handler\TypolinkHandler::class,
         ];
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['typesWithAllowedReflectionGetter'] = [
-            Handler\ProcessedImageHandler::TYPE,
-            Handler\RecordUriHandler::TYPE,
-        ];
-
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] = [
             Subscriber\AbstractEntitySubscriber::class,
+        ];
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerMetadataDirs'] = [
+            'TYPO3\CMS\Extbase' => ExtensionManagementUtility::extPath('t3api') . 'Resources/Private/Serializer/TYPO3.CMS.Extbase',
+            'TYPO3\CMS\Core' => ExtensionManagementUtility::extPath('t3api') . 'Resources/Private/Serializer/TYPO3.CMS.Core',
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['forceEntityProperties'] = [
@@ -36,6 +38,8 @@ call_user_func(
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'] = HydraCollectionResponse::class;
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'] = MainEndpointResponse::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['pagination'] = [
             'pagination_enabled' => true,
