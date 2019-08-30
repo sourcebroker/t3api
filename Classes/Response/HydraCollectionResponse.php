@@ -72,6 +72,33 @@ class HydraCollectionResponse extends AbstractCollectionResponse
     }
 
     /**
+     * @return array
+     * @Serializer\SerializedName("hydra:search")
+     * @Serializer\VirtualProperty()
+     * @Serializer\Groups({"__hydra_collection_response"})
+     */
+    public function getSearch(): array
+    {
+        $searchData = [];
+        $searchData['hydra:template'] = $this->operation->getRoute()->getPath();
+        $searchData['hydra:mapping'] = [];
+        $variables = [];
+        foreach ($this->operation->getFilters() as $filter) {
+            $order = $filter->getArgument('orderParameterName');
+            $variable = sprintf($order ? $order . '[%s]' : '%s', $filter->getProperty());
+            if (!in_array($variable, $variables)) {
+                $searchData['hydra:mapping'][] = [
+                    'variable' => $variable,
+                    'property' => $filter->getProperty()
+                ];
+                $variables[] = $variable;
+            }
+        }
+        $searchData['hydra:template'] .= sprintf('{?%s}', implode(',', $variables));
+        return $searchData;
+    }
+
+    /**
      * @param array $overrideParams
      *
      * @return string
