@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
-namespace V\Local\Service;
+namespace SourceBroker\T3api\Dispatcher;
 
-use SourceBroker\T3api\Dispatcher\AbstractDispatcher;
 use TYPO3\CMS\Core\SingletonInterface;
 
 class HeadlessDispatcher

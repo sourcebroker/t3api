@@ -10,7 +10,6 @@ use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Domain\Repository\CommonRepository;
 use SourceBroker\T3api\Service\SerializerService;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
@@ -50,7 +49,7 @@ class AbstractDispatcher
      * @throws Exception
      * @throws RouteNotFoundException
      */
-    protected function processRequestByContext(RequestContext $requestContext): string
+    public function processOperationByContext(RequestContext $requestContext): string
     {
         foreach ($this->apiResourceRepository->getAll() as $apiResource) {
             try {
@@ -70,9 +69,7 @@ class AbstractDispatcher
     /**
      * @param AbstractOperation $operation
      * @param array $matchedRoute
-     *
      * @return string
-     *
      * @throws Exception
      */
     protected function processOperation(AbstractOperation $operation, array $matchedRoute): string

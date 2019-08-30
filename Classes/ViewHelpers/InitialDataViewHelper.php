@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\ViewHelpers;
 
+use SourceBroker\T3api\Dispatcher\HeadlessDispatcher;
+use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
-use V\Local\Service\HeadlessDispatcher;
 
 class InitialDataViewHelper
     extends AbstractViewHelper
@@ -30,18 +31,34 @@ class InitialDataViewHelper
     public function initializeArguments()
     {
         $this->registerArgument('route', 'string', 'API endpoint route');
+        $this->registerArgument('itemsPerPage', 'int', 'Items per page number');
+        $this->registerArgument('params', 'array', 'API endpoint route');
     }
 
     public function render()
     {
+        $requestContext = new RequestContext();
+
+        $fullPath = '/_api/' . $this->arguments['route'];
+        $requestContext->setPathInfo($fullPath);
+
+        if ($this->hasArgument('params')) {
+            $requestContext->setParameters($this->arguments['params']);
+        }
+
+        if ($this->hasArgument('itemsPerPage')) {
+            $requestContext->setParameter('itemsPerPage', $this->arguments['itemsPerPage']);
+        }
+
+        // request
         $dataJson = null;
 
         try {
-            $dataJson = $this->headlessDispatcher->process($this->arguments['route']);
+            $dataJson = $this->headlessDispatcher->processOperationByContext($requestContext);
         } catch (\Exception $e) {
         }
 
-        return $dataJson;
+        return json_decode($dataJson, true);
     }
 
 }

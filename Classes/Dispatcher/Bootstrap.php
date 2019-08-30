@@ -36,7 +36,7 @@ class Bootstrap
         if ($this->isMainEndpointResponseClassDefined() && $this->isContextMatchingMainEndpointRoute($context)) {
             $this->processMainEndpoint();
         } else {
-            $this->output = $this->processRequestByContext($context);
+            $this->output = $this->processOperationByContext($context);
         }
 
         $this->output();
