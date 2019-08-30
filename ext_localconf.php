@@ -1,45 +1,35 @@
 <?php
 
-use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
-use SourceBroker\T3api\Serializer\Handler as Handler;
-use SourceBroker\T3api\Serializer\Subscriber as Subscriber;
-use SourceBroker\T3api\Response\HydraCollectionResponse;
-use SourceBroker\T3api\Service\SerializerService;
-use TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend;
-use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
-use SourceBroker\T3api\Response\MainEndpointResponse;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-
 defined('TYPO3_MODE') || die('Access denied.');
 
 call_user_func(
     function () {
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][ResourceEnhancer::ENHANCER_NAME] = ResourceEnhancer::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::ENHANCER_NAME] = \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] = [
-            Handler\ObjectStorageHandler::class,
-            Handler\FileReferenceHandler::class,
-            Handler\ProcessedImageHandler::class,
-            Handler\RecordUriHandler::class,
-            Handler\TypolinkHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\ObjectStorageHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\FileReferenceHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\ProcessedImageHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\RecordUriHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\TypolinkHandler::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] = [
-            Subscriber\AbstractEntitySubscriber::class,
+            SourceBroker\T3api\Serializer\Subscriber\AbstractEntitySubscriber::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerMetadataDirs'] = [
-            'TYPO3\CMS\Extbase' => ExtensionManagementUtility::extPath('t3api') . 'Resources/Private/Serializer/TYPO3.CMS.Extbase',
-            'TYPO3\CMS\Core' => ExtensionManagementUtility::extPath('t3api') . 'Resources/Private/Serializer/TYPO3.CMS.Core',
+            'TYPO3\CMS\Extbase' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3api') . 'Resources/Private/Serializer/TYPO3.CMS.Extbase',
+            'TYPO3\CMS\Core' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3api') . 'Resources/Private/Serializer/TYPO3.CMS.Core',
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['forceEntityProperties'] = [
             'uid',
         ];
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'] = HydraCollectionResponse::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'] = \SourceBroker\T3api\Response\HydraCollectionResponse::class;
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'] = MainEndpointResponse::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'] = \SourceBroker\T3api\Response\HydraCollectionResponse::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['pagination'] = [
             'pagination_enabled' => true,
@@ -54,8 +44,8 @@ call_user_func(
 
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['t3api'])) {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['t3api'] = [
-                'frontend' => VariableFrontend::class,
-                'backend' => SimpleFileBackend::class,
+                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
+                'backend' => \TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend::class,
                 'options' => [
                     'defaultLifetime' => 0,
                 ],
@@ -64,6 +54,6 @@ call_user_func(
         }
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['t3api_clearcache'] =
-            SerializerService::class . '->clearCache';
+            \SourceBroker\T3api\Service\SerializerService::class . '->clearCache';
     }
 );
