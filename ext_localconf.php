@@ -4,6 +4,7 @@ use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use SourceBroker\T3api\Serializer\Handler as Handler;
 use SourceBroker\T3api\Serializer\Subscriber as Subscriber;
 use SourceBroker\T3api\Response\HydraCollectionResponse;
+use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 
@@ -57,5 +58,8 @@ call_user_func(
                 'groups' => ['system'],
             ];
         }
+
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['t3api_clearcache'] =
+            SerializerService::class . '->clearCache';
     }
 );

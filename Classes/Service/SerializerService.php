@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
-use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
+use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -14,6 +14,8 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Serializer\Accessor\AccessorStrategy;
+use TYPO3\CMS\Core\Cache\Exception;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -41,6 +43,7 @@ class SerializerService implements SingletonInterface
      * @param mixed $result
      *
      * @return string
+     * @throws Exception
      */
     public function serialize(AbstractOperation $operation, $result)
     {
@@ -51,6 +54,7 @@ class SerializerService implements SingletonInterface
      * @param AbstractOperation $operation
      *
      * @return SerializerInterface
+     * @throws Exception
      */
     protected function getSerializer(AbstractOperation $operation): SerializerInterface
     {
@@ -95,15 +99,32 @@ class SerializerService implements SingletonInterface
 
     /**
      * @return string
+     * @throws Exception
      */
     protected function getSerializerCacheDirectory(): string
     {
-        $cacheDirectory = PATH_site . '/typo3temp/var/cache/code/t3api/jms-serializer';
-        if (!file_exists($cacheDirectory)) {
-            mkdir($cacheDirectory, 0777, true);
+        $cacheDirectory = Environment::getVarPath() . '/cache/code/t3api/jms-serializer';
+        if (!is_dir($cacheDirectory)) {
+            try {
+                GeneralUtility::mkdir_deep($cacheDirectory);
+            } catch (\RuntimeException $e) {
+                throw new Exception('The directory "' . $cacheDirectory . '" can not be created.', 1313669848, $e);
+            }
+            if (!is_writable($cacheDirectory)) {
+                throw new Exception('The directory "' . $cacheDirectory . '" is not writable.', 1213965200);
+            }
         }
-        GeneralUtility::fixPermissions($cacheDirectory);
-
         return $cacheDirectory;
+    }
+
+    /**
+     * @param array $params
+     * @throws Exception
+     */
+    public function clearCache(array $params)
+    {
+        if (in_array($params['cacheCmd'], ['all', 'system'])) {
+            GeneralUtility::flushDirectory($this->getSerializerCacheDirectory(), true, true);
+        }
     }
 }
