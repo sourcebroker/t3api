@@ -5,8 +5,11 @@ namespace SourceBroker\T3api\Dispatcher;
 
 use TYPO3\CMS\Core\SingletonInterface;
 
-class HeadlessDispatcher
-    extends AbstractDispatcher
-    implements SingletonInterface
+/**
+ * Class HeadlessDispatcher
+ *
+ * @package SourceBroker\T3api\Dispatcher
+ */
+class HeadlessDispatcher extends AbstractDispatcher implements SingletonInterface
 {
 }
