@@ -74,7 +74,7 @@ class AbstractDispatcher
      */
     protected function processOperation(AbstractOperation $operation, array $matchedRoute): string
     {
-        $repository = CommonRepository::getInstanceForEntity($operation->getApiResource()->getEntity());
+        $repository = CommonRepository::getInstanceForResource($operation->getApiResource());
 
         if ($operation instanceof ItemOperation) {
             $result = $repository->findByUid((int)$matchedRoute['id']);

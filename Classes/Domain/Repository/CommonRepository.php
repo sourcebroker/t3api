@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Repository;
 
 use SourceBroker\T3api\Domain\Model\ApiFilter;
+use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Filter\AbstractFilter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -20,14 +21,16 @@ class CommonRepository extends Repository
 {
 
     /**
-     * @param string $entity
+     * @param ApiResource $apiResource
      *
      * @return CommonRepository
      */
-    public static function getInstanceForEntity(string $entity): self
+    public static function getInstanceForResource(ApiResource $apiResource): self
     {
         $repository = GeneralUtility::makeInstance(ObjectManager::class)->get(self::class);
-        $repository->setObjectType($entity);
+        $repository->setObjectType($apiResource->getEntity());
+
+        $repository->defaultQuerySettings->setRespectStoragePage(false);
 
         // @todo add signal for customization of repository (e.g. change of the default query settings)
 
@@ -42,8 +45,8 @@ class CommonRepository extends Repository
     public function __construct(ObjectManagerInterface $objectManager)
     {
         parent::__construct($objectManager);
-        $this->defaultQuerySettings = new Typo3QuerySettings();
-        $this->defaultQuerySettings->setRespectStoragePage(false);
+        $this->defaultQuerySettings = $this->objectManager->get(Typo3QuerySettings::class);
+        $this->defaultQuerySettings->initializeObject();
     }
 
     /**

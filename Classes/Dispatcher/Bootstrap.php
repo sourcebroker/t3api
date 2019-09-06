@@ -10,14 +10,15 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use Exception;
 
 /**
  * Class Bootstrap
  */
-class Bootstrap
-    extends AbstractDispatcher
+class Bootstrap extends AbstractDispatcher
 {
 
     /** @var string */
@@ -30,6 +31,7 @@ class Bootstrap
      */
     public function process(): void
     {
+        $this->setLanguageAspect();
         $context = (new RequestContext())->fromRequest(Request::createFromGlobals());
         $matchedRoute = null;
 
@@ -87,5 +89,22 @@ class Bootstrap
     protected function output(): void
     {
         echo $this->output;
+    }
+
+    /**
+     * Sets language aspect for context
+     *
+     * @return void
+     */
+    protected function setLanguageAspect(): void
+    {
+        $languageTsConfig = $GLOBALS['TSFE']->config;
+
+        if (!isset($languageTsConfig['sys_language_uid'])) {
+            $languageTsConfig['sys_language_uid'] = (int)($GLOBALS['TYPO3_REQUEST']->getQueryParams()['L'] ?? 0);
+        }
+
+        $this->objectManager->get(Context::class)
+            ->setAspect('language', LanguageAspectFactory::createFromTypoScript($languageTsConfig));
     }
 }
