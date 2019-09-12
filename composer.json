@@ -29,7 +29,6 @@
         }
     },
     "replace": {
-        "t3api": "self.version",
         "typo3-ter/t3api": "self.version"
     },
     "config": {
