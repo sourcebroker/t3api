@@ -2,6 +2,9 @@
 
 namespace SourceBroker\T3api\Annotation;
 
+use Doctrine\Common\Annotations\Annotation\Attributes;
+use Doctrine\Common\Annotations\Annotation\Attribute;
+
 /**
  * ApiResource annotation.
  *
@@ -10,6 +13,7 @@ namespace SourceBroker\T3api\Annotation;
  * @Attributes(
  *     @Attribute("collectionOperations", type="array"),
  *     @Attribute("itemOperations", type="array"),
+ *     @Attribute("attributes", type="array"),
  * )
  */
 class ApiResource

@@ -6,6 +6,7 @@ namespace SourceBroker\T3api\Domain\Repository;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Filter\AbstractFilter;
+use SourceBroker\T3api\Service\StorageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
@@ -27,10 +28,22 @@ class CommonRepository extends Repository
      */
     public static function getInstanceForResource(ApiResource $apiResource): self
     {
-        $repository = GeneralUtility::makeInstance(ObjectManager::class)->get(self::class);
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+        $repository = $objectManager->get(self::class);
         $repository->setObjectType($apiResource->getEntity());
 
-        $repository->defaultQuerySettings->setRespectStoragePage(false);
+        if (!empty($apiResource->getPersistenceSettings()->getStoragePids())) {
+            $repository->defaultQuerySettings->setRespectStoragePage(true);
+            $repository->defaultQuerySettings->setStoragePageIds(
+                $objectManager->get(StorageService::class)->getRecursiveStoragePids(
+                    $apiResource->getPersistenceSettings()->getStoragePids(),
+                    $apiResource->getPersistenceSettings()->getRecursionLevel()
+                )
+            );
+        } else {
+            $repository->defaultQuerySettings->setRespectStoragePage(false);
+        }
 
         // @todo add signal for customization of repository (e.g. change of the default query settings)
 

@@ -42,6 +42,11 @@ class ApiResource
     protected $pagination;
 
     /**
+     * @var PersistenceSettings
+     */
+    protected $persistenceSettings;
+
+    /**
      * @param string $entity
      * @param ApiResourceAnnotation $apiResourceAnnotation
      */
@@ -65,6 +70,7 @@ class ApiResource
         }
 
         $this->pagination = new Pagination($apiResourceAnnotation);
+        $this->persistenceSettings = new PersistenceSettings($apiResourceAnnotation);
     }
 
     /**
@@ -99,10 +105,12 @@ class ApiResource
     public function getMainItemOperation(): ?ItemOperation
     {
         if (!empty($this->getItemOperations())) {
-            return array_shift($this->getItemOperations());
+            $itemOperations = $this->getItemOperations();
+            return array_shift($itemOperations);
         }
-    }
 
+        return null;
+    }
 
     /**
      * @return CollectionOperation[]
@@ -120,8 +128,11 @@ class ApiResource
     public function getMainCollectionOperation(): ?CollectionOperation
     {
         if (!empty($this->getCollectionOperations())) {
-            return array_shift($this->getCollectionOperations());
+            $collectionOperations = $this->getCollectionOperations();
+            return array_shift($collectionOperations);
         }
+
+        return null;
     }
 
     /**
@@ -162,5 +173,13 @@ class ApiResource
     public function getPagination(): Pagination
     {
         return $this->pagination;
+    }
+
+    /**
+     * @return PersistenceSettings
+     */
+    public function getPersistenceSettings(): PersistenceSettings
+    {
+        return $this->persistenceSettings;
     }
 }
