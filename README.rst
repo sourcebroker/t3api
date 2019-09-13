@@ -21,10 +21,10 @@ Features
 - Build-in pagination.
 - Support for TypoLinks and image processing.
 - Configurable routing.
-- Responses in Hydra/[JSON-LD](https://json-ld.org/) format.
+- Responses in Hydra/`JSON-LD <https://json-ld.org/>`_ format.
 - Serialization contexts - customizable output depending on routing.
 - Easy customizable serialization handlers and subscribers.
-- Support for all features of [JMSSerializer](https://jmsyst.com/libs/serializer).
+- Support for all features of `JMSSerializer <https://jmsyst.com/libs/serializer>`_.
 
 Usage
 -----
@@ -41,7 +41,7 @@ Minimal setup
 
 Add route enhancer to your site ``config.yaml`` file. ``basePath`` is the prefix for all api endpoints.
 
- ::
+::
 
  routeEnhancers:
     T3api:
@@ -51,7 +51,7 @@ Add route enhancer to your site ``config.yaml`` file. ``basePath`` is the prefix
 
 Configure routes for your Extbase model using PHP annotations:
 
- ::
+::
 
   /**
    * @SourceBroker\T3api\Annotation\ApiResource(
@@ -72,7 +72,7 @@ Configure routes for your Extbase model using PHP annotations:
   }
 
 
-To check more configuration options see example integration of t3api for well known `news` extension (https://github.com/sourcebroker/t3apinews).
+To check more configuration options see `t3apinews <https://github.com/sourcebroker/t3apinews>`_ - an example integration of t3api for well known `news <https://github.com/georgringer/news>`_ extension.
 
 Administration corner
 ---------------------
@@ -80,15 +80,17 @@ Administration corner
 Versions and support
 ++++++++++++++++++++
 
++-------------+------------+-----------+-----------------------------------------+
 | T3api       | TYPO3      | PHP       | Support/Development                     |
-| ----------- | ---------- | ----------|---------------------------------------- |
++=============+============+===========+=========================================+
 | 0.1.x       | 9.x        | 7.2 - 7.3 | Features, Bugfixes, Security Updates    |
-
++-------------+------------+-----------+-----------------------------------------+
 
 Release Management
-++++++++++++++++++++
+++++++++++++++++++
 
 T3api uses **semantic versioning** which basically means for you, that:
+
 - **bugfix updates** (e.g. 1.0.0 => 1.0.1) just includes small bugfixes or security relevant stuff without breaking changes.
 - **minor updates** (e.g. 1.0.0 => 1.1.0) includes new features and smaller tasks without breaking changes.
 - **major updates** (e.g. 1.0.0 => 2.0.0) breaking changes wich can be refactorings, features or bugfixes.
