@@ -1,0 +1,37 @@
+sudo: false
+
+language: php
+
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.1
+      env: TYPO3_VERSION=^8
+    - php: 7.0
+      env: TYPO3_VERSION=^8
+    - php: 7.2
+      env: TYPO3_VERSION=^9
+
+addons:
+  apt:
+    packages:
+      - parallel
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - composer self-update
+  - composer --version
+
+before_script:
+  - phpenv config-rm xdebug.ini
+  - composer require typo3/minimal=$TYPO3_VERSION
+  - composer require typo3/cms-recordlist=$TYPO3_VERSION
+  - git checkout composer.json
+  - export TYPO3_PATH_WEB=$PWD/.Build/Web
+
+script:
+  - >
+    .Build/bin/phpunit --colors -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/
