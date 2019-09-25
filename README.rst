@@ -42,7 +42,9 @@ In your Composer based TYPO3 project root, just do ``composer require sourcebrok
 Minimal setup
 +++++++++++++
 
-Add route enhancer to your site ``config.yaml`` file. ``basePath`` is the prefix for all api endpoints.
+1. Open main Template record and add "T3api" in tab "Includes" -> field "Include static (from extensions)"
+
+2. Add route enhancer to your site ``config.yaml`` file. ``basePath`` is the prefix for all api endpoints.
 
 ::
 
@@ -52,7 +54,7 @@ Add route enhancer to your site ``config.yaml`` file. ``basePath`` is the prefix
       basePath: '_api'
 
 
-Configure routes for your Extbase model using PHP annotations:
+3. Configure routes for your Extbase model using PHP annotations:
 
 ::
 
