@@ -76,6 +76,8 @@ Minimal setup
   {
   }
 
+4. Done! Try your API endpoints at https://example.com/_api/articles and https://example.com/_api/articles/1
+
 
 To check more configuration options see `t3apinews <https://github.com/sourcebroker/t3apinews>`_ - an example integration of t3api for well known `news <https://github.com/georgringer/news>`_ extension.
 
