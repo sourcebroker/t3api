@@ -32,13 +32,14 @@ class Bootstrap extends AbstractDispatcher
     public function process(): void
     {
         $this->setLanguageAspect();
-        $context = (new RequestContext())->fromRequest(Request::createFromGlobals());
+        $request = Request::createFromGlobals();
+        $context = (new RequestContext())->fromRequest($request);
         $matchedRoute = null;
 
         if ($this->isMainEndpointResponseClassDefined() && $this->isContextMatchingMainEndpointRoute($context)) {
             $this->processMainEndpoint();
         } else {
-            $this->output = $this->processOperationByContext($context);
+            $this->output = $this->processOperationByRequest($context, $request);
         }
 
         $this->output();

@@ -65,8 +65,9 @@ class ApiResource
 
         /** @var AbstractOperation $operation */
         foreach ($this->getOperations() as $operation) {
-            $this->routes->add($operation->getRoute()->getPath(), $operation->getRoute());
-            $this->routeNameToOperation[$operation->getRoute()->getPath()] = $operation;
+            $routeName = spl_object_hash($operation);
+            $this->routes->add($routeName, $operation->getRoute());
+            $this->routeNameToOperation[spl_object_hash($operation)] = $operation;
         }
 
         $this->pagination = new Pagination($apiResourceAnnotation);
