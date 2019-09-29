@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
@@ -25,26 +26,31 @@ class StorageService implements SingletonInterface
     }
 
     /**
-     * @param string|int $storagePid
+     * @param int[] $storagePids
      * @param int $recursionDepth
      *
      * @return int[]
      */
-    public function getRecursiveStoragePids($storagePid, $recursionDepth = 0): array
+    public function getRecursiveStoragePids(array $storagePids, $recursionDepth = 0): array
     {
         if ($recursionDepth <= 0) {
-            return GeneralUtility::intExplode(',', $storagePid);
+            return $storagePids;
         }
-        $recursiveStoragePids = '';
-        $storagePids = GeneralUtility::intExplode(',', $storagePid);
+
+        $recursiveStoragePids = [];
+
         foreach ($storagePids as $startPid) {
             $pids = $this->frontendConfigurationManager->getContentObject()->getTreeList($startPid, $recursionDepth, 0);
-            if ((string)$pids !== '') {
-                $recursiveStoragePids .= $pids . ',';
+
+            if (!empty($pids)) {
+                $recursiveStoragePids = array_merge(
+                    $recursiveStoragePids,
+                    GeneralUtility::intExplode(',', $pids)
+                );
             }
         }
 
-        return GeneralUtility::intExplode(',', $recursiveStoragePids);
+        return array_unique($recursiveStoragePids);
     }
 
 }
