@@ -149,7 +149,8 @@ class AbstractDispatcher
             return $this->objectManager->get(
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'],
                 $operation,
-                $repository->findFiltered($operation->getFilters())
+                $request,
+                $repository->findFiltered($operation->getFilters(), $request)
             );
         } else {
             // @todo 591 throw appropriate exception

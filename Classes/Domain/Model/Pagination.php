@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Model;
 
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
+use Symfony\Component\HttpFoundation\Request;
+use TYPO3\CMS\Core\Http\ServerRequest as Typo3Request;
 
 /**
  * Class Pagination
@@ -51,6 +53,11 @@ class Pagination
     protected $pageParameterName;
 
     /**
+     * @var array
+     */
+    protected $parameters;
+
+    /**
      * ClientSidePagination constructor.
      *
      * @param ApiResourceAnnotation $apiResource
@@ -66,6 +73,22 @@ class Pagination
         $this->enabledParameterName = $attributes['enabled_parameter_name'] ?? $this->enabledParameterName;
         $this->itemsPerPageParameterName = $attributes['items_per_page_parameter_name'] ?? $this->itemsPerPageParameterName;
         $this->pageParameterName = $attributes['page_parameter_name'] ?? $this->pageParameterName;
+    }
+
+    /**
+     * @param Request|Typo3Request
+     *
+     * @return self
+     */
+    public function setParametersFromRequest($request): self
+    {
+        if ($request instanceof Request) {
+            parse_str($request->getQueryString() ?? '', $this->parameters);
+        } elseif ($request instanceof Typo3Request) {
+            $this->parameters = $request->getQueryParams();
+        }
+
+        return $this;
     }
 
     /**
@@ -94,9 +117,7 @@ class Pagination
      */
     public function getPage(): int
     {
-        return (isset($GLOBALS['TYPO3_REQUEST']->getQueryParams()[$this->pageParameterName]))
-            ? (int)$GLOBALS['TYPO3_REQUEST']->getQueryParams()[$this->pageParameterName]
-            : 1;
+        return (isset($this->parameters[$this->pageParameterName])) ? (int)$this->parameters[$this->pageParameterName] : 1;
     }
 
     /**
@@ -128,7 +149,7 @@ class Pagination
      */
     protected function isClientEnabled(): bool
     {
-        return $this->clientEnabled && !empty($GLOBALS['TYPO3_REQUEST']->getQueryParams()[$this->enabledParameterName]);
+        return $this->clientEnabled && !empty($this->parameters[$this->enabledParameterName]);
     }
 
     /**
@@ -136,11 +157,8 @@ class Pagination
      */
     protected function getClientNumberOfItemsPerPage(): ?int
     {
-        if (
-            $this->clientItemsPerPage
-            && isset($GLOBALS['TYPO3_REQUEST']->getQueryParams()[$this->itemsPerPageParameterName])
-        ) {
-            return (int)$GLOBALS['TYPO3_REQUEST']->getQueryParams()[$this->itemsPerPageParameterName];
+        if ($this->clientItemsPerPage && isset($this->parameters[$this->itemsPerPageParameterName])) {
+            return (int)$this->parameters[$this->itemsPerPageParameterName];
         }
 
         return null;

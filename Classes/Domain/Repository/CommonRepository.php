@@ -7,6 +7,7 @@ use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Filter\AbstractFilter;
 use SourceBroker\T3api\Service\StorageService;
+use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
@@ -72,12 +73,13 @@ class CommonRepository extends Repository
 
     /**
      * @param ApiFilter[] $apiFilters
+     * @param Request $request
      *
      * @return QueryInterface
      */
-    public function findFiltered(array $apiFilters)
+    public function findFiltered(array $apiFilters, Request $request)
     {
-        $queryParams = $GLOBALS['TYPO3_REQUEST']->getQueryParams();
+        parse_str($request->getQueryString() ?? '', $queryParams);
 
         $query = $this->createQuery();
         $constraintGroups = [];

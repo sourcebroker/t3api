@@ -5,6 +5,7 @@ namespace SourceBroker\T3api\Response;
 
 use JMS\Serializer\Annotation as Serializer;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
+use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
@@ -26,6 +27,11 @@ abstract class AbstractCollectionResponse
     protected $query;
 
     /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
      * @var array|null
      */
     protected $membersCache = null;
@@ -39,11 +45,13 @@ abstract class AbstractCollectionResponse
      * CollectionResponse constructor.
      *
      * @param CollectionOperation $operation
+     * @param Request $request
      * @param QueryInterface $query
      */
-    public function __construct(CollectionOperation $operation, QueryInterface $query)
+    public function __construct(CollectionOperation $operation, Request $request, QueryInterface $query)
     {
         $this->operation = $operation;
+        $this->request = $request;
         $this->query = $query;
     }
 
@@ -76,13 +84,14 @@ abstract class AbstractCollectionResponse
      */
     protected function applyPagination(): QueryInterface
     {
-        $pagination = $this->operation->getApiResource()->getPagination();
+        $pagination = $this->operation->getApiResource()->getPagination()->setParametersFromRequest($this->request);
+
         if (!$pagination->isEnabled()) {
             return $this->query;
         }
 
-        $query = clone $this->query;
-        return $query->setLimit($pagination->getNumberOfItemsPerPage())
+        return (clone $this->query)
+            ->setLimit($pagination->getNumberOfItemsPerPage())
             ->setOffset($pagination->getOffset());
     }
 }
