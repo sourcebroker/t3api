@@ -19,3 +19,4 @@ nbproject
 /.Build
 /composer.lock
 /var
+/.php_cs.cache
