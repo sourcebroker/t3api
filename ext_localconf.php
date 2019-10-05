@@ -29,7 +29,7 @@ call_user_func(
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'] = \SourceBroker\T3api\Response\HydraCollectionResponse::class;
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'] = \SourceBroker\T3api\Response\HydraCollectionResponse::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'] = \SourceBroker\T3api\Response\MainEndpointResponse::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['pagination'] = [
             'pagination_enabled' => true,
