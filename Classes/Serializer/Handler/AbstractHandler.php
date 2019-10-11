@@ -52,19 +52,4 @@ abstract class AbstractHandler implements SubscribingHandlerInterface
             )
         );
     }
-
-    /**
-     * @param SerializationVisitorInterface $visitor
-     * @param mixed $fileReference
-     * @param array $type
-     * @param SerializationContext $context
-     *
-     * @return array
-     */
-    abstract public function serialize(
-        SerializationVisitorInterface $visitor,
-        $fileReference,
-        array $type,
-        SerializationContext $context
-    );
 }

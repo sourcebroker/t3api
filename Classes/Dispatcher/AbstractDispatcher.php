@@ -10,14 +10,18 @@ use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Domain\Repository\CommonRepository;
+use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use SourceBroker\T3api\Service\SerializerService;
+use SourceBroker\T3api\Service\ValidationService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * Class AbstractDispatcher
@@ -40,6 +44,11 @@ class AbstractDispatcher
     protected $apiResourceRepository;
 
     /**
+     * @var ValidationService
+     */
+    protected $validationService;
+
+    /**
      * Bootstrap constructor.
      */
     public function __construct()
@@ -47,6 +56,7 @@ class AbstractDispatcher
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->serializerService = $this->objectManager->get(SerializerService::class);
         $this->apiResourceRepository = $this->objectManager->get(ApiResourceRepository::class);
+        $this->validationService = $this->objectManager->get(ValidationService::class);
     }
 
     /**
@@ -104,7 +114,7 @@ class AbstractDispatcher
      * @param int $uid
      * @param Request $request
      *
-     * @return object
+     * @return AbstractDomainObject
      *
      * @throws InvalidArgumentException
      */
@@ -112,18 +122,27 @@ class AbstractDispatcher
     {
         $repository = CommonRepository::getInstanceForResource($operation->getApiResource());
 
+        /** @var AbstractDomainObject $object */
         $object = $repository->findByUid($uid);
 
-        if ($operation->getMethod() === 'PUT') {
-            // @todo 591 implement support for PUT
-        } elseif ($operation->getMethod() !== 'GET') {
+        if ($operation->getMethod() !== 'GET') {
             throw new InvalidArgumentException(
                 sprintf('Method `%s` is not supported for item operation', $operation->getMethod()),
                 1568378714606
             );
+        } elseif ($operation->getMethod() === 'PUT' || $operation->getMethod() === 'PATCH') {
+            // @todo 591 implement support for PUT/PATCH
+            // @todo 591 validation
+            // https://stackoverflow.com/questions/52114926/symfonyjms-serializer-deserialize-into-existing-object
+            // https://github.com/schmittjoh/serializer/issues/79
+            die('PUT request');
+        } elseif ($operation->getMethod() === 'DELETE') {
+            // @todo 591 implement support for DELETE
+            die('DELETE request');
         } else {
             // @todo 591
             // throw new InvalidArgumentException();
+            // @todo 591 status code 405
         }
 
         if (!$object) {
@@ -137,23 +156,30 @@ class AbstractDispatcher
     /**
      * @param CollectionOperation $operation
      * @param Request $request
-     * @return object
+     *
+     * @return AbstractDomainObject|AbstractCollectionResponse
      */
-    protected function processCollectionOperation(CollectionOperation $operation, Request $request): object
+    protected function processCollectionOperation(CollectionOperation $operation, Request $request)
     {
         $repository = CommonRepository::getInstanceForResource($operation->getApiResource());
 
-        if ($operation->getMethod() === 'POST') {
-            // @todo 591 implement support for POST
-        } elseif ($operation->getMethod() === 'GET') {
+        if ($operation->getMethod() === 'GET') {
             return $this->objectManager->get(
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'],
                 $operation,
                 $request,
                 $repository->findFiltered($operation->getFilters(), $request)
             );
+        } elseif ($operation->getMethod() === 'POST') {
+            $object = $this->serializerService->deserializeOperation($operation, $request->getContent());
+            $this->validationService->validateObject($object);
+            $repository->add($object);
+            $this->objectManager->get(PersistenceManager::class)->persistAll();
+
+            return $object;
         } else {
             // @todo 591 throw appropriate exception
+            // @todo 591 status code 405
         }
     }
 }

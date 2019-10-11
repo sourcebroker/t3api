@@ -5,11 +5,14 @@ namespace SourceBroker\T3api\Serializer\Subscriber;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
+use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\JsonSerializationVisitor;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
+use SourceBroker\T3api\Serializer\Handler\AbstractDomainObjectHandler;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
@@ -20,7 +23,12 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
     /**
      * @var ApiResourceRepository
      */
-    private $apiResourceRepository;
+    protected $apiResourceRepository;
+
+    /**
+     * @var ObjectManager
+     */
+    protected $objectManager;
 
     /**
      * @param ApiResourceRepository $apiResourceRepository
@@ -28,6 +36,14 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
     public function injectApiResourceRepository(ApiResourceRepository $apiResourceRepository): void
     {
         $this->apiResourceRepository = $apiResourceRepository;
+    }
+
+    /**
+     * @param ObjectManager $objectManager
+     */
+    public function injectObjectManager(ObjectManager $objectManager): void
+    {
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -40,6 +56,10 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
                 'event' => Events::POST_SERIALIZE,
                 'method' => 'onPostSerialize',
             ],
+            [
+                'event' => Events::PRE_DESERIALIZE,
+                'method' => 'onPreDeserialize'
+            ]
         ];
     }
 
@@ -63,12 +83,31 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
     }
 
     /**
+     * @param PreDeserializeEvent $event
+     */
+    public function onPreDeserialize(PreDeserializeEvent $event)
+    {
+        // Changes type to the custom one to make it possible to handle data with serializer handler
+        if (
+            is_subclass_of($event->getType()['name'], AbstractDomainObject::class)
+            && $event->getContext()->getDepth() > 1
+        ) {
+            $event->setType(
+                AbstractDomainObjectHandler::TYPE,
+                [
+                    'targetType' => $event->getType()['name'],
+                ]
+            );
+        }
+    }
+
+    /**
      * @param AbstractDomainObject $entity
      * @param JsonSerializationVisitor $visitor
      *
      * @return void
      */
-    private function addForceEntityProperties(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
+    protected function addForceEntityProperties(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
     {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['forceEntityProperties'] as $property) {
             $value = ObjectAccess::getProperty($entity, $property);
@@ -85,7 +124,7 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
      *
      * @return void
      */
-    private function addIri(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
+    protected function addIri(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
     {
         $apiResource = $this->apiResourceRepository->getByEntity($entity);
         if ($apiResource && $apiResource->getMainItemOperation()) {

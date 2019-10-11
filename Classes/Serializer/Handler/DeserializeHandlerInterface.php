@@ -8,9 +8,6 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 /**
  * Interface DeserializeHandlerInterface
- *
- * @todo Deserialization is not working yet. This interface is created only to keep architecture for future
- *     implementation
  */
 interface DeserializeHandlerInterface
 {

@@ -61,7 +61,7 @@ class InlineViewHelper extends AbstractViewHelper
     /**
      * @return string
      */
-    private function getRequestUri(): string
+    protected function getRequestUri(): string
     {
         return implode(
             '/',
@@ -76,7 +76,7 @@ class InlineViewHelper extends AbstractViewHelper
     /**
      * @return array
      */
-    private function getRequestParameters(): array
+    protected function getRequestParameters(): array
     {
         $params = $this->arguments['params'];
 

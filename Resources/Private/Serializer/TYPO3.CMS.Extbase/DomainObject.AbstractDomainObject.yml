@@ -1,5 +1,10 @@
 TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject:
   properties:
+    uid:
+      readOnly: true
+      type: integer
+    pid:
+      type: integer
     _localizedUid:
       exclude: true
     _languageUid:

@@ -5,7 +5,6 @@ namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Interface SerializeHandlerInterface
@@ -14,7 +13,7 @@ interface SerializeHandlerInterface
 {
     /**
      * @param SerializationVisitorInterface $visitor
-     * @param ObjectStorage $objectStorage
+     * @param mixed $object
      * @param array $type
      * @param SerializationContext $context
      *
@@ -22,7 +21,7 @@ interface SerializeHandlerInterface
      */
     public function serialize(
         SerializationVisitorInterface $visitor,
-        $objectStorage,
+        $object,
         array $type,
         SerializationContext $context
     );

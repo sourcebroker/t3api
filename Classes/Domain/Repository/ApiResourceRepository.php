@@ -9,6 +9,7 @@ use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\ApiResource;
+use SourceBroker\T3api\Service\SerializerMetadataService;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
@@ -25,7 +26,7 @@ class ApiResourceRepository
     /**
      * @var FrontendInterface
      */
-    private $cache;
+    protected $cache;
 
     /**
      * @param CacheManager $cacheManager
@@ -87,6 +88,8 @@ class ApiResourceRepository
                         $apiResource->addFilter($apiFilter);
                     }
                 }
+
+                SerializerMetadataService::generateAutoloadForEntity($domainModel);
             } catch (ReflectionException $exception) {
                 // @todo log error to TYPO3
             }
