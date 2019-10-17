@@ -58,8 +58,6 @@ class CommonRepository
      */
     public static function getInstanceForResource(ApiResource $apiResource): self
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
         $repository = self::getInstanceForEntity($apiResource->getEntity());
         $repository->apiResource = $apiResource;
 
