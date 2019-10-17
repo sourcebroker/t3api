@@ -12,11 +12,11 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * Class ProcessedImageHandler
+ * Class ImageHandler
  */
-class ProcessedImageHandler extends AbstractHandler implements SerializeHandlerInterface
+class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
 {
-    public const TYPE = 'ProcessedImage';
+    public const TYPE = 'Image';
 
     /**
      * @var string[]

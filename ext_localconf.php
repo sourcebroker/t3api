@@ -10,7 +10,7 @@ call_user_func(
             \SourceBroker\T3api\Serializer\Handler\AbstractDomainObjectHandler::class,
             \SourceBroker\T3api\Serializer\Handler\ObjectStorageHandler::class,
             \SourceBroker\T3api\Serializer\Handler\FileReferenceHandler::class,
-            \SourceBroker\T3api\Serializer\Handler\ProcessedImageHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\ImageHandler::class,
             \SourceBroker\T3api\Serializer\Handler\RecordUriHandler::class,
             \SourceBroker\T3api\Serializer\Handler\TypolinkHandler::class,
         ];

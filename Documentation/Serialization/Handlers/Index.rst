@@ -14,7 +14,7 @@ FileReference
 
 @todo
 
-ProcessedImage
+Image
 ===============
 
 @todo
