@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
@@ -121,6 +122,15 @@ class SerializerService implements SingletonInterface
                 }
 
                 return $serializationContext;
+            })
+            ->setDeserializationContextFactory(function () use ($operation) {
+                $deserializationContext = DeserializationContext::create();
+
+                if (!empty($operation->getContextGroups())) {
+                    $deserializationContext->setGroups($operation->getContextGroups());
+                }
+
+                return $deserializationContext;
             })
             ->build();
     }
