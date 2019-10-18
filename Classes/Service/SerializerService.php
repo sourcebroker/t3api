@@ -12,12 +12,10 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
-use JMS\Serializer\SerializerInterface;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Serializer\Accessor\AccessorStrategy;
-// @todo 591 Clear usages of TYPO3\CMS\Core\Cache\Exception
+use SourceBroker\T3api\Serializer\Construction\InitializedObjectConstructor;
 use SourceBroker\T3api\Utility\FileUtility;
-use TYPO3\CMS\Core\Cache\Exception;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -75,7 +73,7 @@ class SerializerService implements SingletonInterface
      */
     public function serialize($result)
     {
-        return $this->getSerializer()->serialize($result, 'json');
+        return $this->getSerializerBuilder()->build()->serialize($result, 'json');
     }
 
     /**
@@ -83,36 +81,10 @@ class SerializerService implements SingletonInterface
      * @param mixed $result
      *
      * @return string
-     * @throws Exception
      */
     public function serializeOperation(AbstractOperation $operation, $result)
     {
-        return $this->getSerializerForOperation($operation)->serialize($result, 'json');
-    }
-
-    /**
-     * @param AbstractOperation $operation
-     * @param mixed $data
-     *
-     * @return mixed
-     * @throws Exception
-     */
-    public function deserializeOperation(AbstractOperation $operation, $data)
-    {
-        return $this->getSerializerForOperation($operation)
-            ->deserialize($data, $operation->getApiResource()->getEntity(), 'json');
-    }
-
-    /**
-     * @param AbstractOperation $operation
-     *
-     * @return SerializerInterface
-     * @throws Exception
-     */
-    protected function getSerializerForOperation(AbstractOperation $operation): SerializerInterface
-    {
-        return $this
-            ->getSerializerBuilder()
+        return $this->getSerializerBuilder()
             ->setSerializationContextFactory(function () use ($operation) {
                 $serializationContext = SerializationContext::create()
                     ->setSerializeNull(true);
@@ -123,6 +95,28 @@ class SerializerService implements SingletonInterface
 
                 return $serializationContext;
             })
+
+            ->build()
+            ->serialize($result, 'json');
+    }
+
+    /**
+     * @param AbstractOperation $operation
+     * @param mixed $data
+     * @param mixed $targetObject
+     *
+     * @return mixed
+     */
+    public function deserializeOperation(AbstractOperation $operation, $data, $targetObject = null)
+    {
+        $serializerBuilder = $this->getSerializerBuilder();
+        $context = new DeserializationContext();
+
+        if (!empty($targetObject)) {
+            $context->setAttribute('target', $targetObject);
+        }
+
+        return $serializerBuilder
             ->setDeserializationContextFactory(function () use ($operation) {
                 $deserializationContext = DeserializationContext::create();
 
@@ -132,15 +126,9 @@ class SerializerService implements SingletonInterface
 
                 return $deserializationContext;
             })
-            ->build();
-    }
-
-    /**
-     * @return SerializerInterface
-     */
-    protected function getSerializer(): SerializerInterface
-    {
-        return $this->getSerializerBuilder()->build();
+            ->setObjectConstructor(new InitializedObjectConstructor())
+            ->build()
+            ->deserialize($data, $operation->getApiResource()->getEntity(), 'json', $context);
     }
 
     /**
@@ -151,7 +139,7 @@ class SerializerService implements SingletonInterface
         static $serializerBuilder;
 
         if (!empty($serializerBuilder)) {
-            return $serializerBuilder;
+            return clone $serializerBuilder;
         }
 
         $serializerBuilder = SerializerBuilder::create()

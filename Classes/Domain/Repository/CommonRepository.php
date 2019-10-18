@@ -16,6 +16,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
@@ -227,5 +228,23 @@ class CommonRepository
         }
 
         $this->persistenceManager->add($object);
+    }
+
+    /**
+     * @param object $object The object to remove
+     */
+    public function remove($object)
+    {
+        $this->persistenceManager->remove($object);
+    }
+
+    /**
+     * @param object $modifiedObject
+     *
+     * @throws UnknownObjectException
+     */
+    public function update($modifiedObject)
+    {
+        $this->persistenceManager->update($modifiedObject);
     }
 }

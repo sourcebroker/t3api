@@ -15,9 +15,11 @@ use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\ValidationService;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
+use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
@@ -86,7 +88,9 @@ abstract class AbstractDispatcher
                     $response
                 );
             } catch (ResourceNotFoundException $resourceNotFoundException) {
-                // @todo add comment
+                // do not stop - continue to find correct route
+            } catch (MethodNotAllowedException $methodNotAllowedException) {
+                // do not stop - continue to find correct route
             }
         }
 
@@ -113,11 +117,11 @@ abstract class AbstractDispatcher
         } elseif ($operation instanceof CollectionOperation) {
             $result = $this->processCollectionOperation($operation, $request, $response);
         } else {
-            // @todo throw appropriate exception
+            // @todo 593 throw appropriate exception
             throw new Exception('Unknown operation', 1557506987081);
         }
 
-        return $this->serializerService->serializeOperation($operation, $result);
+        return is_null($result) ? '' : $this->serializerService->serializeOperation($operation, $result);
     }
 
     /**
@@ -128,42 +132,45 @@ abstract class AbstractDispatcher
      *
      * @return AbstractDomainObject
      *
-     * @throws InvalidArgumentException
+     * @throws Exception
      */
     protected function processItemOperation(
         ItemOperation $operation,
         int $uid,
         Request $request,
         ResponseInterface &$response = null
-    ): AbstractDomainObject {
+    ): ?AbstractDomainObject {
         $repository = CommonRepository::getInstanceForResource($operation->getApiResource());
 
         /** @var AbstractDomainObject $object */
         $object = $repository->findByUid($uid);
 
-        if ($operation->getMethod() !== 'GET') {
+        if (!$object instanceof AbstractDomainObject) {
+            // @todo 593 throw exception like `ResourceNotFound` and set status 404
+            throw new PageNotFoundException();
+        } elseif ($operation->getMethod() === 'PATCH') {
+            $this->serializerService->deserializeOperation($operation, $request->getContent(), $object);
+            $this->validationService->validateObject($object);
+            $repository->update($object);
+            $this->objectManager->get(PersistenceManager::class)->persistAll();
+        } elseif ($operation->getMethod() === 'PUT') {
+//            $object = $this->serializerService->deserializeOperation($operation, $request->getContent());
+//            $object->_setProperty('uid', $uid);
+//            $this->validationService->validateObject($object);
+//            $repository->update($object);
+//            $this->objectManager->get(PersistenceManager::class)->persistAll();
+
+            // @todo implement support for PUT requests. Code above doesn't work because of exception 1249479819
+            throw new Exception('`PUT` requests are not supported yet. Use `PATCH` instead.', 1571415141087);
+        } elseif ($operation->getMethod() === 'DELETE') {
+            $repository->remove($object);
+            $this->objectManager->get(PersistenceManager::class)->persistAll();
+            $object = null;
+        } elseif ($operation->getMethod() !== 'GET') {
             throw new InvalidArgumentException(
                 sprintf('Method `%s` is not supported for item operation', $operation->getMethod()),
                 1568378714606
             );
-        } elseif ($operation->getMethod() === 'PUT' || $operation->getMethod() === 'PATCH') {
-            // @todo 591 implement support for PUT/PATCH
-            // @todo 591 validation
-            // https://stackoverflow.com/questions/52114926/symfonyjms-serializer-deserialize-into-existing-object
-            // https://github.com/schmittjoh/serializer/issues/79
-            die('PUT request');
-        } elseif ($operation->getMethod() === 'DELETE') {
-            // @todo 591 implement support for DELETE
-            die('DELETE request');
-        } else {
-            // @todo 591
-            // throw new InvalidArgumentException();
-            // @todo 591 status code 405
-        }
-
-        if (!$object) {
-            // @todo throw appropriate exception
-            throw new InvalidArgumentException('Item not found');
         }
 
         return $object;
@@ -175,7 +182,6 @@ abstract class AbstractDispatcher
      * @param ResponseInterface $response
      *
      * @return AbstractDomainObject|AbstractCollectionResponse
-     * @throws \TYPO3\CMS\Core\Cache\Exception
      * @throws \TYPO3\CMS\Extbase\Validation\Exception
      */
     protected function processCollectionOperation(
@@ -202,8 +208,7 @@ abstract class AbstractDispatcher
 
             return $object;
         } else {
-            // @todo 591 throw appropriate exception
-            // @todo 591 status code 405
+            // @todo 593 throw appropriate exception and set status code 405
         }
     }
 }
