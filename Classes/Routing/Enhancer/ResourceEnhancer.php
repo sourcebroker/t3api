@@ -46,13 +46,9 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
     {
         /** @var Route $variant */
         $variant = clone $collection->get('default');
-        $variant->setPath(trim($this->basePath, '/').'/{resource?}');
-        $variant->setRequirement('resource', '.*');
-        $variant->setOption(
-            '_decoratedParameters',
-            ['type' => 1557300854213]
-        );
-        $collection->add('enhancer_'.$this->basePath.spl_object_hash($variant), $variant);
+        $variant->setPath(trim($this->basePath, '/') . '/{t3apiResource?}');
+        $variant->setRequirement('t3apiResource', '.*');
+        $collection->add('enhancer_' . $this->basePath . spl_object_hash($variant), $variant);
     }
 
     /**

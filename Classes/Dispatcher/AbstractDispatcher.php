@@ -5,6 +5,7 @@ namespace SourceBroker\T3api\Dispatcher;
 
 use Exception;
 use InvalidArgumentException;
+use Psr\Http\Message\ResponseInterface;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
@@ -26,7 +27,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 /**
  * Class AbstractDispatcher
  */
-class AbstractDispatcher
+abstract class AbstractDispatcher
 {
     /**
      * @var ObjectManager
@@ -62,13 +63,17 @@ class AbstractDispatcher
     /**
      * @param RequestContext $requestContext
      * @param Request $request
+     * @param ResponseInterface $response
      *
      * @return string
      * @throws Exception
      * @throws RouteNotFoundException
      */
-    public function processOperationByRequest(RequestContext $requestContext, Request $request): string
-    {
+    public function processOperationByRequest(
+        RequestContext $requestContext,
+        Request $request,
+        ResponseInterface &$response = null
+    ): string {
         foreach ($this->apiResourceRepository->getAll() as $apiResource) {
             try {
                 $matchedRoute = (new UrlMatcher($apiResource->getRoutes(), $requestContext))
@@ -77,7 +82,8 @@ class AbstractDispatcher
                 return $this->processOperation(
                     $apiResource->getOperationByRouteName($matchedRoute['_route']),
                     $matchedRoute,
-                    $request
+                    $request,
+                    $response
                 );
             } catch (ResourceNotFoundException $resourceNotFoundException) {
                 // @todo add comment
@@ -91,16 +97,21 @@ class AbstractDispatcher
      * @param AbstractOperation $operation
      * @param array $matchedRoute
      * @param Request $request
+     * @param ResponseInterface $response
      *
      * @return string
      * @throws Exception
      */
-    protected function processOperation(AbstractOperation $operation, array $matchedRoute, Request $request): string
-    {
+    protected function processOperation(
+        AbstractOperation $operation,
+        array $matchedRoute,
+        Request $request,
+        ResponseInterface &$response = null
+    ): string {
         if ($operation instanceof ItemOperation) {
-            $result = $this->processItemOperation($operation, (int)$matchedRoute['id'], $request);
+            $result = $this->processItemOperation($operation, (int)$matchedRoute['id'], $request, $response);
         } elseif ($operation instanceof CollectionOperation) {
-            $result = $this->processCollectionOperation($operation, $request);
+            $result = $this->processCollectionOperation($operation, $request, $response);
         } else {
             // @todo throw appropriate exception
             throw new Exception('Unknown operation', 1557506987081);
@@ -113,13 +124,18 @@ class AbstractDispatcher
      * @param ItemOperation $operation
      * @param int $uid
      * @param Request $request
+     * @param ResponseInterface $response
      *
      * @return AbstractDomainObject
      *
      * @throws InvalidArgumentException
      */
-    protected function processItemOperation(ItemOperation $operation, int $uid, Request $request)
-    {
+    protected function processItemOperation(
+        ItemOperation $operation,
+        int $uid,
+        Request $request,
+        ResponseInterface &$response = null
+    ): AbstractDomainObject {
         $repository = CommonRepository::getInstanceForResource($operation->getApiResource());
 
         /** @var AbstractDomainObject $object */
@@ -156,11 +172,17 @@ class AbstractDispatcher
     /**
      * @param CollectionOperation $operation
      * @param Request $request
+     * @param ResponseInterface $response
      *
      * @return AbstractDomainObject|AbstractCollectionResponse
+     * @throws \TYPO3\CMS\Core\Cache\Exception
+     * @throws \TYPO3\CMS\Extbase\Validation\Exception
      */
-    protected function processCollectionOperation(CollectionOperation $operation, Request $request)
-    {
+    protected function processCollectionOperation(
+        CollectionOperation $operation,
+        Request $request,
+        ResponseInterface &$response = null
+    ) {
         $repository = CommonRepository::getInstanceForResource($operation->getApiResource());
 
         if ($operation->getMethod() === 'GET') {
@@ -175,6 +197,8 @@ class AbstractDispatcher
             $this->validationService->validateObject($object);
             $repository->add($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
+
+            $response = $response->withStatus(201);
 
             return $object;
         } else {

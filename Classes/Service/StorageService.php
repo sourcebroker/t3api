@@ -5,6 +5,7 @@ namespace SourceBroker\T3api\Service;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Class StorageService
@@ -26,7 +27,7 @@ class StorageService implements SingletonInterface
         $recursiveStoragePids = [];
 
         foreach ($storagePids as $startPid) {
-            $pids = $GLOBALS['TSFE']->cObj->getTreeList($startPid, $recursionDepth, 0);
+            $pids = GeneralUtility::makeInstance(ContentObjectRenderer::class)->getTreeList($startPid, $recursionDepth, 0);
 
             if (!empty($pids)) {
                 $recursiveStoragePids = array_merge(
