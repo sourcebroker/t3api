@@ -154,14 +154,21 @@ abstract class AbstractDispatcher
             $repository->update($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
         } elseif ($operation->getMethod() === 'PUT') {
-//            $object = $this->serializerService->deserializeOperation($operation, $request->getContent());
-//            $object->_setProperty('uid', $uid);
-//            $this->validationService->validateObject($object);
-//            $repository->update($object);
-//            $this->objectManager->get(PersistenceManager::class)->persistAll();
+            $entityClass = $operation->getApiResource()->getEntity();
+            /** @var AbstractDomainObject $newObject */
+            $newObject = new $entityClass;
 
-            // @todo implement support for PUT requests. Code above doesn't work because of exception 1249479819
-            throw new Exception('`PUT` requests are not supported yet. Use `PATCH` instead.', 1571415141087);
+            foreach ($newObject->_getProperties() as $propertyName => $propertyValue) {
+                if ($propertyName === 'uid') {
+                    continue;
+                }
+                $object->_setProperty($propertyName, $propertyValue);
+            }
+
+            $this->serializerService->deserializeOperation($operation, $request->getContent(), $object);
+            $this->validationService->validateObject($object);
+            $repository->add($object);
+            $this->objectManager->get(PersistenceManager::class)->persistAll();
         } elseif ($operation->getMethod() === 'DELETE') {
             $repository->remove($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();

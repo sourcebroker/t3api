@@ -51,7 +51,7 @@ abstract class AbstractOperation
     {
         $this->key = $key;
         $this->apiResource = $apiResource;
-        $this->method = $params['method'] ?? $this->method;
+        $this->method = strtoupper($params['method'] ?? $this->method);
         $this->path = $params['path'] ?? $this->path;
         $this->normalizationContext = isset($params['normalizationContext'])
             ? array_replace_recursive($this->normalizationContext, $params['normalizationContext'])
