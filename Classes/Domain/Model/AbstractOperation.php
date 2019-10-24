@@ -57,7 +57,7 @@ abstract class AbstractOperation
             ? array_replace_recursive($this->normalizationContext, $params['normalizationContext'])
             : $this->normalizationContext;
         $this->route = new Route(
-            rtrim(RouteService::getApiBasePath(), '/') . $this->path,
+            RouteService::getApiBasePath() . $this->path,
             [],
             [],
             [],

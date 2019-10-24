@@ -92,7 +92,8 @@ class Bootstrap extends AbstractDispatcher
     protected function isContextMatchingMainEndpointRoute(RequestContext $context): bool
     {
         $routes = (new RouteCollection());
-        $routes->add('main_endpoint', new Route(rtrim(RouteService::getApiBasePath(), '/') . '/'));
+        $routes->add('main_endpoint', new Route(RouteService::getApiBasePath() . '/'));
+        $routes->add('main_endpoint_bis', new Route(RouteService::getApiBasePath()));
 
         try {
             (new UrlMatcher($routes, $context))->match($context->getPathInfo());

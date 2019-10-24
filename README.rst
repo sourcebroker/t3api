@@ -44,15 +44,13 @@ Minimal setup
 
 1. Open main Template record and add "T3api" in tab "Includes" -> field "Include static (from extensions)"
 
-2. Add route enhancer to your site ``config.yaml`` file. ``basePath`` is the prefix for all api endpoints.
+2. Add route enhancer to your site ``config.yaml`` file.
 
 ::
 
  routeEnhancers:
     T3api:
       type: T3apiResourceEnhancer
-      basePath: '_api'
-
 
 3. Configure routes for your Extbase model using PHP annotations:
 

@@ -6,6 +6,8 @@ call_user_func(
     function () {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::ENHANCER_NAME] = \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::class;
 
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] = '_api';
+
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] = [
             \SourceBroker\T3api\Serializer\Handler\AbstractDomainObjectHandler::class,
             \SourceBroker\T3api\Serializer\Handler\ObjectStorageHandler::class,
