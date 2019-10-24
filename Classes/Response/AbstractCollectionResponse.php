@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Response;
 
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use JMS\Serializer\Annotation as Serializer;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,6 +41,13 @@ abstract class AbstractCollectionResponse
      * @var int|null
      */
     protected $totalItemsCache = null;
+
+    /**
+     * @param string $membersReference
+     *
+     * @return Schema
+     */
+    abstract public static function getOpenApiSchema(string $membersReference): Schema;
 
     /**
      * CollectionResponse constructor.

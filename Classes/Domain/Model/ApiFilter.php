@@ -123,16 +123,22 @@ class ApiFilter
      */
     public function getParameterName(): string
     {
-        switch ($this->filterClass) {
-            case OrderFilter::class:
-                $plainParameterName = $this->getArgument('orderParameterName');
-                break;
-            default:
-                $plainParameterName = $this->getArgument('parameterName') ?? $this->getProperty();
+        if ($this->isOrderFilter()) {
+            $plainParameterName = $this->getArgument('orderParameterName');
+        } else {
+            $plainParameterName = $this->getArgument('parameterName') ?? $this->getProperty();
         }
 
         // PHP automatically replaces some characters in variable names, which also affects GET parameters
         // https://www.php.net/variables.external#language.variables.external.dot-in-names
         return str_replace('.', '_', $plainParameterName);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOrderFilter(): bool
+    {
+        return is_subclass_of($this->filterClass, OrderFilter::class);
     }
 }

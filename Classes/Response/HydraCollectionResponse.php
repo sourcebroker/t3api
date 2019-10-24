@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Response;
 
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -10,6 +11,37 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class HydraCollectionResponse extends AbstractCollectionResponse
 {
+
+    /**
+     * @param string $membersReference
+     *
+     * @return Schema
+     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
+     */
+    public static function getOpenApiSchema(string $membersReference): Schema
+    {
+        return Schema::object()
+            ->properties(
+                Schema::array('hydra:member')->items(Schema::ref($membersReference)),
+                Schema::integer('hydra:totalItems')->minimum(0),
+                Schema::object('hydra:view')->properties(
+                    Schema::string('hydra:first')->description('URI to first page'),
+                    Schema::string('hydra:last')->description('URI to first page'),
+                    Schema::string('hydra:prev')->description('URI to previous page'),
+                    Schema::string('hydra:next')->description('URI to next page')
+                ),
+                Schema::object('hydra:search')->properties(
+                    Schema::string('hydra:template'),
+                    Schema::array('hydra:mapping')->items(
+                        Schema::object()->properties(
+                            Schema::string('variable'),
+                            Schema::string('property')
+                        )
+                    )
+                )
+            );
+    }
+
     /**
      * @return array
      * @Serializer\SerializedName("hydra:member")
@@ -84,8 +116,11 @@ class HydraCollectionResponse extends AbstractCollectionResponse
         $searchData['hydra:mapping'] = [];
         $variables = [];
         foreach ($this->operation->getFilters() as $filter) {
-            $order = $filter->getArgument('orderParameterName');
-            $variable = sprintf($order ? $order . '[%s]' : '%s', $filter->getProperty());
+            if ($filter->isOrderFilter()) {
+                $variable = sprintf($filter->getParameterName() . '[%s]', $filter->getProperty());
+            } else {
+                $variable = $filter->getParameterName();
+            }
             if (!in_array($variable, $variables)) {
                 $searchData['hydra:mapping'][] = [
                     'variable' => $variable,
