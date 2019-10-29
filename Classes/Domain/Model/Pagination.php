@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Model;
 
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
+use SourceBroker\T3api\Utility\ParameterUtility;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Http\ServerRequest as Typo3Request;
 
@@ -65,11 +66,17 @@ class Pagination
     public function __construct(ApiResourceAnnotation $apiResource)
     {
         $attributes = $apiResource->getAttributes();
-        $this->serverEnabled = !!($attributes['pagination_enabled'] ?? $this->serverEnabled);
-        $this->clientEnabled = !!($attributes['pagination_client_enabled'] ?? $this->clientEnabled);
+        $this->serverEnabled = isset($attributes['pagination_enabled'])
+            ? ParameterUtility::toBoolean($attributes['pagination_enabled'])
+            : $this->serverEnabled;
+        $this->clientEnabled = isset($attributes['pagination_client_enabled'])
+            ? ParameterUtility::toBoolean($attributes['pagination_client_enabled'])
+            : $this->clientEnabled;
         $this->itemsPerPage = (int)$attributes['pagination_items_per_page'] ?? $this->itemsPerPage;
         $this->maximumItemsPerPage = (int)$attributes['maximum_items_per_page'] ?? $this->maximumItemsPerPage;
-        $this->clientItemsPerPage = !!($attributes['pagination_client_items_per_page'] ?? $this->clientItemsPerPage);
+        $this->clientItemsPerPage = isset($attributes['pagination_client_items_per_page'])
+            ? ParameterUtility::toBoolean($attributes['pagination_client_items_per_page'])
+            : $this->clientItemsPerPage;
         $this->enabledParameterName = $attributes['enabled_parameter_name'] ?? $this->enabledParameterName;
         $this->itemsPerPageParameterName = $attributes['items_per_page_parameter_name'] ?? $this->itemsPerPageParameterName;
         $this->pageParameterName = $attributes['page_parameter_name'] ?? $this->pageParameterName;
