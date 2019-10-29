@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
+use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Components;
+use Metadata\MetadataFactoryInterface;
+use Metadata\PropertyMetadata;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
@@ -20,30 +24,37 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Tag;
 use GoldSpecDigital\ObjectOrientedOAS\OpenApi;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class OpenApiBuilder
  */
 class OpenApiBuilder
 {
+    /**
+     * @var Components
+     */
+    protected static $components;
 
     /**
-     * @param string $basePath
      * @param ApiResource[] $apiResources
      *
      * @return OpenApi
      *
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
+     * @throws OasInvalidArgumentException
      */
-    public static function build(string $basePath, array $apiResources): OpenApi
+    public static function build(array $apiResources): OpenApi
     {
+        self::$components = Components::create();
+
         return OpenApi::create()
             ->openapi(OpenApi::OPENAPI_3_0_2)
             ->servers(...self::getServers())
             ->info(self::getInfo())
             ->tags(...self::getTags($apiResources))
             ->paths(...self::getPaths($apiResources))
-        ;
+            ->components(self::$components);
     }
 
     /**
@@ -95,7 +106,7 @@ class OpenApiBuilder
      * @param ApiResource[] $apiResources
      *
      * @return PathItem[]
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
+     * @throws OasInvalidArgumentException
      */
     protected static function getPaths(array $apiResources): array
     {
@@ -119,6 +130,7 @@ class OpenApiBuilder
                 function (array $pathElement) {
                     /** @var PathItem $pathItem */
                     $pathItem = $pathElement['path'];
+
                     return $pathItem->operations(...$pathElement['operations']);
                 },
                 $paths
@@ -130,7 +142,7 @@ class OpenApiBuilder
      * @param AbstractOperation $apiOperation
      *
      * @return Operation
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
+     * @throws OasInvalidArgumentException
      */
     protected static function getOperation(AbstractOperation $apiOperation): Operation
     {
@@ -161,7 +173,7 @@ class OpenApiBuilder
      * @param AbstractOperation $operation
      *
      * @return Parameter[]
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
+     * @throws OasInvalidArgumentException
      */
     protected static function getOperationParameters(AbstractOperation $operation): array
     {
@@ -222,7 +234,7 @@ class OpenApiBuilder
      * @param AbstractOperation $operation
      *
      * @return Parameter[]
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
+     * @throws OasInvalidArgumentException
      */
     protected static function getPaginationParametersForOperation(AbstractOperation $operation): array
     {
@@ -252,7 +264,7 @@ class OpenApiBuilder
             ->in(Parameter::IN_QUERY)
             ->schema(
                 Schema::integer()
-                ->minimum(0)
+                    ->minimum(0)
             )
             ->description('Number of the page to read.');
 
@@ -262,8 +274,8 @@ class OpenApiBuilder
                 ->in(Parameter::IN_QUERY)
                 ->schema(
                     Schema::integer()
-                    ->minimum(0)
-                    ->maximum($pagination->getMaximumItemsPerPage())
+                        ->minimum(0)
+                        ->maximum($pagination->getMaximumItemsPerPage())
                 )
                 ->description('Number of items on page.');
         }
@@ -305,14 +317,132 @@ class OpenApiBuilder
      */
     protected static function getOperationSchema(AbstractOperation $operation): Schema
     {
-        if ($operation instanceof CollectionOperation) {
+        if ($operation instanceof CollectionOperation && $operation->getMethod() === 'GET') {
             /** @var AbstractCollectionResponse $collectionResponseClass */
             $collectionResponseClass = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'];
 
-            // @todo use real ref instead of entity name or maybe whole schema instead of ref?
-            return $collectionResponseClass::getOpenApiSchema($operation->getApiResource()->getEntity());
+            return $collectionResponseClass::getOpenApiSchema(
+                self::getComponentsSchemaReference($operation->getApiResource()->getEntity())
+            );
         }
 
-        return Schema::object();
+        return Schema::ref(self::getComponentsSchemaReference($operation->getApiResource()->getEntity()));
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return string
+     */
+    protected static function getComponentsSchemaReference(string $class): string
+    {
+        $schemaIdentifier = str_replace('\\', '.', $class);
+        $referencePath = '#/components/schemas/' . $schemaIdentifier;
+
+        $definedSchemas = array_map(
+            function (Schema $schema) {
+                return $schema->objectId;
+            },
+            self::$components->schemas ?? []
+        );
+
+        if (!in_array($schemaIdentifier, $definedSchemas)) {
+            self::setComponentsSchema($schemaIdentifier, $class);
+        }
+
+        return $referencePath;
+    }
+
+    /**
+     * @param string $name
+     * @param string $class
+     */
+    protected static function setComponentsSchema(string $name, string $class): void
+    {
+        static $currentlyProcessedClasses;
+
+        if (is_null($currentlyProcessedClasses)) {
+            $currentlyProcessedClasses = [];
+        }
+
+        if (in_array($class, $currentlyProcessedClasses)) {
+            return;
+        }
+
+        $currentlyProcessedClasses[] = $class;
+
+        $properties = [Schema::string('@id')];
+
+        $metadata = self::getMetadataFactory()->getMetadataForClass($class);
+
+        foreach ($metadata->propertyMetadata as $propertyMetadata) {
+            $properties[] = self::getPropertySchemaFromPropertyMetadata($propertyMetadata);
+        }
+
+        $schemas = self::$components->schemas ?? [];
+        $schemas[] = Schema::object($name)
+            ->properties(...$properties);
+
+        unset($currentlyProcessedClasses[array_search($class, $currentlyProcessedClasses)]);
+
+        self::$components = self::$components->schemas(...$schemas);
+    }
+
+    /**
+     * @return MetadataFactoryInterface
+     */
+    protected static function getMetadataFactory(): MetadataFactoryInterface
+    {
+        static $metadataFactory;
+
+        if (is_null($metadataFactory)) {
+            $metadataFactory = GeneralUtility::makeInstance(ObjectManager::class)
+                ->get(SerializerService::class)
+                ->getMetadataFactory();
+        }
+
+        return $metadataFactory;
+    }
+
+    /**
+     * @param PropertyMetadata $propertyMetadata
+     *
+     * @return Schema
+     */
+    protected static function getPropertySchemaFromPropertyMetadata(PropertyMetadata $propertyMetadata): Schema
+    {
+        $schema = self::getPropertySchemaFromPropertyType(
+            $propertyMetadata->type['name'] ?? '',
+            $propertyMetadata->type['params'] ?? []
+        );
+
+        return $schema->objectId($propertyMetadata->serializedName);
+    }
+
+    /**
+     * @param string $type
+     * @param array $params
+     *
+     * @return Schema
+     */
+    protected static function getPropertySchemaFromPropertyType(string $type, array $params = []): Schema
+    {
+        if (is_a($type, ObjectStorage::class, true) && !empty($params[0]['name'])) {
+            $schema = Schema::array()->items(self::getPropertySchemaFromPropertyType($params[0]['name']));
+        } elseif (class_exists($type)) {
+            // NOTICE! because of a bug https://github.com/swagger-api/swagger-ui/issues/3325 reference to itself
+            // will not be displayed correctly
+            $schema = Schema::ref(self::getComponentsSchemaReference($type));
+        } elseif (in_array($type, ['int', 'integer'])) {
+            $schema = Schema::integer();
+        } elseif (in_array($type, ['string'])) {
+            $schema = Schema::string();
+        } elseif (in_array($type, ['double', 'float'])) {
+            $schema = Schema::number();
+        } elseif (in_array($type, ['boolean', 'bool'])) {
+            $schema = Schema::boolean();
+        }
+
+        return $schema ?? Schema::string();
     }
 }

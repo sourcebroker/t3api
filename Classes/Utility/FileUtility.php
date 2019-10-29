@@ -17,7 +17,7 @@ class FileUtility
      *
      * @return string
      */
-    public static function createWritableDirectory(string $path)
+    public static function createWritableDirectory(string $path): string
     {
         if (!is_dir($path)) {
             try {

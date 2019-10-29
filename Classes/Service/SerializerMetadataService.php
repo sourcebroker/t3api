@@ -146,8 +146,7 @@ class SerializerMetadataService
      */
     protected static function parsePropertyType(string $type)
     {
-        // @todo 591 explode by white char
-        $type = trim($type);
+        $type = trim(explode(' ', trim($type))[0]);
 
         if (class_exists($type)) {
             // @todo 591 change date time format to DateTime::ATOM ?

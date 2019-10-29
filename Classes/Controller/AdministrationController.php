@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Controller;
 
 use Doctrine\Common\Annotations\AnnotationException;
+use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
 use ReflectionException;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Service\OpenApiBuilder;
-use SourceBroker\T3api\Service\RouteService;
 use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
@@ -58,13 +58,11 @@ class AdministrationController extends ActionController
      * @return string
      * @throws AnnotationException
      * @throws ReflectionException
+     * @throws OasInvalidArgumentException
      */
     public function openApiDataAction(): string
     {
-        return OpenApiBuilder::build(
-            RouteService::getApiBasePath(),
-            $this->apiResourceRepository->getAll()
-        )->toJson();
+        return OpenApiBuilder::build($this->apiResourceRepository->getAll())->toJson();
     }
 
 }
