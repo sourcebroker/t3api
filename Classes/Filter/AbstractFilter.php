@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Filter;
 
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,6 +32,20 @@ abstract class AbstractFilter implements SingletonInterface
      * @var ObjectManager
      */
     protected $objectManager;
+
+    /**
+     * @param ApiFilter $apiFilter
+     *
+     * @return Parameter[]
+     */
+    public static function getDocumentationParameters(ApiFilter $apiFilter): array
+    {
+        return [
+            Parameter::create()
+                ->name($apiFilter->getParameterName())
+                ->schema(Schema::string())
+        ];
+    }
 
     /**
      * @param string $property

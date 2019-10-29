@@ -81,6 +81,14 @@ class PaginationTest extends UnitTestCase
                 '',
                 true,
             ],
+            'Server and client pagination enabled but disabled by client parameter' => [
+                [
+                    'pagination_enabled' => true,
+                    'pagination_client_enabled' => true,
+                ],
+                'https://example.com/_api/?pagination=0',
+                false,
+            ],
         ];
     }
 

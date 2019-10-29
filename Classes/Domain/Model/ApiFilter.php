@@ -139,6 +139,6 @@ class ApiFilter
      */
     public function isOrderFilter(): bool
     {
-        return is_subclass_of($this->filterClass, OrderFilter::class);
+        return is_a($this->filterClass, OrderFilter::class, true);
     }
 }

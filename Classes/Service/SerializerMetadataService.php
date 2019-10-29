@@ -158,10 +158,7 @@ class SerializerMetadataService
             $collectionType = trim(explode('<', $type)[0]);
             $itemsType = trim(explode('<', $type)[1], '> ');
 
-            if (
-                is_a($collectionType, ObjectStorage::class, true)
-                || is_subclass_of($collectionType, ObjectStorage::class)
-            ) {
+            if (is_a($collectionType, ObjectStorage::class, true)) {
                 return sprintf('%s<%s>', ObjectStorage::class, ltrim($itemsType, '\\'));
             }
 

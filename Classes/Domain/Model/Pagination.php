@@ -103,7 +103,9 @@ class Pagination
      */
     public function isEnabled(): bool
     {
-        return $this->isServerEnabled() || $this->isClientEnabled();
+        return $this->clientEnabled && isset($this->parameters[$this->enabledParameterName])
+            ? (bool)$this->parameters[$this->enabledParameterName]
+            : $this->isServerEnabled();
     }
 
     /**
@@ -146,7 +148,39 @@ class Pagination
     /**
      * @return bool
      */
-    protected function isServerEnabled(): bool
+    public function isClientItemsPerPage(): bool
+    {
+        return $this->clientItemsPerPage;
+    }
+
+    /**
+     * @return string
+     */
+    public function getItemsPerPageParameterName(): string
+    {
+        return $this->itemsPerPageParameterName;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaximumItemsPerPage(): int
+    {
+        return $this->maximumItemsPerPage;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEnabledParameterName(): string
+    {
+        return $this->enabledParameterName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isServerEnabled(): bool
     {
         return $this->serverEnabled;
     }
@@ -154,9 +188,9 @@ class Pagination
     /**
      * @return bool
      */
-    protected function isClientEnabled(): bool
+    public function isClientEnabled(): bool
     {
-        return $this->clientEnabled && !empty($this->parameters[$this->enabledParameterName]);
+        return $this->clientEnabled;
     }
 
     /**

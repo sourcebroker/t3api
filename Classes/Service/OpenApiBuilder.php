@@ -18,7 +18,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Server;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Tag;
 use GoldSpecDigital\ObjectOrientedOAS\OpenApi;
-use SourceBroker\T3api\Filter\OrderFilter;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -150,15 +149,27 @@ class OpenApiBuilder
             $summary = 'Removes the resource';
         }
 
-        $parameters = self::getOperationParameters($apiOperation);
-        $responses = self::getOperationResponses($apiOperation);
-
         return Operation::create()
             ->tags(self::getTag($apiOperation->getApiResource()))
             ->action(constant(Operation::class . '::ACTION_' . $apiOperation->getMethod()))
             ->summary($summary)
-            ->parameters(...$parameters)
-            ->responses(...$responses);
+            ->parameters(...self::getOperationParameters($apiOperation))
+            ->responses(...self::getOperationResponses($apiOperation));
+    }
+
+    /**
+     * @param AbstractOperation $operation
+     *
+     * @return Parameter[]
+     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
+     */
+    protected static function getOperationParameters(AbstractOperation $operation): array
+    {
+        return array_merge(
+            self::getPathParametersForOperation($operation),
+            self::getFilterParametersForOperation($operation),
+            self::getPaginationParametersForOperation($operation)
+        );
     }
 
     /**
@@ -166,37 +177,98 @@ class OpenApiBuilder
      *
      * @return Parameter[]
      */
-    protected static function getOperationParameters(AbstractOperation $operation): array
+    protected static function getPathParametersForOperation(AbstractOperation $operation): array
     {
-        $pathParameters = [];
-        $orderParameters = [];
-        $filterParameters = [];
+        if (!$operation instanceof ItemOperation || strpos($operation->getPath(), '{id}') === false) {
+            return [];
+        }
 
-        if ($operation instanceof ItemOperation && strpos($operation->getPath(), '{id}') !== false) {
-            $pathParameters[] = Parameter::create()
+        return [
+            Parameter::create()
                 ->name('id')
                 ->in(Parameter::IN_PATH)
                 ->description(sprintf('ID of %s', $operation->getApiResource()->getEntity()))
                 ->required(true)
-                ->schema(Schema::integer());
+                ->schema(Schema::integer()),
+        ];
+    }
+
+    /**
+     * @param AbstractOperation $operation
+     *
+     * @return Parameter[]
+     */
+    protected static function getFilterParametersForOperation(AbstractOperation $operation): array
+    {
+        $parameters = [];
+
+        if (!$operation instanceof CollectionOperation || $operation->getMethod() !== 'GET') {
+            return $parameters;
         }
 
-        if ($operation instanceof CollectionOperation) {
-            foreach ($operation->getFilters() as $filter) {
-                if (is_subclass_of($filter->getFilterClass(), OrderFilter::class)) {
-//                    $orderParameters[] = Parameter::create()
-//                        ->name($filter->getParameterName() . '[' . $filter->getProperty() . ']')
-//                        ->schema(S)
-//                    ;
-                } else {
-                    $filterParameters[] = Parameter::create()
-                        ->name($filter->getParameterName())
-                        ->in(Parameter::IN_QUERY);
-                }
+        foreach ($operation->getFilters() as $filter) {
+            $filterParameters = call_user_func($filter->getFilterClass() . '::getDocumentationParameters', $filter);
+
+            /** @var Parameter $filterParameter */
+            foreach ($filterParameters as $filterParameter) {
+                $parameters[] = $filterParameter->in(Parameter::IN_QUERY);
             }
         }
 
-        return array_merge($pathParameters, $orderParameters, $filterParameters);
+        return $parameters;
+    }
+
+    /**
+     * @param AbstractOperation $operation
+     *
+     * @return Parameter[]
+     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
+     */
+    protected static function getPaginationParametersForOperation(AbstractOperation $operation): array
+    {
+        $pagination = $operation->getApiResource()->getPagination();
+        $parameters = [];
+
+        if (
+            !$operation instanceof CollectionOperation
+            || $operation->getMethod() !== 'GET'
+            || (!$pagination->isClientEnabled() && !$pagination->isServerEnabled())
+        ) {
+            return [];
+        }
+
+        if ($pagination->isClientEnabled()) {
+            $parameters[] = Parameter::create()
+                ->name($pagination->getEnabledParameterName())
+                ->in(Parameter::IN_QUERY)
+                ->schema(
+                    Schema::boolean()
+                )
+                ->description('Enables or disables pagination by client (please notice that pagination state can be configured also on server side).');
+        }
+
+        $parameters[] = Parameter::create()
+            ->name($pagination->getPageParameterName())
+            ->in(Parameter::IN_QUERY)
+            ->schema(
+                Schema::integer()
+                ->minimum(0)
+            )
+            ->description('Number of the page to read.');
+
+        if ($pagination->isClientItemsPerPage()) {
+            $parameters[] = Parameter::create()
+                ->name($pagination->getItemsPerPageParameterName())
+                ->in(Parameter::IN_QUERY)
+                ->schema(
+                    Schema::integer()
+                    ->minimum(0)
+                    ->maximum($pagination->getMaximumItemsPerPage())
+                )
+                ->description('Number of items on page.');
+        }
+
+        return $parameters;
     }
 
     /**
@@ -212,7 +284,7 @@ class OpenApiBuilder
                 ->content(
                     MediaType::json()->schema(self::getOperationSchema($operation))
                 )
-                ->statusCode($operation->getMethod() === 'POST' ? 201 : 200)
+                ->statusCode($operation->getMethod() === 'POST' ? 201 : 200),
         ];
 
         if ($operation instanceof ItemOperation) {
