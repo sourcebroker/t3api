@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
+use Exception;
+use DateTime;
 use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Components;
 use Metadata\MetadataFactoryInterface;
@@ -38,6 +40,11 @@ class OpenApiBuilder
     protected static $components;
 
     /**
+     * @var ApiResource[]
+     */
+    protected static $apiResources = [];
+
+    /**
      * @param ApiResource[] $apiResources
      *
      * @return OpenApi
@@ -46,6 +53,7 @@ class OpenApiBuilder
      */
     public static function build(array $apiResources): OpenApi
     {
+        self::$apiResources = $apiResources;
         self::$components = Components::create();
 
         return OpenApi::create()
@@ -371,11 +379,17 @@ class OpenApiBuilder
 
         $currentlyProcessedClasses[] = $class;
 
-        $properties = [Schema::string('@id')];
+        if (self::isApiResourceClass($class)) {
+            $properties = [Schema::string('@id')];
+        }
 
         $metadata = self::getMetadataFactory()->getMetadataForClass($class);
 
         foreach ($metadata->propertyMetadata as $propertyMetadata) {
+            if ($propertyMetadata->class !== $class) {
+                continue;
+            }
+
             $properties[] = self::getPropertySchemaFromPropertyMetadata($propertyMetadata);
         }
 
@@ -429,6 +443,12 @@ class OpenApiBuilder
     {
         if (is_a($type, ObjectStorage::class, true) && !empty($params[0]['name'])) {
             $schema = Schema::array()->items(self::getPropertySchemaFromPropertyType($params[0]['name']));
+        } elseif (is_a($type, DateTime::class, true)) {
+            try {
+                $schema = Schema::string()->example((new DateTime())->format(DateTime::ATOM));
+            } catch (Exception $e) {
+                // no chance exception will occur - catch it only to avoid IDE's complaints
+            }
         } elseif (class_exists($type)) {
             // NOTICE! because of a bug https://github.com/swagger-api/swagger-ui/issues/3325 reference to itself
             // will not be displayed correctly
@@ -444,5 +464,21 @@ class OpenApiBuilder
         }
 
         return $schema ?? Schema::string();
+    }
+
+    /**
+     * @param string $className
+     *
+     * @return bool
+     */
+    protected static function isApiResourceClass(string $className): bool
+    {
+        foreach (self::$apiResources as $apiResource) {
+            if ($apiResource->getEntity() === $className) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
