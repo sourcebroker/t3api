@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
+use DateTime;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionClass;
@@ -148,8 +149,9 @@ class SerializerMetadataService
     {
         $type = trim(explode(' ', trim($type))[0]);
 
-        if (class_exists($type)) {
-            // @todo 591 change date time format to DateTime::ATOM ?
+        if (is_a($type, DateTime::class, true)) {
+            return sprintf('DateTime<"%s">', DateTime::ATOM);
+        } elseif (class_exists($type)) {
             return ltrim($type, '\\');
         } elseif (in_array($type, ['string', 'int', 'integer', 'boolean', 'bool', 'double', 'float'])) {
             return $type;
