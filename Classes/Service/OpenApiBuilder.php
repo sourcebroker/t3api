@@ -378,10 +378,7 @@ class OpenApiBuilder
         }
 
         $currentlyProcessedClasses[] = $class;
-
-        if (self::isApiResourceClass($class)) {
-            $properties = [Schema::string('@id')];
-        }
+        $properties = [];
 
         $metadata = self::getMetadataFactory()->getMetadataForClass($class);
 
@@ -391,6 +388,10 @@ class OpenApiBuilder
             }
 
             $properties[] = self::getPropertySchemaFromPropertyMetadata($propertyMetadata);
+        }
+
+        if (self::isApiResourceClass($class)) {
+            $properties[] = Schema::string('@id');
         }
 
         $schemas = self::$components->schemas ?? [];
