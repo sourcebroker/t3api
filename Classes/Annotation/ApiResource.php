@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
 namespace SourceBroker\T3api\Annotation;
 
-use Doctrine\Common\Annotations\Annotation\Attributes;
 use Doctrine\Common\Annotations\Annotation\Attribute;
+use Doctrine\Common\Annotations\Annotation\Attributes;
 
 /**
  * ApiResource annotation.
@@ -18,7 +19,6 @@ use Doctrine\Common\Annotations\Annotation\Attribute;
  */
 class ApiResource
 {
-
     /**
      * @var array
      */
@@ -43,7 +43,7 @@ class ApiResource
     {
         $this->itemOperations = $values['itemOperations'] ?? $this->itemOperations;
         $this->collectionOperations = $values['collectionOperations'] ?? $this->collectionOperations;
-        $this->attributes = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['pagination'], $values['attributes'] ?? []);
+        $this->attributes = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['pagination'] ?? [], $values['attributes'] ?? []);
     }
 
     /**

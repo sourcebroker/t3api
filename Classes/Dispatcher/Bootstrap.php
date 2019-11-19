@@ -1,10 +1,12 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Dispatcher;
 
+use Exception;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use SourceBroker\T3api\Service\RouteService;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
@@ -12,36 +14,64 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
-use Exception;
 
 /**
  * Class Bootstrap
  */
 class Bootstrap extends AbstractDispatcher
 {
-
-    /** @var string */
-    protected $output;
+    /**
+     * @var ResponseInterface
+     */
+    protected $response;
 
     /**
-     * @return void
+     * @var HttpFoundationFactory
+     */
+    protected $httpFoundationFactory;
+
+    /**
+     * Bootstrap constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->response = new Response('php://temp', 200, ['Content-Type' => 'application/ld+json']);
+    }
+
+    /**
+     * @param HttpFoundationFactory $httpFoundationFactory
+     */
+    public function injectHttpFoundationFactory(HttpFoundationFactory $httpFoundationFactory)
+    {
+        $this->httpFoundationFactory = $httpFoundationFactory;
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     *
      * @throws Exception
      * @throws RouteNotFoundException
+     * @return Response
      */
-    public function process(): void
+    public function process(ServerRequestInterface $request): ResponseInterface
     {
         $this->setLanguageAspect();
-        $context = (new RequestContext())->fromRequest(Request::createFromGlobals());
+        $request = $this->httpFoundationFactory->createRequest($request);
+        $context = (new RequestContext())->fromRequest($request);
         $matchedRoute = null;
 
         if ($this->isMainEndpointResponseClassDefined() && $this->isContextMatchingMainEndpointRoute($context)) {
-            $this->processMainEndpoint();
+            $output = $this->processMainEndpoint();
         } else {
-            $this->output = $this->processOperationByContext($context);
+            $output = $this->processOperationByRequest($context, $request, $this->response);
         }
 
-        $this->output();
+        $this->response->getBody()->write($output);
+
+        return $this->response;
     }
 
     /**
@@ -60,7 +90,8 @@ class Bootstrap extends AbstractDispatcher
     protected function isContextMatchingMainEndpointRoute(RequestContext $context): bool
     {
         $routes = (new RouteCollection());
-        $routes->add('main_endpoint', new Route(rtrim(RouteService::getApiBasePath(), '/') . '/'));
+        $routes->add('main_endpoint', new Route(RouteService::getApiBasePath() . '/'));
+        $routes->add('main_endpoint_bis', new Route(RouteService::getApiBasePath()));
 
         try {
             (new UrlMatcher($routes, $context))->match($context->getPathInfo());
@@ -73,22 +104,13 @@ class Bootstrap extends AbstractDispatcher
     }
 
     /**
-     * @return void
+     * @return string
      */
-    protected function processMainEndpoint(): void
+    protected function processMainEndpoint(): string
     {
-        $this->output = $this->serializerService->serialize(
+        return $this->serializerService->serialize(
             $this->objectManager->get($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'])
         );
-    }
-
-    /**
-     * @return void
-     * @todo add signal/hook just before the output?
-     */
-    protected function output(): void
-    {
-        echo $this->output;
     }
 
     /**

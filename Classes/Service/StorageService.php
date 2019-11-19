@@ -1,10 +1,10 @@
 <?php
-
+declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\FrontendConfigurationManager;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Class StorageService
@@ -12,39 +12,30 @@ use TYPO3\CMS\Extbase\Configuration\FrontendConfigurationManager;
 class StorageService implements SingletonInterface
 {
     /**
-     * @var FrontendConfigurationManager
-     */
-    protected $frontendConfigurationManager;
-
-    /**
-     * @param FrontendConfigurationManager $frontendConfigurationManager
-     */
-    public function injectFrontendConfigurationManager(FrontendConfigurationManager $frontendConfigurationManager)
-    {
-        $this->frontendConfigurationManager = $frontendConfigurationManager;
-    }
-
-    /**
-     * @param string|int $storagePid
+     * @param int[] $storagePids
      * @param int $recursionDepth
      *
      * @return int[]
      */
-    public function getRecursiveStoragePids($storagePid, $recursionDepth = 0): array
+    public static function getRecursiveStoragePids(array $storagePids, $recursionDepth = 0): array
     {
         if ($recursionDepth <= 0) {
-            return GeneralUtility::intExplode(',', $storagePid);
+            return $storagePids;
         }
-        $recursiveStoragePids = '';
-        $storagePids = GeneralUtility::intExplode(',', $storagePid);
+
+        $recursiveStoragePids = [];
+
         foreach ($storagePids as $startPid) {
-            $pids = $this->frontendConfigurationManager->getContentObject()->getTreeList($startPid, $recursionDepth, 0);
-            if ((string)$pids !== '') {
-                $recursiveStoragePids .= $pids . ',';
+            $pids = GeneralUtility::makeInstance(ContentObjectRenderer::class)->getTreeList($startPid, $recursionDepth, 0);
+
+            if (!empty($pids)) {
+                $recursiveStoragePids = array_merge(
+                    $recursiveStoragePids,
+                    GeneralUtility::intExplode(',', $pids)
+                );
             }
         }
 
-        return GeneralUtility::intExplode(',', $recursiveStoragePids);
+        return array_unique($recursiveStoragePids);
     }
-
 }

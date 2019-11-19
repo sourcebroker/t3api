@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Model;
 
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Persistence
@@ -10,12 +12,12 @@ use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
 class PersistenceSettings
 {
     /**
-     * @var string
+     * @var int[]
      */
-    protected $storagePids = '';
+    protected $storagePids = [];
 
     /**
-     * @var bool|int
+     * @var int
      */
     protected $recursionLevel = 0;
 
@@ -27,24 +29,37 @@ class PersistenceSettings
     public function __construct(ApiResourceAnnotation $apiResource)
     {
         $attributes = $apiResource->getAttributes();
-        $this->storagePids = (string)($attributes['persistence']['storagePid'] ?? $this->storagePids);
+        if (!empty($attributes['persistence']['storagePid'])) {
+            $this->storagePids = GeneralUtility::intExplode(',', $attributes['persistence']['storagePid']);
+        }
         $this->recursionLevel = (int)($attributes['persistence']['recursive'] ?? $this->recursionLevel);
     }
 
     /**
-     * @return string
+     * @return int[]
      */
-    public function getStoragePids(): string
+    public function getStoragePids(): array
     {
         return $this->storagePids;
     }
 
     /**
-     * @return bool|int
+     * @return int
      */
     public function getRecursionLevel()
     {
         return $this->recursionLevel;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getMainStoragePid(): int
+    {
+        if (empty($this->storagePids)) {
+            return 0;
+        }
+
+        return $this->storagePids[0];
+    }
 }

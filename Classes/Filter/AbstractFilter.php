@@ -1,20 +1,21 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Filter;
 
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
+use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use InvalidArgumentException;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 
 /**
  * Class AbstractFilter
@@ -30,6 +31,20 @@ abstract class AbstractFilter implements SingletonInterface
      * @var ObjectManager
      */
     protected $objectManager;
+
+    /**
+     * @param ApiFilter $apiFilter
+     *
+     * @return Parameter[]
+     */
+    public static function getDocumentationParameters(ApiFilter $apiFilter): array
+    {
+        return [
+            Parameter::create()
+                ->name($apiFilter->getParameterName())
+                ->schema(Schema::string()),
+        ];
+    }
 
     /**
      * @param string $property
@@ -62,8 +77,8 @@ abstract class AbstractFilter implements SingletonInterface
      * @param QueryInterface $query
      * @param QueryBuilder $queryBuilder
      *
-     * @return array
      * @throws UnexpectedTypeException
+     * @return array
      */
     protected function addJoinsForNestedProperty(
         string $property,

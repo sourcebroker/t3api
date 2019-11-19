@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Model;
 
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
@@ -10,7 +11,6 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class ApiResource
 {
-
     /**
      * @var string
      */
@@ -65,8 +65,9 @@ class ApiResource
 
         /** @var AbstractOperation $operation */
         foreach ($this->getOperations() as $operation) {
-            $this->routes->add($operation->getRoute()->getPath(), $operation->getRoute());
-            $this->routeNameToOperation[$operation->getRoute()->getPath()] = $operation;
+            $routeName = spl_object_hash($operation);
+            $this->routes->add($routeName, $operation->getRoute());
+            $this->routeNameToOperation[spl_object_hash($operation)] = $operation;
         }
 
         $this->pagination = new Pagination($apiResourceAnnotation);
@@ -106,6 +107,7 @@ class ApiResource
     {
         if (!empty($this->getItemOperations())) {
             $itemOperations = $this->getItemOperations();
+
             return array_shift($itemOperations);
         }
 
@@ -129,6 +131,7 @@ class ApiResource
     {
         if (!empty($this->getCollectionOperations())) {
             $collectionOperations = $this->getCollectionOperations();
+
             return array_shift($collectionOperations);
         }
 

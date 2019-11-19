@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Routing\Enhancer;
 
+use SourceBroker\T3api\Service\RouteService;
 use TYPO3\CMS\Core\Routing\Enhancer\AbstractEnhancer;
 use TYPO3\CMS\Core\Routing\Enhancer\RoutingEnhancerInterface;
 use TYPO3\CMS\Core\Routing\Route;
@@ -12,7 +12,6 @@ use TYPO3\CMS\Core\Routing\RouteCollection;
  * routeEnhancers:
  *   T3api:
  *     type: T3apiResourceEnhancer
- *     basePath: '_api'
  */
 class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterface
 {
@@ -36,7 +35,7 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
     public function __construct(array $configuration)
     {
         $this->configuration = $configuration;
-        $this->basePath = $this->configuration['basePath'] ?? '';
+        $this->basePath = RouteService::getApiBasePath();
     }
 
     /**
@@ -46,13 +45,9 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
     {
         /** @var Route $variant */
         $variant = clone $collection->get('default');
-        $variant->setPath(trim($this->basePath, '/').'/{resource?}');
-        $variant->setRequirement('resource', '.*');
-        $variant->setOption(
-            '_decoratedParameters',
-            ['type' => 1557300854213]
-        );
-        $collection->add('enhancer_'.$this->basePath.spl_object_hash($variant), $variant);
+        $variant->setPath($this->basePath . '/{t3apiResource?}');
+        $variant->setRequirement('t3apiResource', '.*');
+        $collection->add('enhancer_' . $this->basePath . spl_object_hash($variant), $variant);
     }
 
     /**

@@ -1,12 +1,9 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
-use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 /**
  * Class AbstractHandler
@@ -52,19 +49,4 @@ abstract class AbstractHandler implements SubscribingHandlerInterface
             )
         );
     }
-
-    /**
-     * @param SerializationVisitorInterface $visitor
-     * @param mixed $fileReference
-     * @param array $type
-     * @param SerializationContext $context
-     *
-     * @return array
-     */
-    abstract public function serialize(
-        SerializationVisitorInterface $visitor,
-        $fileReference,
-        array $type,
-        SerializationContext $context
-    );
 }

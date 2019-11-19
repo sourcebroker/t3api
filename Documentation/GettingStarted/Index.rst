@@ -27,14 +27,23 @@ Adding route enhancer
 ======================
 
 Minimal configuration requires definition of new route enhancer of type `T3apiResourceEnhancer`.
-This route enhancer has only single option - `basePath`. `basePath` is the URL prefix for all your API endpoints.
 
 .. code-block:: yaml
 
     routeEnhancers:
       T3api:
         type: T3apiResourceEnhancer
-        basePath: '_api'
+
+Changing base path to API endpoints
+====================================
+
+To customize default base path ``_api`` it is needed to add line below to ``ext_localconf.php`` or ``LocalConfiguration
+.php`` file.
+
+.. code-block:: php
+
+   $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] = 'here_is_my_custom_path';
+
 
 Creating API resource
 ======================

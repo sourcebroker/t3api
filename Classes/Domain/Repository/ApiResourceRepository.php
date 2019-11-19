@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Domain\Repository;
 
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
+use ReflectionClass;
+use ReflectionException;
 use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\ApiResource;
+use SourceBroker\T3api\Service\SerializerMetadataService;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use ReflectionClass;
-use ReflectionException;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 
 /**
  * Class ApiResourceRepository
@@ -25,7 +25,7 @@ class ApiResourceRepository
     /**
      * @var FrontendInterface
      */
-    private $cache;
+    protected $cache;
 
     /**
      * @param CacheManager $cacheManager
@@ -38,6 +38,8 @@ class ApiResourceRepository
     }
 
     /**
+     * @throws ReflectionException
+     * @throws AnnotationException
      * @return ApiResource[]
      */
     public function getAll()
@@ -50,46 +52,39 @@ class ApiResourceRepository
             return $apiResources;
         }
 
-        try {
-            $annotationReader = new AnnotationReader();
-        } catch (AnnotationException $exception) {
-            // @todo log error to TYPO3
-            return [];
-        }
+        $annotationReader = new AnnotationReader();
         $apiResources = [];
 
         foreach ($this->getAllDomainModels() as $domainModel) {
-            try {
-                $modelReflection = new ReflectionClass($domainModel);
+            $modelReflection = new ReflectionClass($domainModel);
 
-                /** @var ApiResourceAnnotation $apiResourceAnnotation */
-                $apiResourceAnnotation = $annotationReader->getClassAnnotation(
-                    $modelReflection,
-                    ApiResourceAnnotation::class
-                );
+            /** @var ApiResourceAnnotation $apiResourceAnnotation */
+            $apiResourceAnnotation = $annotationReader->getClassAnnotation(
+                $modelReflection,
+                ApiResourceAnnotation::class
+            );
 
-                if (!$apiResourceAnnotation) {
-                    continue;
-                }
-
-                $apiResource = new ApiResource($domainModel, $apiResourceAnnotation);
-                $apiResources[] = $apiResource;
-
-                $filterAnnotations = array_filter(
-                    $annotationReader->getClassAnnotations($modelReflection),
-                    function ($annotation) {
-                        return $annotation instanceof ApiFilterAnnotation;
-                    }
-                );
-
-                foreach ($filterAnnotations as $filterAnnotation) {
-                    foreach (ApiFilter::createFromAnnotations($filterAnnotation) as $apiFilter) {
-                        $apiResource->addFilter($apiFilter);
-                    }
-                }
-            } catch (ReflectionException $exception) {
-                // @todo log error to TYPO3
+            if (!$apiResourceAnnotation) {
+                continue;
             }
+
+            $apiResource = new ApiResource($domainModel, $apiResourceAnnotation);
+            $apiResources[] = $apiResource;
+
+            $filterAnnotations = array_filter(
+                $annotationReader->getClassAnnotations($modelReflection),
+                function ($annotation) {
+                    return $annotation instanceof ApiFilterAnnotation;
+                }
+            );
+
+            foreach ($filterAnnotations as $filterAnnotation) {
+                foreach (ApiFilter::createFromAnnotations($filterAnnotation) as $apiFilter) {
+                    $apiResource->addFilter($apiFilter);
+                }
+            }
+
+            SerializerMetadataService::generateAutoloadForEntity($domainModel);
         }
 
         $this->cache->set($cacheIdentifier, $apiResources);

@@ -1,13 +1,14 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Filter;
 
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
+use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use InvalidArgumentException;
 
 /**
  * Class RangeFilter
@@ -19,6 +20,33 @@ class RangeFilter extends AbstractFilter
     protected const PARAMETER_GREATER_THAN_OR_EQUAL = 'gte';
     protected const PARAMETER_LESS_THAN = 'lt';
     protected const PARAMETER_LESS_THAN_OR_EQUAL = 'lte';
+
+    /**
+     * @param ApiFilter $apiFilter
+     *
+     * @return Parameter[]
+     */
+    public static function getDocumentationParameters(ApiFilter $apiFilter): array
+    {
+        return [
+            Parameter::create()
+                ->name($apiFilter->getParameterName() . '[' . self::PARAMETER_BETWEEN . ']')
+                ->schema(Schema::string())
+                ->description('Two numbers separated by `..` (e.g. `5..10`)'),
+            Parameter::create()
+                ->name($apiFilter->getParameterName() . '[' . self::PARAMETER_GREATER_THAN . ']')
+                ->schema(Schema::number()),
+            Parameter::create()
+                ->name($apiFilter->getParameterName() . '[' . self::PARAMETER_GREATER_THAN_OR_EQUAL . ']')
+                ->schema(Schema::number()),
+            Parameter::create()
+                ->name($apiFilter->getParameterName() . '[' . self::PARAMETER_LESS_THAN . ']')
+                ->schema(Schema::number()),
+            Parameter::create()
+                ->name($apiFilter->getParameterName() . '[' . self::PARAMETER_LESS_THAN_OR_EQUAL . ']')
+                ->schema(Schema::number()),
+        ];
+    }
 
     /**
      * @inheritDoc
@@ -53,8 +81,8 @@ class RangeFilter extends AbstractFilter
      * @param $value
      * @param QueryInterface $query
      *
-     * @return ConstraintInterface|null
      * @throws InvalidQueryException
+     * @return ConstraintInterface|null
      */
     protected function getConstraintForSingleItem(
         string $property,
@@ -80,7 +108,7 @@ class RangeFilter extends AbstractFilter
                 return $query->lessThanOrEqual($property, $value);
             default:
                 throw new InvalidArgumentException(
-                    sprintf('Unkown operator of range filter %s', $operator),
+                    sprintf('Unknown operator of range filter %s', $operator),
                     1560929019063
                 );
         }
