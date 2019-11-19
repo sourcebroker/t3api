@@ -48,7 +48,7 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
 
     /**
      * @param DeserializationVisitorInterface $visitor
-     * @param array $data
+     * @param mixed $data
      * @param array $type
      * @param DeserializationContext $context
      *

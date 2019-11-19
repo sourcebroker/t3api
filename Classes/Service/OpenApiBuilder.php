@@ -18,6 +18,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Server;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Tag;
 use GoldSpecDigital\ObjectOrientedOAS\OpenApi;
+use JMS\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use Metadata\PropertyMetadata;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
@@ -169,7 +170,7 @@ class OpenApiBuilder
         }
 
         return Operation::create()
-            ->tags(self::getTag($apiOperation->getApiResource()))
+            ->tags([self::getTag($apiOperation->getApiResource())])
             ->action(constant(Operation::class . '::ACTION_' . $apiOperation->getMethod()))
             ->summary($summary)
             ->parameters(...self::getOperationParameters($apiOperation))
@@ -382,6 +383,7 @@ class OpenApiBuilder
         $currentlyProcessedClasses[] = $class;
         $properties = [];
 
+        /** @var ClassMetadata $metadata */
         $metadata = self::getMetadataFactory()->getMetadataForClass($class);
 
         foreach ($metadata->propertyMetadata as $propertyMetadata) {

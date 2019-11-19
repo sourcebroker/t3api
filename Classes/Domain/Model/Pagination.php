@@ -90,7 +90,7 @@ class Pagination
     {
         if ($request instanceof Request) {
             parse_str($request->getQueryString() ?? '', $this->parameters);
-        } elseif ($request instanceof Typo3Request) {
+        } else {
             $this->parameters = $request->getQueryParams();
         }
 

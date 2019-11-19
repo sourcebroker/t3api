@@ -16,7 +16,7 @@ interface SerializeHandlerInterface
      * @param array $type
      * @param SerializationContext $context
      *
-     * @return array
+     * @return mixed
      */
     public function serialize(
         SerializationVisitorInterface $visitor,

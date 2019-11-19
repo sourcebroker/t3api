@@ -7,7 +7,6 @@ use JMS\Serializer\Annotation as Serializer;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Class AbstractCollectionResponse
@@ -22,7 +21,7 @@ abstract class AbstractCollectionResponse
     protected $operation;
 
     /**
-     * @var QueryResultInterface
+     * @var QueryInterface
      */
     protected $query;
 

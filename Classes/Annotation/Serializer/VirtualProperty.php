@@ -10,7 +10,7 @@ namespace SourceBroker\T3api\Annotation\Serializer;
 class VirtualProperty
 {
     /**
-     * @var array<string>
+     * @var string
      */
     public $name;
 }

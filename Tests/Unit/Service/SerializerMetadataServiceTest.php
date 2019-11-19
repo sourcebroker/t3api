@@ -4,6 +4,7 @@ namespace SourceBroker\T3api\Tests\Unit\Service;
 
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use ReflectionClass;
+use ReflectionException;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
 use SourceBroker\T3api\Annotation\Serializer\Type\Image;
 use SourceBroker\T3api\Annotation\Serializer\Type\RecordUri;
@@ -83,6 +84,8 @@ class SerializerMetadataServiceTest extends UnitTestCase
      *
      * @dataProvider getPropertyMetadataFromAnnotationsReturnsCorrectValueDataProvider
      * @test
+     *
+     * @throws ReflectionException
      */
     public function getPropertyMetadataFromAnnotationsReturnsCorrectValue(callable $annotations, array $expectedResult)
     {
@@ -95,11 +98,12 @@ class SerializerMetadataServiceTest extends UnitTestCase
     /**
      * @param $methodName
      * @param array $arguments
-     * @param object $object
+     * @param object|null $object
      *
      * @return mixed
+     * @throws ReflectionException
      */
-    protected function callProtectedMethod($methodName, array $arguments = null, object $object = null)
+    protected static function callProtectedMethod($methodName, array $arguments = [], object $object = null)
     {
         $serializerMetadataServiceReflection = new ReflectionClass(SerializerMetadataService::class);
         $method = $serializerMetadataServiceReflection->getMethod($methodName);

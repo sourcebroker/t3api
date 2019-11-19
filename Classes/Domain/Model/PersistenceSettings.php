@@ -12,12 +12,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class PersistenceSettings
 {
     /**
-     * @var string
+     * @var int[]
      */
     protected $storagePids = [];
 
     /**
-     * @var bool|int
+     * @var int
      */
     protected $recursionLevel = 0;
 
@@ -36,7 +36,7 @@ class PersistenceSettings
     }
 
     /**
-     * @return array
+     * @return int[]
      */
     public function getStoragePids(): array
     {
@@ -44,7 +44,7 @@ class PersistenceSettings
     }
 
     /**
-     * @return bool|int
+     * @return int
      */
     public function getRecursionLevel()
     {

@@ -32,7 +32,7 @@ class CommonRepository
     protected $apiResource;
 
     /**
-     * @var ObjectManager
+     * @var ObjectManagerInterface
      */
     protected $objectManager;
 
@@ -212,7 +212,7 @@ class CommonRepository
         if (is_null($object->getPid()) && $this->apiResource->getPersistenceSettings()->getMainStoragePid()) {
             $object->setPid($this->apiResource->getPersistenceSettings()->getMainStoragePid());
         } elseif (
-            $object->getPid()
+            (bool)$object->getPid()
             && $this->defaultQuerySettings->getRespectStoragePage()
             && !in_array($object->getPid(), $this->defaultQuerySettings->getStoragePageIds())
         ) {

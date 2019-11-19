@@ -68,6 +68,7 @@ class FileUtilityTest extends UnitTestCase
     protected function getPathToNotWritableDirectory(string $rootPath = '/'): string
     {
         $dirs = glob(rtrim($rootPath, '/') . '/*', GLOB_ONLYDIR);
+        $dirs = $dirs === false ? [] : $dirs;
 
         shuffle($dirs);
 

@@ -112,7 +112,7 @@ abstract class AbstractDispatcher
         ResponseInterface &$response = null
     ): string {
         if ($operation instanceof ItemOperation) {
-            $result = $this->processItemOperation($operation, (int)$matchedRoute['id'], $request, $response);
+            $result = $this->processItemOperation($operation, (int)$matchedRoute['id'], $request);
         } elseif ($operation instanceof CollectionOperation) {
             $result = $this->processCollectionOperation($operation, $request, $response);
         } else {
@@ -127,7 +127,6 @@ abstract class AbstractDispatcher
      * @param ItemOperation $operation
      * @param int $uid
      * @param Request $request
-     * @param ResponseInterface $response
      *
      * @throws Exception
      * @return AbstractDomainObject
@@ -135,12 +134,11 @@ abstract class AbstractDispatcher
     protected function processItemOperation(
         ItemOperation $operation,
         int $uid,
-        Request $request,
-        ResponseInterface &$response = null
+        Request $request
     ): ?AbstractDomainObject {
         $repository = CommonRepository::getInstanceForResource($operation->getApiResource());
 
-        /** @var AbstractDomainObject $object */
+        /** @var AbstractDomainObject|null $object */
         $object = $repository->findByUid($uid);
 
         if (!$object instanceof AbstractDomainObject) {
@@ -209,6 +207,7 @@ abstract class AbstractDispatcher
             $repository->add($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
 
+            /** @scrutinizer ignore-call */
             $response = $response->withStatus(201);
 
             return $object;
