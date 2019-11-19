@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Filter;
 
+use Doctrine\DBAL\FetchMode;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use RuntimeException;
@@ -11,21 +11,19 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use Doctrine\DBAL\FetchMode;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\Selector;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
-use TYPO3\CMS\Extbase\Persistence\Generic\Qom\Selector;
-use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * Class SearchFilter
  */
 class SearchFilter extends AbstractFilter
 {
-
     /**
      * @param ApiFilter $apiFilter
      *
@@ -36,7 +34,7 @@ class SearchFilter extends AbstractFilter
         return [
             Parameter::create()
                 ->name($apiFilter->getParameterName())
-                ->schema(Schema::string())
+                ->schema(Schema::string()),
         ];
     }
 
@@ -84,9 +82,8 @@ class SearchFilter extends AbstractFilter
      * @param QueryInterface $query
      * @param bool $queryExpansion
      *
-     * @return array
-     *
      * @throws UnexpectedTypeException
+     * @return array
      */
     protected function matchAgainstFindIds(
         string $property,

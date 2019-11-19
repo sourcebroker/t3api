@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Serializer\Accessor;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
@@ -8,15 +7,14 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\LogicException;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
-use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use Throwable;
+use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
  * Class AccessorStrategy
  */
 class AccessorStrategy implements AccessorStrategyInterface
 {
-
     /**
      * {@inheritdoc}
      */

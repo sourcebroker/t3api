@@ -1,14 +1,13 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Serializer\Subscriber;
 
+use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
-use JMS\Serializer\Metadata\StaticPropertyMetadata;
-use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Serializer\Handler\AbstractDomainObjectHandler;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
@@ -58,8 +57,8 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
             ],
             [
                 'event' => Events::PRE_DESERIALIZE,
-                'method' => 'onPreDeserialize'
-            ]
+                'method' => 'onPreDeserialize',
+            ],
         ];
     }
 

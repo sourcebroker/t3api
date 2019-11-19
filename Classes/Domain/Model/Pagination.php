@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Domain\Model;
 
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
@@ -24,12 +23,12 @@ class Pagination
     protected $clientEnabled;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $itemsPerPage;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $maximumItemsPerPage;
 
@@ -83,7 +82,7 @@ class Pagination
     }
 
     /**
-     * @param Request|Typo3Request
+     * @param Request|Typo3Request $request
      *
      * @return self
      */

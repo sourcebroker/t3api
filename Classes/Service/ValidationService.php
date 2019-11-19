@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Service;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
@@ -31,9 +30,8 @@ class ValidationService
     /**
      * @param AbstractDomainObject $obj
      *
-     * @return Result
-     *
      * @throws ValidationException
+     * @return Result
      */
     public function validateObject($obj): Result
     {

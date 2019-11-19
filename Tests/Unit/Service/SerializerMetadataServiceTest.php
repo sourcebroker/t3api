@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace SourceBroker\T3api\Tests\Unit\Service;
 
 use Nimut\TestingFramework\TestCase\UnitTestCase;
@@ -14,7 +14,6 @@ use SourceBroker\T3api\Service\SerializerMetadataService;
  */
 class SerializerMetadataServiceTest extends UnitTestCase
 {
-
     /**
      * @return array
      */

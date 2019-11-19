@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Utility;
 
 use RuntimeException;
@@ -11,7 +10,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class FileUtility
 {
-
     /**
      * @param string $path
      *

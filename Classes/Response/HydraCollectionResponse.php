@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Response;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
@@ -11,12 +10,11 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class HydraCollectionResponse extends AbstractCollectionResponse
 {
-
     /**
      * @param string $membersReference
      *
-     * @return Schema
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
+     * @return Schema
      */
     public static function getOpenApiSchema(string $membersReference): Schema
     {
@@ -124,12 +122,13 @@ class HydraCollectionResponse extends AbstractCollectionResponse
             if (!in_array($variable, $variables)) {
                 $searchData['hydra:mapping'][] = [
                     'variable' => $variable,
-                    'property' => $filter->getProperty()
+                    'property' => $filter->getProperty(),
                 ];
                 $variables[] = $variable;
             }
         }
         $searchData['hydra:template'] .= sprintf('{?%s}', implode(',', $variables));
+
         return $searchData;
     }
 

@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Controller;
 
 use Doctrine\Common\Annotations\AnnotationException;
@@ -55,14 +54,13 @@ class AdministrationController extends ActionController
     }
 
     /**
-     * @return string
      * @throws AnnotationException
      * @throws ReflectionException
      * @throws OasInvalidArgumentException
+     * @return string
      */
     public function openApiDataAction(): string
     {
         return OpenApiBuilder::build($this->apiResourceRepository->getAll())->toJson();
     }
-
 }

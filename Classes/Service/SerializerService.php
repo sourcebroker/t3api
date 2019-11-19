@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Service;
 
 use Doctrine\Common\Annotations\AnnotationException;
@@ -225,9 +224,8 @@ class SerializerService implements SingletonInterface
     }
 
     /**
-     * @return Reader
-     *
      * @throws RuntimeException
+     * @return Reader
      */
     protected function getAnnotationReader(): Reader
     {

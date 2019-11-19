@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Dispatcher;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SourceBroker\T3api\Service\RouteService;
@@ -16,14 +16,12 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
-use Exception;
 
 /**
  * Class Bootstrap
  */
 class Bootstrap extends AbstractDispatcher
 {
-
     /**
      * @var ResponseInterface
      */
@@ -54,9 +52,9 @@ class Bootstrap extends AbstractDispatcher
     /**
      * @param ServerRequestInterface $request
      *
-     * @return Response
      * @throws Exception
      * @throws RouteNotFoundException
+     * @return Response
      */
     public function process(ServerRequestInterface $request): ResponseInterface
     {

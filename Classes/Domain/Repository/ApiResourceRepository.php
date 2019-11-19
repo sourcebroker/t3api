@@ -1,22 +1,21 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Domain\Repository;
 
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
+use ReflectionClass;
+use ReflectionException;
 use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Service\SerializerMetadataService;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use ReflectionClass;
-use ReflectionException;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 
 /**
  * Class ApiResourceRepository
@@ -39,10 +38,9 @@ class ApiResourceRepository
     }
 
     /**
-     * @return ApiResource[]
-     *
      * @throws ReflectionException
      * @throws AnnotationException
+     * @return ApiResource[]
      */
     public function getAll()
     {

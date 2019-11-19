@@ -1,13 +1,12 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
-use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
 
 /**
  * Class FileReferenceHandler

@@ -1,30 +1,29 @@
 <?php
 
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Service;
 
-use Exception;
 use DateTime;
+use Exception;
 use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Components;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Info;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Server;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Tag;
+use GoldSpecDigital\ObjectOrientedOAS\OpenApi;
 use Metadata\MetadataFactoryInterface;
 use Metadata\PropertyMetadata;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Info;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\PathItem;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Server;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Tag;
-use GoldSpecDigital\ObjectOrientedOAS\OpenApi;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -48,9 +47,8 @@ class OpenApiBuilder
     /**
      * @param ApiResource[] $apiResources
      *
-     * @return OpenApi
-     *
      * @throws OasInvalidArgumentException
+     * @return OpenApi
      */
     public static function build(array $apiResources): OpenApi
     {
@@ -114,8 +112,8 @@ class OpenApiBuilder
     /**
      * @param ApiResource[] $apiResources
      *
-     * @return PathItem[]
      * @throws OasInvalidArgumentException
+     * @return PathItem[]
      */
     protected static function getPaths(array $apiResources): array
     {
@@ -150,8 +148,8 @@ class OpenApiBuilder
     /**
      * @param AbstractOperation $apiOperation
      *
-     * @return Operation
      * @throws OasInvalidArgumentException
+     * @return Operation
      */
     protected static function getOperation(AbstractOperation $apiOperation): Operation
     {
@@ -182,8 +180,8 @@ class OpenApiBuilder
     /**
      * @param AbstractOperation $operation
      *
-     * @return Parameter[]
      * @throws OasInvalidArgumentException
+     * @return Parameter[]
      */
     protected static function getOperationParameters(AbstractOperation $operation): array
     {
@@ -243,8 +241,8 @@ class OpenApiBuilder
     /**
      * @param AbstractOperation $operation
      *
-     * @return Parameter[]
      * @throws OasInvalidArgumentException
+     * @return Parameter[]
      */
     protected static function getPaginationParametersForOperation(AbstractOperation $operation): array
     {

@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\ViewHelpers;
 
 use SourceBroker\T3api\Dispatcher\HeadlessDispatcher;
@@ -47,8 +46,8 @@ class InlineViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @return string
      * @throws RouteNotFoundException
+     * @return string
      */
     public function render(): string
     {
@@ -94,5 +93,4 @@ class InlineViewHelper extends AbstractViewHelper
 
         return $params;
     }
-
 }

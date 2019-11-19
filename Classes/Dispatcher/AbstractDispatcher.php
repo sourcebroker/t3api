@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Dispatcher;
 
 use Exception;
@@ -67,9 +66,9 @@ abstract class AbstractDispatcher
      * @param Request $request
      * @param ResponseInterface $response
      *
-     * @return string
      * @throws Exception
      * @throws RouteNotFoundException
+     * @return string
      */
     public function processOperationByRequest(
         RequestContext $requestContext,
@@ -103,8 +102,8 @@ abstract class AbstractDispatcher
      * @param Request $request
      * @param ResponseInterface $response
      *
-     * @return string
      * @throws Exception
+     * @return string
      */
     protected function processOperation(
         AbstractOperation $operation,
@@ -130,9 +129,8 @@ abstract class AbstractDispatcher
      * @param Request $request
      * @param ResponseInterface $response
      *
-     * @return AbstractDomainObject
-     *
      * @throws Exception
+     * @return AbstractDomainObject
      */
     protected function processItemOperation(
         ItemOperation $operation,
@@ -156,7 +154,7 @@ abstract class AbstractDispatcher
         } elseif ($operation->getMethod() === 'PUT') {
             $entityClass = $operation->getApiResource()->getEntity();
             /** @var AbstractDomainObject $newObject */
-            $newObject = new $entityClass;
+            $newObject = new $entityClass();
 
             foreach ($newObject->_getProperties() as $propertyName => $propertyValue) {
                 if ($propertyName === 'uid') {
@@ -188,8 +186,8 @@ abstract class AbstractDispatcher
      * @param Request $request
      * @param ResponseInterface $response
      *
-     * @return AbstractDomainObject|AbstractCollectionResponse
      * @throws \TYPO3\CMS\Extbase\Validation\Exception
+     * @return AbstractDomainObject|AbstractCollectionResponse
      */
     protected function processCollectionOperation(
         CollectionOperation $operation,
@@ -214,8 +212,7 @@ abstract class AbstractDispatcher
             $response = $response->withStatus(201);
 
             return $object;
-        } else {
-            // @todo 593 throw appropriate exception and set status code 405
         }
+        // @todo 593 throw appropriate exception and set status code 405
     }
 }

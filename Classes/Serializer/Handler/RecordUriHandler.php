@@ -1,14 +1,13 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Serializer\Handler;
 
+use InvalidArgumentException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use InvalidArgumentException;
 
 /**
  * Class RecordUriHandler

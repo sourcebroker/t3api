@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Domain\Model;
 
 use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;

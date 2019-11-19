@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Service;
 
 use DateTime;
@@ -23,7 +22,6 @@ use TYPO3\CMS\Extbase\Reflection\DocCommentParser;
  */
 class SerializerMetadataService
 {
-
     /**
      * @param string $entity
      *
@@ -41,10 +39,9 @@ class SerializerMetadataService
     /**
      * @param string $entity
      *
-     * @return array
-     *
      * @throws ReflectionException
      * @throws AnnotationException
+     * @return array
      */
     protected static function getForEntity(string $entity): array
     {

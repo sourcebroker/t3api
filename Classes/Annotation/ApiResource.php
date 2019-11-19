@@ -1,11 +1,10 @@
 <?php
 
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Annotation;
 
-use Doctrine\Common\Annotations\Annotation\Attributes;
 use Doctrine\Common\Annotations\Annotation\Attribute;
+use Doctrine\Common\Annotations\Annotation\Attributes;
 
 /**
  * ApiResource annotation.
@@ -20,7 +19,6 @@ use Doctrine\Common\Annotations\Annotation\Attribute;
  */
 class ApiResource
 {
-
     /**
      * @var array
      */

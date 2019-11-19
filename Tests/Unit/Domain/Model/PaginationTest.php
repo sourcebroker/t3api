@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace SourceBroker\T3api\Tests\Unit\Domain\Model;
 
 use Nimut\TestingFramework\TestCase\UnitTestCase;
@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class PaginationTest extends UnitTestCase
 {
-
     /**
      * $GLOBALS['TYPO3_CONF_VARS'] is not available in test environment, so we need to copy default pagination settings
      */
