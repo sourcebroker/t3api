@@ -100,8 +100,8 @@ class SerializerMetadataServiceTest extends UnitTestCase
      * @param array $arguments
      * @param object|null $object
      *
-     * @return mixed
      * @throws ReflectionException
+     * @return mixed
      */
     protected static function callProtectedMethod($methodName, array $arguments = [], object $object = null)
     {
