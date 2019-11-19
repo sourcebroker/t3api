@@ -170,7 +170,7 @@ class OpenApiBuilder
         }
 
         return Operation::create()
-            ->tags([self::getTag($apiOperation->getApiResource())])
+            ->tags(self::getTag($apiOperation->getApiResource()))
             ->action(constant(Operation::class . '::ACTION_' . $apiOperation->getMethod()))
             ->summary($summary)
             ->parameters(...self::getOperationParameters($apiOperation))
