@@ -8,6 +8,9 @@ return [
             'after' => [
                 'typo3/cms-frontend/tsfe',
             ],
+            'before' => [
+                'typo3/cms-frontend/shortcut-and-mountpoint-redirect',
+            ],
         ],
     ],
 ];
