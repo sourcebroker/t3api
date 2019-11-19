@@ -37,25 +37,25 @@
 <script src="/typo3conf/ext/t3api/Resources/Public/vendor/swagger-ui/swagger-ui-standalone-preset.js"></script>
 <f:format.raw>
 	<script>
-      var dataUrl = '{dataUrl}'
-      window.onload = function () {
-        var ui = SwaggerUIBundle({
-          url: dataUrl,
-          dom_id: '#swagger-ui',
-          deepLinking: true,
-          presets: [
-            SwaggerUIBundle.presets.apis,
-            SwaggerUIStandalonePreset
-          ],
-          plugins: [
-            SwaggerUIBundle.plugins.DownloadUrl
-          ],
-          layout: 'BaseLayout'
-        })
-
-        window.ui = ui
-      }
+      var dataUrl = '{dataUrl}';
 	</script>
 </f:format.raw>
+<script>
+  window.onload = function () {
+    window.ui = SwaggerUIBundle({
+      url: dataUrl,
+      dom_id: '#swagger-ui',
+      deepLinking: true,
+      presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIStandalonePreset
+      ],
+      plugins: [
+        SwaggerUIBundle.plugins.DownloadUrl
+      ],
+      layout: 'BaseLayout'
+    });
+  }
+</script>
 </body>
 </html>
