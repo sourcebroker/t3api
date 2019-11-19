@@ -8,6 +8,7 @@ use Exception;
 use DateTime;
 use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Components;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use Metadata\MetadataFactoryInterface;
 use Metadata\PropertyMetadata;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
@@ -174,7 +175,8 @@ class OpenApiBuilder
             ->action(constant(Operation::class . '::ACTION_' . $apiOperation->getMethod()))
             ->summary($summary)
             ->parameters(...self::getOperationParameters($apiOperation))
-            ->responses(...self::getOperationResponses($apiOperation));
+            ->responses(...self::getOperationResponses($apiOperation))
+            ->requestBody(self::getOperationRequestBody($apiOperation));
     }
 
     /**
@@ -339,12 +341,13 @@ class OpenApiBuilder
 
     /**
      * @param string $class
+     * @param string $mode `READ` or `WRITE`
      *
      * @return string
      */
-    protected static function getComponentsSchemaReference(string $class): string
+    protected static function getComponentsSchemaReference(string $class, string $mode = 'READ'): string
     {
-        $schemaIdentifier = str_replace('\\', '.', $class);
+        $schemaIdentifier = str_replace('\\', '.', $class) . '__' . $mode;
         $referencePath = '#/components/schemas/' . $schemaIdentifier;
 
         $definedSchemas = array_map(
@@ -355,7 +358,7 @@ class OpenApiBuilder
         );
 
         if (!in_array($schemaIdentifier, $definedSchemas)) {
-            self::setComponentsSchema($schemaIdentifier, $class);
+            self::setComponentsSchema($schemaIdentifier, $class, $mode);
         }
 
         return $referencePath;
@@ -364,8 +367,9 @@ class OpenApiBuilder
     /**
      * @param string $name
      * @param string $class
+     * @param string $mode `READ` or `WRITE`
      */
-    protected static function setComponentsSchema(string $name, string $class): void
+    protected static function setComponentsSchema(string $name, string $class, string $mode): void
     {
         static $currentlyProcessedClasses;
 
@@ -387,10 +391,10 @@ class OpenApiBuilder
                 continue;
             }
 
-            $properties[] = self::getPropertySchemaFromPropertyMetadata($propertyMetadata);
+            $properties[] = self::getPropertySchemaFromPropertyMetadata($propertyMetadata, $mode);
         }
 
-        if (self::isApiResourceClass($class)) {
+        if (self::isApiResourceClass($class) && $mode === 'READ') {
             $properties[] = Schema::string('@id');
         }
 
@@ -421,13 +425,17 @@ class OpenApiBuilder
 
     /**
      * @param PropertyMetadata $propertyMetadata
+     * @param string $mode `READ` or `WRITE`
      *
      * @return Schema
      */
-    protected static function getPropertySchemaFromPropertyMetadata(PropertyMetadata $propertyMetadata): Schema
-    {
+    protected static function getPropertySchemaFromPropertyMetadata(
+        PropertyMetadata $propertyMetadata,
+        string $mode
+    ): Schema {
         $schema = self::getPropertySchemaFromPropertyType(
             $propertyMetadata->type['name'] ?? '',
+            $mode,
             $propertyMetadata->type['params'] ?? []
         );
 
@@ -436,14 +444,15 @@ class OpenApiBuilder
 
     /**
      * @param string $type
+     * @param string $mode `READ` or `WRITE`
      * @param array $params
      *
      * @return Schema
      */
-    protected static function getPropertySchemaFromPropertyType(string $type, array $params = []): Schema
+    protected static function getPropertySchemaFromPropertyType(string $type, string $mode, array $params = []): Schema
     {
         if (is_a($type, ObjectStorage::class, true) && !empty($params[0]['name'])) {
-            $schema = Schema::array()->items(self::getPropertySchemaFromPropertyType($params[0]['name']));
+            $schema = Schema::array()->items(self::getPropertySchemaFromPropertyType($params[0]['name'], $mode));
         } elseif (is_a($type, DateTime::class, true)) {
             try {
                 $schema = Schema::string()->example((new DateTime())->format(DateTime::ATOM));
@@ -451,9 +460,13 @@ class OpenApiBuilder
                 // no chance exception will occur - catch it only to avoid IDE's complaints
             }
         } elseif (class_exists($type)) {
-            // NOTICE! because of a bug https://github.com/swagger-api/swagger-ui/issues/3325 reference to itself
-            // will not be displayed correctly
-            $schema = Schema::ref(self::getComponentsSchemaReference($type));
+            if ($mode === 'WRITE') {
+                $schema = Schema::number()->example(rand(1, 100));
+            } else {
+                // NOTICE! because of a bug https://github.com/swagger-api/swagger-ui/issues/3325 reference to itself
+                // will not be displayed correctly
+                $schema = Schema::ref(self::getComponentsSchemaReference($type, $mode));
+            }
         } elseif (in_array($type, ['int', 'integer'])) {
             $schema = Schema::integer();
         } elseif (in_array($type, ['string'])) {
@@ -481,5 +494,26 @@ class OpenApiBuilder
         }
 
         return false;
+    }
+
+    /**
+     * @param AbstractOperation $operation
+     *
+     * @return RequestBody|null
+     */
+    protected static function getOperationRequestBody(AbstractOperation $operation): ?RequestBody
+    {
+        if ($operation->isMethodGet() || $operation->isMethodDelete()) {
+            return null;
+        }
+
+        return RequestBody::create()
+            ->content(
+                MediaType::json()->schema(
+                    Schema::ref(
+                        self::getComponentsSchemaReference($operation->getApiResource()->getEntity(), 'WRITE')
+                    )
+                )
+            );
     }
 }

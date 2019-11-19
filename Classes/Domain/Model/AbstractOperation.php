@@ -114,4 +114,44 @@ abstract class AbstractOperation
     {
         return $this->normalizationContext['groups'] ?? [];
     }
+
+    /**
+     * @return bool
+     */
+    public function isMethodGet(): bool
+    {
+        return $this->method === 'GET';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMethodPut(): bool
+    {
+        return $this->method === 'PUT';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMethodPatch(): bool
+    {
+        return $this->method === 'Patch';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMethodPost(): bool
+    {
+        return $this->method === 'POST';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMethodDelete(): bool
+    {
+        return $this->method === 'DELETE';
+    }
 }
