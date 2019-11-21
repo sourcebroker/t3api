@@ -96,6 +96,140 @@ class SerializerMetadataServiceTest extends UnitTestCase
     }
 
     /**
+     * @return array
+     */
+    public function parsePropertyTypeReturnsCorrectValueDataProvider(): array
+    {
+        return [
+            '\DateTime' => [
+                '\DateTime',
+                sprintf('DateTime<"%s">', \DateTimeInterface::ATOM),
+            ],
+            '\DateTime|null' => [
+                '\DateTime|null',
+                sprintf('DateTime<"%s">', \DateTimeInterface::ATOM),
+            ],
+            'null|\DateTime' => [
+                'null|\DateTime',
+                sprintf('DateTime<"%s">', \DateTimeInterface::ATOM),
+            ],
+            'DateTime|null' => [
+                '\DateTime|null',
+                sprintf('DateTime<"%s">', \DateTimeInterface::ATOM),
+            ],
+            'DateTime | null' => [
+                'DateTime | null',
+                sprintf('DateTime<"%s">', \DateTimeInterface::ATOM),
+            ],
+            '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
+                '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+                'TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+            ],
+            'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
+                'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+                'TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+            ],
+            '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
+                '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+                'TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+            ],
+            '\TYPO3\CMS\Extbase\Domain\Model\FileReference' => [
+                '\TYPO3\CMS\Extbase\Domain\Model\FileReference',
+                'TYPO3\CMS\Extbase\Domain\Model\FileReference',
+            ],
+            'TYPO3\CMS\Extbase\Domain\Model\FileReference' => [
+                'TYPO3\CMS\Extbase\Domain\Model\FileReference',
+                'TYPO3\CMS\Extbase\Domain\Model\FileReference',
+            ],
+            'string' => [
+                'string',
+                'string',
+            ],
+            'string And here, in same lane as var annotation, is description for the property' => [
+                'string And here, in same lane as var annotation, is description for the property',
+                'string',
+            ],
+            'boolean' => [
+                'boolean',
+                'boolean',
+            ],
+            'bool' => [
+                'bool',
+                'bool',
+            ],
+            'int' => [
+                'int',
+                'int',
+            ],
+            'integer' => [
+                'integer',
+                'integer',
+            ],
+            'double' => [
+                'double',
+                'double',
+            ],
+            'float' => [
+                'float',
+                'float',
+            ],
+            'array<string>' => [
+                'array<string>',
+                'array<string>',
+            ],
+            'array<string> And some additional description here' => [
+                'array<string> And some additional description here',
+                'array<string>',
+            ],
+            'array<\TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
+                'array<\TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+                'array<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+            ],
+            'string[]' => [
+                'string[]',
+                'array<string>',
+            ],
+            '[]' => [
+                '[]',
+                'array',
+            ],
+            'array' => [
+                'array',
+                'array',
+            ],
+            '\TYPO3\CMS\Extbase\Domain\Model\FileReference[]' => [
+                '\TYPO3\CMS\Extbase\Domain\Model\FileReference[]',
+                'array<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+            ],
+            'TYPO3\CMS\Extbase\Domain\Model\FileReference[]' => [
+                'TYPO3\CMS\Extbase\Domain\Model\FileReference[]',
+                'array<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+            ],
+            '\TYPO3\CMS\Extbase\Domain\Model\FileReference[] Additional description goes here' => [
+                '\TYPO3\CMS\Extbase\Domain\Model\FileReference[]',
+                'array<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+            ],
+        ];
+    }
+
+    /**
+     * @param string $varAnnotation
+     * @param string $expectedType
+     *
+     * @dataProvider parsePropertyTypeReturnsCorrectValueDataProvider
+     * @test
+     *
+     * @throws ReflectionException
+     */
+    public function parsePropertyTypeReturnsCorrectValue(string $varAnnotation, string $expectedType)
+    {
+        self::assertEquals(
+            $expectedType,
+            self::callProtectedMethod('parsePropertyType', [$varAnnotation])
+        );
+    }
+
+    /**
      * @param $methodName
      * @param array $arguments
      * @param object|null $object

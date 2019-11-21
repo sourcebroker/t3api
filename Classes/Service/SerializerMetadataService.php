@@ -14,7 +14,8 @@ use SourceBroker\T3api\Annotation\Serializer\Groups;
 use SourceBroker\T3api\Annotation\Serializer\Type\TypeInterface;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 use Symfony\Component\Yaml\Yaml;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Extbase\Reflection\DocCommentParser;
 
 /**
@@ -186,30 +187,59 @@ class SerializerMetadataService
      * @param string $type
      *
      * @return string
-     * @todo 591 add tests
      */
     protected static function parsePropertyType(string $type)
     {
-        $type = trim(explode(' ', trim($type))[0]);
+        $type = self::getValuablePropertyType($type);
 
-        if (is_a($type, DateTime::class, true)) {
+        if (StringUtility::endsWith($type, '[]')) {
+            $subType = self::parsePropertyType(rtrim($type, '[]'));
+
+            if (!empty($subType)) {
+                return sprintf('array<%s>', $subType);
+            } else {
+                return 'array';
+            }
+        } elseif (is_a($type, DateTime::class, true)) {
             return sprintf('DateTime<"%s">', DateTime::ATOM);
         } elseif (class_exists($type)) {
             return ltrim($type, '\\');
         } elseif (in_array($type, ['string', 'int', 'integer', 'boolean', 'bool', 'double', 'float'])) {
             return $type;
         } elseif (strpos($type, '<') !== false) {
-            $collectionType = trim(explode('<', $type)[0]);
-            $itemsType = trim(explode('<', $type)[1], '> ');
+            $collectionType = self::parsePropertyType(trim(explode('<', $type)[0]));
+            $itemsType = self::parsePropertyType(trim(explode('<', $type)[1], '> '));
 
-            if (is_a($collectionType, ObjectStorage::class, true)) {
-                return sprintf('%s<%s>', ObjectStorage::class, ltrim($itemsType, '\\'));
-            }
-
-            // @todo 591 surely it does not resolve all cases
+            return sprintf('%s<%s>', $collectionType, $itemsType);
         }
 
         return $type;
+    }
+
+    /**
+     * Returns first valuable property type if multiple types are defined.
+     *
+     * @example Ensures that `\DateTime` is returned when type is wrote like `null|\DateTime`
+     *
+     * @param string $type
+     *
+     * @return string
+     */
+    protected static function getValuablePropertyType(string $type): string
+    {
+        $multipleTypes = GeneralUtility::trimExplode('|', $type);
+
+        $type = $multipleTypes[0];
+
+        if (count($multipleTypes) > 1) {
+            foreach ($multipleTypes as $type) {
+                if (strtolower($type) !== 'null') {
+                    break;
+                }
+            }
+        }
+
+        return explode(' ', $type)[0];
     }
 
     /**
