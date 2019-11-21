@@ -197,9 +197,9 @@ class SerializerMetadataService
 
             if (!empty($subType)) {
                 return sprintf('array<%s>', $subType);
-            } else {
-                return 'array';
             }
+
+            return 'array';
         } elseif (is_a($type, DateTime::class, true)) {
             return sprintf('DateTime<"%s">', DateTime::ATOM);
         } elseif (class_exists($type)) {
