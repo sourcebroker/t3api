@@ -11,6 +11,7 @@ use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Domain\Repository\CommonRepository;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
+use SourceBroker\T3api\Security\OperationAccessChecker;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\ValidationService;
 use Symfony\Component\HttpFoundation\Request;
@@ -141,6 +142,10 @@ abstract class AbstractDispatcher
         /** @var AbstractDomainObject|null $object */
         $object = $repository->findByUid($uid);
 
+        if (!OperationAccessChecker::isGranted($operation, ['object' => $object])) {
+            throw new Exception('You are not allowed to access this operation', 1574411504130);
+        }
+
         if (!$object instanceof AbstractDomainObject) {
             // @todo 593 throw exception like `ResourceNotFound` and set status 404
             throw new PageNotFoundException();
@@ -185,6 +190,7 @@ abstract class AbstractDispatcher
      * @param ResponseInterface $response
      *
      * @throws \TYPO3\CMS\Extbase\Validation\Exception
+     * @throws Exception
      * @return AbstractDomainObject|AbstractCollectionResponse
      */
     protected function processCollectionOperation(
@@ -193,6 +199,10 @@ abstract class AbstractDispatcher
         ResponseInterface &$response = null
     ) {
         $repository = CommonRepository::getInstanceForResource($operation->getApiResource());
+
+        if (!OperationAccessChecker::isGranted($operation)) {
+            throw new Exception('You are not allowed to access this operation', 1574416639472);
+        }
 
         if ($operation->getMethod() === 'GET') {
             return $this->objectManager->get(

@@ -41,7 +41,13 @@ abstract class AbstractOperation
     protected $normalizationContext = [];
 
     /**
+     * @var string
+     */
+    protected $security = '';
+
+    /**
      * AbstractOperation constructor.
+     *
      * @param string $key
      * @param ApiResource $apiResource
      * @param array $params
@@ -52,6 +58,7 @@ abstract class AbstractOperation
         $this->apiResource = $apiResource;
         $this->method = strtoupper($params['method'] ?? $this->method);
         $this->path = $params['path'] ?? $this->path;
+        $this->security = $params['security'] ?? $this->security;
         $this->normalizationContext = isset($params['normalizationContext'])
             ? array_replace_recursive($this->normalizationContext, $params['normalizationContext'])
             : $this->normalizationContext;
@@ -88,6 +95,14 @@ abstract class AbstractOperation
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSecurity(): string
+    {
+        return $this->security;
     }
 
     /**

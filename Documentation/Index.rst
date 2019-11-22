@@ -51,6 +51,7 @@ If you find an error or something is missing, please: `Report a Problem
    Operations/Index
    Filters/Index
    Pagination/Index
+   Security/Index
    Serialization/Index
    Integration/Index
    Customization/Index
