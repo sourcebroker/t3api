@@ -201,7 +201,7 @@ class SerializerMetadataService
 
             return 'array';
         } elseif (is_a($type, DateTime::class, true)) {
-            return sprintf('DateTime<"%s">', DateTime::ATOM);
+            return sprintf('DateTime<"%s">', DateTime::RFC3339_EXTENDED);
         } elseif (class_exists($type)) {
             return ltrim($type, '\\');
         } elseif (in_array($type, ['string', 'int', 'integer', 'boolean', 'bool', 'double', 'float'])) {
