@@ -38,6 +38,28 @@ class OperationAccessChecker
     }
 
     /**
+     * @param AbstractOperation $operation
+     * @param array $expressionLanguageVariables
+     *
+     * @return bool
+     */
+    public static function isGrantedPostDenormalize(AbstractOperation $operation, array $expressionLanguageVariables = []): bool
+    {
+        if (!$operation->getSecurityPostDenormalize()) {
+            return true;
+        }
+
+        $resolver = self::getExpressionLanguageResolver();
+        $resolver->expressionLanguageVariables['t3apiOperation'] = $operation;
+        $resolver->expressionLanguageVariables = array_merge(
+            $resolver->expressionLanguageVariables,
+            $expressionLanguageVariables
+        );
+
+        return $resolver->evaluate($operation->getSecurityPostDenormalize());
+    }
+
+    /**
      * @return Resolver
      */
     protected static function getExpressionLanguageResolver(): Resolver

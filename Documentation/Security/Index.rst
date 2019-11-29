@@ -8,6 +8,7 @@ Security
 =========
 
 @todo general usage of expression language inside of "security" annotation
+@todo general usage of expression language inside of "security_post_denormalize" annotation
 @todo example usage of frontend user
 @todo example usage of frontend user group
 @todo example usage of backend user
