@@ -71,7 +71,7 @@ class SerializerMetadataService
     }
 
     /**
-     * @param string $reflectionClass
+     * @param ReflectionClass $reflectionClass
      *
      * @throws AnnotationException
      * @return array
@@ -87,6 +87,7 @@ class SerializerMetadataService
     }
 
     /**
+     * @param string $class
      * @throws ReflectionException
      * @return ReflectionClass[]
      */
@@ -188,7 +189,7 @@ class SerializerMetadataService
      *
      * @return string
      */
-    protected static function parsePropertyType(string $type)
+    protected static function parsePropertyType(string $type): string
     {
         $type = self::getValuablePropertyType($type);
 
@@ -200,13 +201,21 @@ class SerializerMetadataService
             }
 
             return 'array';
-        } elseif (is_a($type, DateTime::class, true)) {
+        }
+
+        if (is_a($type, DateTime::class, true)) {
             return sprintf('DateTime<"%s">', DateTime::RFC3339_EXTENDED);
-        } elseif (class_exists($type)) {
+        }
+
+        if (class_exists($type)) {
             return ltrim($type, '\\');
-        } elseif (in_array($type, ['string', 'int', 'integer', 'boolean', 'bool', 'double', 'float'])) {
+        }
+
+        if (in_array($type, ['string', 'int', 'integer', 'boolean', 'bool', 'double', 'float'])) {
             return $type;
-        } elseif (strpos($type, '<') !== false) {
+        }
+
+        if (strpos($type, '<') !== false) {
             $collectionType = self::parsePropertyType(trim(explode('<', $type)[0]));
             $itemsType = self::parsePropertyType(trim(explode('<', $type)[1], '> '));
 
@@ -221,13 +230,13 @@ class SerializerMetadataService
      *
      * @example Ensures that `\DateTime` is returned when type is wrote like `null|\DateTime`
      *
-     * @param string $type
+     * @param string $inputType
      *
      * @return string
      */
-    protected static function getValuablePropertyType(string $type): string
+    protected static function getValuablePropertyType(string $inputType): string
     {
-        $multipleTypes = GeneralUtility::trimExplode('|', $type);
+        $multipleTypes = GeneralUtility::trimExplode('|', $inputType);
 
         $type = $multipleTypes[0];
 
