@@ -455,7 +455,7 @@ class OpenApiBuilder
             $schema = Schema::array()->items(self::getPropertySchemaFromPropertyType($params[0]['name'], $mode));
         } elseif (is_a($type, DateTime::class, true)) {
             try {
-                $schema = Schema::string()->example((new DateTime())->format(DateTime::ATOM));
+                $schema = Schema::string()->example((new DateTime())->format(DateTime::RFC3339_EXTENDED));
             } catch (Exception $e) {
                 // no chance exception will occur - catch it only to avoid IDE's complaints
             }

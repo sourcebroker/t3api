@@ -103,23 +103,23 @@ class SerializerMetadataServiceTest extends UnitTestCase
         return [
             '\DateTime' => [
                 '\DateTime',
-                sprintf('DateTime<"%s">', \DateTimeInterface::ATOM),
+                sprintf('DateTime<"%s">', \DateTimeInterface::RFC3339_EXTENDED),
             ],
             '\DateTime|null' => [
                 '\DateTime|null',
-                sprintf('DateTime<"%s">', \DateTimeInterface::ATOM),
+                sprintf('DateTime<"%s">', \DateTimeInterface::RFC3339_EXTENDED),
             ],
             'null|\DateTime' => [
                 'null|\DateTime',
-                sprintf('DateTime<"%s">', \DateTimeInterface::ATOM),
+                sprintf('DateTime<"%s">', \DateTimeInterface::RFC3339_EXTENDED),
             ],
             'DateTime|null' => [
                 '\DateTime|null',
-                sprintf('DateTime<"%s">', \DateTimeInterface::ATOM),
+                sprintf('DateTime<"%s">', \DateTimeInterface::RFC3339_EXTENDED),
             ],
             'DateTime | null' => [
                 'DateTime | null',
-                sprintf('DateTime<"%s">', \DateTimeInterface::ATOM),
+                sprintf('DateTime<"%s">', \DateTimeInterface::RFC3339_EXTENDED),
             ],
             '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
                 '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>',

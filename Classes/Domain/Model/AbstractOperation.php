@@ -46,6 +46,11 @@ abstract class AbstractOperation
     protected $security = '';
 
     /**
+     * @var string
+     */
+    protected $securityPostDenormalize = '';
+
+    /**
      * AbstractOperation constructor.
      *
      * @param string $key
@@ -59,6 +64,7 @@ abstract class AbstractOperation
         $this->method = strtoupper($params['method'] ?? $this->method);
         $this->path = $params['path'] ?? $this->path;
         $this->security = $params['security'] ?? $this->security;
+        $this->securityPostDenormalize = $params['security_post_denormalize'] ?? $this->securityPostDenormalize;
         $this->normalizationContext = isset($params['normalizationContext'])
             ? array_replace_recursive($this->normalizationContext, $params['normalizationContext'])
             : $this->normalizationContext;
@@ -103,6 +109,14 @@ abstract class AbstractOperation
     public function getSecurity(): string
     {
         return $this->security;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSecurityPostDenormalize(): string
+    {
+        return $this->securityPostDenormalize;
     }
 
     /**

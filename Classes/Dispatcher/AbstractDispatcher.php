@@ -150,7 +150,7 @@ abstract class AbstractDispatcher
             // @todo 593 throw exception like `ResourceNotFound` and set status 404
             throw new PageNotFoundException();
         } elseif ($operation->getMethod() === 'PATCH') {
-            $this->serializerService->deserializeOperation($operation, $request->getContent(), $object);
+            $this->deserializeOperation($operation, $request, $object);
             $this->validationService->validateObject($object);
             $repository->update($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
@@ -166,7 +166,7 @@ abstract class AbstractDispatcher
                 $object->_setProperty($propertyName, $propertyValue);
             }
 
-            $this->serializerService->deserializeOperation($operation, $request->getContent(), $object);
+            $this->deserializeOperation($operation, $request, $object);
             $this->validationService->validateObject($object);
             $repository->add($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
@@ -212,7 +212,7 @@ abstract class AbstractDispatcher
                 $repository->findFiltered($operation->getFilters(), $request)
             );
         } elseif ($operation->getMethod() === 'POST') {
-            $object = $this->serializerService->deserializeOperation($operation, $request->getContent());
+            $object = $this->deserializeOperation($operation, $request);
             $this->validationService->validateObject($object);
             $repository->add($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
@@ -223,5 +223,27 @@ abstract class AbstractDispatcher
             return $object;
         }
         // @todo 593 throw appropriate exception and set status code 405
+    }
+
+    /**
+     * @param AbstractOperation $operation
+     * @param Request $request
+     * @param AbstractDomainObject|null $targetObject
+     *
+     * @throws Exception
+     * @return AbstractDomainObject
+     */
+    protected function deserializeOperation(
+        AbstractOperation $operation,
+        Request $request,
+        ?AbstractDomainObject $targetObject = null
+    ) {
+        $object = $this->serializerService->deserializeOperation($operation, $request->getContent(), $targetObject);
+
+        if (!OperationAccessChecker::isGrantedPostDenormalize($operation, ['object' => $object])) {
+            throw new Exception('You are not allowed to access this operation', 1574782843388);
+        }
+
+        return $object;
     }
 }
