@@ -5,6 +5,7 @@ namespace SourceBroker\T3api\Filter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use InvalidArgumentException;
+use RuntimeException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -15,6 +16,9 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\Selector;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
@@ -208,7 +212,32 @@ abstract class AbstractFilter implements SingletonInterface
      */
     protected function getUniqueAlias(string $suffix = ''): string
     {
-        return uniqid('alias_') . $suffix;
+        return uniqid('alias_', true) . $suffix;
+    }
+
+    /**
+     * @param QueryInterface $query
+     * @throws RuntimeException
+     *
+     * @return string
+     */
+    protected function getTableName(QueryInterface $query): string
+    {
+        if (!$query instanceof Query) {
+            throw new RuntimeException(
+                sprintf('Query needs to be instance of %s to get source', Query::class),
+                1575123607933
+            );
+        }
+
+        /** @var Selector $source */
+        $source = $query->getSource();
+
+        if (!$query->getSource() instanceof SelectorInterface) {
+            throw new RuntimeException('Query source does not implement SelectorInterface.', 1575123611889);
+        }
+
+        return $source->getSelectorName();
     }
 
     /**
