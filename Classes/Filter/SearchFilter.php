@@ -3,9 +3,6 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Filter;
 
 use Doctrine\DBAL\FetchMode;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
-use RuntimeException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -14,9 +11,6 @@ use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
-use TYPO3\CMS\Extbase\Persistence\Generic\Qom\Selector;
-use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface;
-use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
@@ -24,20 +18,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class SearchFilter extends AbstractFilter
 {
-    /**
-     * @param ApiFilter $apiFilter
-     *
-     * @return Parameter[]
-     */
-    public static function getDocumentationParameters(ApiFilter $apiFilter): array
-    {
-        return [
-            Parameter::create()
-                ->name($apiFilter->getParameterName())
-                ->schema(Schema::string()),
-        ];
-    }
-
     /**
      * @inheritDoc
      * @throws InvalidQueryException
@@ -55,7 +35,7 @@ class SearchFilter extends AbstractFilter
             case 'partial':
                 return $query->logicalOr(
                     array_map(
-                        function ($value) use ($query, $property) {
+                        static function ($value) use ($query, $property) {
                             return $query->like($property, '%' . $value . '%');
                         },
                         $values
@@ -91,21 +71,7 @@ class SearchFilter extends AbstractFilter
         QueryInterface $query,
         bool $queryExpansion = false
     ): array {
-        if (!$query instanceof Query) {
-            throw new RuntimeException(
-                sprintf('Query needs to be instance of %s to get source', Query::class),
-                1562138597664
-            );
-        }
-
-        /** @var Selector $source */
-        $source = $query->getSource();
-
-        if (!$query->getSource() instanceof SelectorInterface) {
-            throw new RuntimeException('Query source does not implement SelectorInterface.', 1561557242370);
-        }
-
-        $tableName = $source->getSelectorName();
+        $tableName = $this->getTableName($query);
         $conditions = [];
         $binds = [];
         $rootAlias = 'o';
@@ -115,8 +81,7 @@ class SearchFilter extends AbstractFilter
 
         if ($this->isPropertyNested($property)) {
             $joinedProperty = $this->addJoinsForNestedProperty($property, $rootAlias, $query, $queryBuilder);
-            $tableAlias = $joinedProperty[0];
-            $propertyName = $joinedProperty[1];
+            [$tableAlias, $propertyName] = $joinedProperty;
         } else {
             $tableAlias = $rootAlias;
             $propertyName = $property;
