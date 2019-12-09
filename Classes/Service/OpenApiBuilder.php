@@ -83,7 +83,7 @@ class OpenApiBuilder
     {
         return [
             Server::create()
-                ->url('/' . RouteService::getApiBasePath()),
+                ->url('/' . RouteService::getFullApiBasePath()),
         ];
     }
 

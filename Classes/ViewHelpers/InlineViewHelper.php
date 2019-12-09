@@ -66,7 +66,7 @@ class InlineViewHelper extends AbstractViewHelper
             '/',
             [
                 GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST'),
-                RouteService::getApiBasePath(),
+                RouteService::getFullApiBasePath(),
                 $this->arguments['route'],
             ]
         );

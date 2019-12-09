@@ -15,12 +15,6 @@ As you can guess, collection operation returns multiple items of resource and it
 Configuring operations
 ========================
 
-.. important::
-    **For now T3api allows only reading**.
-    It does not support data modification.
-    In REST terminology it means it supports only ``GET`` HTTP method (``POST``, ``PUT`` and ``DELETE`` are not
-    supported yet).
-
 To configure operation for resource you need to pass ``collectionOperations`` or ``itemOperations`` parameters into
 ``ApiResource`` annotation as on example below. Don't bother about the key of the operation for now. In our example
 we use ``get``, but you could use there any other string. The important part is the ``path``. This is the URL path
@@ -28,6 +22,10 @@ for the endpoint, prefixed by the ``basePath`` from route enhancer (see more on 
 
 Path of the item operation needs to contain ``{id}`` parameter. This parameter is replaced by ``uid`` of the entity
 when fetching single item.
+
+.. important::
+    Path to API endpoints is prefixed by the default language base path. For example: If your default language base
+    path is ``en`` then endpoint URL will be: ``/en/_api/*``.
 
 .. code-block:: php
 

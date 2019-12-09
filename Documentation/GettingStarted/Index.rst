@@ -37,12 +37,15 @@ Minimal configuration requires definition of new route enhancer of type `T3apiRe
 Changing base path to API endpoints
 ====================================
 
-To customize default base path ``_api`` it is needed to add line below to ``ext_localconf.php`` or ``LocalConfiguration
-.php`` file.
+Default base path to api requests is: ``_api``. To change it, it is needed to extend route enhancer configuration by
+``basePath`` property, as in example below:
 
-.. code-block:: php
+.. code-block:: yaml
 
-   $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] = 'here_is_my_custom_path';
+    routeEnhancers:
+      T3api:
+        type: T3apiResourceEnhancer
+        basePath: 'my_custom_api_basepath'
 
 
 Creating API resource
