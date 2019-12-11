@@ -15,6 +15,39 @@ SearchFilter
 
 @todo
 
+It is possible to filter multiple fields by single parameter. Example code below means that request to URL
+``/users?search=john`` will return records where any of the fields (``firstName``, ``middleName``, ``lastName``)
+matches searched text.
+
+.. code-block:: php
+
+   use SourceBroker\T3api\Annotation as T3api;
+   use SourceBroker\T3api\Filter\SearchFilter;
+
+   /**
+    * @T3api\ApiResource (
+    *     collectionOperations={
+    *          "get"={
+    *              "path"="/users",
+    *          },
+    *     },
+    * )
+    * @T3api\ApiFilter(
+    *     SearchFilter::class,
+    *     properties={
+    *          "firstName": "partial",
+    *          "middleName": "partial",
+    *          "lastName": "partial",
+    *     },
+    *     arguments={
+    *          "parameterName": "search",
+    *     }
+    * )
+    */
+   class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+   {
+   }
+
 BooleanFilter
 ==============
 
@@ -29,6 +62,30 @@ OrderFilter
 ============
 
 @todo
+
+.. code-block:: php
+
+   use SourceBroker\T3api\Annotation as T3api;
+   use SourceBroker\T3api\Filter\OrderFilter;
+
+   /**
+    * User
+    * @T3api\ApiResource (
+    *     collectionOperations={
+    *          "get"={
+    *              "path"="/users",
+    *          },
+    *     },
+    * )
+    *
+    * @T3api\ApiFilter(
+    *     OrderFilter::class,
+    *     properties={"firstName", "middleName", "lastName"}
+    * )
+    */
+   class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+   {
+   }
 
 RangeFilter
 ============
