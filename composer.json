@@ -49,7 +49,8 @@
         "post-autoload-dump": [
             "mkdir -p .Build/Web/typo3conf/ext/",
             "[ -L .Build/Web/typo3conf/ext/t3api ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/t3api"
-        ]
+        ],
+        "t3doc": "rm -rf ./Documentation-GENERATED-temp && docker-compose run --rm t3docmake && open \"Documentation-GENERATED-temp/Result/project/0.0.0/Index.html\""
     },
     "extra": {
         "typo3/cms": {
