@@ -50,17 +50,41 @@ when fetching single item.
     }
 
 .. note::
-    You can determine as multiple operations of each type for every property, but keep in mind that first collection
+    You can determine multiple operations of each type for every property, but keep in mind that first collection
     operation and first item operation are treated as the main operations. It means that:
 
     - The path of the first collection operation is used in the main endpoint (@todo ref to main endpoint)
     - The path of the first item operation is used to define resource IRI (``@id`` property).
 
-Collection operation response
-==============================
+Supported operation methods
+=============================
+
+T3api supports all REST methods
+
++--------------+-----------------+-------------------+--------------------------------------+
+| HTTP Method  | Operation type  | Example URL       | Purpose                              |
++==============+=================+===================+======================================+
+| **GET**      | Collection      | \/resource        | Reading collection of the items      |
++--------------+-----------------+-------------------+--------------------------------------+
+| **GET**      | Item            | \/resource\/{id}  | Reading single item                  |
++--------------+-----------------+-------------------+--------------------------------------+
+| **POST**     | Collection      | \/resource        | Creating new item                    |
++--------------+-----------------+-------------------+--------------------------------------+
+| **PATCH**    | Item            | \/resource\/{id}  | Updating the item                    |
++--------------+-----------------+-------------------+--------------------------------------+
+| **PUT**      | Item            | \/resource\/{id}  | Replacing the item                   |
++--------------+-----------------+-------------------+--------------------------------------+
+| **DELETE**   | Item            | \/resource\/{id}  | Deleting the item                    |
++--------------+-----------------+-------------------+--------------------------------------+
+
+.. important::
+    Notice that ``POST`` operation is a type of collection operations
+
+Response of GET collection operation
+========================================
 
 As mentioned in :ref:`getting-started` T3api uses `Hydra Core Vocabulary <http://www.hydra-cg.com/>`__. That's why collection
-responses are enriched by other properties:
+response of GET method is enriched by some additional properties:
 
 - ``hydra:member`` - contains array of matched entities.
 - ``hydra:totalItems`` - contains number of all items.
@@ -91,14 +115,29 @@ Here is an example of basic response for collection operation.
       "hydra:totalItems": 2,
       "hydra:view": {
         "hydra:first": "/_api/items?page=1",
-        "hydra:last": "/_api/items?page=1"
+        "hydra:last": "/_api/items?page=10",
+        "hydra:prev": "/_api/items?page=3",
+        "hydra:next": "/_api/items?page=5",
+        "hydra:pages": [
+            "/_api/items?page=1",
+            "/_api/items?page=2",
+            "/_api/items?page=3",
+            "/_api/items?page=4",
+            "/_api/items?page=5",
+            "/_api/items?page=6",
+            "/_api/items?page=7",
+            "/_api/items?page=8",
+            "/_api/items?page=9",
+            "/_api/items?page=10"
+        ]
       }
     }
 
 Item operation response
 ========================
 
-@todo
+In response of all item operations only object is received. Response does not contain any additional attributes
+because they are useless in single item operation context.
 
 .. code-block:: json
 
@@ -107,11 +146,14 @@ Item operation response
       "uid": 1,
       "title": "Lorem ipsum dolor sit amet enim",
       "teaser": "Pellentesque facilisis. Nulla imperdiet sit amet magna.",
-      "datetime": "2019-08-30T07:30:00+00:00"
-      "bodytext": "<p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>",
+      "datetime": "2019-08-30T07:30:00+00:00",
+      "bodytext": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>",
     }
 
-Configuring context groups for routes
-=======================================
+Customizing returned properties
+================================
 
-@todo
+By default all properties of entities are returned. That may not be expected behavior because of performance and
+security reasons. You can easily manage properties returned from any endpoint using
+:ref:`serialization context groups <serialization_context-groups>`.
+
