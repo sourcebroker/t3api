@@ -67,6 +67,8 @@ class HydraCollectionResponse extends AbstractCollectionResponse
      * @Serializer\SerializedName("hydra:view")
      * @Serializer\VirtualProperty()
      * @Serializer\Groups({"__hydra_collection_response"})
+     *
+     * @todo move $viewData to separate class
      */
     public function getView(): array
     {
@@ -90,10 +92,19 @@ class HydraCollectionResponse extends AbstractCollectionResponse
                         $pagination->getPageParameterName() => $pagination->getPage() - 1,
                     ]);
             }
+
             if ($pagination->getPage() < $lastPage) {
                 $viewData['hydra:next'] = $this->operation->getRoute()->getPath() . '?' .
                     $this->getCurrentQueryStringWithOverrideParams([
                         $pagination->getPageParameterName() => $pagination->getPage() + 1,
+                    ]);
+            }
+
+            $viewData['hydra:pages'] = [];
+            foreach (range(1, $lastPage) as $pageNumber) {
+                $viewData['hydra:pages'][] = $this->operation->getRoute()->getPath() . '?' .
+                    $this->getCurrentQueryStringWithOverrideParams([
+                        $pagination->getPageParameterName() => $pageNumber,
                     ]);
             }
         }
