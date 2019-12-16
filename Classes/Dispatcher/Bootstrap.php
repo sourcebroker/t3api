@@ -123,7 +123,8 @@ class Bootstrap extends AbstractDispatcher
         $languageTsConfig = $GLOBALS['TSFE']->config;
 
         if (!isset($languageTsConfig['sys_language_uid'])) {
-            $languageTsConfig['sys_language_uid'] =  (int)$GLOBALS['TYPO3_REQUEST']->getHeader($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']) ?? 0;
+            $languageHeader = $GLOBALS['TYPO3_REQUEST']->getHeader($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']);
+            $languageTsConfig['sys_language_uid'] = $languageHeader && count($languageHeader) ? (int)current($languageHeader) : 0;
         }
 
         $this->objectManager->get(Context::class)
