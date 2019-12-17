@@ -148,30 +148,26 @@ class CommonRepository
         $query = $this->createQuery();
         $constraintGroups = [];
 
+        $apiFilters = $this->filterAndSortApiFiltersByQueryParams($apiFilters, $queryParams);
+
         /** @var ApiFilter $apiFilter */
-        foreach ($apiFilters as $groupKey => $apiFilter) {
-            // allow params grouping by namespace (for example "page" constraint -> constraint[page])
-            $namespacedQueryParams = !empty($apiFilter->getArgument('parameterNamespace'))
-                ? $queryParams[$apiFilter->getArgument('parameterNamespace')]
-                : $queryParams;
+        foreach ($apiFilters as $apiFilter) {
             $parameterName = $apiFilter->getParameterName();
 
-            if (isset($namespacedQueryParams[$apiFilter->getParameterName()])) {
-                /** @var AbstractFilter $filter */
-                $filter = $this->objectManager->get($apiFilter->getFilterClass());
-                $constraint = $filter->filterProperty(
-                    $apiFilter->getProperty(),
-                    $namespacedQueryParams[$parameterName],
-                    $query,
-                    $apiFilter
-                );
+            /** @var AbstractFilter $filter */
+            $filter = $this->objectManager->get($apiFilter->getFilterClass());
+            $constraint = $filter->filterProperty(
+                $apiFilter->getProperty(),
+                $queryParams[$parameterName],
+                $query,
+                $apiFilter
+            );
 
-                if ($constraint instanceof ConstraintInterface) {
-                    $constraintGroups[$apiFilter->getParameterName()] = array_merge(
-                        $constraintGroups[$apiFilter->getParameterName()] ?? [],
-                        [$constraint]
-                    );
-                }
+            if ($constraint instanceof ConstraintInterface) {
+                $constraintGroups[$apiFilter->getParameterName()] = array_merge(
+                    $constraintGroups[$apiFilter->getParameterName()] ?? [],
+                    [$constraint]
+                );
             }
         }
 
@@ -187,6 +183,51 @@ class CommonRepository
         }
 
         return $query;
+    }
+
+    /**
+     * It may be important for some type of filters (e.g. OrderFilter) to apply in specific order.
+     * This method ensures that filters are applied in the order which they was requested in $queryParams.
+     *
+     * @param array $apiFilters
+     * @param array $queryParams
+     *
+     * @return ApiFilter[]
+     */
+    protected function filterAndSortApiFiltersByQueryParams(array $apiFilters, array $queryParams): array
+    {
+        $apiFilters = array_filter(
+            $apiFilters,
+            static function (ApiFilter $apiFilter) use ($queryParams) {
+                return isset($queryParams[$apiFilter->getParameterName()]);
+            }
+        );
+
+        usort(
+            $apiFilters,
+            static function (ApiFilter $apiFilterA, ApiFilter $apiFilterB) use ($queryParams) {
+                if (
+                    is_array($queryParams[$apiFilterA->getParameterName()])
+                    && $apiFilterA->getParameterName() === $apiFilterB->getParameterName()
+                    && $apiFilterA->getProperty() !== $apiFilterB->getProperty()
+                ) {
+                    return array_search(
+                            $apiFilterA->getProperty(),
+                            array_keys($queryParams[$apiFilterA->getParameterName()]),
+                            true
+                        ) - array_search(
+                            $apiFilterB->getProperty(),
+                            array_keys($queryParams[$apiFilterA->getParameterName()]),
+                            true
+                        );
+                }
+
+                return array_search($apiFilterA->getParameterName(), array_keys($queryParams), true)
+                    - array_search($apiFilterB->getParameterName(), array_keys($queryParams), true);
+            }
+        );
+
+        return $apiFilters;
     }
 
     /**
