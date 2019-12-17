@@ -58,7 +58,7 @@ class Pagination
     protected $parameters;
 
     /**
-     * ClientSidePagination constructor.
+     * Pagination constructor.
      *
      * @param ApiResourceAnnotation $apiResource
      */
@@ -71,8 +71,10 @@ class Pagination
         $this->clientEnabled = isset($attributes['pagination_client_enabled'])
             ? ParameterUtility::toBoolean($attributes['pagination_client_enabled'])
             : $this->clientEnabled;
-        $this->itemsPerPage = (int)$attributes['pagination_items_per_page'] ?? $this->itemsPerPage;
-        $this->maximumItemsPerPage = (int)$attributes['maximum_items_per_page'] ?? $this->maximumItemsPerPage;
+        $this->itemsPerPage = isset($attributes['pagination_items_per_page'])
+            ? (int)$attributes['pagination_items_per_page'] : $this->itemsPerPage;
+        $this->maximumItemsPerPage = isset($attributes['maximum_items_per_page'])
+            ? (int)$attributes['maximum_items_per_page'] : $this->maximumItemsPerPage;
         $this->clientItemsPerPage = isset($attributes['pagination_client_items_per_page'])
             ? ParameterUtility::toBoolean($attributes['pagination_client_items_per_page'])
             : $this->clientItemsPerPage;

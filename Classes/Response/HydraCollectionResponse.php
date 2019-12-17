@@ -107,6 +107,8 @@ class HydraCollectionResponse extends AbstractCollectionResponse
                         $pagination->getPageParameterName() => $pageNumber,
                     ]);
             }
+
+            $viewData['hydra:page'] = $pagination->getPage();
         }
 
         return $viewData;

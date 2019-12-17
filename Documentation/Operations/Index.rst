@@ -114,22 +114,17 @@ Here is an example of basic response for collection operation.
       ],
       "hydra:totalItems": 2,
       "hydra:view": {
-        "hydra:first": "/_api/items?page=1",
-        "hydra:last": "/_api/items?page=10",
-        "hydra:prev": "/_api/items?page=3",
-        "hydra:next": "/_api/items?page=5",
-        "hydra:pages": [
-            "/_api/items?page=1",
-            "/_api/items?page=2",
-            "/_api/items?page=3",
-            "/_api/items?page=4",
-            "/_api/items?page=5",
-            "/_api/items?page=6",
-            "/_api/items?page=7",
-            "/_api/items?page=8",
-            "/_api/items?page=9",
-            "/_api/items?page=10"
-        ]
+          "hydra:first": "/_api/users?itemsPerPage=50&page=1",
+          "hydra:last": "/_api/users?itemsPerPage=50&page=5",
+          "hydra:next": "/_api/users?itemsPerPage=50&page=2",
+          "hydra:pages": [
+              "/_api/users?itemsPerPage=50&page=1",
+              "/_api/users?itemsPerPage=50&page=2",
+              "/_api/users?itemsPerPage=50&page=3",
+              "/_api/users?itemsPerPage=50&page=4",
+              "/_api/users?itemsPerPage=50&page=5"
+          ],
+          "hydra:page": 1
       }
     }
 
