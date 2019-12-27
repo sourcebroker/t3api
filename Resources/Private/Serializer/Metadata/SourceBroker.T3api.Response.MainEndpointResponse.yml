@@ -1,0 +1,9 @@
+SourceBroker\T3api\Response\MainEndpointResponse:
+  properties:
+    apiResourceRepository:
+      exclude: true
+  virtual_properties:
+    getResources:
+      name: resources
+      serialized_name: resources
+      type: array

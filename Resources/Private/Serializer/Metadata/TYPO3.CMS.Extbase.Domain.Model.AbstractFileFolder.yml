@@ -1,0 +1,5 @@
+TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder:
+  properties:
+    originalResource:
+      type: \TYPO3\CMS\Core\Resource\ResourceInterface
+      exclude: true

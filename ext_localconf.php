@@ -19,6 +19,7 @@ call_user_func(
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] = [
+            SourceBroker\T3api\Serializer\Subscriber\GenerateMetadataSubscriber::class,
             SourceBroker\T3api\Serializer\Subscriber\AbstractEntitySubscriber::class,
         ];
 

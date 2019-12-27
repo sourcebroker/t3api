@@ -2,13 +2,12 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Response;
 
-use JMS\Serializer\Annotation as Serializer;
+use Doctrine\Common\Annotations\AnnotationException;
+use ReflectionException;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 
 /**
  * Class MainEndpointResponse
- *
- * @Serializer\ExclusionPolicy("ALL")
  */
 class MainEndpointResponse
 {
@@ -26,9 +25,9 @@ class MainEndpointResponse
     }
 
     /**
+     * @throws AnnotationException
+     * @throws ReflectionException
      * @return array
-     * @Serializer\SerializedName("resources")
-     * @Serializer\VirtualProperty()
      */
     public function getResources(): array
     {

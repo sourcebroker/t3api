@@ -414,7 +414,7 @@ class OpenApiBuilder
     {
         static $metadataFactory;
 
-        if (is_null($metadataFactory)) {
+        if (empty($metadataFactory)) {
             $metadataFactory = GeneralUtility::makeInstance(ObjectManager::class)
                 ->get(SerializerService::class)
                 ->getMetadataFactory();

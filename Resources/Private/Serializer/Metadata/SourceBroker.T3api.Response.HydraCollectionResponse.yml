@@ -1,0 +1,22 @@
+SourceBroker\T3api\Response\HydraCollectionResponse:
+  virtual_properties:
+    getMembers:
+      name: members
+      serialized_name: hydra:member
+      type: array
+      groups: ['__hydra_collection_response']
+    getTotalItems:
+      name: totalItems
+      serialized_name: hydra:totalItems
+      type: int
+      groups: ['__hydra_collection_response']
+    getView:
+      name: view
+      serialized_name: hydra:view
+      type: array
+      groups: ['__hydra_collection_response']
+    getSearch:
+      name: search
+      serialized_name: hydra:search
+      type: array
+      groups: ['__hydra_collection_response']

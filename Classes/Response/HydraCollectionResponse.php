@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Response;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class CollectionResponse
@@ -42,9 +41,6 @@ class HydraCollectionResponse extends AbstractCollectionResponse
 
     /**
      * @return array
-     * @Serializer\SerializedName("hydra:member")
-     * @Serializer\VirtualProperty()
-     * @Serializer\Groups({"__hydra_collection_response"})
      */
     public function getMembers(): array
     {
@@ -53,9 +49,6 @@ class HydraCollectionResponse extends AbstractCollectionResponse
 
     /**
      * @return int
-     * @Serializer\SerializedName("hydra:totalItems")
-     * @Serializer\VirtualProperty()
-     * @Serializer\Groups({"__hydra_collection_response"})
      */
     public function getTotalItems(): int
     {
@@ -64,9 +57,6 @@ class HydraCollectionResponse extends AbstractCollectionResponse
 
     /**
      * @return array
-     * @Serializer\SerializedName("hydra:view")
-     * @Serializer\VirtualProperty()
-     * @Serializer\Groups({"__hydra_collection_response"})
      *
      * @todo move $viewData to separate class
      */
@@ -116,9 +106,6 @@ class HydraCollectionResponse extends AbstractCollectionResponse
 
     /**
      * @return array
-     * @Serializer\SerializedName("hydra:search")
-     * @Serializer\VirtualProperty()
-     * @Serializer\Groups({"__hydra_collection_response"})
      */
     public function getSearch(): array
     {

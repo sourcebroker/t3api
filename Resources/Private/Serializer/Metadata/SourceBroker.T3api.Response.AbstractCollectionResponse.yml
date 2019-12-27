@@ -1,0 +1,12 @@
+SourceBroker\T3api\Response\AbstractCollectionResponse:
+  properties:
+    operation:
+      exclude: true
+    query:
+      exclude: true
+    request:
+      exclude: true
+    membersCache:
+      exclude: true
+    totalItemsCache:
+      exclude: true

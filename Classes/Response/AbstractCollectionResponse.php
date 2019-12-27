@@ -3,15 +3,12 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Response;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
-use JMS\Serializer\Annotation as Serializer;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * Class AbstractCollectionResponse
- *
- * @Serializer\ExclusionPolicy("ALL")
  */
 abstract class AbstractCollectionResponse
 {

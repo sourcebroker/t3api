@@ -83,8 +83,6 @@ class ApiResourceRepository
                     $apiResource->addFilter($apiFilter);
                 }
             }
-
-            SerializerMetadataService::generateAutoloadForEntity($domainModel);
         }
 
         $this->cache->set($cacheIdentifier, $apiResources);
