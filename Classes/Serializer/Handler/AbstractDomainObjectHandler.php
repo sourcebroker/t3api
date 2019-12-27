@@ -5,15 +5,28 @@ namespace SourceBroker\T3api\Serializer\Handler;
 use InvalidArgumentException;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
-use SourceBroker\T3api\Domain\Repository\CommonRepository;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * Class AbstractDomainObjectHandler
  */
 class AbstractDomainObjectHandler extends AbstractHandler implements DeserializeHandlerInterface
 {
-    const TYPE = 'AbstractDomainObjectTransport';
+    public const TYPE = 'AbstractDomainObjectTransport';
+
+    /**
+     * @var PersistenceManager
+     */
+    protected $persistenceManager;
+
+    /**
+     * @param PersistenceManager $persistenceManager
+     */
+    public function injectPersistenceManager(PersistenceManager $persistenceManager): void
+    {
+        $this->persistenceManager = $persistenceManager;
+    }
 
     /**
      * @var string[]
@@ -40,7 +53,11 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
             && is_subclass_of($type['params']['targetType'], AbstractDomainObject::class)
         ) {
             if (is_numeric($data)) {
-                return CommonRepository::getInstanceForEntity($type['params']['targetType'])->findByUid((int)$data);
+                return $this->persistenceManager->getObjectByIdentifier(
+                    (int)$data,
+                    $type['params']['targetType'],
+                    false
+                );
             }
 
             if (is_array($data)) {
