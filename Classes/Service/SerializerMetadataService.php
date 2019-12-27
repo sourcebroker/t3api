@@ -204,7 +204,7 @@ class SerializerMetadataService
         }
 
         if (is_a($type, DateTime::class, true)) {
-            return sprintf('DateTime<"%s">', DateTime::RFC3339_EXTENDED);
+            return sprintf('DateTime<"%s">', PHP_VERSION_ID >= 70300 ? DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP');
         }
 
         if (class_exists($type)) {

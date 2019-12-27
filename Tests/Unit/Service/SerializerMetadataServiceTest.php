@@ -100,26 +100,28 @@ class SerializerMetadataServiceTest extends UnitTestCase
      */
     public function parsePropertyTypeReturnsCorrectValueDataProvider(): array
     {
+        $dateTimeFormat = PHP_VERSION_ID >= 70300 ? \DateTimeInterface::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP';
+
         return [
             '\DateTime' => [
                 '\DateTime',
-                sprintf('DateTime<"%s">', \DateTimeInterface::RFC3339_EXTENDED),
+                sprintf('DateTime<"%s">', $dateTimeFormat),
             ],
             '\DateTime|null' => [
                 '\DateTime|null',
-                sprintf('DateTime<"%s">', \DateTimeInterface::RFC3339_EXTENDED),
+                sprintf('DateTime<"%s">', $dateTimeFormat),
             ],
             'null|\DateTime' => [
                 'null|\DateTime',
-                sprintf('DateTime<"%s">', \DateTimeInterface::RFC3339_EXTENDED),
+                sprintf('DateTime<"%s">', $dateTimeFormat),
             ],
             'DateTime|null' => [
                 '\DateTime|null',
-                sprintf('DateTime<"%s">', \DateTimeInterface::RFC3339_EXTENDED),
+                sprintf('DateTime<"%s">', $dateTimeFormat),
             ],
             'DateTime | null' => [
                 'DateTime | null',
-                sprintf('DateTime<"%s">', \DateTimeInterface::RFC3339_EXTENDED),
+                sprintf('DateTime<"%s">', $dateTimeFormat),
             ],
             '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
                 '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>',
