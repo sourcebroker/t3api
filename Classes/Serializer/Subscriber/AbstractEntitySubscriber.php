@@ -65,7 +65,7 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
     /**
      * @param ObjectEvent $event
      */
-    public function onPostSerialize(ObjectEvent $event)
+    public function onPostSerialize(ObjectEvent $event): void
     {
         if (!$event->getObject() instanceof AbstractDomainObject) {
             return;
@@ -84,7 +84,7 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
     /**
      * @param PreDeserializeEvent $event
      */
-    public function onPreDeserialize(PreDeserializeEvent $event)
+    public function onPreDeserialize(PreDeserializeEvent $event): void
     {
         // Changes type to the custom one to make it possible to handle data with serializer handler
         if (

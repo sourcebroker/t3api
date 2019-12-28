@@ -61,12 +61,22 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
             }
 
             if (is_array($data)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Cascade persistance is not supported. Domain object uid should be passed instead of complex object in path `%s`.',
-                        implode('.', $context->getCurrentPath())
-                    ),
-                    1571242078103
+                if (!empty($data['uid'])) {
+                    throw new InvalidArgumentException(
+                        sprintf(
+                            'Cascade update is not supported. Domain object uid should be passed instead of complex object in path `%s`.',
+                            implode('.', $context->getCurrentPath())
+                        ),
+                        1571242078103
+                    );
+                }
+
+                return $visitor->visitArray(
+                    $data,
+                    [
+                        'type' => $type['params']['targetType'],
+                        'params' => [],
+                    ]
                 );
             }
         }

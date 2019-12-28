@@ -1,0 +1,14 @@
+TYPO3\CMS\Core\Resource\AbstractFile:
+  properties:
+    storage:
+      type: TYPO3\CMS\Core\Resource\ResourceStorage
+      exclude: true
+    properties:
+      type: array
+    identifier:
+      type: string
+    name:
+      type: string
+    deleted:
+      type: bool
+  virtual_properties: {  }

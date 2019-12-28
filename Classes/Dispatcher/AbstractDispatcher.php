@@ -12,6 +12,7 @@ use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Domain\Repository\CommonRepository;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use SourceBroker\T3api\Security\OperationAccessChecker;
+use SourceBroker\T3api\Service\FileUploadService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\ValidationService;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,7 @@ use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\File;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -52,6 +54,11 @@ abstract class AbstractDispatcher
     protected $validationService;
 
     /**
+     * @var FileUploadService
+     */
+    protected $fileUploadService;
+
+    /**
      * Bootstrap constructor.
      */
     public function __construct()
@@ -60,6 +67,7 @@ abstract class AbstractDispatcher
         $this->serializerService = $this->objectManager->get(SerializerService::class);
         $this->apiResourceRepository = $this->objectManager->get(ApiResourceRepository::class);
         $this->validationService = $this->objectManager->get(ValidationService::class);
+        $this->fileUploadService = $this->objectManager->get(FileUploadService::class);
     }
 
     /**
@@ -149,7 +157,9 @@ abstract class AbstractDispatcher
         if (!$object instanceof AbstractDomainObject) {
             // @todo 593 throw exception like `ResourceNotFound` and set status 404
             throw new PageNotFoundException();
-        } elseif ($operation->getMethod() === 'PATCH') {
+        }
+
+        if ($operation->getMethod() === 'PATCH') {
             $this->deserializeOperation($operation, $request, $object);
             $this->validationService->validateObject($object);
             $repository->update($object);
@@ -211,11 +221,17 @@ abstract class AbstractDispatcher
                 $request,
                 $repository->findFiltered($operation->getFilters(), $request)
             );
-        } elseif ($operation->getMethod() === 'POST') {
-            $object = $this->deserializeOperation($operation, $request);
-            $this->validationService->validateObject($object);
-            $repository->add($object);
-            $this->objectManager->get(PersistenceManager::class)->persistAll();
+        }
+
+        if ($operation->getMethod() === 'POST') {
+            if (is_subclass_of($operation->getApiResource()->getEntity(), File::class, true)) {
+                $object = $this->fileUploadService->process($operation, $request);
+            } else {
+                $object = $this->deserializeOperation($operation, $request);
+                $this->validationService->validateObject($object);
+                $repository->add($object);
+                $this->objectManager->get(PersistenceManager::class)->persistAll();
+            }
 
             /** @scrutinizer ignore-call */
             $response = $response->withStatus(201);

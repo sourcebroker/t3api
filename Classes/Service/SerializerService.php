@@ -46,7 +46,7 @@ class SerializerService implements SingletonInterface
     /**
      * @param ObjectManager $objectManager
      */
-    public function injectObjectManager(ObjectManager $objectManager)
+    public function injectObjectManager(ObjectManager $objectManager): void
     {
         $this->objectManager = $objectManager;
     }
@@ -86,7 +86,7 @@ class SerializerService implements SingletonInterface
     /**
      * @param array $params
      */
-    public static function clearCache(array $params)
+    public static function clearCache(array $params): void
     {
         if (in_array($params['cacheCmd'], ['all', 'system'])) {
             GeneralUtility::flushDirectory(self::getSerializerCacheDirectory(), true, true);
@@ -107,9 +107,14 @@ class SerializerService implements SingletonInterface
      *
      * @return string
      */
-    public function serialize($result)
+    public function serialize($result): string
     {
-        return $this->getSerializerBuilder()->build()->serialize($result, 'json');
+        return $this->getSerializerBuilder()
+            ->setSerializationContextFactory(function () {
+                return $this->getSerializationContext();
+            })
+            ->build()
+            ->serialize($result, 'json');
     }
 
     /**
@@ -118,21 +123,38 @@ class SerializerService implements SingletonInterface
      *
      * @return string
      */
-    public function serializeOperation(AbstractOperation $operation, $result)
+    public function serializeOperation(AbstractOperation $operation, $result): string
     {
         return $this->getSerializerBuilder()
             ->setSerializationContextFactory(function () use ($operation) {
-                $serializationContext = SerializationContext::create()
-                    ->setSerializeNull(true);
-
-                if (!empty($operation->getContextGroups())) {
-                    $serializationContext->setGroups($operation->getContextGroups());
-                }
-
-                return $serializationContext;
+                return $this->getSerializationContext($operation->getContextGroups());
             })
             ->build()
-            ->serialize($result, 'json');
+            ->serialize(
+                $result,
+                'json'
+            );
+    }
+
+    /**
+     * @param string $data
+     * @param string $type
+     * @param array $contextAttributes
+     *
+     * @return mixed
+     */
+    public function deserialize(string $data, string $type, $contextAttributes = [])
+    {
+        return $this->getSerializerBuilder()
+            ->setDeserializationContextFactory(function () use ($contextAttributes) {
+                return $this->getDeserializationContext([], null, $contextAttributes);
+            })
+            ->build()
+            ->deserialize(
+                $data,
+                $type,
+                'json'
+            );
     }
 
     /**
@@ -144,26 +166,20 @@ class SerializerService implements SingletonInterface
      */
     public function deserializeOperation(AbstractOperation $operation, $data, $targetObject = null)
     {
-        $serializerBuilder = $this->getSerializerBuilder();
-        $context = new DeserializationContext();
-
-        if (!empty($targetObject)) {
-            $context->setAttribute('target', $targetObject);
-        }
-
-        return $serializerBuilder
-            ->setDeserializationContextFactory(function () use ($operation) {
-                $deserializationContext = DeserializationContext::create();
-
-                if (!empty($operation->getContextGroups())) {
-                    $deserializationContext->setGroups($operation->getContextGroups());
-                }
-
-                return $deserializationContext;
+        return $this->getSerializerBuilder()
+            ->setDeserializationContextFactory(function () use ($operation, $targetObject) {
+                return $this->getDeserializationContext($operation->getContextGroups(), $targetObject);
             })
-            ->setObjectConstructor(new InitializedObjectConstructor())
             ->build()
-            ->deserialize($data, $operation->getApiResource()->getEntity(), 'json', $context);
+            ->deserialize(
+                $data,
+                $operation->getApiResource()->getEntity(),
+                'json',
+                $this->getDeserializationContext(
+                    $operation->getContextGroups(),
+                    $targetObject
+                )
+            );
     }
 
     /**
@@ -200,9 +216,8 @@ class SerializerService implements SingletonInterface
             ->setAnnotationReader($this->getAnnotationReader())
             ->setMetadataDriverFactory($this->getDriverFactory())
             ->setMetadataCache(self::getMetadataCache())
-            ->addMetadataDirs($this->getMetadataDirs());
-
-        // @todo add signal for serializer customization
+            ->addMetadataDirs($this->getMetadataDirs())
+            ->setObjectConstructor(new InitializedObjectConstructor());
 
         return $serializerBuilder;
     }
@@ -218,6 +233,50 @@ class SerializerService implements SingletonInterface
         $metadataFactory->setCache(self::getMetadataCache());
 
         return $metadataFactory;
+    }
+
+    /**
+     * @param array $groups
+     * @return SerializationContext
+     */
+    protected function getSerializationContext(array $groups = []): SerializationContext
+    {
+        $context = SerializationContext::create();
+
+        if (!empty($groups)) {
+            $context->setGroups($groups);
+        }
+
+        return $context
+            ->setSerializeNull(true);
+    }
+
+    /**
+     * @param array $groups
+     * @param object $targetObject
+     * @param array $attributes
+     * @return DeserializationContext
+     */
+    protected function getDeserializationContext(
+        array $groups = [],
+        $targetObject = null,
+        array $attributes = []
+    ): DeserializationContext {
+        $context = DeserializationContext::create();
+
+        foreach ($attributes as $attributeName => $attributeValue) {
+            $context->setAttribute($attributeName, $attributeValue);
+        }
+
+        if (!empty($groups)) {
+            $context->setGroups($groups);
+        }
+
+        if (!empty($targetObject)) {
+            $context->setAttribute('target', $targetObject);
+        }
+
+        return $context;
     }
 
     /**

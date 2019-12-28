@@ -47,6 +47,11 @@ class ApiResource
     protected $persistenceSettings;
 
     /**
+     * @var UploadSettings
+     */
+    protected $uploadSettings;
+
+    /**
      * @param string $entity
      * @param ApiResourceAnnotation $apiResourceAnnotation
      */
@@ -72,6 +77,7 @@ class ApiResource
 
         $this->pagination = new Pagination($apiResourceAnnotation);
         $this->persistenceSettings = new PersistenceSettings($apiResourceAnnotation);
+        $this->uploadSettings = new UploadSettings($apiResourceAnnotation);
     }
 
     /**
@@ -184,5 +190,13 @@ class ApiResource
     public function getPersistenceSettings(): PersistenceSettings
     {
         return $this->persistenceSettings;
+    }
+
+    /**
+     * @return UploadSettings
+     */
+    public function getUploadSettings(): UploadSettings
+    {
+        return $this->uploadSettings;
     }
 }

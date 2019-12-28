@@ -18,11 +18,11 @@ abstract class AbstractHandler implements SubscribingHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribingMethods()
+    public static function getSubscribingMethods(): array
     {
         return array_merge(
             ...array_map(
-                function ($supportedType) {
+                static function ($supportedType) {
                     $methods = [];
 
                     if (is_subclass_of(static::class, SerializeHandlerInterface::class)) {

@@ -2,3 +2,6 @@ TYPO3\CMS\Core\Resource\Folder:
   properties:
     fileAndFolderNameFilters:
       exclude: true
+    storage:
+      type: TYPO3\CMS\Core\Resource\ResourceStorage
+      exclude: true

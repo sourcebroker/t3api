@@ -14,3 +14,9 @@ TYPO3\CMS\Core\Resource\ResourceStorage:
       exclude: true
     isDefault:
       exclude: true
+    processingFolder:
+      type: TYPO3\CMS\Core\Resource\Folder
+      exclude: true
+    processingFolders:
+      type: array<TYPO3\CMS\Core\Resource\Folder>
+      exclude: true
