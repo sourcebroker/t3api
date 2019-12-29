@@ -10,6 +10,7 @@ use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
+use SourceBroker\T3api\Annotation\Serializer\Exclude;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
 use SourceBroker\T3api\Annotation\Serializer\ReadOnly;
 use SourceBroker\T3api\Annotation\Serializer\Type\TypeInterface;
@@ -307,6 +308,8 @@ class SerializerMetadataService
                 }
             } elseif ($annotation instanceof ReadOnly) {
                 $metadata['read_only'] = (bool)$annotation->readOnly;
+            } elseif ($annotation instanceof Exclude) {
+                $metadata['exclude'] = true;
             }
 
             // @todo 591 add support to rest of t3api annotations
