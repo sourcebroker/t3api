@@ -26,6 +26,7 @@ use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
+use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -367,6 +368,7 @@ class OpenApiBuilder
      * @param string $name
      * @param string $class
      * @param string $mode `READ` or `WRITE`
+     * @throws RuntimeException
      */
     protected static function setComponentsSchema(string $name, string $class, string $mode): void
     {
@@ -384,7 +386,23 @@ class OpenApiBuilder
         $properties = [];
 
         /** @var ClassMetadata $metadata */
-        $metadata = self::getMetadataFactory()->getMetadataForClass($class);
+        try {
+            SerializerMetadataService::generateAutoloadForClass($class);
+            $metadata = self::getMetadataFactory()->getMetadataForClass($class);
+
+            if ($metadata === null) {
+                throw new RuntimeException(
+                    sprintf('Could not generate metadata for class `%s`', $class),
+                1577637116148
+                );
+            }
+        } catch (\Exception $e) {
+            throw new RuntimeException(
+                sprintf('An error occured while generating metadata for class `%s`', $class),
+                1577637267693,
+                $e
+            );
+        }
 
         foreach ($metadata->propertyMetadata as $propertyMetadata) {
             if ($propertyMetadata->class !== $class) {
