@@ -19,8 +19,8 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Server;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Tag;
 use GoldSpecDigital\ObjectOrientedOAS\OpenApi;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MetadataFactoryInterface;
-use Metadata\PropertyMetadata;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
@@ -404,6 +404,7 @@ class OpenApiBuilder
             );
         }
 
+        /** @var PropertyMetadata $propertyMetadata */
         foreach ($metadata->propertyMetadata as $propertyMetadata) {
             if ($propertyMetadata->class !== $class) {
                 continue;
@@ -455,7 +456,7 @@ class OpenApiBuilder
             $propertyMetadata->type['name'] ?? '',
             $mode,
             $propertyMetadata->type['params'] ?? []
-        );
+        )->readOnly($propertyMetadata->readOnly);
 
         return $schema->objectId($propertyMetadata->serializedName);
     }

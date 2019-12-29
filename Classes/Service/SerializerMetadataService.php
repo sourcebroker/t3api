@@ -11,6 +11,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
+use SourceBroker\T3api\Annotation\Serializer\ReadOnly;
 use SourceBroker\T3api\Annotation\Serializer\Type\TypeInterface;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 use Symfony\Component\Yaml\Yaml;
@@ -304,6 +305,8 @@ class SerializerMetadataService
                 if (!empty($annotation->getParams())) {
                     $metadata['type'] .= '<"' . implode('","', $annotation->getParams()) . '">';
                 }
+            } elseif ($annotation instanceof ReadOnly) {
+                $metadata['read_only'] = (bool)$annotation->readOnly;
             }
 
             // @todo 591 add support to rest of t3api annotations
