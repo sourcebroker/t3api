@@ -164,7 +164,7 @@ abstract class AbstractOperation
      */
     public function isMethodPatch(): bool
     {
-        return $this->method === 'Patch';
+        return $this->method === 'PATCH';
     }
 
     /**
