@@ -9,6 +9,11 @@ call_user_func(
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] = '_api';
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader'] = 'X-Locale';
 
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors'] = [
+            \SourceBroker\T3api\Serializer\Construction\InitializedObjectConstructor::class,
+            \SourceBroker\T3api\Serializer\Construction\ExtbaseObjectConstructor::class,
+        ];
+
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] = [
             \SourceBroker\T3api\Serializer\Handler\AbstractDomainObjectHandler::class,
             \SourceBroker\T3api\Serializer\Handler\ObjectStorageHandler::class,

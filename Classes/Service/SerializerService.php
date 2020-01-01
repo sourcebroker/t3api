@@ -26,7 +26,7 @@ use Metadata\MetadataFactoryInterface;
 use RuntimeException;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Serializer\Accessor\AccessorStrategy;
-use SourceBroker\T3api\Serializer\Construction\InitializedObjectConstructor;
+use SourceBroker\T3api\Serializer\Construction\ObjectConstructorChain;
 use SourceBroker\T3api\Utility\FileUtility;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -189,37 +189,38 @@ class SerializerService implements SingletonInterface
     {
         static $serializerBuilder;
 
-        if (!empty($serializerBuilder)) {
-            return clone $serializerBuilder;
+        if (empty($serializerBuilder)) {
+            $serializerBuilder = SerializerBuilder::create()
+                ->setCacheDir(self::getSerializerCacheDirectory())
+                ->setDebug(self::isDebugMode())
+                ->configureHandlers(function (HandlerRegistry $registry) {
+                    foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] ?? [] as $handlerClass) {
+                        /** @var SubscribingHandlerInterface $handler */
+                        $handler = $this->objectManager->get($handlerClass);
+                        $registry->registerSubscribingHandler($handler);
+                    }
+                })
+                ->configureListeners(function (EventDispatcher $dispatcher) {
+                    foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] ?? [] as $subscriberClass) {
+                        /** @var EventSubscriberInterface $subscriber */
+                        $subscriber = $this->objectManager->get($subscriberClass);
+                        $dispatcher->addSubscriber($subscriber);
+                    }
+                })
+                ->addDefaultHandlers()
+                ->setAccessorStrategy($this->objectManager->get(AccessorStrategy::class))
+                ->setPropertyNamingStrategy($this->getPropertyNamingStrategy())
+                ->setAnnotationReader(self::getAnnotationReader())
+                ->setMetadataDriverFactory($this->getDriverFactory())
+                ->setMetadataCache(self::getMetadataCache())
+                ->addMetadataDirs(self::getMetadataDirs())
+                ->setObjectConstructor($this->objectManager->get(
+                    ObjectConstructorChain::class,
+                    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors'])
+                );
         }
 
-        $serializerBuilder = SerializerBuilder::create()
-            ->setCacheDir(self::getSerializerCacheDirectory())
-            ->setDebug(self::isDebugMode())
-            ->configureHandlers(function (HandlerRegistry $registry) {
-                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] ?? [] as $handlerClass) {
-                    /** @var SubscribingHandlerInterface $handler */
-                    $handler = $this->objectManager->get($handlerClass);
-                    $registry->registerSubscribingHandler($handler);
-                }
-            })
-            ->configureListeners(function (EventDispatcher $dispatcher) {
-                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] ?? [] as $subscriberClass) {
-                    /** @var EventSubscriberInterface $subscriber */
-                    $subscriber = $this->objectManager->get($subscriberClass);
-                    $dispatcher->addSubscriber($subscriber);
-                }
-            })
-            ->addDefaultHandlers()
-            ->setAccessorStrategy($this->objectManager->get(AccessorStrategy::class))
-            ->setPropertyNamingStrategy($this->getPropertyNamingStrategy())
-            ->setAnnotationReader(self::getAnnotationReader())
-            ->setMetadataDriverFactory($this->getDriverFactory())
-            ->setMetadataCache(self::getMetadataCache())
-            ->addMetadataDirs(self::getMetadataDirs())
-            ->setObjectConstructor(new InitializedObjectConstructor());
-
-        return $serializerBuilder;
+        return clone $serializerBuilder;
     }
 
     /**
