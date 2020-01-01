@@ -9,6 +9,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
+use Reflector;
 use RuntimeException;
 use SourceBroker\T3api\Annotation\Serializer\Exclude;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
@@ -149,29 +150,19 @@ class SerializerMetadataService
      */
     protected static function getProperties(ReflectionClass $reflectionClass, AnnotationReader $annotationReader): array
     {
-        $docCommentParser = new DocCommentParser(true);
         $properties = [];
 
         /** @var ReflectionProperty $property */
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $docCommentParser->parseDocComment($reflectionProperty->getDocComment());
-            $type = $docCommentParser->getTagValues('var')[0];
-
-            if (empty($type)) {
-                throw new RuntimeException(
-                    sprintf(
-                        '`@var` annotation missing in property %s',
-                        $reflectionClass->getName() . '::' . $reflectionProperty->getName()
-                    ),
-                    1570723476311
-                );
-            }
-
             $properties[$reflectionProperty->getName()] = self::getPropertyMetadataFromAnnotations(
                 $annotationReader->getPropertyAnnotations($reflectionProperty)
             );
             if (empty($properties[$reflectionProperty->getName()]['type'])) {
-                $properties[$reflectionProperty->getName()]['type'] = self::parsePropertyType($type);
+                $properties[$reflectionProperty->getName()]['type'] = self::getTypeFromAnnotation(
+                    'var',
+                    $reflectionProperty,
+                    $reflectionClass->getName() . '::' . $reflectionProperty->getName()
+                );
             }
         }
 
@@ -216,9 +207,46 @@ class SerializerMetadataService
             );
             $virtualProperties[$reflectionMethod->getName()]['name'] = $propertyName;
             $virtualProperties[$reflectionMethod->getName()]['serialized_name'] = $propertyName;
+
+            if (empty($virtualProperties[$reflectionMethod->getName()]['type'])) {
+                $virtualProperties[$reflectionMethod->getName()]['type'] = self::getTypeFromAnnotation(
+                    'return',
+                    $reflectionMethod,
+                    $reflectionClass->getName() . '::' . $reflectionMethod->getName()
+                );
+            }
         }
 
         return $virtualProperties;
+    }
+
+    /**
+     * @param string $annotationTag
+     * @param Reflector $reflector
+     * @param string $identifier
+     * @return string
+     */
+    protected static function getTypeFromAnnotation(
+        string $annotationTag,
+        Reflector $reflector,
+        string $identifier
+    ): string {
+        $docCommentParser = new DocCommentParser(true);
+        $docCommentParser->parseDocComment($reflector->getDocComment());
+        $type = $docCommentParser->getTagValues($annotationTag)[0];
+
+        if (empty($type)) {
+            throw new RuntimeException(
+                sprintf(
+                    '`@%s` annotation missing in property %s',
+                    $annotationTag,
+                    $identifier
+                ),
+                1577878969425
+            );
+        }
+
+        return self::parsePropertyType($type);
     }
 
     /**
