@@ -55,6 +55,7 @@ If you find an error or something is missing, please: `Report a Problem
    Serialization/Index
    Integration/Index
    Customization/Index
+   SignalsAndSlots/Index
    Multilanguage/Index
    HandlingFileUpload/Index
    Sitemap

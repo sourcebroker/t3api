@@ -27,12 +27,15 @@ use TYPO3\CMS\Extbase\Domain\Model\File;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher as SignalSlotDispatcher;
 
 /**
  * Class AbstractDispatcher
  */
 abstract class AbstractDispatcher
 {
+    public const SIGNAL_AFTER_PROCESS_OPERATION = 'afterProcessOperation';
+
     /**
      * @var ObjectManager
      */
@@ -129,7 +132,16 @@ abstract class AbstractDispatcher
             throw new Exception('Unknown operation', 1557506987081);
         }
 
-        return is_null($result) ? '' : $this->serializerService->serializeOperation($operation, $result);
+        $arguments = [
+            'operation' => $operation,
+            'result' => $result,
+        ];
+        $arguments = $this->objectManager->get(SignalSlotDispatcher::class)
+            ->dispatch(__CLASS__, self::SIGNAL_AFTER_PROCESS_OPERATION, $arguments);
+
+        return $result === null
+            ? ''
+            : $this->serializerService->serializeOperation($arguments['operation'], $arguments['result']);
     }
 
     /**
