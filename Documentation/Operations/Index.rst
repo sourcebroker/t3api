@@ -53,7 +53,7 @@ when fetching single item.
     You can determine multiple operations of each type for every property, but keep in mind that first collection
     operation and first item operation are treated as the main operations. It means that:
 
-    - The path of the first collection operation is used in the main endpoint (@todo ref to main endpoint)
+    - The path of the first collection operation is used in the :ref:`main endpoint <operations_main-endpoint>`.
     - The path of the first item operation is used to define resource IRI (``@id`` property).
 
 Supported operation methods
@@ -152,3 +152,32 @@ By default all properties of entities are returned. That may not be expected beh
 security reasons. You can easily manage properties returned from any endpoint using
 :ref:`serialization context groups <serialization_context-groups>`.
 
+.. _operations_main-endpoint:
+
+Main endpoint
+================
+
+There is one special build-in endpoint which is not determined by ``@ApiResource`` annotation - Main endpoint. It contains list all available collection operations. It is useful for creating Postman requests collections or for frontend applications which avoids to use hardcoded path for the endpoints. Main endpoint is available under :ref:`base path <getting-started_base-path>` (default ``https://example.com/_api/``). Example response on the main endpoint may looks as one below:
+
+.. code-block:: json
+
+   {
+     "resources": {
+       "SourceBroker\\T3apinews\\Domain\\Model\\Category": "/_api/news/categories",
+       "SourceBroker\\T3apinews\\Domain\\Model\\File": "/_api/news/files",
+       "SourceBroker\\T3apinews\\Domain\\Model\\News": "/_api/news/news",
+       "SourceBroker\\T3apinews\\Domain\\Model\\Tag": "/_api/news/tags"
+     }
+   }
+
+Class used as a response in main endpoint may be overwritten in ``ext_localconf.php``:
+
+.. code-block:: php
+
+   $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'] = \Vendor\Ext\MyCustomMainEndpoint::class;
+
+To disable main endpoint it is just needed to set ``mainEndpointResponseClass`` to ``null``. It will result in 404 error response.
+
+.. code-block:: php
+
+   $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'] = null;

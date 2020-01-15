@@ -9,11 +9,6 @@ Customization
 
 @todo
 
-Main endpoint
-==============
-
-@todo
-
 Collection response schema
 ===========================
 

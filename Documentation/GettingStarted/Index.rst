@@ -34,6 +34,8 @@ Minimal configuration requires definition of new route enhancer of type `T3apiRe
       T3api:
         type: T3apiResourceEnhancer
 
+.. _getting-started_base-path:
+
 Changing base path to API endpoints
 ====================================
 
