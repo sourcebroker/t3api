@@ -34,6 +34,7 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher as SignalSlotDispatcher;
  */
 abstract class AbstractDispatcher
 {
+    public const SIGNAL_AFTER_DESERIALIZE_OPERATION = 'afterDeserializeOperation';
     public const SIGNAL_AFTER_PROCESS_OPERATION = 'afterProcessOperation';
 
     /**
@@ -272,6 +273,13 @@ abstract class AbstractDispatcher
             throw new Exception('You are not allowed to access this operation', 1574782843388);
         }
 
-        return $object;
+        $arguments = [
+            'operation' => $operation,
+            'object' => $object,
+        ];
+        $arguments = $this->objectManager->get(SignalSlotDispatcher::class)
+            ->dispatch(__CLASS__, self::SIGNAL_AFTER_DESERIALIZE_OPERATION, $arguments);
+
+        return $arguments['object'];
     }
 }

@@ -6,6 +6,27 @@
 Signals and slots
 ==================
 
+After deserialization
+=======================
+
+Signal emitted after request payload is deserialized to objects.
+May be useful when it is needed e.g. to change datetime property to current or assign current TYPO3 user as an author.
+This signal emits two arguments:
+
+- ``operation`` - instance of ``\SourceBroker\T3api\Domain\Model\AbstractOperation``
+- ``object`` - object deserialized from payload
+
+Example connection of slot to this signal can looks like one below.
+
+.. code-block:: php
+
+   \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
+      \SourceBroker\T3api\Dispatcher\AbstractDispatcher::class,
+      \SourceBroker\T3api\Dispatcher\AbstractDispatcher::SIGNAL_AFTER_DESERIALIZE_OPERATION,
+      \Vendor\Extension\Slot\T3apiSlot::class,
+      'afterDeserializeOperation'
+   );
+
 After processing operation
 ============================
 
