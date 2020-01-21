@@ -274,6 +274,7 @@ class SerializerService implements SingletonInterface
         }
 
         return $context
+            ->enableMaxDepthChecks()
             ->setSerializeNull(true);
     }
 
@@ -302,7 +303,8 @@ class SerializerService implements SingletonInterface
             $context->setAttribute('target', $targetObject);
         }
 
-        return $context;
+        return $context
+            ->enableMaxDepthChecks();
     }
 
     /**

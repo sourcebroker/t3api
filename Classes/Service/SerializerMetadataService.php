@@ -13,6 +13,7 @@ use Reflector;
 use RuntimeException;
 use SourceBroker\T3api\Annotation\Serializer\Exclude;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
+use SourceBroker\T3api\Annotation\Serializer\MaxDepth;
 use SourceBroker\T3api\Annotation\Serializer\ReadOnly;
 use SourceBroker\T3api\Annotation\Serializer\Type\TypeInterface;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
@@ -338,6 +339,8 @@ class SerializerMetadataService
                 $metadata['read_only'] = (bool)$annotation->readOnly;
             } elseif ($annotation instanceof Exclude) {
                 $metadata['exclude'] = true;
+            } elseif ($annotation instanceof MaxDepth) {
+                $metadata['max_depth'] = $annotation->depth;
             }
 
             // @todo 591 add support to rest of t3api annotations
