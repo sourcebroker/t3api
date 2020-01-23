@@ -50,7 +50,7 @@ class FileUploadService implements SingletonInterface
     {
         /** @var UploadedFile $uploadedFile */
         $uploadedFile = $request->files->get('originalResource');
-        $uploadSettings = $operation->getApiResource()->getUploadSettings();
+        $uploadSettings = $operation->getUploadSettings();
 
         $this->verifyFileExtension($uploadSettings, $uploadedFile);
 
@@ -64,7 +64,7 @@ class FileUploadService implements SingletonInterface
                         'tmp_name' => $uploadedFile->getPathname(),
                         'type' => $uploadedFile->getMimeType(),
                     ],
-                    $operation->getApiResource()->getUploadSettings()->getConflictMode()
+                    $operation->getUploadSettings()->getConflictMode()
                 );
         } catch (Exception $exception) {
             throw new RuntimeException('Could not upload file', 1577263548711, $exception);

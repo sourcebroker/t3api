@@ -248,7 +248,7 @@ class OpenApiBuilder
      */
     protected static function getPaginationParametersForOperation(AbstractOperation $operation): array
     {
-        $pagination = $operation->getApiResource()->getPagination();
+        $pagination = $operation->getPagination();
         $parameters = [];
 
         if (

@@ -66,8 +66,8 @@ class HydraCollectionResponse extends AbstractCollectionResponse
     {
         $viewData = [];
 
-        if ($this->operation->getApiResource()->getPagination()->isEnabled()) {
-            $pagination = $this->operation->getApiResource()->getPagination();
+        if ($this->operation->getPagination()->isEnabled()) {
+            $pagination = $this->operation->getPagination();
             $lastPage = (int)ceil($this->getTotalItems() / $pagination->getNumberOfItemsPerPage());
             $viewData['hydra:first'] = $this->operation->getRoute()->getPath() . '?' .
                 $this->getCurrentQueryStringWithOverrideParams([

@@ -51,6 +51,21 @@ abstract class AbstractOperation
     protected $securityPostDenormalize = '';
 
     /**
+     * @var Pagination
+     */
+    protected $pagination;
+
+    /**
+     * @var PersistenceSettings
+     */
+    protected $persistenceSettings;
+
+    /**
+     * @var UploadSettings
+     */
+    protected $uploadSettings;
+
+    /**
      * AbstractOperation constructor.
      *
      * @param string $key
@@ -76,6 +91,15 @@ abstract class AbstractOperation
             null,
             [],
             [$this->method]
+        );
+        $this->pagination = Pagination::create($params['attributes'] ?? [], $apiResource->getPagination());
+        $this->persistenceSettings = PersistenceSettings::create(
+            $params['attributes']['persistence'] ?? [],
+            $apiResource->getPersistenceSettings()
+        );
+        $this->uploadSettings = UploadSettings::create(
+            $params['attributes']['upload'] ?? [],
+            $apiResource->getUploadSettings()
         );
     }
 
@@ -181,5 +205,29 @@ abstract class AbstractOperation
     public function isMethodDelete(): bool
     {
         return $this->method === 'DELETE';
+    }
+
+    /**
+     * @return Pagination
+     */
+    public function getPagination(): Pagination
+    {
+        return $this->pagination;
+    }
+
+    /**
+     * @return PersistenceSettings
+     */
+    public function getPersistenceSettings(): PersistenceSettings
+    {
+        return $this->persistenceSettings;
+    }
+
+    /**
+     * @return UploadSettings
+     */
+    public function getUploadSettings(): UploadSettings
+    {
+        return $this->uploadSettings;
     }
 }

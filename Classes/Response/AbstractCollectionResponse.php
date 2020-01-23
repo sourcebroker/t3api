@@ -87,7 +87,7 @@ abstract class AbstractCollectionResponse
      */
     protected function applyPagination(): QueryInterface
     {
-        $pagination = $this->operation->getApiResource()->getPagination()->setParametersFromRequest($this->request);
+        $pagination = $this->operation->getPagination()->setParametersFromRequest($this->request);
 
         if (!$pagination->isEnabled()) {
             return $this->query;

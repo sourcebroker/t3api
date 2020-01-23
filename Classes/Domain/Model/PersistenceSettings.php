@@ -3,13 +3,12 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Model;
 
-use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Persistence
  */
-class PersistenceSettings
+class PersistenceSettings extends AbstractOperationResourceSettings
 {
     /**
      * @var int[]
@@ -22,17 +21,21 @@ class PersistenceSettings
     protected $recursionLevel = 0;
 
     /**
-     * ClientSidePagination constructor.
-     *
-     * @param ApiResourceAnnotation $apiResource
+     * @param array $attributes
+     * @param self $persistenceSettings
+     * @return self
      */
-    public function __construct(ApiResourceAnnotation $apiResource)
-    {
-        $attributes = $apiResource->getAttributes();
-        if (!empty($attributes['persistence']['storagePid'])) {
-            $this->storagePids = GeneralUtility::intExplode(',', $attributes['persistence']['storagePid']);
+    public static function create(
+        array $attributes = [],
+        ?AbstractOperationResourceSettings $persistenceSettings = null
+    ): AbstractOperationResourceSettings {
+        $persistenceSettings = parent::create($attributes, $persistenceSettings);
+        if (!empty($attributes['storagePid'])) {
+            $persistenceSettings->storagePids = GeneralUtility::intExplode(',', $attributes['storagePid']);
         }
-        $this->recursionLevel = (int)($attributes['persistence']['recursive'] ?? $this->recursionLevel);
+        $persistenceSettings->recursionLevel = (int)($attributes['recursive'] ?? $persistenceSettings->recursionLevel);
+
+        return $persistenceSettings;
     }
 
     /**

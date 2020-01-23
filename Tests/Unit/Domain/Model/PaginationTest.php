@@ -182,16 +182,16 @@ class PaginationTest extends UnitTestCase
     }
 
     /**
-     * @param array $apiResourceAttributes
+     * @param array $attributes
      * @param Request $request
      *
      * @return Pagination
      */
-    protected function getPaginationInstance($apiResourceAttributes = [], Request $request = null)
+    protected function getPaginationInstance($attributes = [], Request $request = null)
     {
-        $pagination = new Pagination(new ApiResource([
-            'attributes' => array_merge(self::DEFAULT_API_RESOURCE_PAGINATION_ATTRIBUTES, $apiResourceAttributes),
-        ]));
+        $pagination = Pagination::create(
+            array_merge(self::DEFAULT_API_RESOURCE_PAGINATION_ATTRIBUTES, $attributes)
+        );
 
         if ($request) {
             $pagination->setParametersFromRequest($request);

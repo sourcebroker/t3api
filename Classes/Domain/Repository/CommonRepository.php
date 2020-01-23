@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Repository;
 
 use RuntimeException;
+use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Filter\AbstractFilter;
@@ -27,9 +28,9 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 class CommonRepository
 {
     /**
-     * @var ApiResource
+     * @var AbstractOperation
      */
-    protected $apiResource;
+    protected $operation;
 
     /**
      * @var ObjectManagerInterface
@@ -52,21 +53,21 @@ class CommonRepository
     protected $objectType;
 
     /**
-     * @param ApiResource $apiResource
+     * @param AbstractOperation $operation
      *
      * @return CommonRepository
      */
-    public static function getInstanceForResource(ApiResource $apiResource): self
+    public static function getInstanceForOperation(AbstractOperation $operation): self
     {
-        $repository = self::getInstanceForEntity($apiResource->getEntity());
-        $repository->apiResource = $apiResource;
+        $repository = self::getInstanceForEntity($operation->getApiResource()->getEntity());
+        $repository->operation = $operation;
 
-        if (!empty($apiResource->getPersistenceSettings()->getStoragePids())) {
+        if (!empty($operation->getPersistenceSettings()->getStoragePids())) {
             $repository->defaultQuerySettings->setRespectStoragePage(true);
             $repository->defaultQuerySettings->setStoragePageIds(
                 StorageService::getRecursiveStoragePids(
-                    $apiResource->getPersistenceSettings()->getStoragePids(),
-                    $apiResource->getPersistenceSettings()->getRecursionLevel()
+                    $operation->getPersistenceSettings()->getStoragePids(),
+                    $operation->getPersistenceSettings()->getRecursionLevel()
                 )
             );
         } else {
@@ -87,6 +88,7 @@ class CommonRepository
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
+        /** @var self $repository */
         $repository = $objectManager->get(self::class);
         $repository->setObjectType($entity);
 
@@ -250,8 +252,8 @@ class CommonRepository
      */
     public function add($object)
     {
-        if (is_null($object->getPid()) && $this->apiResource->getPersistenceSettings()->getMainStoragePid()) {
-            $object->setPid($this->apiResource->getPersistenceSettings()->getMainStoragePid());
+        if ($object->getPid() === null && $this->operation->getPersistenceSettings()->getMainStoragePid()) {
+            $object->setPid($this->operation->getPersistenceSettings()->getMainStoragePid());
         } elseif (
             (bool)$object->getPid()
             && $this->defaultQuerySettings->getRespectStoragePage()
@@ -261,7 +263,7 @@ class CommonRepository
                 sprintf(
                     '`%d` is not allowed storage pid for %s API resource',
                     $object->getPid(),
-                    $this->apiResource->getEntity()
+                    $this->operation->getApiResource()->getEntity()
                 ),
                 1568467681848
             );

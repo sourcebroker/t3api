@@ -158,7 +158,7 @@ abstract class AbstractDispatcher
         int $uid,
         Request $request
     ): ?AbstractDomainObject {
-        $repository = CommonRepository::getInstanceForResource($operation->getApiResource());
+        $repository = CommonRepository::getInstanceForOperation($operation);
 
         /** @var AbstractDomainObject|null $object */
         $object = $repository->findByUid($uid);
@@ -221,7 +221,7 @@ abstract class AbstractDispatcher
         Request $request,
         ResponseInterface &$response = null
     ) {
-        $repository = CommonRepository::getInstanceForResource($operation->getApiResource());
+        $repository = CommonRepository::getInstanceForOperation($operation);
 
         if (!OperationAccessChecker::isGranted($operation)) {
             throw new Exception('You are not allowed to access this operation', 1574416639472);

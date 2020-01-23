@@ -60,6 +60,11 @@ class ApiResource
         $this->entity = $entity;
         $this->routes = new RouteCollection();
 
+        $attributes = $apiResourceAnnotation->getAttributes();
+        $this->pagination = Pagination::create($attributes);
+        $this->persistenceSettings = PersistenceSettings::create($attributes['persistence'] ?? []);
+        $this->uploadSettings = UploadSettings::create($attributes['upload'] ?? []);
+
         foreach ($apiResourceAnnotation->getItemOperations() as $operationKey => $operationData) {
             $this->itemOperations[] = new ItemOperation($operationKey, $this, $operationData);
         }
@@ -74,10 +79,6 @@ class ApiResource
             $this->routes->add($routeName, $operation->getRoute());
             $this->routeNameToOperation[spl_object_hash($operation)] = $operation;
         }
-
-        $this->pagination = new Pagination($apiResourceAnnotation);
-        $this->persistenceSettings = new PersistenceSettings($apiResourceAnnotation);
-        $this->uploadSettings = new UploadSettings($apiResourceAnnotation);
     }
 
     /**

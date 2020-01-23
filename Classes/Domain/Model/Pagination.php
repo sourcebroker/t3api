@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Model;
 
-use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\T3api\Utility\ParameterUtility;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Http\ServerRequest as Typo3Request;
@@ -10,7 +9,7 @@ use TYPO3\CMS\Core\Http\ServerRequest as Typo3Request;
 /**
  * Class Pagination
  */
-class Pagination
+class Pagination extends AbstractOperationResourceSettings
 {
     /**
      * @var bool
@@ -58,29 +57,34 @@ class Pagination
     protected $parameters;
 
     /**
-     * Pagination constructor.
-     *
-     * @param ApiResourceAnnotation $apiResource
+     * @param array $attributes
+     * @param Pagination|null $pagination
+     * @return Pagination
      */
-    public function __construct(ApiResourceAnnotation $apiResource)
-    {
-        $attributes = $apiResource->getAttributes();
-        $this->serverEnabled = isset($attributes['pagination_enabled'])
+    public static function create(
+        array $attributes = [],
+        ?AbstractOperationResourceSettings $pagination = null
+    ): AbstractOperationResourceSettings {
+        $pagination = parent::create($attributes, $pagination);
+
+        $pagination->serverEnabled = isset($attributes['pagination_enabled'])
             ? ParameterUtility::toBoolean($attributes['pagination_enabled'])
-            : $this->serverEnabled;
-        $this->clientEnabled = isset($attributes['pagination_client_enabled'])
+            : $pagination->serverEnabled;
+        $pagination->clientEnabled = isset($attributes['pagination_client_enabled'])
             ? ParameterUtility::toBoolean($attributes['pagination_client_enabled'])
-            : $this->clientEnabled;
-        $this->itemsPerPage = isset($attributes['pagination_items_per_page'])
-            ? (int)$attributes['pagination_items_per_page'] : $this->itemsPerPage;
-        $this->maximumItemsPerPage = isset($attributes['maximum_items_per_page'])
-            ? (int)$attributes['maximum_items_per_page'] : $this->maximumItemsPerPage;
-        $this->clientItemsPerPage = isset($attributes['pagination_client_items_per_page'])
+            : $pagination->clientEnabled;
+        $pagination->itemsPerPage = isset($attributes['pagination_items_per_page'])
+            ? (int)$attributes['pagination_items_per_page'] : $pagination->itemsPerPage;
+        $pagination->maximumItemsPerPage = isset($attributes['maximum_items_per_page'])
+            ? (int)$attributes['maximum_items_per_page'] : $pagination->maximumItemsPerPage;
+        $pagination->clientItemsPerPage = isset($attributes['pagination_client_items_per_page'])
             ? ParameterUtility::toBoolean($attributes['pagination_client_items_per_page'])
-            : $this->clientItemsPerPage;
-        $this->enabledParameterName = $attributes['enabled_parameter_name'] ?? $this->enabledParameterName;
-        $this->itemsPerPageParameterName = $attributes['items_per_page_parameter_name'] ?? $this->itemsPerPageParameterName;
-        $this->pageParameterName = $attributes['page_parameter_name'] ?? $this->pageParameterName;
+            : $pagination->clientItemsPerPage;
+        $pagination->enabledParameterName = $attributes['enabled_parameter_name'] ?? $pagination->enabledParameterName;
+        $pagination->itemsPerPageParameterName = $attributes['items_per_page_parameter_name'] ?? $pagination->itemsPerPageParameterName;
+        $pagination->pageParameterName = $attributes['page_parameter_name'] ?? $pagination->pageParameterName;
+
+        return $pagination;
     }
 
     /**
@@ -116,7 +120,7 @@ class Pagination
     {
         return min(array_filter(
             [$this->maximumItemsPerPage, $this->getClientNumberOfItemsPerPage() ?? $this->itemsPerPage],
-            function (?int $itemsPerPage) {
+            static function (?int $itemsPerPage) {
                 return !empty($itemsPerPage);
             }
         ));

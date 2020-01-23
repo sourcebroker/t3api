@@ -27,11 +27,6 @@ class ApiFilter
     protected $property;
 
     /**
-     * @var string
-     */
-    protected $propertyNamespace;
-
-    /**
      * @var array
      */
     protected $arguments = [];
