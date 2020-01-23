@@ -6,3 +6,7 @@ TYPO3\CMS\Core\Resource\File:
       exclude: true
     indexingInProgress:
       exclude: true
+  virtual_properties:
+    uid:
+      exp: object.properties.uid
+      type: integer
