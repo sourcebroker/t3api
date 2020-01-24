@@ -17,6 +17,8 @@ use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Reflection\Exception\PropertyNotAccessibleException;
+use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
  * Class FileReferenceHandler
@@ -173,6 +175,8 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
             );
         }
 
+        $this->removeExistingFileReference($context);
+
         $fileReference = $this->serializerService->deserialize(
             json_encode($data),
             $type,
@@ -191,5 +195,19 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         );
 
         return $fileReference;
+    }
+
+    /**
+     * Removes already existing file reference if property is not a collection but relation to single file
+     *
+     * @param DeserializationContext $context
+     */
+    protected function removeExistingFileReference(DeserializationContext $context): void
+    {
+        $propertyName = $context->getCurrentPath()[count($context->getCurrentPath()) - 1];
+        $propertyValue = ObjectAccess::getProperty($context->getVisitor()->getCurrentObject(), $propertyName);
+        if ($propertyValue instanceof ExtbaseFileReference || $propertyValue instanceof Typo3FileReference) {
+            $this->persistenceManager->remove($propertyValue);
+        }
     }
 }
