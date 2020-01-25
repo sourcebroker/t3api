@@ -16,6 +16,7 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
+use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
  * Class Bootstrap
@@ -114,20 +115,18 @@ class Bootstrap extends AbstractDispatcher
     }
 
     /**
-     * Sets language aspect for context
+     * Sets language aspect according to language identifier sent in `languageHeader`
      *
      * @return void
      */
     protected function setLanguageAspect(): void
     {
-        $languageTsConfig = $GLOBALS['TSFE']->config;
-
-        if (!isset($languageTsConfig['sys_language_uid'])) {
-            $languageHeader = $GLOBALS['TYPO3_REQUEST']->getHeader($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']);
-            $languageTsConfig['sys_language_uid'] = $languageHeader && count($languageHeader) ? (int)current($languageHeader) : 0;
-        }
-
+        $languageHeader = $GLOBALS['TYPO3_REQUEST']->getHeader($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']);
+        $languageUid = (int)(!empty($languageHeader) ? array_shift($languageHeader) : 0);
+        $language = $this->objectManager->get(SiteFinder::class)
+            ->getSiteByIdentifier('main')
+            ->getLanguageById($languageUid);
         $this->objectManager->get(Context::class)
-            ->setAspect('language', LanguageAspectFactory::createFromTypoScript($languageTsConfig));
+            ->setAspect('language', LanguageAspectFactory::createFromSiteLanguage($language));
     }
 }
