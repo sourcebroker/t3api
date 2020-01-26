@@ -65,5 +65,8 @@ call_user_func(
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['t3api_clearcache'] =
             \SourceBroker\T3api\Service\SerializerService::class . '->clearCache';
+
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['createHashBase']['t3api'] =
+            \SourceBroker\T3api\Hook\EnrichHashBase::class . '->init';
     }
 );
