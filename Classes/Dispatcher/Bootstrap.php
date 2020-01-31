@@ -5,6 +5,7 @@ namespace SourceBroker\T3api\Dispatcher;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use SourceBroker\T3api\Service\RouteService;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -59,7 +60,7 @@ class Bootstrap extends AbstractDispatcher
      */
     public function process(ServerRequestInterface $request): ResponseInterface
     {
-        $this->setLanguageAspect();
+        $this->setLanguage();
         $request = $this->httpFoundationFactory->createRequest($request);
         $context = (new RequestContext())->fromRequest($request);
         $matchedRoute = null;
@@ -115,12 +116,19 @@ class Bootstrap extends AbstractDispatcher
     }
 
     /**
-     * Sets language aspect according to language identifier sent in `languageHeader`
+     * Sets language according to language identifier sent in `languageHeader`
      *
      * @return void
      */
-    protected function setLanguageAspect(): void
+    protected function setLanguage(): void
     {
+        if (!$GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface) {
+            throw new RuntimeException(
+                sprintf('`%s` is not an instance of `%s`', 'TYPO3_REQUEST', ServerRequestInterface::class),
+                1580483236906
+            );
+        }
+
         $languageHeader = $GLOBALS['TYPO3_REQUEST']->getHeader($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']);
         $languageUid = (int)(!empty($languageHeader) ? array_shift($languageHeader) : 0);
         $language = $this->objectManager->get(SiteFinder::class)
@@ -128,5 +136,7 @@ class Bootstrap extends AbstractDispatcher
             ->getLanguageById($languageUid);
         $this->objectManager->get(Context::class)
             ->setAspect('language', LanguageAspectFactory::createFromSiteLanguage($language));
+
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute('language', $language);
     }
 }
