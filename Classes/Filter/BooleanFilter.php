@@ -33,6 +33,6 @@ class BooleanFilter extends AbstractFilter
      */
     public function filterProperty($property, $values, QueryInterface $query, ApiFilter $apiFilter): ?ConstraintInterface
     {
-        return $query->equals($property, ParameterUtility::toBoolean((array)$values[0]));
+        return $query->equals($property, ParameterUtility::toBoolean(((array)$values)[0]));
     }
 }
