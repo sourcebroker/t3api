@@ -129,6 +129,11 @@ RangeFilter
 
 @todo
 
+ContainFilter
+==============
+
+@todo
+
 DistanceFilter
 ===============
 
