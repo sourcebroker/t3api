@@ -212,7 +212,7 @@ abstract class AbstractFilter implements SingletonInterface
      */
     protected function getUniqueAlias(string $suffix = ''): string
     {
-        return uniqid('alias_', true) . $suffix;
+        return uniqid('alias_', false) . $suffix;
     }
 
     /**
