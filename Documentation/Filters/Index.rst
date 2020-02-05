@@ -39,7 +39,7 @@ Filters gives possibility to customize SQL query used to receive results in ``GE
    {
    }
 
-For now it is possible to configure filters only for resource. That means filters are available for all ``GET`` collection operations within this resource.
+It is possible to configure filters only for whole resource. That means filters are available for all ``GET`` collection operations within this resource. It is not possible (yet) to configure filters only for specific operations.
 There are few build-in filters, as follows:
 
 NumericFilter
@@ -48,8 +48,6 @@ NumericFilter
 Should be used to filter items by numeric fields.
 
 Syntax: ``?property=<int|decimal...>`` or ``?property[]=<int|decimal...>&property[]=<int|decimal...>``.
-
-Supports SQL ``OR`` conjunction when
 
 .. code-block:: php
 
@@ -66,7 +64,7 @@ Supports SQL ``OR`` conjunction when
     * )
     * @T3api\ApiFilter(
     *     NumericFilter::class,
-    *     properties={"address.uid"},
+    *     properties={"address.uid", "height"},
     * )
     */
    class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
@@ -80,25 +78,128 @@ Should be used to filter items by text fields. ``SearchFilter`` supports 3 strat
 
 - ``exact`` - Filters items which matches **exactly** search term (``WHERE property = "value"`` in MySQL language). This is strategy used by default if no other is configured.
 
-@todo add example configuration for ``exact`` strategy
+.. code-block:: php
+
+   use SourceBroker\T3api\Annotation as T3api;
+   use SourceBroker\T3api\Filter\SearchFilter;
+
+   /**
+    * @T3api\ApiResource (
+    *     collectionOperations={
+    *          "get"={
+    *              "path"="/users",
+    *          },
+    *     },
+    * )
+    *
+    * @T3api\ApiFilter(
+    *     SearchFilter::class,
+    *     properties={"firstName", "middleName", "lastName"}
+    * )
+    */
+   class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+   {
+   }
 
 - ``partial`` - Filters items which matches **partially** search term (``WHERE property LIKE "%value%"`` in MySQL language).
 
-@todo add example configuration for ``partial`` strategy
+.. code-block:: php
+
+   use SourceBroker\T3api\Annotation as T3api;
+   use SourceBroker\T3api\Filter\SearchFilter;
+
+   /**
+    * @T3api\ApiResource (
+    *     collectionOperations={
+    *          "get"={
+    *              "path"="/users",
+    *          },
+    *     },
+    * )
+    *
+    * @T3api\ApiFilter(
+    *     SearchFilter::class,
+    *     properties={
+    *          "firstName": "partial",
+    *          "middleName": "partial",
+    *          "lastName": "partial",
+    *          "address.street": "partial",
+    *     },
+    * )
+    */
+   class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+   {
+   }
 
 - ``matchAgainst`` - Filters items which matches search term using **full text search** (``MATCH(property) AGAINST ("value" IN NATURAL LANGUAGE MODE)`` in MySQL language). In it possible to extend query with ``WITH QUERY EXPANSION`` by adding ``withQueryExpansion`` in arguments (`Read more about query expansion <https://dev.mysql.com/doc/refman/5.7/en/fulltext-query-expansion.html>`__)
 
-@todo add example configuration for ``matchAgainst`` strategy
+.. code-block:: php
+
+   use SourceBroker\T3api\Annotation as T3api;
+   use SourceBroker\T3api\Filter\SearchFilter;
+
+   /**
+    * @T3api\ApiResource (
+    *     collectionOperations={
+    *          "get"={
+    *              "path"="/users",
+    *          },
+    *     },
+    * )
+    *
+    * @T3api\ApiFilter(
+    *     SearchFilter::class,
+    *     properties={
+    *          "firstName": "matchAgainst",
+    *          "middleName": "matchAgainst",
+    *          "lastName": "matchAgainst",
+    *          "address.street": "matchAgainst",
+    *     },
+    *     arguments={
+    *          "withQueryExpansion": true,
+    *     },
+    * )
+    */
+   class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+   {
+   }
 
 BooleanFilter
 ==============
 
-@todo
+Should be used to filter items by boolean fields.
+
+Syntax: ``?property=<true|false|1|0>``
+
+.. code-block:: php
+
+   use SourceBroker\T3api\Annotation as T3api;
+   use SourceBroker\T3api\Filter\SearchFilter;
+
+   /**
+    * @T3api\ApiResource (
+    *     collectionOperations={
+    *          "get"={
+    *              "path"="/users",
+    *          },
+    *     },
+    * )
+    *
+    * @T3api\ApiFilter(
+    *     SearchFilter::class,
+    *     properties={"isAdmin", "isPublic"},
+    * )
+    */
+   class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+   {
+   }
 
 OrderFilter
 ============
 
-@todo
+Allows to change default ordering of collection responses.
+
+Syntax: ``?order[property]=<asc|desc>``
 
 .. code-block:: php
 
@@ -106,7 +207,6 @@ OrderFilter
    use SourceBroker\T3api\Filter\OrderFilter;
 
    /**
-    * User
     * @T3api\ApiResource (
     *     collectionOperations={
     *          "get"={
@@ -117,7 +217,35 @@ OrderFilter
     *
     * @T3api\ApiFilter(
     *     OrderFilter::class,
-    *     properties={"firstName", "middleName", "lastName"}
+    *     properties={"firstName", "middleName", "lastName", "address.city"}
+    * )
+    */
+   class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+   {
+   }
+
+Configuration of example above means it is possible to order by single field (query string ``?order[firstName]=desc``) or by multiple of them (query string ``?order[firstName]=desc&order[address.city]=asc&order[middleName]=asc``).
+
+It may happen that conflict of names will occur if ``order`` is also the name of property with enabled another filter. Solution in such cases would be a change of parameter name used by ``OrderFilter``. It can be done using argument ``orderParameterName``, as on example below:
+
+.. code-block:: php
+
+   use SourceBroker\T3api\Annotation as T3api;
+   use SourceBroker\T3api\Filter\OrderFilter;
+
+   /**
+    * @T3api\ApiResource (
+    *     collectionOperations={
+    *          "get"={
+    *              "path"="/users",
+    *          },
+    *     },
+    * )
+    *
+    * @T3api\ApiFilter(
+    *     OrderFilter::class,
+    *     properties={"firstName", "middleName", "lastName", "address.city"},
+    *     arguments={"orderParameterName": "customOrderParameterName"},
     * )
     */
    class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
@@ -179,7 +307,7 @@ When using query params ``?property=<value>`` only items which match exactly suc
 SQL "OR" conjunction
 =====================
 
-By default ``AND`` conjunction is used between all applied filters but there is a ways to change conjunction to ``OR``. Frontend applications often needs single input field which searches multiple fields. To create such filter it is needed to configure set same ``parameterName`` for multiple fields. Example code below means that request to URL ``/users?search=john`` will return records where any of the fields (``firstName``, ``middleName``, ``lastName`` or ``address.street``) matches searched text. If we would not determine ``parameterName`` in filter arguments this configuration would work as separate filters for every property.
+By default ``AND`` conjunction is used between all applied filters but there is a ways to change conjunction to ``OR``. Frontend applications often needs single input field which searches multiple fields. To create such filter it is needed to set same ``parameterName`` for multiple fields. Example code below means that request to URL ``/users?search=john`` will return records where any of the fields (``firstName``, ``middleName``, ``lastName`` or ``address.street``) matches searched text. If we would not determine ``parameterName`` in filter arguments this configuration would work as separate filters for every property.
 
 .. code-block:: php
 
@@ -194,6 +322,7 @@ By default ``AND`` conjunction is used between all applied filters but there is 
     *          },
     *     },
     * )
+    *
     * @T3api\ApiFilter(
     *     SearchFilter::class,
     *     properties={
