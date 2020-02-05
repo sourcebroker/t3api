@@ -1,0 +1,9 @@
+Exception:
+  virtual_properties:
+    getMessage:
+      name: 'hydra:description'
+      type: string
+  properties:
+    message:
+      type: string
+      exclude: true

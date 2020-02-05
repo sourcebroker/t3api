@@ -6,6 +6,7 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
+use SourceBroker\T3api\Exception\ExceptionInterface;
 use SourceBroker\T3api\Service\RouteService;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -60,16 +61,22 @@ class Bootstrap extends AbstractDispatcher
      */
     public function process(ServerRequestInterface $request): ResponseInterface
     {
-        $this->setLanguage();
-        $request = $this->httpFoundationFactory->createRequest($request);
-        $context = (new RequestContext())->fromRequest($request);
-        $matchedRoute = null;
+        try {
+            $this->setLanguage();
+            $request = $this->httpFoundationFactory->createRequest($request);
+            $context = (new RequestContext())->fromRequest($request);
+            $matchedRoute = null;
 
-        if ($this->isMainEndpointResponseClassDefined() && $this->isContextMatchingMainEndpointRoute($context)) {
-            $output = $this->processMainEndpoint();
-        } else {
-            $output = $this->processOperationByRequest($context, $request, $this->response);
+            if ($this->isMainEndpointResponseClassDefined() && $this->isContextMatchingMainEndpointRoute($context)) {
+                $output = $this->processMainEndpoint();
+            } else {
+                $output = $this->processOperationByRequest($context, $request, $this->response);
+            }
+        } catch (ExceptionInterface $exception) {
+            $output = $this->serializerService->serialize($exception);
+            $this->response->withStatus($exception->getStatusCode(), $exception->getTitle());
         }
+        // @todo #593 catch rest of the errors
 
         $this->response->getBody()->write($output);
 

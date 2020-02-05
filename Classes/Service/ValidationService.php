@@ -2,10 +2,10 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
+use SourceBroker\T3api\Exception\ValidationException;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Validation\Exception as ValidationException;
 use TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator;
 use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
 
@@ -22,7 +22,7 @@ class ValidationService
     /**
      * @param ObjectManager $objectManager
      */
-    public function injectObjectManager(ObjectManager $objectManager)
+    public function injectObjectManager(ObjectManager $objectManager): void
     {
         $this->objectManager = $objectManager;
     }
@@ -42,9 +42,7 @@ class ValidationService
         $validationResults = $validator->validate($obj);
 
         if ($validationResults->hasErrors()) {
-            // @todo #593 change to custom error and pass `$validationResults` there to make it possible to include
-            //    validation details in response
-            throw new ValidationException('Invalid object', 1568472104363);
+            throw new ValidationException($validationResults);
         }
 
         return $validationResults;
