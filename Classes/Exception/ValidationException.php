@@ -18,7 +18,8 @@ class ValidationException extends AbstractException
     public function __construct(Result $validationResult)
     {
         $this->validationResult = $validationResult;
-        parent::__construct('An error occurred during object validation', 1580940330389);
+        $this->title = $this->translate('exception.validation.title');
+        parent::__construct($this->translate('exception.validation.description'), 1580940330389);
     }
 
     /**

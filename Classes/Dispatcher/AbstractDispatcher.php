@@ -169,13 +169,7 @@ abstract class AbstractDispatcher
         }
 
         if (!$object instanceof AbstractDomainObject) {
-            throw new ResourceNotFoundException(
-                sprintf(
-                    'Could not find resource type `%s` with uid %s',
-                    $operation->getApiResource()->getEntity(),
-                    $uid
-                )
-            );
+            throw new ResourceNotFoundException($operation->getApiResource()->getEntity(), $uid);
         }
 
         if ($operation->getMethod() === 'PATCH') {

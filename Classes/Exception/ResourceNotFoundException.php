@@ -6,9 +6,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResourceNotFoundException extends AbstractException
 {
-    public function getTitle(): string
+    public function __construct(string $resourceType, int $uid)
     {
-        return 'Resource not found';
+        $this->title = $this->translate('exception.resource_not_found.title');
+        parent::__construct($this->translate('exception.resource_not_found.description', [$resourceType, $uid]));
     }
 
     public function getStatusCode(): int
