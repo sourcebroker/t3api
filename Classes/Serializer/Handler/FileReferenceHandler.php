@@ -3,21 +3,22 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Serializer\Handler;
 
-use InvalidArgumentException;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use RuntimeException;
+use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
+use TYPO3\CMS\Extbase\Error\Error;
+use TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Reflection\Exception\PropertyNotAccessibleException;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
@@ -113,7 +114,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
      * @param mixed $data
      * @param array $type
      * @param DeserializationContext $context
-     *
+     * @throws ValidationException
      * @return mixed|void
      */
     public function deserialize(
@@ -159,7 +160,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
      * @param array $data
      * @param string $type
      * @param DeserializationContext $context
-     *
+     * @throws ValidationException
      * @return ExtbaseFileReference
      */
     protected function createSysFileReference(
@@ -168,11 +169,12 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         DeserializationContext $context
     ): ExtbaseFileReference {
         if (empty($data['uidLocal'])) {
-            // @todo 593 return appropriate error
-            throw new InvalidArgumentException(
-                'Property `uidLocal` is required to create sys file reference',
-                1577083636258
+            $result = new Result();
+            $result->forProperty('uidLocal')->addError(
+                new Error('Property `uidLocal` is required to create sys file reference', 1577083636258)
             );
+
+            throw new ValidationException($result);
         }
 
         $this->removeExistingFileReference($context);
