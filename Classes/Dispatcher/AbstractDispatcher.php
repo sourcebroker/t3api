@@ -15,12 +15,12 @@ use SourceBroker\T3api\Security\OperationAccessChecker;
 use SourceBroker\T3api\Service\FileUploadService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\ValidationService;
+use SourceBroker\T3api\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException as SymfonyResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
-use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\File;
@@ -99,7 +99,7 @@ abstract class AbstractDispatcher
                     $request,
                     $response
                 );
-            } catch (ResourceNotFoundException $resourceNotFoundException) {
+            } catch (SymfonyResourceNotFoundException $resourceNotFoundException) {
                 // do not stop - continue to find correct route
             } catch (MethodNotAllowedException $methodNotAllowedException) {
                 // do not stop - continue to find correct route
@@ -164,12 +164,18 @@ abstract class AbstractDispatcher
         $object = $repository->findByUid($uid);
 
         if (!OperationAccessChecker::isGranted($operation, ['object' => $object])) {
+            // @todo 593 Throw appropriate exception
             throw new Exception('You are not allowed to access this operation', 1574411504130);
         }
 
         if (!$object instanceof AbstractDomainObject) {
-            // @todo 593 throw exception like `ResourceNotFound` and set status 404
-            throw new PageNotFoundException();
+            throw new ResourceNotFoundException(
+                sprintf(
+                    'Could not find resource type `%s` with uid %s',
+                    $operation->getApiResource()->getEntity(),
+                    $uid
+                )
+            );
         }
 
         if ($operation->getMethod() === 'PATCH') {
