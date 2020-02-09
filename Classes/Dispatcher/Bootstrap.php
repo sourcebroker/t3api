@@ -74,7 +74,7 @@ class Bootstrap extends AbstractDispatcher
             }
         } catch (ExceptionInterface $exception) {
             $output = $this->serializerService->serialize($exception);
-            $this->response->withStatus($exception->getStatusCode(), $exception->getTitle());
+            $this->response = $this->response->withStatus($exception->getStatusCode(), $exception->getTitle());
         }
         // @todo #593 catch rest of the errors
 

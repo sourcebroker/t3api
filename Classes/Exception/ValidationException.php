@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Exception;
 
+use SourceBroker\T3api\Annotation\Serializer\Exclude;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 use Symfony\Component\HttpFoundation\Response;
 use TYPO3\CMS\Extbase\Error\Result;
@@ -10,13 +11,8 @@ use TYPO3\CMS\Extbase\Error\Result;
 class ValidationException extends AbstractException
 {
     /**
-     * @var int
-     * @see https://stackoverflow.com/a/3290198/1588346
-     */
-    protected static $statusCode = Response::HTTP_BAD_REQUEST;
-
-    /**
      * @var Result
+     * @Exclude()
      */
     protected $validationResult;
 
@@ -31,6 +27,37 @@ class ValidationException extends AbstractException
      */
     public function getViolations(): array
     {
-        return [];
+        return $this->getViolationsRecursive($this->validationResult);
+    }
+
+    /**
+     * @see https://stackoverflow.com/a/3290198/1588346
+     */
+    public function getStatusCode(): int
+    {
+        return Response::HTTP_BAD_REQUEST;
+    }
+
+    protected function getViolationsRecursive(Result $result, array $propertyPath = [], array &$violations = []): array
+    {
+        foreach ($result->getErrors() as $error) {
+            $violations[] = [
+                'propertyPath' => implode('.', $propertyPath),
+                'message' => $error->getMessage(),
+                'code' => $error->getCode(),
+            ];
+        }
+
+        if (!empty($result->getSubResults())) {
+            foreach ($result->getSubResults() as $subPropertyName => $subResult) {
+                $this->getViolationsRecursive(
+                    $subResult,
+                    array_merge($propertyPath, [$subPropertyName]),
+                    $violations
+                );
+            }
+        }
+
+        return $violations;
     }
 }

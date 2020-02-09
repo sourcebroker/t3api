@@ -1,9 +1,16 @@
 Exception:
-  virtual_properties:
-    getMessage:
-      name: 'hydra:description'
-      type: string
   properties:
     message:
-      type: string
+      exclude: true
+    trace:
+      exclude: true
+    string:
+      exclude: true
+    code:
+      exclude: true
+    file:
+      exclude: true
+    line:
+      exclude: true
+    previous:
       exclude: true

@@ -7,14 +7,6 @@ use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 interface ExceptionInterface
 {
     public function getStatusCode(): int;
-
-    /**
-     * @VirtualProperty("hydra:title")
-     */
     public function getTitle(): ?string;
-
-    /**
-     * @VirtualProperty("hydra:description")
-     */
     public function getDescription(): ?string;
 }
