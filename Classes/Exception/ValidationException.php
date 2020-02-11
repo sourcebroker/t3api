@@ -15,11 +15,11 @@ class ValidationException extends AbstractException
      */
     protected $validationResult;
 
-    public function __construct(Result $validationResult)
+    public function __construct(Result $validationResult, int $code)
     {
         $this->validationResult = $validationResult;
         $this->title = $this->translate('exception.validation.title');
-        parent::__construct($this->translate('exception.validation.description'), 1580940330389);
+        parent::__construct($this->translate('exception.validation.description'), $code);
     }
 
     /**

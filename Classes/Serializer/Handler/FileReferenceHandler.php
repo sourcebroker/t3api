@@ -174,7 +174,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                 new Error('Property `uidLocal` is required to create sys file reference', 1577083636258)
             );
 
-            throw new ValidationException($result);
+            throw new ValidationException($result, 1581461062805);
         }
 
         $this->removeExistingFileReference($context);

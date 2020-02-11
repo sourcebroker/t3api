@@ -107,6 +107,7 @@ abstract class AbstractDispatcher
             }
         }
 
+        # @todo 593
         throw new RouteNotFoundException('T3api resource not found for current route', 1557217186441);
     }
 
@@ -170,7 +171,7 @@ abstract class AbstractDispatcher
         }
 
         if (!$object instanceof AbstractDomainObject) {
-            throw new ResourceNotFoundException($operation->getApiResource()->getEntity(), $uid);
+            throw new ResourceNotFoundException($operation->getApiResource()->getEntity(), $uid, 1581461016515);
         }
 
         if ($operation->getMethod() === 'PATCH') {
@@ -228,7 +229,7 @@ abstract class AbstractDispatcher
             throw new Exception('You are not allowed to access this operation', 1574416639472);
         }
 
-        if ($operation->getMethod() === 'GET') {
+        if ($operation->isMethodGet()) {
             return $this->objectManager->get(
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'],
                 $operation,
@@ -237,7 +238,7 @@ abstract class AbstractDispatcher
             );
         }
 
-        if ($operation->getMethod() === 'POST') {
+        if ($operation->isMethodPost()) {
             if (is_subclass_of($operation->getApiResource()->getEntity(), File::class, true)) {
                 $object = $this->fileUploadService->process($operation, $request);
             } else {

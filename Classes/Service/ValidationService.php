@@ -42,7 +42,7 @@ class ValidationService
         $validationResults = $validator->validate($obj);
 
         if ($validationResults->hasErrors()) {
-            throw new ValidationException($validationResults);
+            throw new ValidationException($validationResults, 1581461085077);
         }
 
         return $validationResults;

@@ -30,6 +30,14 @@ abstract class AbstractException extends Exception implements ExceptionInterface
     }
 
     /**
+     * @VirtualProperty("hydra:code")
+     */
+    public function getExceptionCode(): int
+    {
+        return $this->getCode();
+    }
+
+    /**
      * @VirtualProperty("hydra:description")
      */
     public function getDescription(): string
