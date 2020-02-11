@@ -9,11 +9,17 @@
 			<trans-unit id="exception.resource_not_found.description">
 				<source>Could not find resource type `%s` with uid %s</source>
 			</trans-unit>
+			<trans-unit id="exception.validation.title">
+				<source>Validation error</source>
+			</trans-unit>
 			<trans-unit id="exception.validation.description">
 				<source>An error occurred during object validation</source>
 			</trans-unit>
-			<trans-unit id="exception.validation.title">
-				<source>Validation error</source>
+			<trans-unit id="exception.method_not_allowed.title">
+				<source>Method not allowed</source>
+			</trans-unit>
+			<trans-unit id="exception.method_not_allowed.description">
+				<source>Method `%s` is not allowed for %s</source>
 			</trans-unit>
 		</body>
 	</file>

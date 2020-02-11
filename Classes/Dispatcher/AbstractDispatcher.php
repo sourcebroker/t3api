@@ -10,6 +10,7 @@ use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Domain\Repository\CommonRepository;
+use SourceBroker\T3api\Exception\MethodNotAllowedException;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use SourceBroker\T3api\Security\OperationAccessChecker;
 use SourceBroker\T3api\Service\FileUploadService;
@@ -17,7 +18,7 @@ use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\ValidationService;
 use SourceBroker\T3api\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException as SymfonyMethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException as SymfonyResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
@@ -101,7 +102,7 @@ abstract class AbstractDispatcher
                 );
             } catch (SymfonyResourceNotFoundException $resourceNotFoundException) {
                 // do not stop - continue to find correct route
-            } catch (MethodNotAllowedException $methodNotAllowedException) {
+            } catch (SymfonyMethodNotAllowedException $methodNotAllowedException) {
                 // do not stop - continue to find correct route
             }
         }
@@ -251,7 +252,8 @@ abstract class AbstractDispatcher
 
             return $object;
         }
-        // @todo 593 throw appropriate exception and set status code 405
+
+        throw new MethodNotAllowedException($operation, 1581460954134);
     }
 
     /**
