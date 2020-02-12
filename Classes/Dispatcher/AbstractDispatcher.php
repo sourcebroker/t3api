@@ -174,12 +174,12 @@ abstract class AbstractDispatcher
             throw new ResourceNotFoundException($operation->getApiResource()->getEntity(), $uid, 1581461016515);
         }
 
-        if ($operation->getMethod() === 'PATCH') {
+        if ($operation->isMethodPatch()) {
             $this->deserializeOperation($operation, $request, $object);
             $this->validationService->validateObject($object);
             $repository->update($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
-        } elseif ($operation->getMethod() === 'PUT') {
+        } elseif ($operation->isMethodPut()) {
             $entityClass = $operation->getApiResource()->getEntity();
             /** @var AbstractDomainObject $newObject */
             $newObject = new $entityClass();
@@ -195,15 +195,12 @@ abstract class AbstractDispatcher
             $this->validationService->validateObject($object);
             $repository->add($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
-        } elseif ($operation->getMethod() === 'DELETE') {
+        } elseif ($operation->isMethodDelete()) {
             $repository->remove($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
             $object = null;
-        } elseif ($operation->getMethod() !== 'GET') {
-            throw new InvalidArgumentException(
-                sprintf('Method `%s` is not supported for item operation', $operation->getMethod()),
-                1568378714606
-            );
+        } elseif (!$operation->isMethodGet()) {
+            throw new MethodNotAllowedException($operation, 1581494567091);
         }
 
         return $object;
