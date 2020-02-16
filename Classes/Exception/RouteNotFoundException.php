@@ -8,8 +8,8 @@ class RouteNotFoundException extends AbstractException
 {
     public function __construct(int $code)
     {
-        $this->title = $this->translate('exception.route_not_found.title');
-        parent::__construct($this->translate('exception.route_not_found.description'), $code);
+        $this->title = self::translate('exception.route_not_found.title');
+        parent::__construct(self::translate('exception.route_not_found.description'), $code);
     }
 
     public function getStatusCode(): int

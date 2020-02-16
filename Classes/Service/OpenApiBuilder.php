@@ -25,6 +25,9 @@ use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
+use SourceBroker\T3api\Exception\OperationNotAllowedException;
+use SourceBroker\T3api\Exception\ResourceNotFoundException;
+use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -310,12 +313,16 @@ class OpenApiBuilder
         ];
 
         if ($operation instanceof ItemOperation) {
-            $responses[] = Response::create()
-                ->statusCode(404)
-                ->description('Item not found');
+            $responses[] = ResourceNotFoundException::getOpenApiResponse();
         }
 
-        // @todo #593 validation errors
+        if ($operation->isMethodPatch() || $operation->isMethodPost() || $operation->isMethodPut()) {
+            $responses[] = ValidationException::getOpenApiResponse();
+        }
+
+        if ($operation->getSecurity() || $operation->getSecurityPostDenormalize()) {
+            $responses[] = OperationNotAllowedException::getOpenApiResponse();
+        }
 
         return $responses;
     }

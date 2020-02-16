@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Exception;
 
 use ReflectionClass;
+use ReflectionException;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -10,13 +11,20 @@ class MethodNotAllowedException extends AbstractException
 {
     public function __construct(AbstractOperation $operation, int $code)
     {
-        $this->title = $this->translate('exception.method_not_allowed.title');
+        $this->title = self::translate('exception.method_not_allowed.title');
+
+        try {
+            $className = (new ReflectionClass($operation))->getShortName();
+        } catch (ReflectionException $exception) {
+            $className = self::class;
+        }
 
         parent::__construct(
-            $this->translate(
+            self::translate(
                 'exception.method_not_allowed.description',
                 [
-                    $operation->getMethod(), (new ReflectionClass($operation))->getShortName()
+                    $operation->getMethod(),
+                    $className
                 ]
             ),
             $code
