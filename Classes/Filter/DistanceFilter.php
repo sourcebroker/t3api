@@ -129,7 +129,8 @@ class DistanceFilter extends AbstractFilter
     protected function getLatLangParameterValues(array $values, ApiFilter $apiFilter): array
     {
         if (!isset($values[self::PARAMETER_LATITUDE], $values[self::PARAMETER_LONGITUDE])) {
-            throw new InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(
+                sprintf(
                     'Parameters `%s[%s]` and %s[%s] are required to use distance filter',
                     $apiFilter->getParameterName(),
                     self::PARAMETER_LATITUDE,

@@ -3,7 +3,9 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Dispatcher;
 
 use Exception;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
@@ -130,8 +132,13 @@ abstract class AbstractDispatcher
         } elseif ($operation instanceof CollectionOperation) {
             $result = $this->processCollectionOperation($operation, $request, $response);
         } else {
-            // @todo 593 throw appropriate exception
-            throw new Exception('Unknown operation', 1557506987081);
+            throw new RuntimeException(
+                sprintf(
+                    'Could not process - Operation `%s` is unknown',
+                    get_class($operation)
+                ),
+                1557506987081
+            );
         }
 
         $arguments = [
@@ -225,12 +232,19 @@ abstract class AbstractDispatcher
         }
 
         if ($operation->isMethodGet()) {
-            return $this->objectManager->get(
+            if (is_subclass_of($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'], AbstractCollectionResponse::class)) {
+                throw new InvalidArgumentException('`collectionResponseClass` has to be an instance of %s', AbstractCollectionResponse::class);
+            }
+
+            /** @var AbstractCollectionResponse $responseObject */
+            $responseObject = $this->objectManager->get(
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'],
                 $operation,
                 $request,
                 $repository->findFiltered($operation->getFilters(), $request)
             );
+
+            return $responseObject;
         }
 
         if ($operation->isMethodPost()) {

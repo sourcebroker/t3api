@@ -393,12 +393,12 @@ class OpenApiBuilder
             if ($metadata === null) {
                 throw new RuntimeException(
                     sprintf('Could not generate metadata for class `%s`', $class),
-                1577637116148
+                    1577637116148
                 );
             }
         } catch (\Exception $e) {
             throw new RuntimeException(
-                sprintf('An error occured while generating metadata for class `%s`', $class),
+                sprintf('An error occurred while generating metadata for class `%s`', $class),
                 1577637267693,
                 $e
             );

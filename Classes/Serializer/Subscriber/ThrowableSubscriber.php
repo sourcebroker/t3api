@@ -53,7 +53,14 @@ class ThrowableSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $debug = [];
+        $debug = [
+            [
+                'file' => $throwable->getFile(),
+                'line' => $throwable->getLine(),
+                'function' => null,
+                'class' => null,
+            ]
+        ];
 
         foreach ($throwable->getTrace() as $trace) {
             $debug[] = [

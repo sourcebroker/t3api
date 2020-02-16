@@ -21,12 +21,12 @@ class FileUtility
             try {
                 GeneralUtility::mkdir_deep($path);
             } catch (RuntimeException $e) {
-                throw new RuntimeException(sprintf('The directory %s can not be created.', $path), 1570250836643, $e);
+                throw new RuntimeException(sprintf('The directory `%s` can not be created.', $path), 1570250836643, $e);
             }
         }
 
         if (!is_writable($path)) {
-            throw new RuntimeException(sprintf('The directory %s is not writable.', $path), 1570250839604);
+            throw new RuntimeException(sprintf('The directory `%s` is not writable.', $path), 1570250839604);
         }
 
         return $path;

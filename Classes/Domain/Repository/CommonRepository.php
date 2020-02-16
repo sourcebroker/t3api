@@ -257,7 +257,7 @@ class CommonRepository
         } elseif (
             (bool)$object->getPid()
             && $this->defaultQuerySettings->getRespectStoragePage()
-            && !in_array($object->getPid(), $this->defaultQuerySettings->getStoragePageIds())
+            && !in_array($object->getPid(), $this->defaultQuerySettings->getStoragePageIds(), true)
         ) {
             throw new RuntimeException(
                 sprintf(

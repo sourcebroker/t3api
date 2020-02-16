@@ -138,7 +138,7 @@ class Bootstrap extends AbstractDispatcher
     {
         if (!$GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface) {
             throw new RuntimeException(
-                sprintf('`%s` is not an instance of `%s`', 'TYPO3_REQUEST', ServerRequestInterface::class),
+                sprintf('`TYPO3_REQUEST` is not an instance of `%s`', ServerRequestInterface::class),
                 1580483236906
             );
         }

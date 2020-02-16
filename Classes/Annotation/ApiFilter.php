@@ -42,17 +42,24 @@ class ApiFilter
     public function __construct($options = [])
     {
         if (!is_string($options['value'] ?? null)) {
-            throw new InvalidArgumentException('This annotation needs a value representing the filter class.');
+            throw new InvalidArgumentException(
+                sprintf('`%s` Annotation needs a value representing the filter class.', self::class),
+                1581881033567
+            );
         }
 
         $filterClass = $options['value'];
 
         if (!is_a($filterClass, AbstractFilter::class, true)) {
-            throw new InvalidArgumentException(sprintf(
-                'The filter class "%s" does not extends "%s".',
-                $options['value'],
-                AbstractFilter::class
-            ));
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The filter class `%s` does not extends `%s`.%s',
+                    $options['value'],
+                    AbstractFilter::class,
+                    substr_count($options['value'], '\\') < 2 ? ' Did you forget to use `use` statement?' : '',
+                ),
+                1581882087932
+            );
         }
 
         $this->filterClass = $filterClass;
