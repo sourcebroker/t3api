@@ -1,10 +1,8 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Service;
 
 use InvalidArgumentException;
-use RuntimeException;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\UploadSettings;
 use Symfony\Bridge\PsrHttpMessage\Factory\UploadedFile;
@@ -43,7 +41,7 @@ class FileUploadService implements SingletonInterface
     /**
      * @param AbstractOperation $operation
      * @param Request $request
-     * @throws RuntimeException
+     * @throws Exception
      * @return File
      */
     public function process(AbstractOperation $operation, Request $request): File
@@ -54,21 +52,17 @@ class FileUploadService implements SingletonInterface
 
         $this->verifyFileExtension($uploadSettings, $uploadedFile);
 
-        try {
-            return $this->getUploadFolder($uploadSettings)
-                ->addUploadedFile(
-                    [
-                        'error' => $uploadedFile->getError(),
-                        'name' => $uploadedFile->getClientOriginalName(),
-                        'size' => $uploadedFile->getSize(),
-                        'tmp_name' => $uploadedFile->getPathname(),
-                        'type' => $uploadedFile->getMimeType(),
-                    ],
-                    $operation->getUploadSettings()->getConflictMode()
-                );
-        } catch (Exception $exception) {
-            throw new RuntimeException('Could not upload file', 1577263548711, $exception);
-        }
+        return $this->getUploadFolder($uploadSettings)
+            ->addUploadedFile(
+                [
+                    'error' => $uploadedFile->getError(),
+                    'name' => $uploadedFile->getClientOriginalName(),
+                    'size' => $uploadedFile->getSize(),
+                    'tmp_name' => $uploadedFile->getPathname(),
+                    'type' => $uploadedFile->getMimeType(),
+                ],
+                $operation->getUploadSettings()->getConflictMode()
+            );
     }
 
     /**
@@ -80,7 +74,6 @@ class FileUploadService implements SingletonInterface
     protected function verifyFileExtension(UploadSettings $uploadSettings, UploadedFile $uploadedFile): void
     {
         if (!GeneralUtility::verifyFilenameAgainstDenyPattern($uploadedFile->getClientOriginalName())) {
-            // @todo 593 throw appropriate exception
             throw new InvalidArgumentException(
                 'Uploading files with PHP file extensions is not allowed!',
                 1576999829435

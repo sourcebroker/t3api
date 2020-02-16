@@ -56,8 +56,8 @@ class OrderFilter extends AbstractFilter
             return null;
         }
 
-        if (!in_array($direction, [QueryInterface::ORDER_ASCENDING, QueryInterface::ORDER_DESCENDING])) {
-            throw new InvalidArgumentException(sprintf('Unknown order direction %s', $direction), 1560890654236);
+        if (!in_array($direction, [QueryInterface::ORDER_ASCENDING, QueryInterface::ORDER_DESCENDING], true)) {
+            throw new InvalidArgumentException(sprintf('Unknown order direction `%s`', $direction), 1560890654236);
         }
 
         $query->setOrderings(array_merge($query->getOrderings(), [$property => $direction]));

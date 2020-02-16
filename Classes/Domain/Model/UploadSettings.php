@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Domain\Model;
 
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;

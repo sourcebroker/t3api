@@ -21,12 +21,15 @@ use GoldSpecDigital\ObjectOrientedOAS\OpenApi;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MetadataFactoryInterface;
+use RuntimeException;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
+use SourceBroker\T3api\Exception\OperationNotAllowedException;
+use SourceBroker\T3api\Exception\ResourceNotFoundException;
+use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
-use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -310,12 +313,16 @@ class OpenApiBuilder
         ];
 
         if ($operation instanceof ItemOperation) {
-            $responses[] = Response::create()
-                ->statusCode(404)
-                ->description('Item not found');
+            $responses[] = ResourceNotFoundException::getOpenApiResponse();
         }
 
-        // @todo #593 validation errors
+        if ($operation->isMethodPatch() || $operation->isMethodPost() || $operation->isMethodPut()) {
+            $responses[] = ValidationException::getOpenApiResponse();
+        }
+
+        if ($operation->getSecurity() || $operation->getSecurityPostDenormalize()) {
+            $responses[] = OperationNotAllowedException::getOpenApiResponse();
+        }
 
         return $responses;
     }
@@ -393,12 +400,12 @@ class OpenApiBuilder
             if ($metadata === null) {
                 throw new RuntimeException(
                     sprintf('Could not generate metadata for class `%s`', $class),
-                1577637116148
+                    1577637116148
                 );
             }
         } catch (\Exception $e) {
             throw new RuntimeException(
-                sprintf('An error occured while generating metadata for class `%s`', $class),
+                sprintf('An error occurred while generating metadata for class `%s`', $class),
                 1577637267693,
                 $e
             );

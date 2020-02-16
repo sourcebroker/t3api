@@ -27,6 +27,7 @@ call_user_func(
             SourceBroker\T3api\Serializer\Subscriber\GenerateMetadataSubscriber::class,
             SourceBroker\T3api\Serializer\Subscriber\FileReferenceSubscriber::class,
             SourceBroker\T3api\Serializer\Subscriber\AbstractEntitySubscriber::class,
+            SourceBroker\T3api\Serializer\Subscriber\ThrowableSubscriber::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerMetadataDirs'] = [

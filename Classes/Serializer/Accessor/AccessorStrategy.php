@@ -32,7 +32,7 @@ class AccessorStrategy implements AccessorStrategyInterface
     public function setValue(object $object, $value, PropertyMetadata $metadata, DeserializationContext $context): void
     {
         if (true === $metadata->readOnly) {
-            throw new LogicException(sprintf('%s on %s is read only.', $metadata->name, $metadata->class));
+            throw new LogicException(sprintf('Property `%s` on `%s` is read only.', $metadata->name, $metadata->class));
         }
 
         if (null === $metadata->setter) {

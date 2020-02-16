@@ -5,9 +5,8 @@ namespace SourceBroker\T3api\Annotation\Serializer;
 
 /**
  * @Annotation
- * @Target({"PROPERTY"})
+ * @Target({"PROPERTY", "METHOD"})
  */
 class Exclude
 {
-
 }

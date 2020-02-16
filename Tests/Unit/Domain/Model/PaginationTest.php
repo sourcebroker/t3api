@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Tests\Unit\Domain\Model;
 
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use SourceBroker\T3api\Annotation\ApiResource;
 use SourceBroker\T3api\Domain\Model\Pagination;
 use Symfony\Component\HttpFoundation\Request;
 

@@ -5,6 +5,7 @@ namespace SourceBroker\T3api\Service;
 use DateTime;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Exception;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -15,6 +16,7 @@ use SourceBroker\T3api\Annotation\Serializer\Exclude;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
 use SourceBroker\T3api\Annotation\Serializer\MaxDepth;
 use SourceBroker\T3api\Annotation\Serializer\ReadOnly;
+use SourceBroker\T3api\Annotation\Serializer\SerializedName;
 use SourceBroker\T3api\Annotation\Serializer\Type\TypeInterface;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 use Symfony\Component\Yaml\Yaml;
@@ -159,11 +161,15 @@ class SerializerMetadataService
                 $annotationReader->getPropertyAnnotations($reflectionProperty)
             );
             if (empty($properties[$reflectionProperty->getName()]['type'])) {
-                $properties[$reflectionProperty->getName()]['type'] = self::getTypeFromAnnotation(
+                $type = self::getTypeFromAnnotation(
                     'var',
                     $reflectionProperty,
                     $reflectionClass->getName() . '::' . $reflectionProperty->getName()
                 );
+
+                if ($type !== null) {
+                    $properties[$reflectionProperty->getName()]['type'] = $type;
+                }
             }
         }
 
@@ -231,23 +237,26 @@ class SerializerMetadataService
         string $annotationTag,
         Reflector $reflector,
         string $identifier
-    ): string {
+    ): ?string {
         $docCommentParser = new DocCommentParser(true);
         $docCommentParser->parseDocComment($reflector->getDocComment());
-        $type = $docCommentParser->getTagValues($annotationTag)[0];
 
-        if (empty($type)) {
+        try {
+            return self::parsePropertyType($docCommentParser->getTagValues($annotationTag)[0]);
+        } catch (Exception $exception) {
+            if ($exception->getCode() === 1169128255) {
+                return null;
+            }
+
             throw new RuntimeException(
                 sprintf(
-                    '`@%s` annotation missing in property %s',
+                    'Could not read annotation `@%s` property %s',
                     $annotationTag,
                     $identifier
                 ),
                 1577878969425
             );
         }
-
-        return self::parsePropertyType($type);
     }
 
     /**
@@ -341,6 +350,8 @@ class SerializerMetadataService
                 $metadata['exclude'] = true;
             } elseif ($annotation instanceof MaxDepth) {
                 $metadata['max_depth'] = $annotation->depth;
+            } elseif ($annotation instanceof SerializedName) {
+                $metadata['serialized_name'] = $annotation->name;
             }
 
             // @todo 591 add support to rest of t3api annotations

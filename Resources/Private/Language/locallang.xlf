@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2020-02-09T12:00:00Z" product-name="t3api">
+		<header/>
+		<body>
+			<trans-unit id="exception.resource_not_found.title">
+				<source>Resource not found</source>
+			</trans-unit>
+			<trans-unit id="exception.resource_not_found.description">
+				<source>Could not find resource type `%s` with uid %s</source>
+			</trans-unit>
+			<trans-unit id="exception.route_not_found.title">
+				<source>Route not found</source>
+			</trans-unit>
+			<trans-unit id="exception.route_not_found.description">
+				<source>Could not find route</source>
+			</trans-unit>
+			<trans-unit id="exception.validation.title">
+				<source>Validation error</source>
+			</trans-unit>
+			<trans-unit id="exception.validation.description">
+				<source>An error occurred during object validation</source>
+			</trans-unit>
+			<trans-unit id="exception.method_not_allowed.title">
+				<source>Method not allowed</source>
+			</trans-unit>
+			<trans-unit id="exception.method_not_allowed.description">
+				<source>Method `%s` is not allowed for %s</source>
+			</trans-unit>
+			<trans-unit id="exception.operation_not_allowed.title">
+				<source>Operation not allowed</source>
+			</trans-unit>
+			<trans-unit id="exception.operation_not_allowed.description">
+				<source>You are not allowed to access operation `%s`</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

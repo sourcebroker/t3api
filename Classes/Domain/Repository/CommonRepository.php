@@ -5,7 +5,6 @@ namespace SourceBroker\T3api\Domain\Repository;
 use RuntimeException;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
-use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Filter\AbstractFilter;
 use SourceBroker\T3api\Service\StorageService;
 use Symfony\Component\HttpFoundation\Request;
@@ -257,7 +256,7 @@ class CommonRepository
         } elseif (
             (bool)$object->getPid()
             && $this->defaultQuerySettings->getRespectStoragePage()
-            && !in_array($object->getPid(), $this->defaultQuerySettings->getStoragePageIds())
+            && !in_array($object->getPid(), $this->defaultQuerySettings->getStoragePageIds(), true)
         ) {
             throw new RuntimeException(
                 sprintf(

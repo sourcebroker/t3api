@@ -225,7 +225,7 @@ abstract class AbstractFilter implements SingletonInterface
     {
         if (!$query instanceof Query) {
             throw new RuntimeException(
-                sprintf('Query needs to be instance of %s to get source', Query::class),
+                sprintf('Query needs to be instance of %s to read source', Query::class),
                 1575123607933
             );
         }

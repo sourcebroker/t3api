@@ -5,23 +5,26 @@ namespace SourceBroker\T3api\Dispatcher;
 use Exception;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Domain\Repository\CommonRepository;
+use SourceBroker\T3api\Exception\MethodNotAllowedException;
+use SourceBroker\T3api\Exception\OperationNotAllowedException;
+use SourceBroker\T3api\Exception\ResourceNotFoundException;
+use SourceBroker\T3api\Exception\RouteNotFoundException;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use SourceBroker\T3api\Security\OperationAccessChecker;
 use SourceBroker\T3api\Service\FileUploadService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\ValidationService;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException as SymfonyMethodNotAllowedException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException as SymfonyResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
-use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
-use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\File;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
@@ -99,14 +102,14 @@ abstract class AbstractDispatcher
                     $request,
                     $response
                 );
-            } catch (ResourceNotFoundException $resourceNotFoundException) {
+            } catch (SymfonyResourceNotFoundException $resourceNotFoundException) {
                 // do not stop - continue to find correct route
-            } catch (MethodNotAllowedException $methodNotAllowedException) {
+            } catch (SymfonyMethodNotAllowedException $methodNotAllowedException) {
                 // do not stop - continue to find correct route
             }
         }
 
-        throw new RouteNotFoundException('T3api resource not found for current route', 1557217186441);
+        throw new RouteNotFoundException(1557217186441);
     }
 
     /**
@@ -129,8 +132,13 @@ abstract class AbstractDispatcher
         } elseif ($operation instanceof CollectionOperation) {
             $result = $this->processCollectionOperation($operation, $request, $response);
         } else {
-            // @todo 593 throw appropriate exception
-            throw new Exception('Unknown operation', 1557506987081);
+            throw new RuntimeException(
+                sprintf(
+                    'Could not process - Operation `%s` is unknown',
+                    get_class($operation)
+                ),
+                1557506987081
+            );
         }
 
         $arguments = [
@@ -164,20 +172,19 @@ abstract class AbstractDispatcher
         $object = $repository->findByUid($uid);
 
         if (!OperationAccessChecker::isGranted($operation, ['object' => $object])) {
-            throw new Exception('You are not allowed to access this operation', 1574411504130);
+            throw new OperationNotAllowedException($operation, 1574411504130);
         }
 
         if (!$object instanceof AbstractDomainObject) {
-            // @todo 593 throw exception like `ResourceNotFound` and set status 404
-            throw new PageNotFoundException();
+            throw new ResourceNotFoundException($operation->getApiResource()->getEntity(), $uid, 1581461016515);
         }
 
-        if ($operation->getMethod() === 'PATCH') {
+        if ($operation->isMethodPatch()) {
             $this->deserializeOperation($operation, $request, $object);
             $this->validationService->validateObject($object);
             $repository->update($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
-        } elseif ($operation->getMethod() === 'PUT') {
+        } elseif ($operation->isMethodPut()) {
             $entityClass = $operation->getApiResource()->getEntity();
             /** @var AbstractDomainObject $newObject */
             $newObject = new $entityClass();
@@ -193,15 +200,12 @@ abstract class AbstractDispatcher
             $this->validationService->validateObject($object);
             $repository->add($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
-        } elseif ($operation->getMethod() === 'DELETE') {
+        } elseif ($operation->isMethodDelete()) {
             $repository->remove($object);
             $this->objectManager->get(PersistenceManager::class)->persistAll();
             $object = null;
-        } elseif ($operation->getMethod() !== 'GET') {
-            throw new InvalidArgumentException(
-                sprintf('Method `%s` is not supported for item operation', $operation->getMethod()),
-                1568378714606
-            );
+        } elseif (!$operation->isMethodGet()) {
+            throw new MethodNotAllowedException($operation, 1581494567091);
         }
 
         return $object;
@@ -224,19 +228,26 @@ abstract class AbstractDispatcher
         $repository = CommonRepository::getInstanceForOperation($operation);
 
         if (!OperationAccessChecker::isGranted($operation)) {
-            throw new Exception('You are not allowed to access this operation', 1574416639472);
+            throw new OperationNotAllowedException($operation, 1574416639472);
         }
 
-        if ($operation->getMethod() === 'GET') {
-            return $this->objectManager->get(
+        if ($operation->isMethodGet()) {
+            if (is_subclass_of($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'], AbstractCollectionResponse::class)) {
+                throw new InvalidArgumentException('`collectionResponseClass` has to be an instance of %s', AbstractCollectionResponse::class);
+            }
+
+            /** @var AbstractCollectionResponse $responseObject */
+            $responseObject = $this->objectManager->get(
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'],
                 $operation,
                 $request,
                 $repository->findFiltered($operation->getFilters(), $request)
             );
+
+            return $responseObject;
         }
 
-        if ($operation->getMethod() === 'POST') {
+        if ($operation->isMethodPost()) {
             if (is_subclass_of($operation->getApiResource()->getEntity(), File::class, true)) {
                 $object = $this->fileUploadService->process($operation, $request);
             } else {
@@ -251,7 +262,8 @@ abstract class AbstractDispatcher
 
             return $object;
         }
-        // @todo 593 throw appropriate exception and set status code 405
+
+        throw new MethodNotAllowedException($operation, 1581460954134);
     }
 
     /**
@@ -270,7 +282,7 @@ abstract class AbstractDispatcher
         $object = $this->serializerService->deserializeOperation($operation, $request->getContent(), $targetObject);
 
         if (!OperationAccessChecker::isGrantedPostDenormalize($operation, ['object' => $object])) {
-            throw new Exception('You are not allowed to access this operation', 1574782843388);
+            throw new OperationNotAllowedException($operation, 1574782843388);
         }
 
         $arguments = [

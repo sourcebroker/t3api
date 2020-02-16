@@ -1,0 +1,16 @@
+Exception:
+  properties:
+    message:
+      serialized_name: 'hydra:title'
+    trace:
+      exclude: true
+    string:
+      exclude: true
+    code:
+      serialized_name: 'hydra:code'
+    file:
+      exclude: true
+    line:
+      exclude: true
+    previous:
+      exclude: true

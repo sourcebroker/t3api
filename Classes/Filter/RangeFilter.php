@@ -92,7 +92,7 @@ class RangeFilter extends AbstractFilter
     ): ?ConstraintInterface {
         switch ($operator) {
             case self::PARAMETER_BETWEEN:
-                list($valueMin, $valueMax) = explode('..', $value);
+                [$valueMin, $valueMax] = explode('..', $value);
 
                 return $query->logicalAnd([
                     $query->greaterThanOrEqual($property, $valueMin),
@@ -108,7 +108,7 @@ class RangeFilter extends AbstractFilter
                 return $query->lessThanOrEqual($property, $value);
             default:
                 throw new InvalidArgumentException(
-                    sprintf('Unknown operator of range filter %s', $operator),
+                    sprintf('Unknown operator of range filter `%s`', $operator),
                     1560929019063
                 );
         }

@@ -60,7 +60,6 @@ class FileReferenceSubscriber implements EventSubscriberInterface
         ];
     }
 
-
     /**
      * Changes type to the custom one to make it possible to handle data with serializer handler
      *
@@ -99,5 +98,4 @@ class FileReferenceSubscriber implements EventSubscriberInterface
             );
         }
     }
-
 }

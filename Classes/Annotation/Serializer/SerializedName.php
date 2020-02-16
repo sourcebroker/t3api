@@ -7,11 +7,11 @@ namespace SourceBroker\T3api\Annotation\Serializer;
  * @Annotation
  * @Target({"PROPERTY","METHOD"})
  */
-final class MaxDepth
+final class SerializedName
 {
     /**
      * @Required
-     * @var int
+     * @var string
      */
-    public $depth;
+    public $name;
 }

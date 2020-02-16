@@ -2,13 +2,13 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
+use RuntimeException;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
-use RuntimeException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
@@ -74,8 +74,8 @@ class RouteService implements SingletonInterface
     }
 
     /**
-     * @return Site
      * @throws SiteNotFoundException
+     * @return Site
      */
     protected static function getSite(): Site
     {
