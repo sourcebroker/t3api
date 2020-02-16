@@ -1,13 +1,13 @@
 Exception:
   properties:
     message:
-      exclude: true
+      serialized_name: 'hydra:title'
     trace:
       exclude: true
     string:
       exclude: true
     code:
-      exclude: true
+      serialized_name: 'hydra:code'
     file:
       exclude: true
     line:

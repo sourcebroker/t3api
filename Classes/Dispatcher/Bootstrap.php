@@ -9,11 +9,13 @@ use RuntimeException;
 use SourceBroker\T3api\Exception\ExceptionInterface;
 use SourceBroker\T3api\Service\RouteService;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
+use Throwable;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Http\Response;
@@ -75,8 +77,13 @@ class Bootstrap extends AbstractDispatcher
         } catch (ExceptionInterface $exception) {
             $output = $this->serializerService->serialize($exception);
             $this->response = $this->response->withStatus($exception->getStatusCode(), $exception->getTitle());
+        } catch (Throwable $throwable) {
+            $output = $this->serializerService->serialize($throwable);
+            $this->response = $this->response->withStatus(
+                SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR,
+                SymfonyResponse::$statusTexts[SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR]
+            );
         }
-        // @todo #593 catch rest of the errors
 
         $this->response->getBody()->write($output);
 
