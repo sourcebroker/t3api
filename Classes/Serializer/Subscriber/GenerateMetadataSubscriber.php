@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Serializer\Subscriber;
 
 use Doctrine\Common\Annotations\AnnotationException;
@@ -72,5 +71,4 @@ class GenerateMetadataSubscriber implements EventSubscriberInterface
             SerializerMetadataService::generateAutoloadForClass($event->getType()['name']);
         }
     }
-
 }

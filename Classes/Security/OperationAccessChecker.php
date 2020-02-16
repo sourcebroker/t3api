@@ -108,4 +108,3 @@ class OperationAccessChecker
         return $expressionLanguageResolver;
     }
 }
-

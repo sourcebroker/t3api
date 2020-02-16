@@ -24,7 +24,7 @@ class MethodNotAllowedException extends AbstractException
                 'exception.method_not_allowed.description',
                 [
                     $operation->getMethod(),
-                    $className
+                    $className,
                 ]
             ),
             $code

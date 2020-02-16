@@ -9,5 +9,4 @@ namespace SourceBroker\T3api\Annotation\Serializer;
  */
 class Exclude
 {
-
 }

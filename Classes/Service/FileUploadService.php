@@ -1,10 +1,8 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Service;
 
 use InvalidArgumentException;
-use RuntimeException;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\UploadSettings;
 use Symfony\Bridge\PsrHttpMessage\Factory\UploadedFile;

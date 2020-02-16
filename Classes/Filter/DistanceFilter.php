@@ -11,10 +11,10 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 
 /**
  * Class DistanceFilter
@@ -122,9 +122,8 @@ class DistanceFilter extends AbstractFilter
      * @param array $values
      * @param ApiFilter $apiFilter
      *
-     * @return array array with two elements - lat and lang
      * @throws InvalidArgumentException
-     *
+     * @return array array with two elements - lat and lang
      */
     protected function getLatLangParameterValues(array $values, ApiFilter $apiFilter): array
     {

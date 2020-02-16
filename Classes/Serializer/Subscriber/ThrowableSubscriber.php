@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace SourceBroker\T3api\Serializer\Subscriber;
 
 use JMS\Serializer\EventDispatcher\Events;
@@ -59,7 +58,7 @@ class ThrowableSubscriber implements EventSubscriberInterface
                 'line' => $throwable->getLine(),
                 'function' => null,
                 'class' => null,
-            ]
+            ],
         ];
 
         foreach ($throwable->getTrace() as $trace) {
@@ -76,5 +75,4 @@ class ThrowableSubscriber implements EventSubscriberInterface
             $debug
         );
     }
-
 }
