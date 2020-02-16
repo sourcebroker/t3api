@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Dispatcher;
 
 use Exception;
-use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
@@ -11,18 +10,19 @@ use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Domain\Repository\CommonRepository;
 use SourceBroker\T3api\Exception\MethodNotAllowedException;
+use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use SourceBroker\T3api\Security\OperationAccessChecker;
 use SourceBroker\T3api\Service\FileUploadService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\ValidationService;
 use SourceBroker\T3api\Exception\ResourceNotFoundException;
+use SourceBroker\T3api\Exception\RouteNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException as SymfonyMethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException as SymfonyResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
-use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\File;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
@@ -107,8 +107,7 @@ abstract class AbstractDispatcher
             }
         }
 
-        # @todo 593
-        throw new RouteNotFoundException('T3api resource not found for current route', 1557217186441);
+        throw new RouteNotFoundException(1557217186441);
     }
 
     /**
@@ -166,8 +165,7 @@ abstract class AbstractDispatcher
         $object = $repository->findByUid($uid);
 
         if (!OperationAccessChecker::isGranted($operation, ['object' => $object])) {
-            // @todo 593 Throw appropriate exception
-            throw new Exception('You are not allowed to access this operation', 1574411504130);
+            throw new OperationNotAllowedException($operation, 1574411504130);
         }
 
         if (!$object instanceof AbstractDomainObject) {
@@ -223,7 +221,7 @@ abstract class AbstractDispatcher
         $repository = CommonRepository::getInstanceForOperation($operation);
 
         if (!OperationAccessChecker::isGranted($operation)) {
-            throw new Exception('You are not allowed to access this operation', 1574416639472);
+            throw new OperationNotAllowedException($operation, 1574416639472);
         }
 
         if ($operation->isMethodGet()) {
@@ -270,7 +268,7 @@ abstract class AbstractDispatcher
         $object = $this->serializerService->deserializeOperation($operation, $request->getContent(), $targetObject);
 
         if (!OperationAccessChecker::isGrantedPostDenormalize($operation, ['object' => $object])) {
-            throw new Exception('You are not allowed to access this operation', 1574782843388);
+            throw new OperationNotAllowedException($operation, 1574782843388);
         }
 
         $arguments = [
