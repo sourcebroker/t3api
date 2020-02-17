@@ -232,8 +232,14 @@ abstract class AbstractDispatcher
         }
 
         if ($operation->isMethodGet()) {
-            if (is_subclass_of($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'], AbstractCollectionResponse::class)) {
-                throw new InvalidArgumentException('`collectionResponseClass` has to be an instance of %s', AbstractCollectionResponse::class);
+            if (!is_subclass_of($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'], AbstractCollectionResponse::class)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Collection response class (`%s`) has to be an instance of `%s`',
+                        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'],
+                        AbstractCollectionResponse::class
+                    )
+                );
             }
 
             /** @var AbstractCollectionResponse $responseObject */
