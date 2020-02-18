@@ -91,6 +91,8 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
      * @param SerializationContext $context
      *
      * @return array
+     *
+     * @todo Try to implement it with default JMS serialization functionality instead of using this handler
      */
     public function serialize(
         SerializationVisitorInterface $visitor,
@@ -98,13 +100,21 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         array $type,
         SerializationContext $context
     ): array {
-        $url = $fileReference instanceof ExtbaseFileReference
-            ? $fileReference->getOriginalResource()->getPublicUrl()
+        /** @var Typo3FileReference $originalResource */
+        $originalResource = $fileReference instanceof ExtbaseFileReference
+            ? $fileReference->getOriginalResource()
             : $fileReference->getPublicUrl();
+        $originalFile = $originalResource->getOriginalFile();
 
         return [
             'uid' => $fileReference->getUid(),
-            'url' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $url,
+            'url' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $originalResource->getPublicUrl(),
+            'file' => [
+                'uid' => $originalFile->getUid(),
+                'name' => $originalFile->getName(),
+                'mimeType' => $originalFile->getMimeType(),
+                'size' => $originalFile->getSize(),
+            ],
         ];
     }
 
