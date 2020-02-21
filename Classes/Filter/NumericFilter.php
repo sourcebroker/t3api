@@ -12,14 +12,14 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 /**
  * Class NumericFilter
  */
-class NumericFilter extends AbstractFilter
+class NumericFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     /**
      * @param ApiFilter $apiFilter
      *
      * @return Parameter[]
      */
-    public static function getDocumentationParameters(ApiFilter $apiFilter): array
+    public static function getOpenApiParameters(ApiFilter $apiFilter): array
     {
         return [
             Parameter::create()
@@ -33,7 +33,7 @@ class NumericFilter extends AbstractFilter
      * @throws InvalidQueryException
      */
     public function filterProperty(
-        $property,
+        string $property,
         $values,
         QueryInterface $query,
         ApiFilter $apiFilter

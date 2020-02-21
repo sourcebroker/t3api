@@ -7,8 +7,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
@@ -17,14 +15,14 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 /**
  * Class ContainFilter
  */
-class ContainFilter extends AbstractFilter
+class ContainFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     /**
      * @param ApiFilter $apiFilter
      *
      * @return Parameter[]
      */
-    public static function getDocumentationParameters(ApiFilter $apiFilter): array
+    public static function getOpenApiParameters(ApiFilter $apiFilter): array
     {
         return [
             Parameter::create()
@@ -37,7 +35,7 @@ class ContainFilter extends AbstractFilter
      * @inheritDoc
      */
     public function filterProperty(
-        $property,
+        string $property,
         $values,
         QueryInterface $query,
         ApiFilter $apiFilter
@@ -66,7 +64,7 @@ class ContainFilter extends AbstractFilter
         $tableName = $this->getTableName($query);
         $conditions = [];
         $rootAlias = 'o';
-        $queryBuilder = GeneralUtility::makeInstance(ObjectManager::class)
+        $queryBuilder = $this->getObjectManager()
             ->get(ConnectionPool::class)
             ->getQueryBuilderForTable($tableName);
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Annotation;
 
 use InvalidArgumentException;
-use SourceBroker\T3api\Filter\AbstractFilter;
+use SourceBroker\T3api\Filter\FilterInterface;
 
 /**
  * ApiResource annotation.
@@ -50,12 +50,12 @@ class ApiFilter
 
         $filterClass = $options['value'];
 
-        if (!is_a($filterClass, AbstractFilter::class, true)) {
+        if (!is_a($filterClass, FilterInterface::class, true)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The filter class `%s` does not extends `%s`.%s',
                     $options['value'],
-                    AbstractFilter::class,
+                    FilterInterface::class,
                     substr_count($options['value'], '\\') < 2 ? ' Did you forget to use `use` statement?' : '',
                 ),
                 1581882087932

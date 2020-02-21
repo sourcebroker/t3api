@@ -29,6 +29,7 @@ use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Exception\ResourceNotFoundException;
 use SourceBroker\T3api\Exception\ValidationException;
+use SourceBroker\T3api\Filter\OpenApiSupportingFilterInterface;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -232,7 +233,11 @@ class OpenApiBuilder
         }
 
         foreach ($operation->getFilters() as $filter) {
-            $filterParameters = call_user_func($filter->getFilterClass() . '::getDocumentationParameters', $filter);
+            if (!is_subclass_of($filter->getFilterClass(), OpenApiSupportingFilterInterface::class, true)) {
+                continue;
+            }
+
+            $filterParameters = call_user_func([$filter->getFilterClass(), 'getOpenApiParameters'], $filter);
 
             /** @var Parameter $filterParameter */
             foreach ($filterParameters as $filterParameter) {

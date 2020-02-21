@@ -13,7 +13,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 /**
  * Class RangeFilter
  */
-class RangeFilter extends AbstractFilter
+class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     protected const PARAMETER_BETWEEN = 'between';
     protected const PARAMETER_GREATER_THAN = 'gt';
@@ -26,7 +26,7 @@ class RangeFilter extends AbstractFilter
      *
      * @return Parameter[]
      */
-    public static function getDocumentationParameters(ApiFilter $apiFilter): array
+    public static function getOpenApiParameters(ApiFilter $apiFilter): array
     {
         return [
             Parameter::create()
@@ -54,7 +54,7 @@ class RangeFilter extends AbstractFilter
      * @throws InvalidArgumentException
      */
     public function filterProperty(
-        $property,
+        string $property,
         $values,
         QueryInterface $query,
         ApiFilter $apiFilter

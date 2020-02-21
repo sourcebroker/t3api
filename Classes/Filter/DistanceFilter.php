@@ -8,8 +8,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
@@ -19,7 +17,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 /**
  * Class DistanceFilter
  */
-class DistanceFilter extends AbstractFilter
+class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     protected const PARAMETER_LATITUDE = 'lat';
     protected const PARAMETER_LONGITUDE = 'lng';
@@ -33,7 +31,7 @@ class DistanceFilter extends AbstractFilter
      *
      * @return Parameter[]
      */
-    public static function getDocumentationParameters(ApiFilter $apiFilter): array
+    public static function getOpenApiParameters(ApiFilter $apiFilter): array
     {
         return [
             Parameter::create()
@@ -54,7 +52,7 @@ class DistanceFilter extends AbstractFilter
      * @throws UnexpectedTypeException
      */
     public function filterProperty(
-        $property,
+        string $property,
         $values,
         QueryInterface $query,
         ApiFilter $apiFilter
@@ -69,7 +67,7 @@ class DistanceFilter extends AbstractFilter
 
         $tableName = $this->getTableName($query);
         $rootAlias = 'o';
-        $queryBuilder = GeneralUtility::makeInstance(ObjectManager::class)
+        $queryBuilder = $this->getObjectManager()
             ->get(ConnectionPool::class)
             ->getQueryBuilderForTable($tableName);
 

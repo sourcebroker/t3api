@@ -5,7 +5,7 @@ namespace SourceBroker\T3api\Domain\Repository;
 use RuntimeException;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
-use SourceBroker\T3api\Filter\AbstractFilter;
+use SourceBroker\T3api\Filter\FilterInterface;
 use SourceBroker\T3api\Service\StorageService;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -155,7 +155,7 @@ class CommonRepository
         foreach ($apiFilters as $apiFilter) {
             $parameterName = $apiFilter->getParameterName();
 
-            /** @var AbstractFilter $filter */
+            /** @var FilterInterface $filter */
             $filter = $this->objectManager->get($apiFilter->getFilterClass());
             $constraint = $filter->filterProperty(
                 $apiFilter->getProperty(),

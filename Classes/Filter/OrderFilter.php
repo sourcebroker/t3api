@@ -12,7 +12,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 /**
  * Class OrderFilter
  */
-class OrderFilter extends AbstractFilter
+class OrderFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     /**
      * @var array
@@ -26,7 +26,7 @@ class OrderFilter extends AbstractFilter
      *
      * @return Parameter[]
      */
-    public static function getDocumentationParameters(ApiFilter $apiFilter): array
+    public static function getOpenApiParameters(ApiFilter $apiFilter): array
     {
         return [
             Parameter::create()
@@ -40,7 +40,7 @@ class OrderFilter extends AbstractFilter
      * @inheritDoc
      */
     public function filterProperty(
-        $property,
+        string $property,
         $values,
         QueryInterface $query,
         ApiFilter $apiFilter

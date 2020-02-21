@@ -3,10 +3,10 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Filter;
 
 use Doctrine\DBAL\FetchMode;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
@@ -16,15 +16,29 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 /**
  * Class SearchFilter
  */
-class SearchFilter extends AbstractFilter
+class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
+    /**
+     * @param ApiFilter $apiFilter
+     *
+     * @return Parameter[]
+     */
+    public static function getOpenApiParameters(ApiFilter $apiFilter): array
+    {
+        return [
+            Parameter::create()
+                ->name($apiFilter->getParameterName())
+                ->schema(Schema::string()),
+        ];
+    }
+
     /**
      * @inheritDoc
      * @throws InvalidQueryException
      * @throws UnexpectedTypeException
      */
     public function filterProperty(
-        $property,
+        string $property,
         $values,
         QueryInterface $query,
         ApiFilter $apiFilter
@@ -75,7 +89,7 @@ class SearchFilter extends AbstractFilter
         $conditions = [];
         $binds = [];
         $rootAlias = 'o';
-        $queryBuilder = GeneralUtility::makeInstance(ObjectManager::class)
+        $queryBuilder = $this->getObjectManager()
             ->get(ConnectionPool::class)
             ->getQueryBuilderForTable($tableName);
 
