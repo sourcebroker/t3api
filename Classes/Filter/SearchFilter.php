@@ -60,7 +60,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
                     $property,
                     $values,
                     $query,
-                    (bool)$apiFilter->getArgument('withQueryExpansion')
+                    $apiFilter
                 );
 
                 return $query->in('uid', $ids + [0]);
@@ -74,21 +74,23 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
      * @param string $property
      * @param array $values
      * @param QueryInterface $query
-     * @param bool $queryExpansion
+     * @param ApiFilter $apiFilter
      *
      * @throws UnexpectedTypeException
-     * @return array
+     * @return int[]
      */
     protected function matchAgainstFindIds(
         string $property,
         array $values,
         QueryInterface $query,
-        bool $queryExpansion = false
+        ApiFilter $apiFilter
     ): array {
         $tableName = $this->getTableName($query);
         $conditions = [];
         $binds = [];
         $rootAlias = 'o';
+        $queryExpansion = (bool)$apiFilter->getArgument('withQueryExpansion');
+
         $queryBuilder = $this->getObjectManager()
             ->get(ConnectionPool::class)
             ->getQueryBuilderForTable($tableName);
@@ -107,7 +109,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
                 'MATCH(%s) AGAINST (%s IN NATURAL LANGUAGE MODE %s)',
                 $queryBuilder->quoteIdentifier(
                     $tableAlias . '.' . $this->getObjectManager()->get(DataMapper::class)
-                        ->convertPropertyNameToColumnName($propertyName)
+                        ->convertPropertyNameToColumnName($propertyName, $apiFilter->getFilterClass())
                 ),
                 $key,
                 $queryExpansion ? ' WITH QUERY EXPANSION ' : ''

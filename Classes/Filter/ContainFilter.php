@@ -43,7 +43,8 @@ class ContainFilter extends AbstractFilter implements OpenApiSupportingFilterInt
         $ids = $this->findContainingIds(
             $property,
             $values,
-            $query
+            $query,
+            $apiFilter
         );
 
         return $query->in('uid', $ids + [0]);
@@ -53,13 +54,15 @@ class ContainFilter extends AbstractFilter implements OpenApiSupportingFilterInt
      * @param string $property
      * @param array $values
      * @param QueryInterface $query
+     * @param ApiFilter $apiFilter
      * @throws UnexpectedTypeException
      * @return int[]
      */
     protected function findContainingIds(
         string $property,
         array $values,
-        QueryInterface $query
+        QueryInterface $query,
+        ApiFilter $apiFilter
     ): array {
         $tableName = $this->getTableName($query);
         $conditions = [];
@@ -82,7 +85,7 @@ class ContainFilter extends AbstractFilter implements OpenApiSupportingFilterInt
                 $queryBuilder->createNamedParameter($value),
                 $queryBuilder->quoteIdentifier(
                     $tableAlias . '.' . $this->getObjectManager()->get(DataMapper::class)
-                        ->convertPropertyNameToColumnName($propertyName)
+                        ->convertPropertyNameToColumnName($propertyName, $apiFilter->getFilterClass())
                 )
             );
         }

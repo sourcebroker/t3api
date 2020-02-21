@@ -88,8 +88,8 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
         }
 
         $dataMapper = $this->getObjectManager()->get(DataMapper::class);
-        $latColumn = $dataMapper->convertPropertyNameToColumnName($latPropertyName);
-        $lngColumn = $dataMapper->convertPropertyNameToColumnName($lngPropertyName);
+        $latColumn = $dataMapper->convertPropertyNameToColumnName($latPropertyName, $apiFilter->getFilterClass());
+        $lngColumn = $dataMapper->convertPropertyNameToColumnName($lngPropertyName, $apiFilter->getFilterClass());
 
         $ids = $queryBuilder
             ->select($rootAlias . '.uid')
