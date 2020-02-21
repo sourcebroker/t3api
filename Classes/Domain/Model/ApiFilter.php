@@ -57,6 +57,14 @@ class ApiFilter
         /** @var string|FilterInterface $filterClass */
         $filterClass = $apiFilterAnnotation->getFilterClass();
 
+        $arguments = $apiFilterAnnotation->getArguments();
+        if (property_exists($filterClass, 'defaultArguments')) {
+            if (!is_array($filterClass::$defaultArguments)) {
+                throw new \InvalidArgumentException(sprintf('%s::$defaultArguments has to be an array', $filterClass), 1582290496996);
+            }
+            $arguments = array_merge($filterClass::$defaultArguments, $arguments);
+        }
+
         // In case when properties are not determined we still want to register filter.
         // Needed e.g. in `\SourceBroker\T3api\Filter\DistanceFilter` which is not based on single property
         //    and properties are determined inside of arguments.
@@ -70,7 +78,7 @@ class ApiFilter
                 $apiFilterAnnotation->getFilterClass(),
                 $property,
                 $strategy,
-                array_merge($filterClass::$defaultArguments, $apiFilterAnnotation->getArguments())
+                $arguments
             );
         }
 
