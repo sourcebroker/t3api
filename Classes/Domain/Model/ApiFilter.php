@@ -56,8 +56,15 @@ class ApiFilter
     {
         /** @var string|FilterInterface $filterClass */
         $filterClass = $apiFilterAnnotation->getFilterClass();
-        $instances = [];
 
+        // In case when properties are not determined we still want to register filter.
+        // Needed e.g. in `\SourceBroker\T3api\Filter\DistanceFilter` which is not based on single property
+        //    and properties are determined inside of arguments.
+        if (empty($apiFilterAnnotation->getProperties())) {
+            return [new static($apiFilterAnnotation->getFilterClass(), '', '', $arguments)];
+        }
+
+        $instances = [];
         foreach ($apiFilterAnnotation->getProperties() as $property => $strategy) {
             $instances[] = new static(
                 $apiFilterAnnotation->getFilterClass(),
