@@ -43,7 +43,7 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
                     function ($fileReference) use ($type) {
                         return $this->processSingleImage($fileReference, $type);
                     },
-                    $fileReference instanceof Traversable ? iterator_to_array($fileReference) : $fileReference,
+                    $fileReference instanceof Traversable ? iterator_to_array($fileReference) : $fileReference
                 )
             );
         }

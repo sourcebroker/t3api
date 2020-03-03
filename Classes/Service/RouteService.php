@@ -21,6 +21,10 @@ class RouteService implements SingletonInterface
      */
     public static function getApiBasePath(): string
     {
+        if (version_compare(TYPO3_branch, '9.5', '<')) {
+            return '_api';
+        }
+
         return trim(
             self::getApiRouteEnhancer()['basePath'] ?? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'],
             '/'
@@ -70,6 +74,10 @@ class RouteService implements SingletonInterface
      */
     protected static function getDefaultLanguageBasePath(): string
     {
+        if (version_compare(TYPO3_branch, '9.4', '<')) {
+            return '/';
+        }
+
         return self::getSite()->getDefaultLanguage()->getBase()->getPath();
     }
 
