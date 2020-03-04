@@ -9,7 +9,13 @@ call_user_func(
         }
 
         if (version_compare(TYPO3_branch, '9.5', '<')) {
-            if (\TYPO3\CMS\Core\Utility\StringUtility::beginsWith($_SERVER['REQUEST_URI'], '/_api')) {
+            if (
+                $_SERVER['REQUEST_URI'] === '/_api'
+                || \TYPO3\CMS\Core\Utility\StringUtility::beginsWith($_SERVER['REQUEST_URI'], '/_api/')
+            ) {
+                $_SERVER['T3API_REQUEST_URI'] = $_SERVER['REQUEST_URI'];
+                $_GET['type'] = 1583185521180;
+                $_SERVER['REQUEST_URI'] = '/?type=1583185521180';
                 define('IS_T3API_LEGACY_REQUEST', true);
             }
         }
@@ -77,5 +83,22 @@ call_user_func(
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['createHashBase']['t3api'] =
             \SourceBroker\T3api\Hook\EnrichHashBase::class . '->init';
+
+        if (version_compare(TYPO3_branch, '9.5', '<')) {
+            // since version 9.0.0 registration of loader for doctrine's annotation registry is done in TYPO3 core bootstrap
+            /** @var \Composer\Autoload\ClassLoader $loader */
+            $loader = require PATH_site . 'vendor/autoload.php';
+            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('inject');
+            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('transient');
+            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('lazy');
+            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('validate');
+            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('cascade');
+            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('ignorevalidation');
+            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('cli');
+            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('flushesCaches');
+            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('uuid');
+            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('identity');
+            \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
+        }
     }
 );

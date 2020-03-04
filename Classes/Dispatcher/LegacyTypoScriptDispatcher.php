@@ -62,7 +62,7 @@ class LegacyTypoScriptDispatcher extends AbstractDispatcher
         try {
             // @todo add multilanguage support
 //            $this->setLanguage();
-            $request = Request::createFromGlobals();
+            $request = $this->createRequest();
             $context = (new RequestContext())->fromRequest($request);
             $matchedRoute = null;
 
@@ -179,5 +179,12 @@ class LegacyTypoScriptDispatcher extends AbstractDispatcher
         }
         echo $response->getBody()->__toString();
         die();
+    }
+
+    protected function createRequest(): Request
+    {
+        $_SERVER['REQUEST_URI'] = $_SERVER['T3API_REQUEST_URI'];
+        unset($_GET['typ3']);
+        return Request::createFromGlobals();
     }
 }

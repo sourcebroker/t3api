@@ -27,7 +27,7 @@ class HydraCollectionResponse extends AbstractCollectionResponse
                     Schema::string('hydra:prev')->description('URI to previous page'),
                     Schema::string('hydra:next')->description('URI to next page'),
                     Schema::array('hydra:pages')->items(Schema::string())->description('URIs to all pages'),
-                    Schema::number('hydra:page')->description('Number of current page'),
+                    Schema::number('hydra:page')->description('Number of current page')
                 ),
                 Schema::object('hydra:search')->properties(
                     Schema::string('hydra:template'),
