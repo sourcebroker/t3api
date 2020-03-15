@@ -142,7 +142,7 @@ class CommonRepository
      *
      * @return QueryInterface
      */
-    public function findFiltered(array $apiFilters, Request $request)
+    public function findFiltered(array $apiFilters, Request $request): QueryInterface
     {
         parse_str($request->getQueryString() ?? '', $queryParams);
 

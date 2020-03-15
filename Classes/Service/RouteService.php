@@ -22,7 +22,7 @@ class RouteService implements SingletonInterface
     public static function getApiBasePath(): string
     {
         if (version_compare(TYPO3_branch, '9.5', '<')) {
-            return '_api';
+            return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'];
         }
 
         return trim(

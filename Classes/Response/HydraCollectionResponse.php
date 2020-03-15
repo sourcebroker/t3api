@@ -43,22 +43,6 @@ class HydraCollectionResponse extends AbstractCollectionResponse
 
     /**
      * @return array
-     */
-    public function getMembers(): array
-    {
-        return parent::getMembers();
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalItems(): int
-    {
-        return parent::getTotalItems();
-    }
-
-    /**
-     * @return array
      *
      * @todo move $viewData to separate class
      */

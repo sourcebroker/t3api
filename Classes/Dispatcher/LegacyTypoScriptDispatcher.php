@@ -53,7 +53,7 @@ class LegacyTypoScriptDispatcher extends AbstractDispatcher
     /**
      * @param HttpFoundationFactory $httpFoundationFactory
      */
-    public function injectHttpFoundationFactory(HttpFoundationFactory $httpFoundationFactory)
+    public function injectHttpFoundationFactory(HttpFoundationFactory $httpFoundationFactory): void
     {
         $this->httpFoundationFactory = $httpFoundationFactory;
     }
