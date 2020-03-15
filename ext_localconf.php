@@ -8,18 +8,6 @@ call_user_func(
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::ENHANCER_NAME] = \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::class;
         }
 
-        if (version_compare(TYPO3_branch, '9.5', '<')) {
-            if (
-                $_SERVER['REQUEST_URI'] === '/_api'
-                || \TYPO3\CMS\Core\Utility\StringUtility::beginsWith($_SERVER['REQUEST_URI'], '/_api/')
-            ) {
-                $_SERVER['T3API_REQUEST_URI'] = $_SERVER['REQUEST_URI'];
-                $_GET['type'] = 1583185521180;
-                $_SERVER['REQUEST_URI'] = '/?type=1583185521180';
-                define('IS_T3API_LEGACY_REQUEST', true);
-            }
-        }
-
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] = '_api';
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader'] = 'X-Locale';
 
@@ -85,9 +73,23 @@ call_user_func(
             \SourceBroker\T3api\Hook\EnrichHashBase::class . '->init';
 
         if (version_compare(TYPO3_branch, '9.5', '<')) {
+            if (
+                $_SERVER['REQUEST_URI'] === '/' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath']
+                || \TYPO3\CMS\Core\Utility\StringUtility::beginsWith($_SERVER['REQUEST_URI'], '/' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] . '/')
+            ) {
+                $headerKey = 'HTTP_' . strtoupper(str_replace('-', '_', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']));
+                $languageUid = $_SERVER[$headerKey] ? (int)$_SERVER[$headerKey] : 0;
+                \SourceBroker\T3api\Dispatcher\LegacyTypoScriptDispatcher::storeRequest();
+                $_SERVER['REQUEST_URI'] = sprintf('/?type=1583185521180&L=%s', $languageUid);
+                $_GET['type'] = 1583185521180;
+                $_GET['L'] = $languageUid;
+                define('IS_T3API_LEGACY_REQUEST', true);
+            }
+
             // since version 9.0.0 registration of loader for doctrine's annotation registry is done in TYPO3 core bootstrap
             /** @var \Composer\Autoload\ClassLoader $loader */
             $loader = require PATH_site . 'vendor/autoload.php';
+            \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
             \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('inject');
             \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('transient');
             \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('lazy');
@@ -98,7 +100,6 @@ call_user_func(
             \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('flushesCaches');
             \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('uuid');
             \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('identity');
-            \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
         }
     }
 );

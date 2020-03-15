@@ -17,19 +17,18 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Throwable;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\LanguageAspectFactory;
-use TYPO3\CMS\Core\Http\NullResponse;
 use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Core\Http\SelfEmittableStreamInterface;
-use TYPO3\CMS\Core\Routing\RouteNotFoundException;
-use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
  * @deprecated Will be removed when support for TYPO3 <= 9.4 is dropped
  */
 class LegacyTypoScriptDispatcher extends AbstractDispatcher
 {
+    /**
+     * @var Request
+     */
+    protected static $request;
+
     /**
      * @var ResponseInterface
      */
@@ -39,6 +38,11 @@ class LegacyTypoScriptDispatcher extends AbstractDispatcher
      * @var HttpFoundationFactory
      */
     protected $httpFoundationFactory;
+
+    public static function storeRequest(): void
+    {
+        self::$request = Request::createFromGlobals();
+    }
 
     /**
      * Bootstrap constructor.
@@ -60,9 +64,7 @@ class LegacyTypoScriptDispatcher extends AbstractDispatcher
     public function process(): ResponseInterface
     {
         try {
-            // @todo add multilanguage support
-//            $this->setLanguage();
-            $request = $this->createRequest();
+            $request = self::$request;
             $context = (new RequestContext())->fromRequest($request);
             $matchedRoute = null;
 
@@ -127,31 +129,6 @@ class LegacyTypoScriptDispatcher extends AbstractDispatcher
     }
 
     /**
-     * Sets language according to language identifier sent in `languageHeader`
-     *
-     * @return void
-     */
-    protected function setLanguage(): void
-    {
-        if (!$GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface) {
-            throw new RuntimeException(
-                sprintf('`TYPO3_REQUEST` is not an instance of `%s`', ServerRequestInterface::class),
-                1580483236906
-            );
-        }
-
-        $languageHeader = $GLOBALS['TYPO3_REQUEST']->getHeader($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']);
-        $languageUid = (int)(!empty($languageHeader) ? array_shift($languageHeader) : 0);
-        $language = $this->objectManager->get(SiteFinder::class)
-            ->getSiteByIdentifier('main')
-            ->getLanguageById($languageUid);
-        $this->objectManager->get(Context::class)
-            ->setAspect('language', LanguageAspectFactory::createFromSiteLanguage($language));
-
-        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute('language', $language);
-    }
-
-    /**
      * @see \TYPO3\CMS\Core\Http\AbstractApplication::sendResponse (in TYPO3 >= 9.2)
      */
     protected function sendResponseAndDie(): void
@@ -179,12 +156,5 @@ class LegacyTypoScriptDispatcher extends AbstractDispatcher
         }
         echo $response->getBody()->__toString();
         die();
-    }
-
-    protected function createRequest(): Request
-    {
-        $_SERVER['REQUEST_URI'] = $_SERVER['T3API_REQUEST_URI'];
-        unset($_GET['typ3']);
-        return Request::createFromGlobals();
     }
 }
