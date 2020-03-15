@@ -141,8 +141,6 @@ class HydraCollectionResponse extends AbstractCollectionResponse
      */
     protected function getCurrentQueryStringWithOverrideParams(array $overrideParams): string
     {
-        parse_str($_SERVER['QUERY_STRING'], $qsParams);
-
-        return http_build_query(array_merge($qsParams, $overrideParams));
+        return http_build_query(array_merge($this->request->query->all(), $overrideParams));
     }
 }
