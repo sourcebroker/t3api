@@ -56,7 +56,7 @@ class ApiFilter
                     'The filter class `%s` does not extends `%s`.%s',
                     $options['value'],
                     FilterInterface::class,
-                    substr_count($options['value'], '\\') < 2 ? ' Did you forget to use `use` statement?' : '',
+                    substr_count($options['value'], '\\') < 2 ? ' Did you forget to use `use` statement?' : ''
                 ),
                 1581882087932
             );
