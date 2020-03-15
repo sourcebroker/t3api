@@ -57,8 +57,7 @@ class Bootstrap extends AbstractDispatcher
     /**
      * @param ServerRequestInterface $request
      *
-     * @throws Exception
-     * @throws RouteNotFoundException
+     * @throws Throwable
      * @return Response
      */
     public function process(ServerRequestInterface $request): ResponseInterface
@@ -78,11 +77,15 @@ class Bootstrap extends AbstractDispatcher
             $output = $this->serializerService->serialize($exception);
             $this->response = $this->response->withStatus($exception->getStatusCode(), $exception->getTitle());
         } catch (Throwable $throwable) {
-            $output = $this->serializerService->serialize($throwable);
-            $this->response = $this->response->withStatus(
-                SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR,
-                SymfonyResponse::$statusTexts[SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR]
-            );
+            try {
+                $output = $this->serializerService->serialize($throwable);
+                $this->response = $this->response->withStatus(
+                    SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR,
+                    SymfonyResponse::$statusTexts[SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR]
+                );
+            } catch (Throwable $throwableSerializationException) {
+                throw $throwable;
+            }
         }
 
         $this->response->getBody()->write($output);
