@@ -36,7 +36,7 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
         $objectStorage,
         array $type,
         SerializationContext $context
-    ) {
+    ): array {
         $type['name'] = 'array';
 
         $context->stopVisiting($objectStorage);
@@ -59,7 +59,7 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
         $data,
         array $type,
         DeserializationContext $context
-    ) {
+    ): ObjectStorage {
         $objectStorage = new ObjectStorage();
 
         if (empty($data)) {

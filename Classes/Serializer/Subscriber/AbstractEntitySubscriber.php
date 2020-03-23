@@ -88,7 +88,8 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
     {
         // Changes type to the custom one to make it possible to handle data with serializer handler
         if (
-            is_subclass_of($event->getType()['name'], AbstractDomainObject::class)
+            !isset($event->getType()['params']['_passDomainObjectTransport'])
+            && is_subclass_of($event->getType()['name'], AbstractDomainObject::class)
             && $event->getContext()->getDepth() > 1
         ) {
             $event->setType(
