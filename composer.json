@@ -14,9 +14,9 @@
     "require": {
         "php": "^7.2",
         "ext-json": "*",
-        "typo3/cms-core": "^8.7",
-        "typo3/cms-extbase": "^8.7",
-        "typo3/cms-frontend": "^8.7",
+        "typo3/cms-core": "^8.7 || ^9.5",
+        "typo3/cms-extbase": "^8.7 || ^9.5",
+        "typo3/cms-frontend": "^8.7 || ^9.5",
         "jms/serializer": "^3.1",
         "symfony/routing": "^4.1",
         "symfony/http-foundation": "^4.1",
