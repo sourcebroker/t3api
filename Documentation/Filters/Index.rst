@@ -266,18 +266,15 @@ ContainFilter
 DistanceFilter
 ===============
 
-As distance calculation depends on two fields (latitude and longitude) there are two conditions to met during
-declaration:
-1. `properties` should be set to single item with `null` value
-2. `parameterName` is required (because `properties` is not declared and can not be used as parameter name)
+Distance filter allows to filter map points points by radius. Map points kept in the database needs to contain latitude and longitude to use this filter.
 
-@todo describe allowed arguments and their purpose:
-- `latProperty` (string) - property which holds latitude
-- `lngProperty` (string) - property which holds longitude
-- `unit` (ENUM: "mi", "km"; default "km") unit of the radius
-- `radius` float/int radius to filter by; if `allowClientRadius` is set to true, then used as default value. If
-`radius` argument is not set and client did not specify any value then value `100` is used
-- `allowClientRadius` (bool; default `false`) - allow
+Configuration for distance filter looks a little bit different than for other build-in filter. Because distance filter is not based on single field it should not contain ``properties`` definition. Instead of that it is needed to specify which model properties contain latitude and longitude in ``arguments``. Moreover, as ``properties`` is not defined, ``parameterName`` is required. Beside default values in ``arguments``, distance filter accepts also:
+
+- ``latProperty`` (``string``) - Name of the property which holds latitude
+- ``lngProperty`` (``string``) - name of the property which holds longitude
+- ``unit`` (ENUM: "mi", "km"; default "km") - Unit of the radius
+- ``radius`` (``float/int``; default ``100``) - Radius to filter in; if ``allowClientRadius`` is set to ``true``, then used as default value.
+- ``allowClientRadius`` (``bool``; default ``false``) - Set to ``true`` allow to change the radius from GET parameter.
 
 .. code-block:: php
 
@@ -286,7 +283,6 @@ declaration:
     /**
      * @T3api\ApiFilter(
      *     DistanceFilter::class,
-     *     properties={null},
      *     arguments={
      *          "parameterName"="position",
      *          "latProperty"="gpsLatitude",
@@ -348,10 +344,10 @@ It is super easy to create custom filters which will match your specific require
 Custom filters has to implement interface ``\SourceBroker\T3api\Filter\FilterInterface`` and contain one public method ``filterProperty``.
 Method ``filterProperty`` accepts 4 arguments:
 
-- $property - ``string`` - Name of the property to filter by.
-- $values - ``mixed`` - Values passed in request.
-- $query - ``TYPO3\CMS\Extbase\Persistence\QueryInterface`` - Instance of Extbase's query.
-- $apiFilter - ``SourceBroker\T3api\Domain\Model\ApiFilter`` - Instance of T3api's filter.
+- $property (``string``) - Name of the property to filter by.
+- $values (``mixed``) - Values passed in request.
+- $query (``TYPO3\CMS\Extbase\Persistence\QueryInterface``) - Instance of Extbase's query.
+- $apiFilter (``SourceBroker\T3api\Domain\Model\ApiFilter``) - Instance of T3api's filter.
 
 .. important::
     Method ``filterProperty`` has to return ``null`` or instance of ``TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface``.
