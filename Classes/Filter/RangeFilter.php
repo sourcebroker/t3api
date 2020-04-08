@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Filter;
 
+use DateTime;
+use Exception;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use InvalidArgumentException;
@@ -61,7 +63,7 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
     ): ?ConstraintInterface {
         $constraints = [];
         foreach ((array)$values as $operator => $value) {
-            $constraint = $this->getConstraintForSingleItem($property, $operator, $value, $query);
+            $constraint = $this->getConstraintForSingleItem($property, $operator, $value, $query, $apiFilter);
 
             if ($constraint) {
                 $constraints[] = $constraint;
@@ -78,39 +80,61 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
     /**
      * @param string $property
      * @param string $operator
-     * @param $value
+     * @param mixed $value
      * @param QueryInterface $query
      *
+     * @param ApiFilter $apiFilter
      * @throws InvalidQueryException
+     * @throws Exception
      * @return ConstraintInterface|null
      */
     protected function getConstraintForSingleItem(
         string $property,
         string $operator,
         $value,
-        QueryInterface $query
+        QueryInterface $query,
+        ApiFilter $apiFilter
     ): ?ConstraintInterface {
         switch ($operator) {
             case self::PARAMETER_BETWEEN:
                 [$valueMin, $valueMax] = explode('..', $value);
 
                 return $query->logicalAnd([
-                    $query->greaterThanOrEqual($property, $valueMin),
-                    $query->lessThanOrEqual($property, $valueMax),
+                    $query->greaterThanOrEqual($property, $this->getValue($valueMin, $apiFilter)),
+                    $query->lessThanOrEqual($property, $this->getValue($valueMax, $apiFilter)),
                 ]);
             case self::PARAMETER_GREATER_THAN:
-                return $query->greaterThan($property, $value);
+                return $query->greaterThan($property, $this->getValue($value, $apiFilter));
             case self::PARAMETER_GREATER_THAN_OR_EQUAL:
-                return $query->greaterThanOrEqual($property, $value);
+                return $query->greaterThanOrEqual($property, $this->getValue($value, $apiFilter));
             case self::PARAMETER_LESS_THAN:
-                return $query->lessThan($property, $value);
+                return $query->lessThan($property, $this->getValue($value, $apiFilter));
             case self::PARAMETER_LESS_THAN_OR_EQUAL:
-                return $query->lessThanOrEqual($property, $value);
+                return $query->lessThanOrEqual($property, $this->getValue($value, $apiFilter));
             default:
                 throw new InvalidArgumentException(
                     sprintf('Unknown operator of range filter `%s`', $operator),
                     1560929019063
                 );
+        }
+    }
+
+    /**
+     * @param $value
+     * @param ApiFilter $apiFilter
+     * @throws Exception
+     * @return DateTime|int
+     */
+    protected function getValue($value, ApiFilter $apiFilter)
+    {
+        switch (strtolower($apiFilter->getStrategy())) {
+            case 'datetime':
+                return new DateTime($value);
+            case 'int':
+            case 'integer':
+            case 'number':
+            default:
+                return (int)$value;
         }
     }
 }
