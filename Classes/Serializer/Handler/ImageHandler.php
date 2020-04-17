@@ -70,6 +70,8 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
         $file = $file->process(ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, [
             'width' => $type['params'][0] ?? '',
             'height' => $type['params'][1] ?? '',
+            'maxWidth' => $type['params'][2] ?? '',
+            'maxHeight' => $type['params'][3] ?? '',
         ]);
 
         return GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $file->getPublicUrl();

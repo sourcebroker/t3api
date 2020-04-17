@@ -22,11 +22,21 @@ class Image implements TypeInterface
     public $height;
 
     /**
+     * @var mixed
+     */
+    public $maxWidth;
+
+    /**
+     * @var mixed
+     */
+    public $maxHeight;
+
+    /**
      * @return array
      */
     public function getParams(): array
     {
-        return [$this->width, $this->height];
+        return [$this->width, $this->height, $this->maxWidth, $this->maxHeight];
     }
 
     /**
