@@ -15,8 +15,11 @@ use SourceBroker\T3api\Exception\MethodNotAllowedException;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Exception\ResourceNotFoundException;
 use SourceBroker\T3api\Exception\RouteNotFoundException;
+use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use SourceBroker\T3api\Security\OperationAccessChecker;
+use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
+use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Service\FileUploadService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\ValidationService;
@@ -29,6 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\File;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher as SignalSlotDispatcher;
 
@@ -150,15 +154,21 @@ abstract class AbstractDispatcher
 
         return $result === null
             ? ''
-            : $this->serializerService->serializeOperation($arguments['operation'], $arguments['result']);
+            : $this->serializerService->serialize(
+                $arguments['result'],
+                SerializationContextBuilder::createFromOperation($operation, $request)
+            );
     }
 
     /**
      * @param ItemOperation $operation
      * @param int $uid
      * @param Request $request
-     *
-     * @throws Exception
+     * @throws MethodNotAllowedException
+     * @throws OperationNotAllowedException
+     * @throws ResourceNotFoundException
+     * @throws ValidationException
+     * @throws UnknownObjectException
      * @return AbstractDomainObject
      */
     protected function processItemOperation(
@@ -215,9 +225,10 @@ abstract class AbstractDispatcher
      * @param CollectionOperation $operation
      * @param Request $request
      * @param ResponseInterface $response
-     *
-     * @throws \TYPO3\CMS\Extbase\Validation\Exception
-     * @throws Exception
+     * @throws MethodNotAllowedException
+     * @throws OperationNotAllowedException
+     * @throws ValidationException
+     * @throws \TYPO3\CMS\Core\Resource\Exception
      * @return AbstractDomainObject|AbstractCollectionResponse
      */
     protected function processCollectionOperation(
@@ -263,8 +274,7 @@ abstract class AbstractDispatcher
                 $this->objectManager->get(PersistenceManager::class)->persistAll();
             }
 
-            /** @scrutinizer ignore-call */
-            $response = $response->withStatus(201);
+            $response = $response ? $response->withStatus(201) : $response;
 
             return $object;
         }
@@ -276,16 +286,19 @@ abstract class AbstractDispatcher
      * @param AbstractOperation $operation
      * @param Request $request
      * @param AbstractDomainObject|null $targetObject
-     *
-     * @throws Exception
+     * @throws OperationNotAllowedException
      * @return AbstractDomainObject
      */
     protected function deserializeOperation(
         AbstractOperation $operation,
         Request $request,
         ?AbstractDomainObject $targetObject = null
-    ) {
-        $object = $this->serializerService->deserializeOperation($operation, $request->getContent(), $targetObject);
+    ): AbstractDomainObject {
+        $object = $this->serializerService->deserialize(
+            $request->getContent(),
+            $operation->getApiResource()->getEntity(),
+            DeserializationContextBuilder::createFromOperation($operation, $request, $targetObject)
+        );
 
         if (!OperationAccessChecker::isGrantedPostDenormalize($operation, ['object' => $object])) {
             throw new OperationNotAllowedException($operation, 1574782843388);

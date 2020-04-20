@@ -72,6 +72,13 @@ call_user_func(
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['createHashBase']['t3api'] =
             \SourceBroker\T3api\Hook\EnrichHashBase::class . '->init';
 
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
+            \SourceBroker\T3api\Serializer\ContextBuilder\ContextBuilderInterface::class,
+            \SourceBroker\T3api\Serializer\ContextBuilder\ContextBuilderInterface::SIGNAL_CUSTOMIZE_SERIALIZER_CONTEXT_ATTRIBUTES,
+            \SourceBroker\T3api\Slot\AddHydraCollectionResponseSerializationGroup::class,
+            'execute'
+        );
+
         if (version_compare(TYPO3_branch, '9.5', '<')) {
             if (
                 $_SERVER['REQUEST_URI'] === '/' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath']

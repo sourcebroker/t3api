@@ -160,11 +160,11 @@ abstract class AbstractOperation
     }
 
     /**
-     * @return string[]
+     * @return array
      */
-    public function getContextGroups(): array
+    public function getNormalizationContext(): array
     {
-        return $this->normalizationContext['groups'] ?? [];
+        return $this->normalizationContext;
     }
 
     /**

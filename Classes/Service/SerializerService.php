@@ -24,9 +24,10 @@ use Metadata\Cache\FileCache;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
 use RuntimeException;
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Serializer\Accessor\AccessorStrategy;
 use SourceBroker\T3api\Serializer\Construction\ObjectConstructorChain;
+use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
+use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Utility\FileUtility;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -112,82 +113,33 @@ class SerializerService implements SingletonInterface
 
     /**
      * @param mixed $result
-     *
+     * @param SerializationContext|null $serializationContext
      * @return string
      */
-    public function serialize($result): string
+    public function serialize($result, SerializationContext $serializationContext = null): string
     {
         return $this->getSerializerBuilder()
-            ->setSerializationContextFactory(function () {
-                return $this->getSerializationContext();
+            ->setSerializationContextFactory(static function () use ($serializationContext) {
+                return $serializationContext ?? SerializationContextBuilder::create();
             })
             ->build()
             ->serialize($result, 'json');
     }
 
     /**
-     * @param AbstractOperation $operation
-     * @param mixed $result
-     *
-     * @return string
-     */
-    public function serializeOperation(AbstractOperation $operation, $result): string
-    {
-        return $this->getSerializerBuilder()
-            ->setSerializationContextFactory(function () use ($operation) {
-                return $this->getSerializationContext($operation->getContextGroups());
-            })
-            ->build()
-            ->serialize(
-                $result,
-                'json'
-            );
-    }
-
-    /**
      * @param string $data
      * @param string $type
-     * @param array $contextAttributes
-     *
+     * @param DeserializationContext|null $deserializationContext
      * @return mixed
      */
-    public function deserialize(string $data, string $type, $contextAttributes = [])
+    public function deserialize(string $data, string $type, DeserializationContext $deserializationContext = null)
     {
         return $this->getSerializerBuilder()
-            ->setDeserializationContextFactory(function () use ($contextAttributes) {
-                return $this->getDeserializationContext([], null, $contextAttributes);
+            ->setDeserializationContextFactory(static function () use ($deserializationContext) {
+                return $deserializationContext ?? DeserializationContextBuilder::create();
             })
             ->build()
-            ->deserialize(
-                $data,
-                $type,
-                'json'
-            );
-    }
-
-    /**
-     * @param AbstractOperation $operation
-     * @param mixed $data
-     * @param mixed $targetObject
-     *
-     * @return mixed
-     */
-    public function deserializeOperation(AbstractOperation $operation, $data, $targetObject = null)
-    {
-        return $this->getSerializerBuilder()
-            ->setDeserializationContextFactory(function () use ($operation, $targetObject) {
-                return $this->getDeserializationContext($operation->getContextGroups(), $targetObject);
-            })
-            ->build()
-            ->deserialize(
-                $data,
-                $operation->getApiResource()->getEntity(),
-                'json',
-                $this->getDeserializationContext(
-                    $operation->getContextGroups(),
-                    $targetObject
-                )
-            );
+            ->deserialize($data, $type, 'json');
     }
 
     /**
@@ -267,52 +219,6 @@ class SerializerService implements SingletonInterface
         } catch (AnnotationException $exception) {
             throw new RuntimeException('Could not create annotation reader for serializer', 1572363525745, $exception);
         }
-    }
-
-    /**
-     * @param array $groups
-     * @return SerializationContext
-     */
-    protected function getSerializationContext(array $groups = []): SerializationContext
-    {
-        $context = SerializationContext::create();
-
-        if (!empty($groups)) {
-            $context->setGroups($groups);
-        }
-
-        return $context
-            ->enableMaxDepthChecks()
-            ->setSerializeNull(true);
-    }
-
-    /**
-     * @param array $groups
-     * @param object $targetObject
-     * @param array $attributes
-     * @return DeserializationContext
-     */
-    protected function getDeserializationContext(
-        array $groups = [],
-        $targetObject = null,
-        array $attributes = []
-    ): DeserializationContext {
-        $context = DeserializationContext::create();
-
-        foreach ($attributes as $attributeName => $attributeValue) {
-            $context->setAttribute($attributeName, $attributeValue);
-        }
-
-        if (!empty($groups)) {
-            $context->setGroups($groups);
-        }
-
-        if (!empty($targetObject)) {
-            $context->setAttribute('target', $targetObject);
-        }
-
-        return $context
-            ->enableMaxDepthChecks();
     }
 
     /**

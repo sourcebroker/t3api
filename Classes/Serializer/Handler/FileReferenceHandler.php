@@ -216,13 +216,12 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
 
         $this->removeExistingFileReference($context);
 
-        $fileReference = $this->serializerService->deserialize(
-            json_encode($data),
-            $type,
-            [
-                'groups' => $context->getAttribute('groups'),
-            ]
-        );
+        // @todo change it to `$context->getNavigator()->accept()` instead of using separate serializer to keep the context and improve performance
+        $deserializationContext = DeserializationContext::create();
+        if ($context->getAttribute('groups')) {
+            $deserializationContext->setGroups($context->getAttribute('groups'));
+        }
+        $fileReference = $this->serializerService->deserialize(json_encode($data, JSON_THROW_ON_ERROR), $type, $deserializationContext);
 
         $fileReference->setOriginalResource(
             $this->resourceFactory->createFileReferenceObject(
