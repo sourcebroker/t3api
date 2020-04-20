@@ -147,6 +147,11 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
             );
         }
 
+        if ($data === 0) {
+            $this->removeExistingFileReference($context);
+            return null;
+        }
+
         $isNew = is_array($data) && empty($data['uid']);
 
         if ($isNew) {

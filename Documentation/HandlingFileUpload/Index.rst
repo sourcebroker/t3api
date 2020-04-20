@@ -15,6 +15,7 @@ To create uploadable resource it is needed to create ``POST`` endpoint for resou
 
 .. code-block:: php
 
+   declare(strict_types=1);
    namespace Vendor\Users\Domain\Model;
 
    use SourceBroker\T3api\Annotation as T3api;
@@ -44,18 +45,17 @@ already exists).
 
 .. code-block:: php
 
+   declare(strict_types=1);
    namespace Vendor\Users\Domain\Model;
 
    use SourceBroker\T3api\Annotation as T3api;
 
    /**
-    * Department
     * @T3api\ApiResource (
     *     collectionOperations={
     *          "post"={
     *              "path"="/files",
     *              "method"="POST",
-    *              "security"="frontend.user.isLoggedIn",
     *          },
     *     },
     *     attributes={
@@ -198,3 +198,120 @@ If you would like to save any other data inside file reference it is needed to e
 
 @todo
 
+Removing single file reference
+===============================
+
+To remove existing file reference it is needed to send value `0`. **Because of extbase and JMS serializer limitations sending `NULL` will not remove existing file reference**. "Extbase limitation" means that existing file references are not removed when persisting empty value instead of file reference object (column for property in entity is cleared but file reference is kept). "JMS serializer limitations" means  that JMS does not allow to apply custom subscribers and handlers when `NULL` is sent.
+
+.. code-block:: php
+
+   declare(strict_types=1);
+   namespace Vendor\User\Domain\Model;
+
+   use SourceBroker\T3api\Annotation as T3api;
+   use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+
+   /**
+    * @T3api\ApiResource (
+    *     itemOperations={
+    *          "patch"={
+    *              "path"="/users/{id}",
+    *              "method"="PATCH",
+    *          }
+    *     },
+    * )
+    */
+
+   class User extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+   {
+       /**
+        * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
+        */
+       protected $avatar = null;
+
+       public function getAvatar(): ?FileReference
+       {
+           return $this->avatar;
+       }
+
+       public function setAvatar(?FileReference $avatar): void
+       {
+           $this->avatar = $avatar;
+       }
+   }
+
+To remove file from model definition above we need to send a JSON payload as follows to ``PATCH`` ``/users/X`` endpoint to remove image.
+
+.. code-block:: json
+
+   {
+      "avatar": 0
+   }
+
+Removing collection file reference
+====================================
+
+To remove collection file reference it is needed to send array with new elements. If array is empty - all elements will be removed.
+
+.. code-block:: php
+
+   declare(strict_types=1);
+   namespace Vendor\News\Domain\Model;
+
+   use SourceBroker\T3api\Annotation as T3api;
+   use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+
+   /**
+    * @T3api\ApiResource (
+    *     itemOperations={
+    *          "patch"={
+    *              "path"="/news/{id}",
+    *              "method"="PATCH",
+    *          },
+    *     }
+    * )
+    */
+   class News extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+   {
+       /**
+        * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
+        */
+       protected $falMedia;
+
+       public function __construct()
+       {
+           $this->falMedia = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+       }
+
+       /**
+        * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+        */
+       public function getFalMedia(): ObjectStorage
+       {
+           return $this->falMedia;
+       }
+
+       /**
+        * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $falMedia
+        */
+       public function setFalMedia(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $falMedia): void
+       {
+           $this->falMedia = $falMedia;
+       }
+
+       /***
+        * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $falMedia
+        */
+       public function addFalMedia(\TYPO3\CMS\Extbase\Domain\Model\FileReference $falMedia): void
+       {
+           $this->falMedia->attach($falMedia);
+       }
+   }
+
+To remove files from model definition above we need to send a JSON payload as follows to ``PATCH`` ``/news/X`` endpoint to remove image.
+
+.. code-block:: json
+
+   {
+      "falMedia": []
+   }
