@@ -10,6 +10,7 @@ use RuntimeException;
 use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
+use TYPO3\CMS\Core\Resource\Rendering\RendererRegistry;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
@@ -106,9 +107,14 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
             : $fileReference->getPublicUrl();
         $originalFile = $originalResource->getOriginalFile();
 
-        return [
+        $url = $originalResource->getPublicUrl();
+        if (parse_url($url, PHP_URL_SCHEME) === null) {
+            $url = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $url;
+        }
+
+        $out = [
             'uid' => $fileReference->getUid(),
-            'url' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $originalResource->getPublicUrl(),
+            'url' => $url,
             'file' => [
                 'uid' => $originalFile->getUid(),
                 'name' => $originalFile->getName(),
@@ -116,6 +122,23 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                 'size' => $originalFile->getSize(),
             ],
         ];
+
+        // TODO: move to some signal/slot
+        if (preg_match('#video/.*#', $originalFile->getMimeType())) {
+            $fileRenderer = RendererRegistry::getInstance()->getRenderer($originalFile);
+            if ($fileRenderer !== null && preg_match(
+                    '/src="([^"]+)"/',
+                    $fileRenderer->render($originalFile, 1, 1),
+                    $match
+                )) {
+                $urlEmbed = $match[1];
+                if (parse_url($urlEmbed, PHP_URL_SCHEME) === null) {
+                    $urlEmbed = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $urlEmbed;
+                }
+                $out['urlEmbed'] = $urlEmbed;
+            }
+        }
+        return $out;
     }
 
     /**
