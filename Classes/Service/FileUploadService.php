@@ -56,7 +56,7 @@ class FileUploadService implements SingletonInterface
             ->addUploadedFile(
                 [
                     'error' => $uploadedFile->getError(),
-                    'name' => $uploadedFile->getClientOriginalName(),
+                    'name' => $this->getFilename($uploadSettings, $uploadedFile),
                     'size' => $uploadedFile->getSize(),
                     'tmp_name' => $uploadedFile->getPathname(),
                     'type' => $uploadedFile->getMimeType(),
@@ -158,5 +158,40 @@ class FileUploadService implements SingletonInterface
         }
 
         return $uploadFolder;
+    }
+
+    /**
+     * @param UploadSettings $uploadSettings
+     * @param UploadedFile $uploadedFile
+     * @return string
+     */
+    public function getFilename(UploadSettings $uploadSettings, UploadedFile $uploadedFile): string
+    {
+        $replacements['filename'] = $uploadedFile->getClientOriginalName();
+        $replacements['filenameWithoutExtension'] = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+
+        $fileExtension = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_EXTENSION);
+        $replacements['extension'] = $fileExtension !== null ? $fileExtension : '';
+        $replacements['extensionWithDot'] = '.' . $fileExtension;
+
+        if (strpos($uploadSettings->getFilenameMask(), '[contentHash]') !== false) {
+            $replacements['contentHash'] = hash_file(
+                $uploadSettings->getContentHashAlgorithm(),
+                $uploadedFile->getPathname()
+            );
+        }
+        if (strpos($uploadSettings->getFilenameMask(), '[filenameHash]') !== false) {
+            $replacements['filenameHash'] = hash(
+                $uploadSettings->getFilenameHashAlgorithm(),
+                $uploadedFile->getClientOriginalName()
+            );
+        }
+        return preg_replace_callback(
+            "/\\[([A-Za-z0-9_:]+)\\]/",
+            function ($match) use ($replacements) {
+                return $replacements[$match[1]];
+            },
+            $uploadSettings->getFilenameMask()
+        );
     }
 }
