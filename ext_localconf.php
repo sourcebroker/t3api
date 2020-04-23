@@ -81,9 +81,13 @@ call_user_func(
 
         if (version_compare(TYPO3_branch, '9.5', '<')) {
             if (
-                $_SERVER['REQUEST_URI'] === '/' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath']
-                || \TYPO3\CMS\Core\Utility\StringUtility::beginsWith($_SERVER['REQUEST_URI'], '/' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] . '/')
-            ) {
+                php_sapi_name() !== 'cli'
+                && (
+                    $_SERVER['REQUEST_URI'] === ('/' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'])
+                    || \TYPO3\CMS\Core\Utility\StringUtility::beginsWith($_SERVER['REQUEST_URI'],
+                        '/' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] . '/')
+                )
+            ){
                 $headerKey = 'HTTP_' . strtoupper(str_replace('-', '_', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']));
                 $languageUid = $_SERVER[$headerKey] ? (int)$_SERVER[$headerKey] : 0;
                 \SourceBroker\T3api\Dispatcher\LegacyTypoScriptDispatcher::storeRequest();
