@@ -127,7 +127,7 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
      */
     protected function getValue($value, ApiFilter $apiFilter)
     {
-        switch (strtolower($apiFilter->getStrategy())) {
+        switch (strtolower($apiFilter->getStrategy()->getName())) {
             case 'datetime':
                 return new DateTime($value);
             case 'int':

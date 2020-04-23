@@ -39,11 +39,11 @@ class ApiFilterTest extends UnitTestCase
     /**
      * @test
      */
-    public function getStrategyReturnsInitialValueForString()
+    public function getStrategyReturnsInitialValueForApiFilterStrategy()
     {
         self::assertSame(
             'strategy',
-            $this->subject->getStrategy()
+            $this->subject->getStrategy()->getName()
         );
     }
 

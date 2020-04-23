@@ -17,7 +17,7 @@ class ApiFilter
     protected $filterClass;
 
     /**
-     * @var string
+     * @var ApiFilterStrategy
      */
     protected $strategy;
 
@@ -36,14 +36,15 @@ class ApiFilter
      *
      * @param string $filterClass
      * @param string $property
-     * @param string $strategy
+     * @param string|ApiFilterStrategy $strategy
      * @param array $arguments
      */
-    public function __construct(string $filterClass, string $property, string $strategy, array $arguments)
+    public function __construct(string $filterClass, string $property, $strategy, array $arguments)
     {
+
         $this->filterClass = $filterClass;
         $this->property = $property;
-        $this->strategy = $strategy;
+        $this->strategy = new ApiFilterStrategy($strategy);
         $this->arguments = $arguments;
     }
 
@@ -94,9 +95,9 @@ class ApiFilter
     }
 
     /**
-     * @return string
+     * @return ApiFilterStrategy
      */
-    public function getStrategy(): string
+    public function getStrategy(): ?ApiFilterStrategy
     {
         return $this->strategy;
     }

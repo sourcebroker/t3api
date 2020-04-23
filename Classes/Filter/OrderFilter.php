@@ -49,7 +49,7 @@ class OrderFilter extends AbstractFilter implements OpenApiSupportingFilterInter
             return null;
         }
 
-        $defaultDirection = $apiFilter->getStrategy();
+        $defaultDirection = $apiFilter->getStrategy()->getName();
         $direction = strtoupper($values[$property] ?: $defaultDirection);
 
         if (empty($direction)) {

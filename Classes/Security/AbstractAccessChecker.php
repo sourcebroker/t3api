@@ -1,8 +1,8 @@
 <?php
-declare(strict_types=1);
+
+
 namespace SourceBroker\T3api\Security;
 
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\Exception\AspectPropertyNotFoundException;
@@ -11,54 +11,11 @@ use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class OperationAccessChecker
+ * Class AbstractAccessChecker
+ * @package SourceBroker\T3api\Security
  */
-class OperationAccessChecker extends AbstractAccessChecker
+class AbstractAccessChecker
 {
-    /**
-     * @param AbstractOperation $operation
-     * @param array $expressionLanguageVariables
-     *
-     * @return bool
-     */
-    public static function isGranted(AbstractOperation $operation, array $expressionLanguageVariables = []): bool
-    {
-        if (!$operation->getSecurity()) {
-            return true;
-        }
-
-        $resolver = self::getExpressionLanguageResolver();
-        $resolver->expressionLanguageVariables['t3apiOperation'] = $operation;
-        $resolver->expressionLanguageVariables = array_merge(
-            $resolver->expressionLanguageVariables,
-            $expressionLanguageVariables
-        );
-
-        return $resolver->evaluate($operation->getSecurity());
-    }
-
-    /**
-     * @param AbstractOperation $operation
-     * @param array $expressionLanguageVariables
-     *
-     * @return bool
-     */
-    public static function isGrantedPostDenormalize(AbstractOperation $operation, array $expressionLanguageVariables = []): bool
-    {
-        if (!$operation->getSecurityPostDenormalize()) {
-            return true;
-        }
-
-        $resolver = self::getExpressionLanguageResolver();
-        $resolver->expressionLanguageVariables['t3apiOperation'] = $operation;
-        $resolver->expressionLanguageVariables = array_merge(
-            $resolver->expressionLanguageVariables,
-            $expressionLanguageVariables
-        );
-
-        return $resolver->evaluate($operation->getSecurityPostDenormalize());
-    }
-
     /**
      * @return Resolver
      */
@@ -107,4 +64,5 @@ class OperationAccessChecker extends AbstractAccessChecker
 
         return $expressionLanguageResolver;
     }
+
 }

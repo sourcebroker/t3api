@@ -45,7 +45,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
     ): ?ConstraintInterface {
         $values = (array)$values;
 
-        switch ($apiFilter->getStrategy()) {
+        switch ($apiFilter->getStrategy()->getName()) {
             case 'partial':
                 return $query->logicalOr(
                     array_map(
