@@ -170,8 +170,8 @@ class FileUploadService implements SingletonInterface
         $replacements['filename'] = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
 
         $fileExtension = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_EXTENSION);
-        $replacements['extension'] = $fileExtension !== null ? $fileExtension : '';
-        $replacements['extensionWithDot'] = '.' . $fileExtension;
+        $replacements['extension'] = $fileExtension ?? '';
+        $replacements['extensionWithDot'] = $fileExtension ? '.' . $fileExtension : '';
 
         if (strpos($uploadSettings->getFilenameMask(), '[contentHash]') !== false) {
             $replacements['contentHash'] = hash_file(
