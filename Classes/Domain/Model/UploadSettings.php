@@ -39,7 +39,7 @@ class UploadSettings extends AbstractOperationResourceSettings
     /**
      * @var string
      */
-    protected $filenameMask = '[filename]';
+    protected $filenameMask = '[filename][extensionWithDot]';
 
 
     /**

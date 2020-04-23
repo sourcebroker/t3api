@@ -167,8 +167,7 @@ class FileUploadService implements SingletonInterface
      */
     public function getFilename(UploadSettings $uploadSettings, UploadedFile $uploadedFile): string
     {
-        $replacements['filename'] = $uploadedFile->getClientOriginalName();
-        $replacements['filenameWithoutExtension'] = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+        $replacements['filename'] = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
 
         $fileExtension = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_EXTENSION);
         $replacements['extension'] = $fileExtension !== null ? $fileExtension : '';
