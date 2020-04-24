@@ -6,6 +6,7 @@ use RuntimeException;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Filter\FilterInterface;
+use SourceBroker\T3api\Security\FilterAccessChecker;
 use SourceBroker\T3api\Service\StorageService;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -153,6 +154,9 @@ class CommonRepository
 
         /** @var ApiFilter $apiFilter */
         foreach ($apiFilters as $apiFilter) {
+            if (!FilterAccessChecker::isGranted($apiFilter)) {
+                continue;
+            }
             $parameterName = $apiFilter->getParameterName();
 
             /** @var FilterInterface $filter */
