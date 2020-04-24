@@ -35,7 +35,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     ],
                 ],
             ],
-            'Type - Image' => [
+            'Type - Image (with width and height)' => [
                 function () {
                     $image = new Image();
                     $image->width = '800c';
@@ -44,7 +44,18 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     return [$image];
                 },
                 [
-                    'type' => 'Image<"800c","600">',
+                    'type' => 'Image<"800c","600","","">',
+                ],
+            ],
+            'Type - Image (with maxWidth)' => [
+                function () {
+                    $image = new Image();
+                    $image->maxWidth = 450;
+
+                    return [$image];
+                },
+                [
+                    'type' => 'Image<"","","450","">',
                 ],
             ],
             'Type - RecordUri' => [
