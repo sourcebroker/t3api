@@ -1,6 +1,5 @@
 <?php
-
-
+declare(strict_types=1);
 namespace SourceBroker\T3api\Security;
 
 use TYPO3\CMS\Core\Context\Context;
@@ -12,12 +11,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class AbstractAccessChecker
 {
-
     protected static function getExpressionLanguageResolver(): Resolver
     {
         static $expressionLanguageResolver;
 
-        if (is_null($expressionLanguageResolver)) {
+        if ($expressionLanguageResolver === null) {
             $context = GeneralUtility::makeInstance(Context::class);
             try {
                 if ($context->hasAspect('backend.user')) {
@@ -58,5 +56,4 @@ class AbstractAccessChecker
 
         return $expressionLanguageResolver;
     }
-
 }

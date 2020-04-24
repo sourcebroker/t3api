@@ -150,13 +150,10 @@ class CommonRepository
         $query = $this->createQuery();
         $constraintGroups = [];
 
+        $apiFilters = $this->filterGrantedFilters($apiFilters);
         $apiFilters = $this->filterAndSortApiFiltersByQueryParams($apiFilters, $queryParams);
 
-        /** @var ApiFilter $apiFilter */
         foreach ($apiFilters as $apiFilter) {
-            if (!FilterAccessChecker::isGranted($apiFilter)) {
-                continue;
-            }
             $parameterName = $apiFilter->getParameterName();
 
             /** @var FilterInterface $filter */
@@ -191,10 +188,24 @@ class CommonRepository
     }
 
     /**
+     * @param ApiFilter[] $apiFilters
+     * @return ApiFilter[]
+     */
+    protected function filterGrantedFilters(array $apiFilters): array
+    {
+        return array_filter(
+            $apiFilters,
+            static function (ApiFilter $apiFilter) {
+                return FilterAccessChecker::isGranted($apiFilter);
+            }
+        );
+    }
+
+    /**
      * It may be important for some type of filters (e.g. OrderFilter) to apply in specific order.
      * This method ensures that filters are applied in the order which they was requested in $queryParams.
      *
-     * @param array $apiFilters
+     * @param ApiFilter[] $apiFilters
      * @param array $queryParams
      *
      * @return ApiFilter[]

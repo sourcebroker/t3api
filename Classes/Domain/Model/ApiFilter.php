@@ -41,7 +41,6 @@ class ApiFilter
      */
     public function __construct(string $filterClass, string $property, $strategy, array $arguments)
     {
-
         $this->filterClass = $filterClass;
         $this->property = $property;
         $this->strategy = new ApiFilterStrategy($strategy);

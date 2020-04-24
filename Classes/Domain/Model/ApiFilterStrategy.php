@@ -1,6 +1,5 @@
 <?php
-
-
+declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Model;
 
 class ApiFilterStrategy
@@ -32,18 +31,11 @@ class ApiFilterStrategy
         }
     }
 
-
-    /**
-     * @param string $name
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string $condition
-     */
     public function getCondition(): ?string
     {
         return $this->condition;
