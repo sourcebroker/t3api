@@ -10,9 +10,6 @@ use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class OperationAccessChecker
- */
 class OperationAccessChecker extends AbstractAccessChecker
 {
     /**

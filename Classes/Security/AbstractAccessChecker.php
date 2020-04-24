@@ -10,15 +10,9 @@ use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class AbstractAccessChecker
- * @package SourceBroker\T3api\Security
- */
 class AbstractAccessChecker
 {
-    /**
-     * @return Resolver
-     */
+
     protected static function getExpressionLanguageResolver(): Resolver
     {
         static $expressionLanguageResolver;

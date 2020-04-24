@@ -11,18 +11,9 @@ use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class OperationAccessChecker
- */
 class FilterAccessChecker extends AbstractAccessChecker
 {
 
-    /**
-     * @param ApiFilter $filter
-     * @param array $expressionLanguageVariables
-     *
-     * @return bool
-     */
     public static function isGranted(ApiFilter $filter, array $expressionLanguageVariables = []): bool
     {
         if (empty($filter->getStrategy()->getCondition())) {
