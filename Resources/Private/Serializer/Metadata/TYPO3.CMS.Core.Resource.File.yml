@@ -8,5 +8,5 @@ TYPO3\CMS\Core\Resource\File:
       exclude: true
   virtual_properties:
     uid:
-      exp: object.properties.uid
+      exp: object.getProperties()['uid']
       type: integer

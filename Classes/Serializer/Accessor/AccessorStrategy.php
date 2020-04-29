@@ -5,8 +5,11 @@ namespace SourceBroker\T3api\Serializer\Accessor;
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\LogicException;
+use JMS\Serializer\Expression\ExpressionEvaluator;
+use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
@@ -15,10 +18,26 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 class AccessorStrategy implements AccessorStrategyInterface
 {
     /**
+     * @var ExpressionEvaluator
+     */
+    protected $evaluator;
+
+    public function __construct()
+    {
+        $this->evaluator = new ExpressionEvaluator(new ExpressionLanguage());
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getValue(object $object, PropertyMetadata $metadata, SerializationContext $context)
     {
+        if ($metadata instanceof ExpressionPropertyMetadata) {
+            $variables = ['object' => $object, 'context' => $context, 'property_metadata' => $metadata];
+
+            return $this->evaluator->evaluate((string)($metadata->expression), $variables);
+        }
+
         if (null === $metadata->getter) {
             return ObjectAccess::getProperty($object, $metadata->name, false);
         }
