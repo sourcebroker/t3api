@@ -5,7 +5,7 @@ namespace SourceBroker\T3api\Service;
 use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\UploadSettings;
-use Symfony\Bridge\PsrHttpMessage\Factory\UploadedFile;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Resource\Exception;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException;
@@ -187,7 +187,7 @@ class FileUploadService implements SingletonInterface
         }
         return preg_replace_callback(
             "/\\[([A-Za-z0-9_:]+)\\]/",
-            function ($match) use ($replacements) {
+            static function ($match) use ($replacements) {
                 return $replacements[$match[1]];
             },
             $uploadSettings->getFilenameMask()
