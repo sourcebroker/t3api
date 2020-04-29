@@ -11,4 +11,9 @@ TYPO3\CMS\Core\Resource\AbstractFile:
       type: string
     deleted:
       type: bool
-  virtual_properties: {  }
+  virtual_properties:
+    getPublicUrl:
+      type: string
+    absolutePublicUrl:
+      type: string
+      exp: context.getAttribute('TYPO3_SITE_URL')~object.getPublicUrl()

@@ -33,7 +33,7 @@ class TypolinkHandler extends AbstractHandler implements SerializeHandlerInterfa
         array $type,
         SerializationContext $context
     ) {
-        return rtrim(GeneralUtility::getIndpEnv('TYPO3_SITE_URL'), '/')
+        return rtrim($context->getAttribute('TYPO3_SITE_URL'), '/')
             . $this->getContentObjectRenderer()->getTypoLink_URL($typolinkParameter);
     }
 

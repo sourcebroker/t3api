@@ -45,7 +45,7 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
             );
         }
 
-        return rtrim(GeneralUtility::getIndpEnv('TYPO3_SITE_URL'), '/')
+        return rtrim($context->getAttribute('TYPO3_SITE_URL'), '/')
             . $this->getContentObjectRenderer()->getTypoLink_URL(sprintf(
                 't3://record?identifier=%s&uid=%s',
                 $type['params'][0],

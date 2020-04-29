@@ -109,7 +109,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
 
         $url = $originalResource->getPublicUrl();
         if (parse_url($url, PHP_URL_SCHEME) === null) {
-            $url = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $url;
+            $url = $context->getAttribute('TYPO3_SITE_URL') . $url;
         }
 
         $out = [
@@ -133,7 +133,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                 )) {
                 $urlEmbed = $match[1];
                 if (parse_url($urlEmbed, PHP_URL_SCHEME) === null) {
-                    $urlEmbed = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $urlEmbed;
+                    $urlEmbed = $context->getAttribute('TYPO3_SITE_URL') . $urlEmbed;
                 }
                 $out['urlEmbed'] = $urlEmbed;
             }

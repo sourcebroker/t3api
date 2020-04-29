@@ -40,23 +40,24 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
         if (is_iterable($fileReference)) {
             return array_values(
                 array_map(
-                    function ($fileReference) use ($type) {
-                        return $this->processSingleImage($fileReference, $type);
+                    function ($fileReference) use ($type, $context) {
+                        return $this->processSingleImage($fileReference, $type, $context);
                     },
                     $fileReference instanceof Traversable ? iterator_to_array($fileReference) : $fileReference
                 )
             );
         }
 
-        return $this->processSingleImage($fileReference, $type);
+        return $this->processSingleImage($fileReference, $type, $context);
     }
 
     /**
      * @param FileReference|int $fileReference
      * @param array $type
+     * @param SerializationContext $context
      * @return string
      */
-    protected function processSingleImage($fileReference, array $type): string
+    protected function processSingleImage($fileReference, array $type, SerializationContext $context): string
     {
         if (is_int($fileReference)) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -74,6 +75,6 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
             'maxHeight' => $type['params'][3] ?? '',
         ]);
 
-        return GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $file->getPublicUrl();
+        return $context->getAttribute('TYPO3_SITE_URL') . $file->getPublicUrl();
     }
 }
