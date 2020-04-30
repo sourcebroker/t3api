@@ -34,7 +34,7 @@ class ValidationException extends AbstractException implements OpenApiSupporting
                     Schema::object()->properties(
                         Schema::string('propertyPath'),
                         Schema::string('message'),
-                        Schema::integer('code'),
+                        Schema::integer('code')
                     )
                 ),
             ]

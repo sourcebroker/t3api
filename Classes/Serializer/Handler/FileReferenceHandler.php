@@ -221,7 +221,8 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         if ($context->getAttribute('groups')) {
             $deserializationContext->setGroups($context->getAttribute('groups'));
         }
-        $fileReference = $this->serializerService->deserialize(json_encode($data, JSON_THROW_ON_ERROR), $type, $deserializationContext);
+        // Check if `JSON_THROW_ON_ERROR` is defined is needed only for PHP < 7.2, so can be removed when support is dropped
+        $fileReference = $this->serializerService->deserialize(json_encode($data, defined('JSON_THROW_ON_ERROR') ? JSON_THROW_ON_ERROR : 0), $type, $deserializationContext);
 
         $fileReference->setOriginalResource(
             $this->resourceFactory->createFileReferenceObject(
