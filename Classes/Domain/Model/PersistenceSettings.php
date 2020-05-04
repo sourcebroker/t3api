@@ -49,7 +49,7 @@ class PersistenceSettings extends AbstractOperationResourceSettings
     /**
      * @return int
      */
-    public function getRecursionLevel()
+    public function getRecursionLevel(): int
     {
         return $this->recursionLevel;
     }
