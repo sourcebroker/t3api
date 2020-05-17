@@ -13,7 +13,7 @@ call_user_func(
                 ['Administration' => 'documentation, openApiData'],
                 [
                     'access' => 'user,group',
-                    'icon' => 'EXT:t3api/Resources/Public/Icons/module.svg',
+                    'icon' => 'EXT:t3api/Resources/Public/Icons/Extension.svg',
                     'labels' => 'LLL:EXT:t3api/Resources/Private/Language/locallang_modadministration.xlf',
                     'inheritNavigationComponentFromMainModule' => false,
                 ]

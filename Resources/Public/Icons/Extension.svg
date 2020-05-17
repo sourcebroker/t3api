@@ -1,0 +1,14 @@
+<svg width="580" height="580" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <rect fill="#01c58a" height="582" width="582" y="-1" x="-1"/>
+ </g>
+ <g>
+  <text transform="matrix(1.433692216873169,0,0,1.433692216873169,-8.348575174808502,-15.375744376331568) " xml:space="preserve"
+        font-family="Helvetica, Arial, sans-serif" font-size="250" y="277" x="20" fill="#FFF">{   }</text>
+  <text font-family="Arial, sans-serif" font-size="220" y="200" x="140" stroke-width="0" fill="#FFF">. ...</text>
+  <text font-family="Arial, sans-serif" font-size="220" y="250" x="140" stroke-width="0" fill="#FFF">.....</text>
+  <text font-family="Arial, sans-serif" font-size="220" y="300" x="140" stroke-width="0" fill="#FFF">... .</text>
+  <text font-family="Arial, sans-serif" font-size="220" y="350" x="140" stroke-width="0" fill="#FFF">.....</text>
+  <text font-family="Arial, sans-serif" font-size="220" y="400" x="140" stroke-width="0" fill="#FFF">. ...</text>
+ </g>
+</svg>
