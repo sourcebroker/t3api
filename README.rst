@@ -18,17 +18,17 @@ TYPO3 Extension t3api
 Features
 --------
 
-- Support for Extbase models with GET, POST, PATCH, DELETE operations.
+- Support for Extbase models with GET, POST, PATCH, PUT, DELETE operations.
 - Configuration with classes, properties and methods annotations.
 - Build-in filters: boolean, numeric, order, range and text (partial, match against and exact strategies).
 - Build-in pagination.
-- Support for TypoLinks and image processing.
+- Support for typolinks.
+- Support for image processing.
 - Support for file uploads (FAL).
 - Configurable routing.
 - Responses in `Hydra <https://www.hydra-cg.com/>`_ /`JSON-LD <https://json-ld.org/>`_ format.
 - Serialization contexts - customizable output depending on routing.
 - Easy customizable serialization handlers and subscribers.
-- Support for all features of `JMSSerializer <https://jmsyst.com/libs/serializer>`_.
 - Backend module with Swagger for documentation and real testing.
 
 Usage
@@ -44,10 +44,9 @@ In your Composer based TYPO3 project root, just do ``composer require sourcebrok
 Minimal setup
 +++++++++++++
 
-1. If you use TYPO3 8.7 then open main Template record and add "T3api" in tab "Includes" -> field "Include static (from extensions)".
-   Skip this step for TYPO3 9.5.
+1. For TYPO3 8.7: open main Template record and add "T3api" in tab "Includes" -> field "Include static (from extensions)".
 
-2. Import route enhancer by adding following line on top of your site ``config.yaml`` .
+2. For TYPO3 9.5: Import route enhancer by adding following line on top of your site ``config.yaml`` .
 
 ::
 
