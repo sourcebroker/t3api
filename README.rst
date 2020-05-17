@@ -29,6 +29,7 @@ Features
 - Serialization contexts - customizable output depending on routing.
 - Easy customizable serialization handlers and subscribers.
 - Support for all features of `JMSSerializer <https://jmsyst.com/libs/serializer>`_.
+- Backend module with Swagger for documentation and real testing.
 
 Usage
 -----
