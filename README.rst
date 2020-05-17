@@ -18,13 +18,14 @@ TYPO3 Extension t3api
 Features
 --------
 
-- Support for Extbase models.
+- Support for Extbase models with GET, POST, PATCH, DELETE operations.
 - Configuration with classes, properties and methods annotations.
 - Build-in filters: boolean, numeric, order, range and text (partial, match against and exact strategies).
 - Build-in pagination.
 - Support for TypoLinks and image processing.
+- Support for file uploads (FAL).
 - Configurable routing.
-- Responses in Hydra/`JSON-LD <https://json-ld.org/>`_ format.
+- Responses in `Hydra <https://www.hydra-cg.com/>`_ /`JSON-LD <https://json-ld.org/>`_ format.
 - Serialization contexts - customizable output depending on routing.
 - Easy customizable serialization handlers and subscribers.
 - Support for all features of `JMSSerializer <https://jmsyst.com/libs/serializer>`_.
@@ -42,15 +43,15 @@ In your Composer based TYPO3 project root, just do ``composer require sourcebrok
 Minimal setup
 +++++++++++++
 
-1. Open main Template record and add "T3api" in tab "Includes" -> field "Include static (from extensions)"
+1. If you use TYPO3 8.7 then open main Template record and add "T3api" in tab "Includes" -> field "Include static (from extensions)".
+   Skip this step for TYPO3 9.5.
 
-2. Add route enhancer to your site ``config.yaml`` file.
+2. Import route enhancer by adding following line on top of your site ``config.yaml`` .
 
 ::
 
- routeEnhancers:
-    T3api:
-      type: T3apiResourceEnhancer
+   imports:
+     - { resource: "EXT:t3api/Configuration/Routing/config.yaml" }
 
 3. Configure routes for your Extbase model using PHP annotations:
 
@@ -77,26 +78,5 @@ Minimal setup
 4. Done! Try your API endpoints at https://example.com/_api/articles and https://example.com/_api/articles/1
 
 
-To check more configuration options see `t3apinews <https://github.com/sourcebroker/t3apinews>`_ - an example integration of t3api for well known `news <https://github.com/georgringer/news>`_ extension.
-
-Administration corner
----------------------
-
-Versions and support
-++++++++++++++++++++
-
-+-------------+------------+-----------+-----------------------------------------+
-| T3api       | TYPO3      | PHP       | Support/Development                     |
-+=============+============+===========+=========================================+
-| 0.1.x       | 9.x        | 7.2 - 7.3 | Features, Bugfixes, Security Updates    |
-+-------------+------------+-----------+-----------------------------------------+
-
-Release Management
-++++++++++++++++++
-
-T3api uses **semantic versioning** which basically means for you, that:
-
-- **bugfix updates** (e.g. 1.0.0 => 1.0.1) just includes small bugfixes or security relevant stuff without breaking changes.
-- **minor updates** (e.g. 1.0.0 => 1.1.0) includes new features and smaller tasks without breaking changes.
-- **major updates** (e.g. 1.0.0 => 2.0.0) breaking changes wich can be refactorings, features or bugfixes.
-
+To check more configuration options see `t3apinews <https://github.com/sourcebroker/t3apinews>`_
+- an example integration of t3api for well known `news <https://github.com/georgringer/news>`_ extension.

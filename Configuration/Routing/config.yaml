@@ -1,0 +1,3 @@
+routeEnhancers:
+  T3api:
+    type: T3apiResourceEnhancer
