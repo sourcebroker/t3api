@@ -72,5 +72,41 @@ After enabling cascade persistence for ``Order.items`` property it is possible t
       ],
    }
 
-.. important::
-   At the moment it is only possible to create new entities using cascade technique. It means it is not possible yet to cascade update of entities. If any of the items passed inside ``items`` collection above would contain ``uid`` property an error will be thrown.
+Cascade persistence - updating related entity in single request
+================================================================
+
+Let's go further with our example. Let's say that our order can be updated - we can change ``quantity`` of every ``OrderItem`` which is already persisted. Obviously we want to update all ordered items in single request instead of making ``PATCH`` request to ``OrderItem`` endpoint for every changed, ``POST`` request for every added item and ``DELETE`` request for every removed. Doing separate requests is acceptable in some specific cases but most of the time it brings a lot of problems:
+
+- Changes are persisted in multiple database transactions, so if any error occurs during persistence, we would need to find a way to revert those already persisted.
+- Objects can not be validated together.
+- We need to create ``POST``, ``PATCH`` and ``DELETE`` endpoints to sub-entity most of the time only for this purpose.
+- It is not user friendly because processing so many requests surely will take a lot of more time.
+
+Solution for all these problems is cascade update. We can update, add and even remove all nested items in **single request**.
+
+Example payload below is the second request after first from previous example, when we created order using ``POST`` endpoint. Now we want to update order with ``PATCH`` request and do some adjustments in ``items``: Change the quantity of article ``12``, keep the same quantity of article ``13``, remove article ``14`` and add new order item with article ``15``.
+
+- To update ``OrderItem`` we just **include property** ``uid`` for nested objects.
+- To remove ``OrderItem`` we just not send it in the collection.
+- To add new ``OrderItem`` we just add new nested objects **without** ``uid`` property.
+
+.. code-block:: json
+
+   {
+      "items": [
+        {
+            "uid": 1,
+            "article": 12,
+            "quantity": 8
+        },
+        {
+            "uid": 2,
+            "article": 13,
+            "quantity": 3
+        },
+        {
+            "article": 15,
+            "quantity": 9
+        }
+      ],
+   }

@@ -289,7 +289,7 @@ class CommonRepository
     /**
      * @param object $object The object to remove
      */
-    public function remove($object)
+    public function remove($object): void
     {
         $this->persistenceManager->remove($object);
     }

@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Serializer\Handler;
 
+use JMS\Serializer\Context;
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 
@@ -48,5 +50,27 @@ abstract class AbstractHandler implements SubscribingHandlerInterface
                 static::$supportedTypes
             )
         );
+    }
+
+    /**
+     * @param DeserializationContext $context
+     * @return DeserializationContext
+     */
+    protected function cloneDeserializationContext(DeserializationContext $context): DeserializationContext
+    {
+        try {
+            $reflection = new \ReflectionClass(Context::class);
+            $property = $reflection->getProperty('attributes');
+            $property->setAccessible(true);
+            $contextAttributes = $property->getValue($context);
+            $deserializationContext = DeserializationContext::create();
+            foreach ($contextAttributes as $attributeName => $attributeValue) {
+                $deserializationContext->setAttribute($attributeName, $attributeValue);
+            }
+
+            return $deserializationContext;
+        } catch (\ReflectionException $e) {
+            throw new \RuntimeException('Could not clone deserialization object', 1589868671607, $e);
+        }
     }
 }
