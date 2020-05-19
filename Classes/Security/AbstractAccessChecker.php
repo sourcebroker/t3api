@@ -2,12 +2,17 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Security;
 
+use Symfony\Component\ExpressionLanguage\ExpressionFunction;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use TYPO3\CMS\Backend\FrontendBackendUserAuthentication;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\Exception\AspectPropertyNotFoundException;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\CMS\Frontend\Configuration\TypoScript\ConditionMatching\ConditionMatcher;
 
 class AbstractAccessChecker
 {
@@ -55,5 +60,84 @@ class AbstractAccessChecker
         }
 
         return $expressionLanguageResolver;
+    }
+
+    /**
+     * @todo Remove when support for version lower than 9.4 is dropped
+     * @deprecated
+     */
+    protected static function shouldUseLegacyCheckMethod(): bool
+    {
+        return version_compare(TYPO3_branch, '9.4', '<');
+    }
+
+    /**
+     * @todo Remove when support for version lower than 9.4 is dropped
+     * @deprecated
+     */
+    protected static function evaluateLegacyExpressionLanguage(string $expression, array $additionalVariables = [])
+    {
+        return static::getLegacyExpressionLanguageEvaluator()
+            ->evaluate($expression, array_merge(static::getLegacyExpressionLanguageDefaultVariables(), $additionalVariables));
+    }
+
+    /**
+     * @todo Remove when support for version lower than 9.4 is dropped
+     * @deprecated
+     */
+    protected static function getLegacyExpressionLanguageDefaultVariables(): array
+    {
+        /** @var FrontendBackendUserAuthentication|null $backendUserAuthentication */
+        $backendUserAuthentication = $GLOBALS['BE_USER'];
+
+        $backend = new \stdClass();
+        $backend->user = new \stdClass();
+        $backend->user->isAdmin = $backendUserAuthentication && $backendUserAuthentication->isAdmin();
+        $backend->user->isLoggedIn = (bool)$backendUserAuthentication;
+        $backend->user->userId = $backendUserAuthentication && $backendUserAuthentication->user
+            ? $backendUserAuthentication->user['uid'] : null;
+        $backend->user->userGroupList = $backendUserAuthentication && $backendUserAuthentication->user
+            ? $backendUserAuthentication->user['usergroup'] : '';
+
+        /** @var FrontendUserAuthentication|null $frontendUserAuthentication */
+        $frontendUserAuthentication = $GLOBALS['TSFE']->fe_user;
+
+        $frontend = new \stdClass();
+        $frontend->user = new \stdClass();
+        $frontend->user->isLoggedIn = (bool)$frontendUserAuthentication;
+        $frontend->user->userId = $frontendUserAuthentication && $frontendUserAuthentication->user ? $frontendUserAuthentication->user['uid'] : null;;
+        $frontend->user->userGroupList = $frontendUserAuthentication && $frontendUserAuthentication->user
+            ? $frontendUserAuthentication->user['usergroup'] : '';
+
+        return [
+            'backend' => $backend,
+            'frontend' => $frontend,
+        ];
+    }
+
+    /**
+     * @todo Remove when support for version lower than 9.4 is dropped
+     * @deprecated
+     */
+    protected static function getLegacyExpressionLanguageEvaluator(): ExpressionLanguage
+    {
+        static $expressionLanguageEvaluator;
+
+        if ($expressionLanguageEvaluator === null) {
+            $expressionLanguageEvaluator = new ExpressionLanguage();
+            $expressionLanguageEvaluator->addFunction(new ExpressionFunction(
+                'like',
+                static function () {
+                },
+                static function ($arguments, $haystack, $needle) {
+                    $searchFunc = new \ReflectionMethod(ConditionMatcher::class, 'searchStringWildcard');
+                    $searchFunc->setAccessible(true);
+
+                    return $searchFunc->invoke(new ConditionMatcher(), $haystack, $needle);
+                }
+            ));
+        }
+
+        return $expressionLanguageEvaluator;
     }
 }

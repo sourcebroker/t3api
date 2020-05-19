@@ -12,7 +12,11 @@ class OperationAccessChecker extends AbstractAccessChecker
             return true;
         }
 
-        $resolver = self::getExpressionLanguageResolver();
+        if (static::shouldUseLegacyCheckMethod()) {
+            return static::isGrantedLegacy($operation, $expressionLanguageVariables);
+        }
+
+        $resolver = static::getExpressionLanguageResolver();
         $resolver->expressionLanguageVariables['t3apiOperation'] = $operation;
         $resolver->expressionLanguageVariables = array_merge(
             $resolver->expressionLanguageVariables,
@@ -22,13 +26,29 @@ class OperationAccessChecker extends AbstractAccessChecker
         return $resolver->evaluate($operation->getSecurity());
     }
 
+    /**
+     * @deprecated
+     * @todo Remove when support for version lower than 9.4 is dropped
+     */
+    public static function isGrantedLegacy(AbstractOperation $operation, array $expressionLanguageVariables = []): bool
+    {
+        return (bool)static::evaluateLegacyExpressionLanguage(
+            $operation->getSecurity(),
+            array_merge(['t3apiOperation' => $operation], $expressionLanguageVariables)
+        );
+    }
+
     public static function isGrantedPostDenormalize(AbstractOperation $operation, array $expressionLanguageVariables = []): bool
     {
         if (!$operation->getSecurityPostDenormalize()) {
             return true;
         }
 
-        $resolver = self::getExpressionLanguageResolver();
+        if (static::shouldUseLegacyCheckMethod()) {
+            return static::isGrantedPostDenormalizeLegacy($operation, $expressionLanguageVariables);
+        }
+
+        $resolver = static::getExpressionLanguageResolver();
         $resolver->expressionLanguageVariables['t3apiOperation'] = $operation;
         $resolver->expressionLanguageVariables = array_merge(
             $resolver->expressionLanguageVariables,
@@ -36,5 +56,17 @@ class OperationAccessChecker extends AbstractAccessChecker
         );
 
         return $resolver->evaluate($operation->getSecurityPostDenormalize());
+    }
+
+    /**
+     * @deprecated
+     * @todo Remove when support for version lower than 9.4 is dropped
+     */
+    public static function isGrantedPostDenormalizeLegacy(AbstractOperation $operation, array $expressionLanguageVariables = []): bool
+    {
+        return (bool)static::evaluateLegacyExpressionLanguage(
+            $operation->getSecurityPostDenormalize(),
+            array_merge(['t3apiOperation' => $operation], $expressionLanguageVariables)
+        );
     }
 }
