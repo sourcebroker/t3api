@@ -14,6 +14,7 @@
     "require": {
         "php": "^7.2",
         "ext-json": "*",
+        "ext-tokenizer": "*",
         "typo3/cms-core": "^8.7 || ^9.5",
         "typo3/cms-extbase": "^8.7 || ^9.5",
         "typo3/cms-frontend": "^8.7 || ^9.5",
