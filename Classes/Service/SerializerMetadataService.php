@@ -209,11 +209,13 @@ class SerializerMetadataService
                 $propertyName = $reflectionMethod->getName();
             }
 
-            $virtualProperties[$reflectionMethod->getName()] = self::getPropertyMetadataFromAnnotations(
-                $annotationReader->getMethodAnnotations($reflectionMethod)
+            $virtualProperties[$reflectionMethod->getName()] = array_merge(
+                [
+                    'name' => $propertyName,
+                    'serialized_name' => $propertyName,
+                ],
+                self::getPropertyMetadataFromAnnotations($annotationReader->getMethodAnnotations($reflectionMethod))
             );
-            $virtualProperties[$reflectionMethod->getName()]['name'] = $propertyName;
-            $virtualProperties[$reflectionMethod->getName()]['serialized_name'] = $propertyName;
 
             if (empty($virtualProperties[$reflectionMethod->getName()]['type'])) {
                 $virtualProperties[$reflectionMethod->getName()]['type'] = self::getTypeFromAnnotation(
