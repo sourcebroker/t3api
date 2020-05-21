@@ -1,13 +1,19 @@
 <?php
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Tests\Unit\Service;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use ReflectionClass;
 use ReflectionException;
+use SourceBroker\T3api\Annotation\Serializer\Exclude;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
+use SourceBroker\T3api\Annotation\Serializer\ReadOnly;
+use SourceBroker\T3api\Annotation\Serializer\SerializedName;
 use SourceBroker\T3api\Annotation\Serializer\Type\Image;
 use SourceBroker\T3api\Annotation\Serializer\Type\RecordUri;
+use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 use SourceBroker\T3api\Service\SerializerMetadataService;
 
 /**
@@ -15,14 +21,11 @@ use SourceBroker\T3api\Service\SerializerMetadataService;
  */
 class SerializerMetadataServiceTest extends UnitTestCase
 {
-    /**
-     * @return array
-     */
     public function getPropertyMetadataFromAnnotationsReturnsCorrectValueDataProvider(): array
     {
         return [
             'Groups' => [
-                function () {
+                static function () {
                     $groups = new Groups();
                     $groups->groups = ['api_example_group_1234', 'api_another_example_group'];
 
@@ -36,7 +39,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                 ],
             ],
             'Type - Image (with width and height)' => [
-                function () {
+                static function () {
                     $image = new Image();
                     $image->width = '800c';
                     $image->height = '600';
@@ -48,7 +51,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                 ],
             ],
             'Type - Image (with maxWidth)' => [
-                function () {
+                static function () {
                     $image = new Image();
                     $image->maxWidth = 450;
 
@@ -59,7 +62,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                 ],
             ],
             'Type - RecordUri' => [
-                function () {
+                static function () {
                     $recordUri = new RecordUri();
                     $recordUri->identifier = 'tx_example_identifier';
 
@@ -70,7 +73,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                 ],
             ],
             'RecordUri with groups' => [
-                function () {
+                static function () {
                     $recordUri = new RecordUri();
                     $recordUri->identifier = 'tx_another_identifier';
                     $groups = new Groups();
@@ -98,17 +101,16 @@ class SerializerMetadataServiceTest extends UnitTestCase
      *
      * @throws ReflectionException
      */
-    public function getPropertyMetadataFromAnnotationsReturnsCorrectValue(callable $annotations, array $expectedResult)
-    {
+    public function getPropertyMetadataFromAnnotationsReturnsCorrectValue(
+        callable $annotations,
+        array $expectedResult
+    ): void {
         self::assertEqualsCanonicalizing(
             $expectedResult,
             self::callProtectedMethod('getPropertyMetadataFromAnnotations', [$annotations()])
         );
     }
 
-    /**
-     * @return array
-     */
     public function parsePropertyTypeReturnsCorrectValueDataProvider(): array
     {
         $dateTimeFormat = PHP_VERSION_ID >= 70300 ? \DateTimeInterface::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP';
@@ -234,11 +236,197 @@ class SerializerMetadataServiceTest extends UnitTestCase
      *
      * @throws ReflectionException
      */
-    public function parsePropertyTypeReturnsCorrectValue(string $varAnnotation, string $expectedType)
+    public function parsePropertyTypeReturnsCorrectValue(string $varAnnotation, string $expectedType): void
     {
         self::assertEquals(
             $expectedType,
             self::callProtectedMethod('parsePropertyType', [$varAnnotation])
+        );
+    }
+
+    public function getPropertiesReturnsCorrectValueDataProvider(): array
+    {
+        // @todo instead of anonymous class maybe move them to some fixtures - may be needed also in other tests
+        return [
+            'Class with primitive types only' => [
+                new class {
+                    /**
+                     * @var string
+                     */
+                    protected $stringProperty;
+
+                    /**
+                     * @var int
+                     */
+                    protected $integerProperty;
+
+                    /**
+                     * @var int[]
+                     */
+                    protected $arrayOfIntegers;
+                },
+                [
+                    'stringProperty' => ['type' => 'string'],
+                    'integerProperty' => ['type' => 'int'],
+                    'arrayOfIntegers' => ['type' => 'array<int>'],
+                ],
+            ],
+            'Class with some t3api specific annotations' => [
+                new class {
+                    /**
+                     * @ReadOnly()
+                     * @var string
+                     */
+                    protected $readOnlyProperty;
+
+                    /**
+                     * @var int
+                     * @Groups({
+                     *      "group_a",
+                     *      "group_b",
+                     * })
+                     */
+                    protected $groupedProperty;
+
+                    /**
+                     * @var int[]
+                     * @Exclude()
+                     */
+                    protected $excludedProperty;
+                },
+                [
+                    'readOnlyProperty' => [
+                        'type' => 'string',
+                        'read_only' => true,
+                    ],
+                    'groupedProperty' => [
+                        'type' => 'int',
+                        'groups' => [
+                            'group_a',
+                            'group_b',
+                        ],
+                    ],
+                    'excludedProperty' => [
+                        'type' => 'array<int>',
+                        'exclude' => true,
+                    ],
+                ],
+            ],
+            'Class with virtual property' => [
+                new class {
+                    /**
+                     * @var bool
+                     */
+                    protected $propertyX;
+
+                    /**
+                     * @VirtualProperty()
+                     * @return bool
+                     */
+                    public function isConfirmed(): bool
+                    {
+                        return false;
+                    }
+                },
+                [
+                    'propertyX' => [
+                        'type' => 'bool',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @param $class
+     * @param $expectedType
+     * @throws ReflectionException
+     * @dataProvider getPropertiesReturnsCorrectValueDataProvider
+     * @test
+     */
+    public function getPropertiesReturnsCorrectValue($class, $expectedType): void
+    {
+        self::assertEquals(
+            $expectedType,
+            self::callProtectedMethod(
+                'getProperties',
+                [
+                    new ReflectionClass($class),
+                    new AnnotationReader(),
+                ]
+            )
+        );
+    }
+
+    public function getVirtualPropertiesReturnsCorrectValueDataProvider(): array
+    {
+        // @todo instead of anonymous class maybe move them to some fixtures - may be needed also in other tests
+        return [
+            'Class with mixed properties - virtual and default' => [
+                new class {
+                    /**
+                     * @var string
+                     */
+                    protected $someNonVirtualProperty;
+
+                    /**
+                     * @VirtualProperty()
+                     * @return string
+                     */
+                    public function getTitle(): string
+                    {
+                        return 'zxc';
+                    }
+                },
+                [
+                    'getTitle' => [
+                        'type' => 'string',
+                        'name' => 'title',
+                        'serialized_name' => 'title',
+                    ],
+                ],
+            ],
+            'Class with virtual property with custom serialized name' => [
+                new class {
+                    /**
+                     * @return bool
+                     * @VirtualProperty()
+                     * @SerializedName("approved")
+                     */
+                    public function isConfirmed(): bool
+                    {
+                        return true;
+                    }
+                },
+                [
+                    'isConfirmed' => [
+                        'type' => 'bool',
+                        'name' => 'confirmed',
+                        'serialized_name' => 'approved',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @param $class
+     * @param $expectedType
+     * @throws ReflectionException
+     * @dataProvider getVirtualPropertiesReturnsCorrectValueDataProvider
+     * @test
+     */
+    public function getVirtualPropertiesReturnsCorrectValue($class, $expectedType): void
+    {
+        self::assertEquals(
+            $expectedType,
+            self::callProtectedMethod(
+                'getVirtualProperties',
+                [
+                    new ReflectionClass($class),
+                    new AnnotationReader(),
+                ]
+            )
         );
     }
 
