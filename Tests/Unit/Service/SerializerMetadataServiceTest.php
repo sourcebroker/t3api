@@ -7,14 +7,15 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use ReflectionClass;
 use ReflectionException;
-use SourceBroker\T3api\Annotation\Serializer\Exclude;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
-use SourceBroker\T3api\Annotation\Serializer\ReadOnly;
-use SourceBroker\T3api\Annotation\Serializer\SerializedName;
 use SourceBroker\T3api\Annotation\Serializer\Type\Image;
 use SourceBroker\T3api\Annotation\Serializer\Type\RecordUri;
-use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 use SourceBroker\T3api\Service\SerializerMetadataService;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Address;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Company;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Group;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Person;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Tag;
 
 /**
  * Class SerializerMetadataServiceTest
@@ -246,112 +247,135 @@ class SerializerMetadataServiceTest extends UnitTestCase
 
     public function getPropertiesReturnsCorrectValueDataProvider(): array
     {
-        // @todo instead of anonymous class maybe move them to some fixtures - may be needed also in other tests
+        $dateTimeFormat = PHP_VERSION_ID >= 70300 ? \DateTimeInterface::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP';
+
         return [
-            'Class with primitive types only' => [
-                new class {
-                    /**
-                     * @var string
-                     */
-                    protected $stringProperty;
-
-                    /**
-                     * @var int
-                     */
-                    protected $integerProperty;
-
-                    /**
-                     * @var int[]
-                     */
-                    protected $arrayOfIntegers;
-                },
+            Person::class => [
+                Person::class,
                 [
-                    'stringProperty' => ['type' => 'string'],
-                    'integerProperty' => ['type' => 'int'],
-                    'arrayOfIntegers' => ['type' => 'array<int>'],
-                ],
-            ],
-            'Class with some t3api specific annotations' => [
-                new class {
-                    /**
-                     * @ReadOnly()
-                     * @var string
-                     */
-                    protected $readOnlyProperty;
-
-                    /**
-                     * @var int
-                     * @Groups({
-                     *      "group_a",
-                     *      "group_b",
-                     * })
-                     */
-                    protected $groupedProperty;
-
-                    /**
-                     * @var int[]
-                     * @Exclude()
-                     */
-                    protected $excludedProperty;
-                },
-                [
-                    'readOnlyProperty' => [
-                        'type' => 'string',
+                    'id' => [
+                        'type' => 'int',
                         'read_only' => true,
                     ],
-                    'groupedProperty' => [
-                        'type' => 'int',
+                    'groups' => [
+                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3api\Tests\Unit\Service\Fixtures\Group>',
+                    ],
+                    'address' => [
+                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Address',
+                    ],
+                    'firstName' => [
+                        'type' => 'string'
+                    ],
+                    'lastName' => [
+                        'type' => 'string'
+                    ],
+                    'maidenName' => [
+                        'type' => 'string',
+                        'serialized_name' => 'familyName',
+                    ],
+                    'dateOfBirth' => [
+                        'type' => sprintf('DateTime<"%s">', $dateTimeFormat),
+                    ],
+                    'created' => [
+                        'type' => sprintf('DateTimeImmutable<"%s">', $dateTimeFormat),
+                    ],
+                    'bankAccountNumber' => [
+                        'type' => 'string',
                         'groups' => [
-                            'group_a',
-                            'group_b',
+                            'accountancy',
                         ],
                     ],
-                    'excludedProperty' => [
-                        'type' => 'array<int>',
-                        'exclude' => true,
-                    ],
-                ],
-            ],
-            'Class with virtual property' => [
-                new class {
-                    /**
-                     * @var bool
-                     */
-                    protected $propertyX;
-
-                    /**
-                     * @VirtualProperty()
-                     * @return bool
-                     */
-                    public function isConfirmed(): bool
-                    {
-                        return false;
-                    }
-                },
-                [
-                    'propertyX' => [
+                    'hidden' => [
                         'type' => 'bool',
                     ],
-                ],
+                ]
             ],
+            Company::class => [
+                Company::class,
+                [
+                    'id' => [
+                        'type' => 'int',
+                        'read_only' => true,
+                    ],
+                    'name' => [
+                        'type' => 'string',
+                    ],
+                    'groups' => [
+                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3api\Tests\Unit\Service\Fixtures\Group>',
+                    ],
+                    'address' => [
+                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Address',
+                    ],
+                    'bankAccountNumber' => [
+                        'type' => 'string',
+                        'groups' => [
+                            'accountancy',
+                        ],
+                    ],
+                    'invoiceAddress' => [
+                        // @todo should be uncommented after moving to Symfony/PropertyInfo
+//                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Address',
+                        'type' => 'Address',
+                    ],
+                    'hidden' => [
+                        'type' => 'bool',
+                    ],
+                ]
+            ],
+            Group::class => [
+                Group::class,
+                [
+                    'title' => [
+                        'type' => 'string',
+                    ],
+                ]
+            ],
+            Tag::class => [
+                Tag::class,
+                [
+                    'title' => [
+                        'type' => 'string',
+                    ]
+                ]
+            ],
+            Address::class => [
+                Address::class,
+                [
+                    'street' => [
+                        'type' => 'string',
+                    ],
+                    'zip' => [
+                        'type' => 'string',
+                    ],
+                    'city' => [
+                        'type' => 'string',
+                    ],
+                    'created' => [
+                        'type' => sprintf('DateTimeImmutable<"%s">', $dateTimeFormat),
+                    ],
+                    'modified' => [
+                        'type' => sprintf('DateTime<"%s">', $dateTimeFormat),
+                    ]
+                ]
+            ]
         ];
     }
 
     /**
-     * @param $class
+     * @param string $className
      * @param $expectedType
      * @throws ReflectionException
      * @dataProvider getPropertiesReturnsCorrectValueDataProvider
      * @test
      */
-    public function getPropertiesReturnsCorrectValue($class, $expectedType): void
+    public function getPropertiesReturnsCorrectValue($className, $expectedType): void
     {
         self::assertEquals(
             $expectedType,
             self::callProtectedMethod(
                 'getProperties',
                 [
-                    new ReflectionClass($class),
+                    new ReflectionClass($className),
                     new AnnotationReader(),
                 ]
             )
@@ -360,70 +384,104 @@ class SerializerMetadataServiceTest extends UnitTestCase
 
     public function getVirtualPropertiesReturnsCorrectValueDataProvider(): array
     {
-        // @todo instead of anonymous class maybe move them to some fixtures - may be needed also in other tests
-        return [
-            'Class with mixed properties - virtual and default' => [
-                new class {
-                    /**
-                     * @var string
-                     */
-                    protected $someNonVirtualProperty;
+        $dateTimeFormat = PHP_VERSION_ID >= 70300 ? \DateTimeInterface::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP';
 
-                    /**
-                     * @VirtualProperty()
-                     * @return string
-                     */
-                    public function getTitle(): string
-                    {
-                        return 'zxc';
-                    }
-                },
+        return [
+            Person::class => [
+                Person::class,
                 [
-                    'getTitle' => [
+                    'getFullName' => [
                         'type' => 'string',
-                        'name' => 'title',
-                        'serialized_name' => 'title',
+                        'serialized_name' => 'fullName',
+                        'name' => 'fullName',
                     ],
-                ],
+                    'getTagIds' => [
+                        'type' => 'array<int>',
+                        'serialized_name' => 'tagIds',
+                        'name' => 'tagIds',
+                    ],
+                    'getIdsOfAssignedGroups' => [
+                        'type' => 'array<int>',
+                        'name' => 'groupIds',
+                        'serialized_name' => 'groupIds',
+                    ],
+                    'getTags' => [
+                        'name' => 'tags',
+                        'serialized_name' => 'tags',
+                        // @todo should be uncommented after moving to Symfony/PropertyInfo
+//                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3api\Tests\Unit\Fixtures\Tag>',
+                        'type' => 'ObjectStorage<Tag>',
+                    ],
+                    'getBankAccountIban' => [
+                        'name' => 'bankAccountIban',
+                        'serialized_name' => 'bankAccountIban',
+                        'type' => 'string',
+                    ]
+                ]
             ],
-            'Class with virtual property with custom serialized name' => [
-                new class {
-                    /**
-                     * @return bool
-                     * @VirtualProperty()
-                     * @SerializedName("approved")
-                     */
-                    public function isConfirmed(): bool
-                    {
-                        return true;
-                    }
-                },
+            Company::class => [
+                Company::class,
                 [
-                    'isConfirmed' => [
-                        'type' => 'bool',
-                        'name' => 'confirmed',
-                        'serialized_name' => 'approved',
+                    'getTagIds' => [
+                        'type' => 'array<int>',
+                        'serialized_name' => 'tagIds',
+                        'name' => 'tagIds',
                     ],
-                ],
+                    'getIdsOfAssignedGroups' => [
+                        'type' => 'array<int>',
+                        'name' => 'groupIds',
+                        'serialized_name' => 'groupIds',
+                    ],
+                    'getTags' => [
+                        'name' => 'tags',
+                        'serialized_name' => 'tags',
+                        // @todo should be uncommented after moving to Symfony/PropertyInfo
+//                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3api\Tests\Unit\Fixtures\Tag>',
+                        'type' => 'ObjectStorage<Tag>',
+                    ],
+                    'getBankAccountIban' => [
+                        'name' => 'bankAccountIban',
+                        'serialized_name' => 'bankAccountIban',
+                        'type' => 'string',
+                    ]
+                ]
             ],
+            Group::class => [
+                Group::class,
+                [
+                    'getNumberOfAssignedEntries' => [
+                        'name' => 'numberOfAssignedEntries',
+                        'serialized_name' => 'numberOfAssignedEntries',
+                        'type' => 'int',
+                    ],
+                ]
+            ],
+            Tag::class => [
+                Tag::class,
+                []
+            ],
+            Address::class => [
+                Address::class,
+                []
+            ]
         ];
     }
 
     /**
-     * @param $class
+     * @param string $className
      * @param $expectedType
      * @throws ReflectionException
      * @dataProvider getVirtualPropertiesReturnsCorrectValueDataProvider
      * @test
      */
-    public function getVirtualPropertiesReturnsCorrectValue($class, $expectedType): void
+    public function getVirtualPropertiesReturnsCorrectValue(string $className, $expectedType): void
     {
         self::assertEquals(
             $expectedType,
             self::callProtectedMethod(
                 'getVirtualProperties',
                 [
-                    new ReflectionClass($class),
+                    new ReflectionClass($className),
                     new AnnotationReader(),
                 ]
             )
