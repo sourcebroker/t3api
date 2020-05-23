@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Exception;
@@ -282,6 +283,10 @@ class SerializerMetadataService
 
         if (is_a($type, DateTime::class, true)) {
             return sprintf('DateTime<"%s">', PHP_VERSION_ID >= 70300 ? DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP');
+        }
+
+        if (is_a($type, DateTimeImmutable::class, true)) {
+            return sprintf('DateTimeImmutable<"%s">', PHP_VERSION_ID >= 70300 ? DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP');
         }
 
         if (class_exists($type)) {
