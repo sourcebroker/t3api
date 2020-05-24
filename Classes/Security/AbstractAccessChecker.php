@@ -105,7 +105,7 @@ class AbstractAccessChecker
         $frontend = new \stdClass();
         $frontend->user = new \stdClass();
         $frontend->user->isLoggedIn = (bool)$frontendUserAuthentication;
-        $frontend->user->userId = $frontendUserAuthentication && $frontendUserAuthentication->user ? $frontendUserAuthentication->user['uid'] : null;;
+        $frontend->user->userId = $frontendUserAuthentication && $frontendUserAuthentication->user ? $frontendUserAuthentication->user['uid'] : null;
         $frontend->user->userGroupList = $frontendUserAuthentication && $frontendUserAuthentication->user
             ? $frontendUserAuthentication->user['usergroup'] : '';
 
