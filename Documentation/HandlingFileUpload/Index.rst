@@ -34,14 +34,22 @@ To create uploadable resource it is needed to create ``POST`` endpoint for resou
    {
    }
 
-There are 3 configurable options for uploadable endpoint:
+There is plenty configuration options which allows you to customize upload endpoint for your needs.
+
 - ``folder`` - destination folder (default: ``1:/user_upload/`` which means files will be uploaded into
 ``user_upload`` directory of file storage ID ``1``).
+
 - ``allowedFileExtensions`` - Array of allowed file extensions (default:
 ``$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']``).
+
 - ``conflictMode`` - Value of enumeration ``\TYPO3\CMS\Core\Resource\DuplicationBehavior`` (default:
-``\TYPO3\CMS\Core\Resource\DuplicationBehavior::RENAME`` which means that new file name will be changed if same file
-already exists).
+``\TYPO3\CMS\Core\Resource\DuplicationBehavior::RENAME`` which means that new file name will be changed if same file already exists).
+
+- ``filenameMask`` - Allows to change the name of the uploaded file (default: ``[filename]``; see :ref:`how to customize name of uploaded file <handling_file_upload_customize_uploaded_file_name>`).
+
+- ``filenameHashAlgorithm`` - (default: ``md5``; see :ref:`how to customize name of uploaded file <handling_file_upload_customize_uploaded_file_name>`).
+
+- ``contentHashAlgorithm`` - (default: ``md5``; see :ref:`how to customize name of uploaded file <handling_file_upload_customize_uploaded_file_name>`).
 
 .. code-block:: php
 
@@ -145,14 +153,6 @@ File upload request
 ====================
 
 @todo
-
-.. code::
-
-   $ curl --request POST 'https://intranet-rauch-cc.devloc.site/_api/files' \
-      --header 'Accept-Language: en-US,en;q=0.9,pl;q=0.8,fr;q=0.7,de;q=0.6' \
-      --header 'Content-Type: application/x-www-form-urlencoded' \
-      --header 'Cookie: _ga=GA1.2.1308859886.1571651255; _fbp=fb.1.1571661354813.2112998372; user_allowed_save_cookie=yes; PHPSESSID=vlg2c6834as4ibtv70erfnejmi; tx_t3adminer=c6lfrsapvnggnhhfspmrbi7kap; Typo3InstallTool=ar1hmhjp2td1755b5q0iuusns3; cookieconsent_status=allow; tx_restrictfe=75777619; fe_typo_user=714ae28f4a30264890442ef72c72ddb2; be_typo_user=dff2c4da936075df18bbe6c6842cdf7b; io=kybGWw0E6Sq4xkFfAAAz' \
-      --form 'originalResource=@/Users/mrf/Desktop/Media/__EXAMPLE/nature31.jpg'
 
 @todo request with multiple files (ObjectStorage with FileReference)
 
@@ -314,4 +314,81 @@ To remove files from model definition above we need to send a JSON payload as fo
 
    {
       "falMedia": []
+   }
+
+.. _handling_file_upload_customize_uploaded_file_name:
+
+Customizing name of uploaded file
+===================================
+
+Keeping name of the file uploaded by client sometimes may not be wanted - as developers we need to protect website against some joke or vulgar URLs which does not return 404 errors. In such cases very useful will be processing of the name of uploaded file. It is possible to achieve that using configuration option ``filenameMask``.
+
+.. code-block:: php
+
+   declare(strict_types=1);
+   namespace Vendor\Users\Domain\Model;
+
+   use SourceBroker\T3api\Annotation as T3api;
+
+   /**
+    * @T3api\ApiResource (
+    *     collectionOperations={
+    *          "post"={
+    *              "path"="/files",
+    *              "method"="POST",
+    *          },
+    *     },
+    *     attributes={
+    *          "upload"={
+    *              "folder"="1:/user_upload/",
+    *              "allowedFileExtensions"={"jpg", "jpeg", "png"},
+    *              "conflictMode"=DuplicationBehavior::RENAME,
+    *              "filenameMask"="static-prefix-[filenameHash]",
+    *          }
+    *     }
+    * )
+    */
+   class File extends \TYPO3\CMS\Extbase\Domain\Model\File
+   {
+   }
+
+``filenameMask`` supports few "magic" strings:
+
+- ``[filename]`` - File name without extension.
+- ``[extension]`` - Extension.
+- ``[extensionWithDot]`` - Extension prefixed by dot.
+- ``[contentHash]`` - Hash generated from file content.
+- ``[filenameHash]`` - Hash generated from file name.
+
+It is possible to customize hash algorithm used to generate ``contentHash`` and ``filenameHash`` strings. By default ``md5`` is used, but inside ``contentHashAlgorithm`` and ``filenameHashAlgorithm`` settings you can easily change it to any hash method supported by PHP `hash <https://www.php.net/manual/en/function.hash.php>`_ method.
+
+.. code-block:: php
+
+   declare(strict_types=1);
+   namespace Vendor\Users\Domain\Model;
+
+   use SourceBroker\T3api\Annotation as T3api;
+
+   /**
+    * @T3api\ApiResource (
+    *     collectionOperations={
+    *          "post"={
+    *              "path"="/files",
+    *              "method"="POST",
+    *          },
+    *     },
+    *     attributes={
+    *          "upload"={
+    *              "folder"="1:/user_upload/",
+    *              "allowedFileExtensions"={"jpg", "jpeg", "png"},
+    *              "conflictMode"=DuplicationBehavior::RENAME,
+    *              "filenameMask"="static-prefix-[filenameHash]-[contentHash]",
+    *              "contentHashAlgorithm"="sha1",
+    *              "filenameHashAlgorithm"="sha1",
+    *          }
+    *     }
+    * )
+    */
+   class File extends \TYPO3\CMS\Extbase\Domain\Model\File
+   {
    }
