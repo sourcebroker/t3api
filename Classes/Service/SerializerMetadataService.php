@@ -1,17 +1,15 @@
 <?php
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Service;
 
 use DateTime;
-use Doctrine\Common\Annotations\AnnotationException;
+use DateTimeImmutable;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Exception;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
-use Reflector;
-use RuntimeException;
 use SourceBroker\T3api\Annotation\Serializer\Exclude;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
 use SourceBroker\T3api\Annotation\Serializer\MaxDepth;
@@ -19,10 +17,11 @@ use SourceBroker\T3api\Annotation\Serializer\ReadOnly;
 use SourceBroker\T3api\Annotation\Serializer\SerializedName;
 use SourceBroker\T3api\Annotation\Serializer\Type\TypeInterface;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
+use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
+use Symfony\Component\PropertyInfo\Type;
 use Symfony\Component\Yaml\Yaml;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\StringUtility;
-use TYPO3\CMS\Extbase\Reflection\DocCommentParser;
 
 /**
  * Class SerializerMetadataService
@@ -38,7 +37,6 @@ class SerializerMetadataService
      * @param string $class
      *
      * @throws ReflectionException
-     * @throws AnnotationException
      */
     public static function generateAutoloadForClass(string $class): void
     {
@@ -114,7 +112,6 @@ class SerializerMetadataService
     /**
      * @param ReflectionClass $reflectionClass
      *
-     * @throws AnnotationException
      * @return array
      */
     protected static function getForClass(ReflectionClass $reflectionClass): array
@@ -161,11 +158,7 @@ class SerializerMetadataService
                 $annotationReader->getPropertyAnnotations($reflectionProperty)
             );
             if (empty($properties[$reflectionProperty->getName()]['type'])) {
-                $type = self::getTypeFromAnnotation(
-                    'var',
-                    $reflectionProperty,
-                    $reflectionClass->getName() . '::' . $reflectionProperty->getName()
-                );
+                $type = self::getPropertyType($reflectionClass->getName(), $reflectionProperty->getName());
 
                 if ($type !== null) {
                     $properties[$reflectionProperty->getName()]['type'] = $type;
@@ -197,29 +190,30 @@ class SerializerMetadataService
                 continue;
             }
 
-            if ($virtualProperty->name) {
-                $propertyName = $virtualProperty->name;
-            } elseif (strpos($reflectionMethod->getName(), 'is') === 0) {
-                $propertyName = lcfirst(substr($reflectionMethod->getName(), 2));
+            if (strpos($reflectionMethod->getName(), 'is') === 0) {
+                $accessorName = lcfirst(substr($reflectionMethod->getName(), 2));
             } elseif (strpos($reflectionMethod->getName(), 'get') === 0) {
-                $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
+                $accessorName = lcfirst(substr($reflectionMethod->getName(), 3));
             } elseif (strpos($reflectionMethod->getName(), 'has') === 0) {
-                $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
+                $accessorName = lcfirst(substr($reflectionMethod->getName(), 3));
             } else {
-                $propertyName = $reflectionMethod->getName();
+                $accessorName = $reflectionMethod->getName();
             }
 
-            $virtualProperties[$reflectionMethod->getName()] = self::getPropertyMetadataFromAnnotations(
-                $annotationReader->getMethodAnnotations($reflectionMethod)
+            $propertyName = $virtualProperty->name ?: $accessorName;
+
+            $virtualProperties[$reflectionMethod->getName()] = array_merge(
+                [
+                    'name' => $propertyName,
+                    'serialized_name' => $propertyName,
+                ],
+                self::getPropertyMetadataFromAnnotations($annotationReader->getMethodAnnotations($reflectionMethod))
             );
-            $virtualProperties[$reflectionMethod->getName()]['name'] = $propertyName;
-            $virtualProperties[$reflectionMethod->getName()]['serialized_name'] = $propertyName;
 
             if (empty($virtualProperties[$reflectionMethod->getName()]['type'])) {
-                $virtualProperties[$reflectionMethod->getName()]['type'] = self::getTypeFromAnnotation(
-                    'return',
-                    $reflectionMethod,
-                    $reflectionClass->getName() . '::' . $reflectionMethod->getName()
+                $virtualProperties[$reflectionMethod->getName()]['type'] = self::getPropertyType(
+                    $reflectionClass->getName(),
+                    $accessorName
                 );
             }
         }
@@ -228,102 +222,67 @@ class SerializerMetadataService
     }
 
     /**
-     * @param string $annotationTag
-     * @param Reflector $reflector
-     * @param string $identifier
+     * @param string $className
+     * @param string $propertyName
      * @return string
      */
-    protected static function getTypeFromAnnotation(
-        string $annotationTag,
-        Reflector $reflector,
-        string $identifier
+    protected static function getPropertyType(
+        string $className,
+        string $propertyName
     ): ?string {
-        $docCommentParser = new DocCommentParser(true);
-        $docCommentParser->parseDocComment($reflector->getDocComment());
+        foreach (self::getPropertyTypeExtractors() as $propertyTypeExtractor) {
+            $types = $propertyTypeExtractor->getTypes($className, $propertyName);
 
-        try {
-            return self::parsePropertyType($docCommentParser->getTagValues($annotationTag)[0]);
-        } catch (Exception $exception) {
-            if ($exception->getCode() === 1169128255) {
-                return null;
+            if (empty($types)) {
+                continue;
             }
 
-            throw new RuntimeException(
-                sprintf(
-                    'Could not read annotation `@%s` property %s',
-                    $annotationTag,
-                    $identifier
-                ),
-                1577878969425
-            );
+            return self::stringifyPropertyType(array_shift($types));
         }
+
+        return null;
     }
 
     /**
-     * @param string $type
+     * @param Type $type
      *
      * @return string
      */
-    protected static function parsePropertyType(string $type): string
+    protected static function stringifyPropertyType(Type $type): string
     {
-        $type = self::getValuablePropertyType($type);
+        if ($type->isCollection()) {
+            if ($type->getCollectionValueType()) {
+                $subType = self::stringifyPropertyType($type->getCollectionValueType());
 
-        if (StringUtility::endsWith($type, '[]')) {
-            $subType = self::parsePropertyType(rtrim($type, '[]'));
+                if ($type->getClassName()) {
+                    return sprintf('%s<%s>', $type->getClassName(), $subType);
+                }
 
-            if (!empty($subType)) {
                 return sprintf('array<%s>', $subType);
             }
 
             return 'array';
         }
 
-        if (is_a($type, DateTime::class, true)) {
-            return sprintf('DateTime<"%s">', PHP_VERSION_ID >= 70300 ? DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP');
-        }
-
-        if (class_exists($type)) {
-            return ltrim($type, '\\');
-        }
-
-        if (in_array($type, ['string', 'int', 'integer', 'boolean', 'bool', 'double', 'float'])) {
-            return $type;
-        }
-
-        if (strpos($type, '<') !== false) {
-            $collectionType = self::parsePropertyType(trim(explode('<', $type)[0]));
-            $itemsType = self::parsePropertyType(trim(explode('<', $type)[1], '> '));
-
-            return sprintf('%s<%s>', $collectionType, $itemsType);
-        }
-
-        return $type;
-    }
-
-    /**
-     * Returns first valuable property type if multiple types are defined.
-     *
-     * @example Ensures that `\DateTime` is returned when type is wrote like `null|\DateTime`
-     *
-     * @param string $inputType
-     *
-     * @return string
-     */
-    protected static function getValuablePropertyType(string $inputType): string
-    {
-        $multipleTypes = GeneralUtility::trimExplode('|', $inputType);
-
-        $type = $multipleTypes[0];
-
-        if (count($multipleTypes) > 1) {
-            foreach ($multipleTypes as $type) {
-                if (strtolower($type) !== 'null') {
-                    break;
-                }
+        if ($type->getClassName()) {
+            if (is_a($type->getClassName(), DateTime::class, true)) {
+                return sprintf(
+                    'DateTime<"%s">',
+                    PHP_VERSION_ID >= 70300 ? DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP'
+                );
             }
+
+            if (is_a($type->getClassName(), DateTimeImmutable::class, true)) {
+                return sprintf(
+                    'DateTimeImmutable<"%s">',
+                    PHP_VERSION_ID >= 70300 ? DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP'
+                );
+            }
+
+            return $type->getClassName();
         }
 
-        return explode(' ', $type)[0];
+        return $type->getBuiltinType();
     }
 
     /**
@@ -353,10 +312,29 @@ class SerializerMetadataService
             } elseif ($annotation instanceof SerializedName) {
                 $metadata['serialized_name'] = $annotation->name;
             }
-
-            // @todo 591 add support to rest of t3api annotations
         }
 
         return $metadata;
+    }
+
+    /**
+     * There is a reason why `\Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor` is returned as the first
+     * extractor type. It is most flexible (especially for older PHP versions) and allows to specify more informations
+     * than e.g. type hints.
+     *
+     * @return PropertyTypeExtractorInterface[]
+     */
+    protected static function getPropertyTypeExtractors(): array
+    {
+        static $propertyExtractors;
+
+        if (is_null($propertyExtractors)) {
+            $propertyExtractors = [
+                new PhpDocExtractor(),
+                new ReflectionExtractor(),
+            ];
+        }
+
+        return $propertyExtractors;
     }
 }

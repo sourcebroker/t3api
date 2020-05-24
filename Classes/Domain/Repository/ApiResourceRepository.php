@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Repository;
 
-use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionClass;
 use ReflectionException;
@@ -38,10 +37,9 @@ class ApiResourceRepository
 
     /**
      * @throws ReflectionException
-     * @throws AnnotationException
      * @return ApiResource[]
      */
-    public function getAll()
+    public function getAll(): array
     {
         $cacheIdentifier = 'ApiResourceRepository__getAll';
 
@@ -110,7 +108,7 @@ class ApiResourceRepository
     /**
      * @return string[]
      */
-    protected function getAllDomainModels()
+    protected function getAllDomainModels(): array
     {
         $classes = [];
         foreach (ExtensionManagementUtility::getLoadedExtensionListArray() as $extKey) {
@@ -123,7 +121,7 @@ class ApiResourceRepository
         return array_values(
             array_filter(
                 $classes,
-                function ($class) {
+                static function ($class) {
                     return is_subclass_of($class, AbstractDomainObject::class);
                 }
             )
