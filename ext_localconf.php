@@ -4,10 +4,6 @@ defined('TYPO3_MODE') || die('Access denied.');
 
 call_user_func(
     static function () {
-        if (version_compare(TYPO3_branch, '9.5', '>=')) {
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::ENHANCER_NAME] = \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::class;
-        }
-
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] = '_api';
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader'] = 'X-Locale';
 
@@ -86,9 +82,11 @@ call_user_func(
             );
         }
 
-        if (version_compare(TYPO3_branch, '9.5', '<')) {
+        if (version_compare(TYPO3_branch, '9.5', '>=')) {
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::ENHANCER_NAME] = \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::class;
+        } else {
             if (
-                php_sapi_name() !== 'cli'
+                PHP_SAPI !== 'cli'
                 && (
                     $_SERVER['REQUEST_URI'] === ('/' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'])
                     || \TYPO3\CMS\Core\Utility\StringUtility::beginsWith($_SERVER['REQUEST_URI'],
