@@ -11,11 +11,13 @@ use SourceBroker\T3api\Annotation\Serializer\Groups;
 use SourceBroker\T3api\Annotation\Serializer\Type\Image;
 use SourceBroker\T3api\Annotation\Serializer\Type\RecordUri;
 use SourceBroker\T3api\Service\SerializerMetadataService;
-use SourceBroker\T3api\Tests\Unit\Fixtures\Address;
-use SourceBroker\T3api\Tests\Unit\Fixtures\Company;
-use SourceBroker\T3api\Tests\Unit\Fixtures\Group;
-use SourceBroker\T3api\Tests\Unit\Fixtures\Person;
-use SourceBroker\T3api\Tests\Unit\Fixtures\Tag;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Address;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Category;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Company;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Group;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Person;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Tag;
+use Symfony\Component\PropertyInfo\Type;
 
 /**
  * Class SerializerMetadataServiceTest
@@ -112,136 +114,86 @@ class SerializerMetadataServiceTest extends UnitTestCase
         );
     }
 
-    public function parsePropertyTypeReturnsCorrectValueDataProvider(): array
+    public function stringifyPropertyTypeReturnsCorrectValueDataProvider(): array
     {
         $dateTimeFormat = PHP_VERSION_ID >= 70300 ? \DateTimeInterface::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP';
 
         return [
-            '\DateTime' => [
-                '\DateTime',
+            'DateTime' => [
+                new Type('object', false, 'DateTime'),
                 sprintf('DateTime<"%s">', $dateTimeFormat),
             ],
-            '\DateTime|null' => [
-                '\DateTime|null',
-                sprintf('DateTime<"%s">', $dateTimeFormat),
+            'DateTimeImmutable' => [
+                new Type('object', true, 'DateTimeImmutable'),
+                sprintf('DateTimeImmutable<"%s">', $dateTimeFormat),
             ],
-            'null|\DateTime' => [
-                'null|\DateTime',
-                sprintf('DateTime<"%s">', $dateTimeFormat),
-            ],
-            'DateTime|null' => [
-                '\DateTime|null',
-                sprintf('DateTime<"%s">', $dateTimeFormat),
-            ],
-            'DateTime | null' => [
-                'DateTime | null',
-                sprintf('DateTime<"%s">', $dateTimeFormat),
-            ],
-            '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
-                '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+            'TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
+                new Type(
+                    'object',
+                    false,
+                    'TYPO3\CMS\Extbase\Persistence\ObjectStorage',
+                    true,
+                    null,
+                    new Type('object', false, 'TYPO3\CMS\Extbase\Domain\Model\FileReference')
+                ),
                 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
-            ],
-            'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
-                'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>',
-                'TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
-            ],
-            '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
-                '\TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
-                'TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
-            ],
-            '\TYPO3\CMS\Extbase\Domain\Model\FileReference' => [
-                '\TYPO3\CMS\Extbase\Domain\Model\FileReference',
-                'TYPO3\CMS\Extbase\Domain\Model\FileReference',
             ],
             'TYPO3\CMS\Extbase\Domain\Model\FileReference' => [
-                'TYPO3\CMS\Extbase\Domain\Model\FileReference',
+                new Type('object', true, 'TYPO3\CMS\Extbase\Domain\Model\FileReference'),
                 'TYPO3\CMS\Extbase\Domain\Model\FileReference',
             ],
             'string' => [
+                new Type('string'),
                 'string',
-                'string',
-            ],
-            'string And here, in same lane as var annotation, is description for the property' => [
-                'string And here, in same lane as var annotation, is description for the property',
-                'string',
-            ],
-            'boolean' => [
-                'boolean',
-                'boolean',
             ],
             'bool' => [
-                'bool',
+                new Type('bool'),
                 'bool',
             ],
             'int' => [
+                new Type('int'),
                 'int',
-                'int',
-            ],
-            'integer' => [
-                'integer',
-                'integer',
-            ],
-            'double' => [
-                'double',
-                'double',
             ],
             'float' => [
-                'float',
+                new Type('float'),
                 'float',
             ],
             'array<string>' => [
-                'array<string>',
-                'array<string>',
-            ],
-            'array<string> And some additional description here' => [
-                'array<string> And some additional description here',
+                new Type('array', false, null, true, null, new Type('string')),
                 'array<string>',
             ],
             'array<\TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
-                'array<\TYPO3\CMS\Extbase\Domain\Model\FileReference>',
+                new Type(
+                    'array',
+                    false,
+                    null,
+                    true,
+                    null,
+                    new Type('object', false, 'TYPO3\CMS\Extbase\Domain\Model\FileReference')
+                ),
                 'array<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
-            ],
-            'string[]' => [
-                'string[]',
-                'array<string>',
-            ],
-            '[]' => [
-                '[]',
-                'array',
             ],
             'array' => [
+                new Type('array'),
                 'array',
-                'array',
-            ],
-            '\TYPO3\CMS\Extbase\Domain\Model\FileReference[]' => [
-                '\TYPO3\CMS\Extbase\Domain\Model\FileReference[]',
-                'array<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
-            ],
-            'TYPO3\CMS\Extbase\Domain\Model\FileReference[]' => [
-                'TYPO3\CMS\Extbase\Domain\Model\FileReference[]',
-                'array<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
-            ],
-            '\TYPO3\CMS\Extbase\Domain\Model\FileReference[] Additional description goes here' => [
-                '\TYPO3\CMS\Extbase\Domain\Model\FileReference[]',
-                'array<TYPO3\CMS\Extbase\Domain\Model\FileReference>',
             ],
         ];
     }
 
     /**
-     * @param string $varAnnotation
+     * @param Type $type
      * @param string $expectedType
      *
-     * @dataProvider parsePropertyTypeReturnsCorrectValueDataProvider
+     * @dataProvider stringifyPropertyTypeReturnsCorrectValueDataProvider
      * @test
      *
      * @throws ReflectionException
      */
-    public function parsePropertyTypeReturnsCorrectValue(string $varAnnotation, string $expectedType): void
+    public function stringifyPropertyTypeReturnsCorrectValue(Type $type, string $expectedType): void
     {
         self::assertEquals(
             $expectedType,
-            self::callProtectedMethod('parsePropertyType', [$varAnnotation])
+            self::callProtectedMethod('stringifyPropertyType', [$type])
         );
     }
 
@@ -258,10 +210,13 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         'read_only' => true,
                     ],
                     'groups' => [
-                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3api\Tests\Unit\Service\Fixtures\Group>',
+                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Group>',
+                    ],
+                    'categories' => [
+                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Category>',
                     ],
                     'address' => [
-                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Address',
+                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\\Address',
                     ],
                     'firstName' => [
                         'type' => 'string'
@@ -301,10 +256,13 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         'type' => 'string',
                     ],
                     'groups' => [
-                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3api\Tests\Unit\Service\Fixtures\Group>',
+                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Group>',
+                    ],
+                    'categories' => [
+                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Category>',
                     ],
                     'address' => [
-                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Address',
+                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\\Address',
                     ],
                     'bankAccountNumber' => [
                         'type' => 'string',
@@ -313,9 +271,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         ],
                     ],
                     'invoiceAddress' => [
-                        // @todo should be uncommented after moving to Symfony/PropertyInfo
-//                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Address',
-                        'type' => 'Address',
+                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\\Address',
                     ],
                     'hidden' => [
                         'type' => 'bool',
@@ -332,6 +288,14 @@ class SerializerMetadataServiceTest extends UnitTestCase
             ],
             Tag::class => [
                 Tag::class,
+                [
+                    'title' => [
+                        'type' => 'string',
+                    ]
+                ]
+            ],
+            Category::class => [
+                Category::class,
                 [
                     'title' => [
                         'type' => 'string',
@@ -384,8 +348,6 @@ class SerializerMetadataServiceTest extends UnitTestCase
 
     public function getVirtualPropertiesReturnsCorrectValueDataProvider(): array
     {
-        $dateTimeFormat = PHP_VERSION_ID >= 70300 ? \DateTimeInterface::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP';
-
         return [
             Person::class => [
                 Person::class,
@@ -408,9 +370,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     'getTags' => [
                         'name' => 'tags',
                         'serialized_name' => 'tags',
-                        // @todo should be uncommented after moving to Symfony/PropertyInfo
-//                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3api\Tests\Unit\Fixtures\Tag>',
-                        'type' => 'ObjectStorage<Tag>',
+                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Tag>',
                     ],
                     'getBankAccountIban' => [
                         'name' => 'bankAccountIban',
@@ -435,9 +395,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     'getTags' => [
                         'name' => 'tags',
                         'serialized_name' => 'tags',
-                        // @todo should be uncommented after moving to Symfony/PropertyInfo
-//                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3api\Tests\Unit\Fixtures\Tag>',
-                        'type' => 'ObjectStorage<Tag>',
+                        'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Tag>',
                     ],
                     'getBankAccountIban' => [
                         'name' => 'bankAccountIban',
@@ -458,6 +416,10 @@ class SerializerMetadataServiceTest extends UnitTestCase
             ],
             Tag::class => [
                 Tag::class,
+                []
+            ],
+            Category::class => [
+                Category::class,
                 []
             ],
             Address::class => [

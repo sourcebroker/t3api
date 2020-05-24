@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace SourceBroker\T3api\Tests\Unit\Fixtures;
+namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
 
 use SourceBroker\T3api\Annotation\Serializer\Groups;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
@@ -8,7 +8,7 @@ use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 trait ContactDataTrait
 {
     /**
-     * @var \SourceBroker\T3api\Tests\Unit\Fixtures\Address|null
+     * @var \SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Address|null
      */
     protected $address;
 

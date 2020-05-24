@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\T3api\Tests\Unit\Fixtures;
+namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
 
 class Company extends AbstractEntry
 {
@@ -10,7 +10,6 @@ class Company extends AbstractEntry
      */
     protected $name;
 
-//    @todo enable later - should work correctly with Symfony/PropertyInfo
     /**
      * @var Address
      */

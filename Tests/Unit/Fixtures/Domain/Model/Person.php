@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace SourceBroker\T3api\Tests\Unit\Fixtures;
+namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
 
+use DateTimeImmutable;
 use SourceBroker\T3api\Annotation\Serializer\SerializedName;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 
@@ -30,7 +31,7 @@ class Person extends AbstractEntry
     protected $dateOfBirth;
 
     /**
-     * @var \DateTimeImmutable
+     * @var DateTimeImmutable
      */
     protected $created;
 
