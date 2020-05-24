@@ -23,8 +23,5 @@ jobs:
       - name: Create tag message
         run: echo `git tag -n10 -l $(git describe --abbrev=0 --tags) | sed 's/^[0-9.]*[ ]*//g'` >> TAG_MESSAGE
 
-      - name: Build extension files
-        run: composer extension-release
-
       - name: Publish to TER
         run: /home/runner/.composer/vendor/bin/ter-client upload t3api . -u "${{ secrets.TYPO3_ORG_USERNAME }}" -p "${{ secrets.TYPO3_ORG_PASSWORD }}" -m "$(cat TAG_MESSAGE)"
