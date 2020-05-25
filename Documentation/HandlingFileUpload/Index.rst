@@ -152,14 +152,14 @@ so it is needed only to take care of ``tablenames`` and ``table_local``.
 File upload request
 ====================
 
-@todo
+@todo - write docs
 
-@todo request with multiple files (ObjectStorage with FileReference)
+@todo - write docs: request with multiple files (ObjectStorage with FileReference)
 
 File upload response
 =====================
 
-@todo
+@todo - write docs
 
 Save reference to new file
 ===========================
@@ -194,9 +194,9 @@ If you would like to save any other data inside file reference it is needed to e
       ]
    }
 
-@todo information about handling custom class of file reference (which extends standard extbase FileReference)
+@todo - write docs information about handling custom class of file reference (which extends standard extbase FileReference)
 
-@todo
+@todo - write docs
 
 Removing single file reference
 ===============================

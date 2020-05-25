@@ -7,23 +7,23 @@
 Integration
 ============
 
-@todo
+@todo - write docs
 
 Integration with other extensions
 ====================================
 
-@todo
-@todo configure serializer for classes which can not be override :ref:`serialization_yaml_metadata`
+@todo - write docs
+@todo - write docs: configure serializer for classes which can not be override :ref:`serialization_yaml_metadata`
 
 News extension - Example integration
 ======================================
 
-@todo :ref:`t3apinews`
+@todo - write docs :ref:`t3apinews`
 
 Inline output
 ======================================
 
-@todo If you would like to include your JSON directly in TYPO3 HTML output (e.g. to omit waiting for initial request
+@todo - write docs: If you would like to include your JSON directly in TYPO3 HTML output (e.g. to omit waiting for initial request
 to API) you can use xxxViewHelper as follows:
 
 .. code-block:: html

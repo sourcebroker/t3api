@@ -6,7 +6,7 @@
 Serialization
 ==============
 
-@todo
+@todo - write docs
 
 .. toctree::
    :maxdepth: 3

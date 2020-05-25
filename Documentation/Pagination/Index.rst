@@ -7,17 +7,17 @@
 Pagination
 ===========
 
-@todo
+@todo - write docs
 
 Global configuration
 ======================
 
-@todo
+@todo - write docs
 
 Resource specific configuration
 ================================
 
-@todo
+@todo - write docs
 
 .. toctree::
    :maxdepth: 3

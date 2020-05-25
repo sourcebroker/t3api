@@ -350,7 +350,7 @@ Syntax: ``?property[<lt|gt|lte|gte|between>]=value``
 ContainFilter
 ==============
 
-@todo
+@todo - write docs
 
 DistanceFilter
 ===============

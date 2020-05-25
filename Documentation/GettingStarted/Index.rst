@@ -19,14 +19,40 @@ developers experienced in this awesome framework.
 T3api comes with partial support of `JSON-LD <https://json-ld.org/>`__ and `Hydra <http://www.hydra-cg.com/>`__,
 which allows to build smart frontend applications with auto-discoverability capabilities.
 
-@todo short description for IRI
+If you want to fast check working example check demo at: https://github.com/sourcebroker/t3api-demo
+
+@todo - write docs: short description for IRI
+
+
+Installation
+============
+
+Run ``composer require sourcebroker/t3api``.
+
+
+Configuration
+=============
+
+TYPO3 8.7
++++++++++
+
+Open main Template record and add ``T3api`` in tab ``Includes`` -> field ``Include static (from extensions)``.
+Note! Not all options are back ported to TYPO3 8.7.
+
+TYPO3 9.5 / 10.4
+++++++++++++++++
+
+For TYPO3 9.5 / TYPO3 10.4 import route enhancer by adding following line on bottom of your site ``config.yaml`` .
+
+.. code-block:: yaml
+
+   imports:
+     - { resource: "EXT:t3api/Configuration/Routing/config.yaml" }
 
 .. _route-enhancer:
 
-Adding route enhancer
-======================
-
-Minimal configuration requires definition of new route enhancer of type `T3apiResourceEnhancer`.
+If you do not want to use import you can also manually add new route enhancer of type ``T3apiResourceEnhancer`` directly
+in your site configuration.
 
 .. code-block:: yaml
 
@@ -35,9 +61,6 @@ Minimal configuration requires definition of new route enhancer of type `T3apiRe
         type: T3apiResourceEnhancer
 
 .. _getting-started_base-path:
-
-Changing base path to API endpoints
-====================================
 
 Default base path to api requests is: ``_api``. To change it, it is needed to extend route enhancer configuration by
 ``basePath`` property, as in example below:
