@@ -343,7 +343,7 @@ Keeping name of the file uploaded by client sometimes may not be wanted - as dev
     *              "folder"="1:/user_upload/",
     *              "allowedFileExtensions"={"jpg", "jpeg", "png"},
     *              "conflictMode"=DuplicationBehavior::RENAME,
-    *              "filenameMask"="static-prefix-[filenameHash]",
+    *              "filenameMask"="static-prefix-[filenameHash][extensionWithDot]",
     *          }
     *     }
     * )
@@ -382,7 +382,7 @@ It is possible to customize hash algorithm used to generate ``contentHash`` and 
     *              "folder"="1:/user_upload/",
     *              "allowedFileExtensions"={"jpg", "jpeg", "png"},
     *              "conflictMode"=DuplicationBehavior::RENAME,
-    *              "filenameMask"="static-prefix-[filenameHash]-[contentHash]",
+    *              "filenameMask"="static-prefix-[filenameHash]-[contentHash][extensionWithDot]",
     *              "contentHashAlgorithm"="sha1",
     *              "filenameHashAlgorithm"="sha1",
     *          }
