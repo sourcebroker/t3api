@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Serializer\Subscriber;
 
-use Doctrine\Common\Annotations\AnnotationException;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
@@ -50,7 +49,6 @@ class GenerateMetadataSubscriber implements EventSubscriberInterface
      * @param ObjectEvent $event
      *
      * @throws ReflectionException
-     * @throws AnnotationException
      */
     public function onPreSerialize(ObjectEvent $event): void
     {
@@ -63,7 +61,6 @@ class GenerateMetadataSubscriber implements EventSubscriberInterface
      * @param PreDeserializeEvent $event
      *
      * @throws ReflectionException
-     * @throws AnnotationException
      */
     public function onPreDeserialize(PreDeserializeEvent $event): void
     {

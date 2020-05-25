@@ -26,7 +26,8 @@
         "symfony/psr-http-message-bridge": "^1.2",
         "symfony/property-info": "^4.4 || ^5.0",
         "goldspecdigital/oooas": "^2.4",
-        "phpdocumentor/reflection-docblock": "^5.1"
+        "phpdocumentor/reflection-docblock": "^5.1",
+        "doctrine/annotations": "^1.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.0",

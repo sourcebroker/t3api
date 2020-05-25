@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
-use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Annotations\Reader;
@@ -210,15 +209,11 @@ class SerializerService implements SingletonInterface
      */
     protected static function getAnnotationReader(): Reader
     {
-        try {
-            return new CachedReader(
-                new AnnotationReader(),
-                new FilesystemCache(self::getAnnotationsCacheDirectory()),
-                self::isDebugMode()
-            );
-        } catch (AnnotationException $exception) {
-            throw new RuntimeException('Could not create annotation reader for serializer', 1572363525745, $exception);
-        }
+        return new CachedReader(
+            new AnnotationReader(),
+            new FilesystemCache(self::getAnnotationsCacheDirectory()),
+            self::isDebugMode()
+        );
     }
 
     /**

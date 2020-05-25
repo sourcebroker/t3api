@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Response;
 
-use Doctrine\Common\Annotations\AnnotationException;
 use ReflectionException;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 
@@ -25,7 +24,6 @@ class MainEndpointResponse
     }
 
     /**
-     * @throws AnnotationException
      * @throws ReflectionException
      * @return array
      */

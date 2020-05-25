@@ -3,7 +3,6 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Controller;
 
-use Doctrine\Common\Annotations\AnnotationException;
 use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
 use ReflectionException;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
@@ -54,7 +53,6 @@ class AdministrationController extends ActionController
     }
 
     /**
-     * @throws AnnotationException
      * @throws ReflectionException
      * @throws OasInvalidArgumentException
      * @return string
