@@ -2,9 +2,9 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Filter;
 
-use Doctrine\DBAL\FetchMode;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
+use PDO;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
@@ -123,6 +123,8 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
             ->andWhere($queryBuilder->expr()->orX(...$conditions))
             ->setParameters($binds)
             ->execute()
-            ->fetchAll(FetchMode::COLUMN);
+            // Change `PDO::FETCH_COLUMN` back into `Doctrine\DBAL\FetchMode::COLUMN` when support for TYPO3 8.7 is dropped
+            // `Doctrine\DBAL\FetchMode` was added in doctrine/dbal version 2.7.0, but TYPO3 8.7 does not allow to upgrade it
+            ->fetchAll(PDO::FETCH_COLUMN);
     }
 }
