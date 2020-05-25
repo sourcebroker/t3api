@@ -36,8 +36,8 @@ Real code
 
 To check some real code see `t3apinews <https://github.com/sourcebroker/t3apinews>`_ - an example integration of t3api for well known `news <https://github.com/georgringer/news>`_ extension.
 
-DDEV demo
----------
+DEMO
+----
 
 If you use `ddev <https://www.ddev.com/>`_ then in less than 5min you can have working demo of ``ext:t3api`` on you local computer.
 Try https://github.com/sourcebroker/t3api-demo
