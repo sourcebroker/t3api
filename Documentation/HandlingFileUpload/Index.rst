@@ -36,14 +36,11 @@ To create uploadable resource it is needed to create ``POST`` endpoint for resou
 
 There is plenty configuration options which allows you to customize upload endpoint for your needs.
 
-- ``folder`` - destination folder (default: ``1:/user_upload/`` which means files will be uploaded into
-``user_upload`` directory of file storage ID ``1``).
+- ``folder`` - destination folder (default: ``1:/user_upload/`` which means files will be uploaded into ``user_upload`` directory of file storage ID ``1``).
 
-- ``allowedFileExtensions`` - Array of allowed file extensions (default:
-``$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']``).
+- ``allowedFileExtensions`` - Array of allowed file extensions (default:``$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']``).
 
-- ``conflictMode`` - Value of enumeration ``\TYPO3\CMS\Core\Resource\DuplicationBehavior`` (default:
-``\TYPO3\CMS\Core\Resource\DuplicationBehavior::RENAME`` which means that new file name will be changed if same file already exists).
+- ``conflictMode`` - Value of enumeration ``\TYPO3\CMS\Core\Resource\DuplicationBehavior`` (default: ``\TYPO3\CMS\Core\Resource\DuplicationBehavior::RENAME`` which means that new file name will be changed if same file already exists).
 
 - ``filenameMask`` - Allows to change the name of the uploaded file (default: ``[filename]``; see :ref:`how to customize name of uploaded file <handling_file_upload_customize_uploaded_file_name>`).
 
@@ -82,9 +79,7 @@ There is plenty configuration options which allows you to customize upload endpo
 Configuring TCA
 ================
 
-It may be needed to adjust ``TCA`` configuration to correctly fill ``sys_file_reference`` columns. Correct ``TCA``
-configuration contains at least 3 elements inside ``foreign_match_fields`` array - ``fieldname``, ``tablenames`` and
-``table_local`` but extension builder by default creates only ``fieldname`` (at least in current version).
+It may be needed to adjust ``TCA`` configuration to correctly fill ``sys_file_reference`` columns. Correct ``TCA`` configuration contains at least 3 elements inside ``foreign_match_fields`` array - ``fieldname``, ``tablenames`` and ``table_local`` but extension builder by default creates only ``fieldname`` (at least in current version).
 
 .. code-block:: php
 
@@ -176,8 +171,7 @@ Save reference to new file
       }
    }
 
-If you would like to save any other data inside file reference it is needed to extend
-``TYPO3\CMS\Extbase\Domain\Model\FileReference`` class.
+If you would like to save any other data inside file reference it is needed to extend ``TYPO3\CMS\Extbase\Domain\Model\FileReference`` class.
 
 .. code-block:: json
 
