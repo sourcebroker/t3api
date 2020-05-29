@@ -12,7 +12,6 @@ use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
 use TYPO3\CMS\Core\Resource\Rendering\RendererRegistry;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3\CMS\Extbase\Error\Error;
@@ -104,7 +103,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         /** @var Typo3FileReference $originalResource */
         $originalResource = $fileReference instanceof ExtbaseFileReference
             ? $fileReference->getOriginalResource()
-            : $fileReference->getPublicUrl();
+            : $fileReference;
         $originalFile = $originalResource->getOriginalFile();
 
         $url = $originalResource->getPublicUrl();
