@@ -7,7 +7,7 @@
 Subscribers
 ============
 
-@todo
+@todo - write docs
 
 AbstractEntity
 ===============

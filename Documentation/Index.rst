@@ -39,13 +39,12 @@ If you find an error or something is missing, please: `Report a Problem
 <https://github.com/sourcebroker/t3api/issues/new>`__.
 
 
-**Sitemap:**
-
-   :ref:`sitemap`
+**Table of Contents**
 
 .. toctree::
-   :maxdepth: 3
-   :hidden:
+	:maxdepth: 3
+	:titlesonly:
+	:glob:
 
    GettingStarted/Index
    Operations/Index

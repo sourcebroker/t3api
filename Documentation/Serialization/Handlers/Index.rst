@@ -7,29 +7,29 @@
 Handlers
 =========
 
-@todo
+@todo - write docs
 
 FileReference
 ===============
 
-@todo
+@todo - write docs
 
 Image
 ===============
 
-@todo
+@todo - write docs
 
 RecordUri
 ===========
 
-@todo
+@todo - write docs
 
 Typolink
 =========
 
-@todo
+@todo - write docs
 
 Custom handlers
 ================
 
-@todo
+@todo - write docs

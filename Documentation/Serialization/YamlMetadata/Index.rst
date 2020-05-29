@@ -7,4 +7,4 @@
 Yaml metadata
 ============
 
-@todo how to use serializerMetadataDirs
+@todo - write docs: how to use serializerMetadataDirs

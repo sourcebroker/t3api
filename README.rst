@@ -31,63 +31,18 @@ Features
 - Easy customizable serialization handlers and subscribers.
 - Backend module with Swagger for documentation and real testing.
 
-Usage
------
+Documentation
+-------------
 
-Installation
-++++++++++++
+Read the docs at https://docs.typo3.org/p/sourcebroker/t3api/master/en-us/
 
-Installation by composer is recommended.
-In your Composer based TYPO3 project root, just do ``composer require sourcebroker/t3api``.
+Real code
+---------
 
+To check some real code see `t3apinews <https://github.com/sourcebroker/t3apinews>`_ - an example integration of t3api for well known `news <https://github.com/georgringer/news>`_ extension.
 
-Minimal setup
-+++++++++++++
+Demo
+----
 
-1. For TYPO3 8.7: open main Template record and add "T3api" in tab "Includes" -> field "Include static (from extensions)".
-
-2. For TYPO3 9.5: Import route enhancer by adding following line on top of your site ``config.yaml`` .
-
-::
-
-   imports:
-     - { resource: "EXT:t3api/Configuration/Routing/config.yaml" }
-
-3. Configure routes for your Extbase model using PHP annotations:
-
-::
-
-  /**
-   * @SourceBroker\T3api\Annotation\ApiResource(
-   *     collectionOperations={
-   *          "get"={
-   *              "path"="/articles",
-   *          },
-   *     },
-   *     itemOperations={
-   *          "get"={
-   *              "path"="/articles/{id}",
-   *          }
-   *     },
-   * )
-   */
-  class Article extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
-  {
-  }
-
-4. Done! Try your API endpoints at https://example.com/_api/articles and https://example.com/_api/articles/1
-
-
-To check more configuration options see `t3apinews <https://github.com/sourcebroker/t3apinews>`_
-- an example integration of t3api for well known `news <https://github.com/georgringer/news>`_ extension.
-
-
-Release Management
-------------------
-
-T3api uses **semantic versioning** which basically means for you, that:
-
-- **bugfix updates** (e.g. 1.0.0 => 1.0.1) just includes small bugfixes or security relevant stuff without breaking changes.
-- **minor updates** (e.g. 1.0.0 => 1.1.0) includes new features and smaller tasks without breaking changes.
-- **major updates** (e.g. 1.0.0 => 2.0.0) breaking changes wich can be refactorings, features or bugfixes.
-
+If you use `ddev <https://www.ddev.com/>`_ then in less than 5min you can have working demo of ``ext:t3api`` on you local computer.
+Try https://github.com/sourcebroker/t3api-demo

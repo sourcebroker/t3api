@@ -7,9 +7,9 @@
 Customization
 ================
 
-@todo
+@todo - write docs
 
 Collection response schema
 ===========================
 
-@todo
+@todo - write docs

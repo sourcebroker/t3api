@@ -36,14 +36,11 @@ To create uploadable resource it is needed to create ``POST`` endpoint for resou
 
 There is plenty configuration options which allows you to customize upload endpoint for your needs.
 
-- ``folder`` - destination folder (default: ``1:/user_upload/`` which means files will be uploaded into
-``user_upload`` directory of file storage ID ``1``).
+- ``folder`` - destination folder (default: ``1:/user_upload/`` which means files will be uploaded into ``user_upload`` directory of file storage ID ``1``).
 
-- ``allowedFileExtensions`` - Array of allowed file extensions (default:
-``$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']``).
+- ``allowedFileExtensions`` - Array of allowed file extensions (default:``$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']``).
 
-- ``conflictMode`` - Value of enumeration ``\TYPO3\CMS\Core\Resource\DuplicationBehavior`` (default:
-``\TYPO3\CMS\Core\Resource\DuplicationBehavior::RENAME`` which means that new file name will be changed if same file already exists).
+- ``conflictMode`` - Value of enumeration ``\TYPO3\CMS\Core\Resource\DuplicationBehavior`` (default: ``\TYPO3\CMS\Core\Resource\DuplicationBehavior::RENAME`` which means that new file name will be changed if same file already exists).
 
 - ``filenameMask`` - Allows to change the name of the uploaded file (default: ``[filename]``; see :ref:`how to customize name of uploaded file <handling_file_upload_customize_uploaded_file_name>`).
 
@@ -82,9 +79,7 @@ There is plenty configuration options which allows you to customize upload endpo
 Configuring TCA
 ================
 
-It may be needed to adjust ``TCA`` configuration to correctly fill ``sys_file_reference`` columns. Correct ``TCA``
-configuration contains at least 3 elements inside ``foreign_match_fields`` array - ``fieldname``, ``tablenames`` and
-``table_local`` but extension builder by default creates only ``fieldname`` (at least in current version).
+It may be needed to adjust ``TCA`` configuration to correctly fill ``sys_file_reference`` columns. Correct ``TCA`` configuration contains at least 3 elements inside ``foreign_match_fields`` array - ``fieldname``, ``tablenames`` and ``table_local`` but extension builder by default creates only ``fieldname`` (at least in current version).
 
 .. code-block:: php
 
@@ -152,14 +147,14 @@ so it is needed only to take care of ``tablenames`` and ``table_local``.
 File upload request
 ====================
 
-@todo
+@todo - write docs
 
-@todo request with multiple files (ObjectStorage with FileReference)
+@todo - write docs: request with multiple files (ObjectStorage with FileReference)
 
 File upload response
 =====================
 
-@todo
+@todo - write docs
 
 Save reference to new file
 ===========================
@@ -176,8 +171,7 @@ Save reference to new file
       }
    }
 
-If you would like to save any other data inside file reference it is needed to extend
-``TYPO3\CMS\Extbase\Domain\Model\FileReference`` class.
+If you would like to save any other data inside file reference it is needed to extend ``TYPO3\CMS\Extbase\Domain\Model\FileReference`` class.
 
 .. code-block:: json
 
@@ -194,9 +188,9 @@ If you would like to save any other data inside file reference it is needed to e
       ]
    }
 
-@todo information about handling custom class of file reference (which extends standard extbase FileReference)
+@todo - write docs information about handling custom class of file reference (which extends standard extbase FileReference)
 
-@todo
+@todo - write docs
 
 Removing single file reference
 ===============================
@@ -343,7 +337,7 @@ Keeping name of the file uploaded by client sometimes may not be wanted - as dev
     *              "folder"="1:/user_upload/",
     *              "allowedFileExtensions"={"jpg", "jpeg", "png"},
     *              "conflictMode"=DuplicationBehavior::RENAME,
-    *              "filenameMask"="static-prefix-[filenameHash]",
+    *              "filenameMask"="static-prefix-[filenameHash][extensionWithDot]",
     *          }
     *     }
     * )
@@ -382,7 +376,7 @@ It is possible to customize hash algorithm used to generate ``contentHash`` and 
     *              "folder"="1:/user_upload/",
     *              "allowedFileExtensions"={"jpg", "jpeg", "png"},
     *              "conflictMode"=DuplicationBehavior::RENAME,
-    *              "filenameMask"="static-prefix-[filenameHash]-[contentHash]",
+    *              "filenameMask"="static-prefix-[filenameHash]-[contentHash][extensionWithDot]",
     *              "contentHashAlgorithm"="sha1",
     *              "filenameHashAlgorithm"="sha1",
     *          }
