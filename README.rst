@@ -13,8 +13,6 @@ TYPO3 Extension t3api
     .. image:: https://poser.pugx.org/sourcebroker/t3api/license
        :target: https://packagist.org/packages/sourcebroker/t3api
 
-.. contents:: :local:
-
 Features
 --------
 
@@ -36,8 +34,8 @@ Documentation
 
 Read the docs at https://docs.typo3.org/p/sourcebroker/t3api/master/en-us/
 
-Real code
----------
+Example integration
+-------------------
 
 To check some real code see `t3apinews <https://github.com/sourcebroker/t3apinews>`_ - an example integration of t3api for well known `news <https://github.com/georgringer/news>`_ extension.
 
