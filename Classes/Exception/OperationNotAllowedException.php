@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Exception;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response as OpenApiResponse;
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
+use SourceBroker\T3api\Domain\Model\OperationInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -16,7 +16,7 @@ class OperationNotAllowedException extends AbstractException implements OpenApiS
             ->description(self::translate('exception.resource_not_found.title'));
     }
 
-    public function __construct(AbstractOperation $operation, int $code)
+    public function __construct(OperationInterface $operation, int $code)
     {
         $this->title = self::translate('exception.operation_not_allowed.title');
 

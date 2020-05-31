@@ -6,9 +6,9 @@ use Exception;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
+use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Domain\Repository\CommonRepository;
 use SourceBroker\T3api\Exception\MethodNotAllowedException;
@@ -117,7 +117,7 @@ abstract class AbstractDispatcher
     }
 
     /**
-     * @param AbstractOperation $operation
+     * @param OperationInterface $operation
      * @param array $matchedRoute
      * @param Request $request
      * @param ResponseInterface $response
@@ -126,7 +126,7 @@ abstract class AbstractDispatcher
      * @return string
      */
     protected function processOperation(
-        AbstractOperation $operation,
+        OperationInterface $operation,
         array $matchedRoute,
         Request $request,
         ResponseInterface &$response = null
@@ -283,14 +283,14 @@ abstract class AbstractDispatcher
     }
 
     /**
-     * @param AbstractOperation $operation
+     * @param OperationInterface $operation
      * @param Request $request
      * @param AbstractDomainObject|null $targetObject
      * @throws OperationNotAllowedException
      * @return AbstractDomainObject
      */
     protected function deserializeOperation(
-        AbstractOperation $operation,
+        OperationInterface $operation,
         Request $request,
         ?AbstractDomainObject $targetObject = null
     ): AbstractDomainObject {

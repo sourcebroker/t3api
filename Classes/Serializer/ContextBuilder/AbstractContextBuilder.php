@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Serializer\ContextBuilder;
 
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
+use SourceBroker\T3api\Domain\Model\OperationInterface;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -11,7 +11,7 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher as SignalSlotDispatcher;
 abstract class AbstractContextBuilder implements ContextBuilderInterface
 {
     protected static function getCustomizedContextAttributes(
-        AbstractOperation $operation,
+        OperationInterface $operation,
         Request $request,
         array $attributes
     ): array {

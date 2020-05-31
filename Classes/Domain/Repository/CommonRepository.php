@@ -3,8 +3,8 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Repository;
 
 use RuntimeException;
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
+use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Filter\FilterInterface;
 use SourceBroker\T3api\Security\FilterAccessChecker;
 use SourceBroker\T3api\Service\StorageService;
@@ -28,7 +28,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 class CommonRepository
 {
     /**
-     * @var AbstractOperation
+     * @var OperationInterface
      */
     protected $operation;
 
@@ -53,11 +53,11 @@ class CommonRepository
     protected $objectType;
 
     /**
-     * @param AbstractOperation $operation
+     * @param OperationInterface $operation
      *
      * @return CommonRepository
      */
-    public static function getInstanceForOperation(AbstractOperation $operation): self
+    public static function getInstanceForOperation(OperationInterface $operation): self
     {
         $repository = self::getInstanceForEntity($operation->getApiResource()->getEntity());
         $repository->operation = $operation;

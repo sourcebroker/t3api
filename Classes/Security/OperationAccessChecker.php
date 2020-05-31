@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Security;
 
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
+use SourceBroker\T3api\Domain\Model\OperationInterface;
 
 class OperationAccessChecker extends AbstractAccessChecker
 {
-    public static function isGranted(AbstractOperation $operation, array $expressionLanguageVariables = []): bool
+    public static function isGranted(OperationInterface $operation, array $expressionLanguageVariables = []): bool
     {
         if (!$operation->getSecurity()) {
             return true;
@@ -30,7 +31,7 @@ class OperationAccessChecker extends AbstractAccessChecker
      * @deprecated
      * @todo Remove when support for version lower than 9.4 is dropped
      */
-    public static function isGrantedLegacy(AbstractOperation $operation, array $expressionLanguageVariables = []): bool
+    public static function isGrantedLegacy(OperationInterface $operation, array $expressionLanguageVariables = []): bool
     {
         return (bool)static::evaluateLegacyExpressionLanguage(
             $operation->getSecurity(),
@@ -38,8 +39,10 @@ class OperationAccessChecker extends AbstractAccessChecker
         );
     }
 
-    public static function isGrantedPostDenormalize(AbstractOperation $operation, array $expressionLanguageVariables = []): bool
-    {
+    public static function isGrantedPostDenormalize(
+        OperationInterface $operation,
+        array $expressionLanguageVariables = []
+    ): bool {
         if (!$operation->getSecurityPostDenormalize()) {
             return true;
         }
@@ -62,8 +65,10 @@ class OperationAccessChecker extends AbstractAccessChecker
      * @deprecated
      * @todo Remove when support for version lower than 9.4 is dropped
      */
-    public static function isGrantedPostDenormalizeLegacy(AbstractOperation $operation, array $expressionLanguageVariables = []): bool
-    {
+    public static function isGrantedPostDenormalizeLegacy(
+        OperationInterface $operation,
+        array $expressionLanguageVariables = []
+    ): bool {
         return (bool)static::evaluateLegacyExpressionLanguage(
             $operation->getSecurityPostDenormalize(),
             array_merge(['t3apiOperation' => $operation], $expressionLanguageVariables)

@@ -2,13 +2,13 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Slot;
 
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
+use SourceBroker\T3api\Domain\Model\OperationInterface;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class EnrichSerializationContext
 {
-    public function execute(AbstractOperation $operation, Request $request, array $attributes): array
+    public function execute(OperationInterface $operation, Request $request, array $attributes): array
     {
         $attributes['TYPO3_HOST_ONLY'] = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
         $attributes['TYPO3_PORT'] = GeneralUtility::getIndpEnv('TYPO3_PORT');

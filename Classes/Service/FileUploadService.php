@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
 use InvalidArgumentException;
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
+use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Model\UploadSettings;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,12 +39,12 @@ class FileUploadService implements SingletonInterface
     }
 
     /**
-     * @param AbstractOperation $operation
+     * @param OperationInterface $operation
      * @param Request $request
      * @throws Exception
      * @return File
      */
-    public function process(AbstractOperation $operation, Request $request): File
+    public function process(OperationInterface $operation, Request $request): File
     {
         /** @var UploadedFile $uploadedFile */
         $uploadedFile = $request->files->get('originalResource');
