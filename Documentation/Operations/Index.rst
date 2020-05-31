@@ -89,7 +89,7 @@ response of GET method is enriched by some additional properties:
 - ``hydra:member`` - contains array of matched entities.
 - ``hydra:totalItems`` - contains number of all items.
 - ``hydra:view`` - contains data useful for pagination (see more on :ref:`pagination`).
-- ``hydra:search`` - contains data useful for filtering (see more on :ref:`filters`).
+- ``hydra:search`` - contains data useful for filtering (see more on :ref:`filtering`).
 
 Here is an example of basic response for collection operation.
 
