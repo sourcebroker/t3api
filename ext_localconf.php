@@ -7,6 +7,18 @@ call_user_func(
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] = '_api';
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader'] = 'X-Locale';
 
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['operationHandlers'] = [
+            \SourceBroker\T3api\OperationHandler\FileUploadOperationHandler::class => -400,
+            \SourceBroker\T3api\OperationHandler\CollectionGetOperationHandler::class => -500,
+            \SourceBroker\T3api\OperationHandler\CollectionPostOperationHandler::class => -500,
+            \SourceBroker\T3api\OperationHandler\CollectionMethodNotAllowedOperationHandler::class => -9999,
+            \SourceBroker\T3api\OperationHandler\ItemGetOperationHandler::class => -500,
+            \SourceBroker\T3api\OperationHandler\ItemPutOperationHandler::class => -500,
+            \SourceBroker\T3api\OperationHandler\ItemPatchOperationHandler::class => -500,
+            \SourceBroker\T3api\OperationHandler\ItemDeleteOperationHandler::class => -500,
+            \SourceBroker\T3api\OperationHandler\ItemMethodNotAllowedOperationHandler::class => -9999,
+        ];
+
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors'] = [
             \SourceBroker\T3api\Serializer\Construction\InitializedObjectConstructor::class,
             \SourceBroker\T3api\Serializer\Construction\ExtbaseObjectConstructor::class,

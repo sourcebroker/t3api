@@ -22,6 +22,7 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MetadataFactoryInterface;
 use RuntimeException;
+use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
@@ -337,7 +338,7 @@ class OpenApiBuilder
     {
         if ($operation instanceof CollectionOperation && $operation->isMethodGet()) {
             /** @var AbstractCollectionResponse $collectionResponseClass */
-            $collectionResponseClass = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'];
+            $collectionResponseClass = Configuration::getCollectionResponseClass();
 
             return $collectionResponseClass::getOpenApiSchema(
                 self::getComponentsSchemaReference($operation->getApiResource()->getEntity())
@@ -404,7 +405,7 @@ class OpenApiBuilder
                     1577637116148
                 );
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new RuntimeException(
                 sprintf('An error occurred while generating metadata for class `%s`', $class),
                 1577637267693,
