@@ -45,7 +45,7 @@ switch ($versionType) {
 
 $nextTag = implode('.', [$major, $minor, $patch]);
 
-$emConfFile =  './ext_emconf.php';
+$emConfFile = './ext_emconf.php';
 $newEmConf = preg_replace(
     "/'version' => '(\d+\.\d+\.\d+)'/",
     "'version' => '$nextTag'",
@@ -53,7 +53,7 @@ $newEmConf = preg_replace(
 );
 file_put_contents($emConfFile, $newEmConf);
 
-$docsSettingsFile =  './Documentation/Settings.cfg';
+$docsSettingsFile = './Documentation/Settings.cfg';
 $newDocsSettings = preg_replace(
     [
         "/version     = (\d+\.\d+)/",
@@ -61,7 +61,7 @@ $newDocsSettings = preg_replace(
     ],
     [
         "version     = $major.$minor",
-        "release     = $major.$minor.$patch"
+        "release     = $nextTag"
     ],
     file_get_contents($docsSettingsFile)
 );
