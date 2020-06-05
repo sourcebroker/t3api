@@ -67,4 +67,4 @@ $newDocsSettings = preg_replace(
 );
 file_put_contents($docsSettingsFile, $newDocsSettings);
 
-echo "git commit -m 'Tag new version' && git tag -a '$nextTag' -m '$nextTag' && git push origin master --tags \n";
+echo "git add Documentation/Settings.cfg ext_emconf.php && git commit -m 'Tag new version' && git tag -a '$nextTag' -m '$nextTag' && git push origin master --tags \n";
