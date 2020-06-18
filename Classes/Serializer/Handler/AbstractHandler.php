@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\Context;
@@ -52,19 +53,17 @@ abstract class AbstractHandler implements SubscribingHandlerInterface
         );
     }
 
-    /**
-     * @param DeserializationContext $context
-     * @return DeserializationContext
-     */
-    protected function cloneDeserializationContext(DeserializationContext $context): DeserializationContext
-    {
+    protected function cloneDeserializationContext(
+        DeserializationContext $context,
+        array $attributes = []
+    ): DeserializationContext {
         try {
             $reflection = new \ReflectionClass(Context::class);
             $property = $reflection->getProperty('attributes');
             $property->setAccessible(true);
             $contextAttributes = $property->getValue($context);
             $deserializationContext = DeserializationContext::create();
-            foreach ($contextAttributes as $attributeName => $attributeValue) {
+            foreach (array_merge($contextAttributes, $attributes) as $attributeName => $attributeValue) {
                 $deserializationContext->setAttribute($attributeName, $attributeValue);
             }
 

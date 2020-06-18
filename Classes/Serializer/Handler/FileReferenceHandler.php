@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
@@ -14,6 +16,7 @@ use TYPO3\CMS\Core\Resource\Rendering\RendererRegistry;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Error\Error;
 use TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -137,6 +140,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                 $out['urlEmbed'] = $urlEmbed;
             }
         }
+
         return $out;
     }
 
@@ -171,6 +175,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
 
         if ($data === 0) {
             $this->removeExistingFileReference($context);
+
             return null;
         }
 
@@ -183,7 +188,6 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         $uid = (int)(is_numeric($data) ? $data : $data['uid']);
 
         if ($uid) {
-            /** @var ExtbaseFileReference $fileReference */
             return $this->persistenceManager->getObjectByIdentifier(
                 $uid,
                 ExtbaseFileReference::class,
@@ -204,6 +208,9 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         string $type,
         DeserializationContext $context
     ): ExtbaseFileReference {
+        /** @var JsonDeserializationVisitor $visitor */
+        $visitor = $context->getVisitor();
+
         if (empty($data['uidLocal'])) {
             $result = new Result();
             $result->forProperty('uidLocal')->addError(
@@ -215,13 +222,12 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
 
         $this->removeExistingFileReference($context);
 
-        // @todo change it to `$context->getNavigator()->accept()` instead of using separate serializer to keep the context and improve performance
-        $deserializationContext = DeserializationContext::create();
-        if ($context->getAttribute('groups')) {
-            $deserializationContext->setGroups($context->getAttribute('groups'));
-        }
-        // Check if `JSON_THROW_ON_ERROR` is defined is needed only for PHP < 7.2, so can be removed when support is dropped
-        $fileReference = $this->serializerService->deserialize(json_encode($data, defined('JSON_THROW_ON_ERROR') ? JSON_THROW_ON_ERROR : 0), $type, $deserializationContext);
+        /** @var ExtbaseFileReference $fileReference */
+        $fileReference = $this->serializerService->deserialize(
+            json_encode($data),
+            $type,
+            $this->cloneDeserializationContext($context, ['target' => null])
+        );
 
         $fileReference->setOriginalResource(
             $this->resourceFactory->createFileReferenceObject(
@@ -231,6 +237,13 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                 ]
             )
         );
+
+        if ($visitor->getCurrentObject() instanceof AbstractDomainObject) {
+            /** @var AbstractDomainObject $currentObject */
+            $currentObject = $visitor->getCurrentObject();
+            $fileReference->setPid($currentObject->getPid());
+            $fileReference->_setProperty('_languageUid', $currentObject->_getProperty('_languageUid'));
+        }
 
         return $fileReference;
     }
@@ -242,8 +255,10 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
      */
     protected function removeExistingFileReference(DeserializationContext $context): void
     {
+        /** @var JsonDeserializationVisitor $visitor */
+        $visitor = $context->getVisitor();
         $propertyName = $context->getCurrentPath()[count($context->getCurrentPath()) - 1];
-        $propertyValue = ObjectAccess::getProperty($context->getVisitor()->getCurrentObject(), $propertyName);
+        $propertyValue = ObjectAccess::getProperty($visitor->getCurrentObject(), $propertyName);
         if ($propertyValue instanceof ExtbaseFileReference || $propertyValue instanceof Typo3FileReference) {
             $this->persistenceManager->remove($propertyValue);
         }
