@@ -24,6 +24,7 @@ abstract class AbstractCollectionOperationHandler extends AbstractOperationHandl
      * @param ResponseInterface|null $response
      * @throws OperationNotAllowedException
      * @return mixed|void
+     * @noinspection ReferencingObjectsInspection
      */
     public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response)
     {

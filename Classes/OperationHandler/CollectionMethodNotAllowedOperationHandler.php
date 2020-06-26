@@ -13,8 +13,10 @@ class CollectionMethodNotAllowedOperationHandler extends AbstractItemOperationHa
     /**
      * @param OperationInterface $operation
      * @param Request $request
+     * @param array $route
      * @param ResponseInterface|null $response
      * @throws MethodNotAllowedException
+     * @noinspection ReferencingObjectsInspection
      * @return mixed|void
      */
     public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response)

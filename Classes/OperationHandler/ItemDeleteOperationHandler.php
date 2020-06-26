@@ -26,6 +26,7 @@ class ItemDeleteOperationHandler extends AbstractItemOperationHandler
      * @throws ResourceNotFoundException
      * @throws OperationNotAllowedException
      * @return mixed|null
+     * @noinspection ReferencingObjectsInspection
      */
     public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response)
     {

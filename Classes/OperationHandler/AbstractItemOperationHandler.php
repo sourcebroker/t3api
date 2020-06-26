@@ -27,6 +27,7 @@ abstract class AbstractItemOperationHandler extends AbstractOperationHandler
      * @throws OperationNotAllowedException
      * @throws ResourceNotFoundException
      * @return mixed|AbstractDomainObject|null
+     * @noinspection ReferencingObjectsInspection
      */
     public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response)
     {
