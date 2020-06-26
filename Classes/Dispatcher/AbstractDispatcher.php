@@ -7,6 +7,7 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use SourceBroker\T3api\Configuration\Configuration;
+use SourceBroker\T3api\Cors\Processor;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Exception\RouteNotFoundException;
@@ -53,6 +54,11 @@ abstract class AbstractDispatcher
     protected $apiResourceRepository;
 
     /**
+     * @var Processor
+     */
+    protected $corsProcessor;
+
+    /**
      * Bootstrap constructor.
      */
     public function __construct()
@@ -60,6 +66,7 @@ abstract class AbstractDispatcher
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->serializerService = $this->objectManager->get(SerializerService::class);
         $this->apiResourceRepository = $this->objectManager->get(ApiResourceRepository::class);
+        $this->corsProcessor = $this->objectManager->get(Processor::class);
     }
 
     /**
@@ -122,6 +129,8 @@ abstract class AbstractDispatcher
                 1557506987081
             );
         }
+
+        $this->corsProcessor->process($request, $response);
 
         /** @var OperationHandlerInterface $handler */
         $handler = $this->objectManager->get(array_shift($handlers));

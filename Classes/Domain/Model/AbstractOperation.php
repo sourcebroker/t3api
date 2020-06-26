@@ -76,7 +76,7 @@ abstract class AbstractOperation implements OperationInterface
             [],
             null,
             [],
-            [$this->method]
+            [$this->method, 'OPTIONS']
         );
         $this->persistenceSettings = PersistenceSettings::create(
             $params['attributes']['persistence'] ?? [],
