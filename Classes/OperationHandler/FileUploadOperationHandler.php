@@ -26,6 +26,7 @@ class FileUploadOperationHandler extends AbstractCollectionOperationHandler
             && is_subclass_of($operation->getApiResource()->getEntity(), File::class, true);
     }
 
+    /** @noinspection PhpUnused */
     public function injectFileUploadService(FileUploadService $fileUploadService): void
     {
         $this->fileUploadService = $fileUploadService;

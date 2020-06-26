@@ -26,6 +26,7 @@ class ItemGetOperationHandler extends AbstractItemOperationHandler
      * @throws ResourceNotFoundException
      * @throws OperationNotAllowedException
      * @return mixed|void
+     * @noinspection ReferencingObjectsInspection
      */
     public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response): AbstractDomainObject
     {

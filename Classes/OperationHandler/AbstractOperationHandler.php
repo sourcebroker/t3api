@@ -38,11 +38,13 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
         $this->objectManager = $objectManager;
     }
 
+    /** @noinspection PhpUnused */
     public function injectSerializerService(SerializerService $serializerService): void
     {
         $this->serializerService = $serializerService;
     }
 
+    /** @noinspection PhpUnused */
     public function injectValidationService(ValidationService $validationService): void
     {
         $this->validationService = $validationService;

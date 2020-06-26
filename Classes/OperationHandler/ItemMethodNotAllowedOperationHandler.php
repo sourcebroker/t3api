@@ -17,6 +17,7 @@ class ItemMethodNotAllowedOperationHandler extends AbstractItemOperationHandler
      * @param ResponseInterface|null $response
      * @throws MethodNotAllowedException
      * @return mixed|void
+     * @noinspection ReferencingObjectsInspection
      */
     public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response)
     {

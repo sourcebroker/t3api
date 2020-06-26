@@ -17,6 +17,7 @@ interface OperationHandlerInterface
      * @param array $route
      * @param ResponseInterface $response
      * @return mixed
+     * @noinspection ReferencingObjectsInspection
      */
     public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response);
 }
