@@ -37,7 +37,7 @@ abstract class AbstractItemOperationHandler extends AbstractOperationHandler
         $object = $repository->findByUid((int)$route['id']);
 
         if (!$object instanceof AbstractDomainObject) {
-            throw new ResourceNotFoundException($operation->getApiResource()->getEntity(), $route['id'], 1581461016515);
+            throw new ResourceNotFoundException($operation->getApiResource()->getEntity(), (int)$route['id'], 1581461016515);
         }
 
         if (!OperationAccessChecker::isGranted($operation, ['object' => $object])) {
