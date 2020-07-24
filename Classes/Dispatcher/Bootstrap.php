@@ -19,8 +19,6 @@ use Throwable;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Core\Routing\RouteNotFoundException;
-use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
  * Class Bootstrap
@@ -63,7 +61,7 @@ class Bootstrap extends AbstractDispatcher
     public function process(ServerRequestInterface $request): ResponseInterface
     {
         try {
-            $this->setLanguage();
+            $this->setLanguage($request);
             $request = $this->httpFoundationFactory->createRequest($request);
             $context = (new RequestContext())->fromRequest($request);
             $matchedRoute = null;
@@ -135,9 +133,11 @@ class Bootstrap extends AbstractDispatcher
     /**
      * Sets language according to language identifier sent in `languageHeader`
      *
+     * @param ServerRequestInterface $request
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
-    protected function setLanguage(): void
+    protected function setLanguage(ServerRequestInterface $request): void
     {
         if (!$GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface) {
             throw new RuntimeException(
@@ -145,15 +145,11 @@ class Bootstrap extends AbstractDispatcher
                 1580483236906
             );
         }
-
         $languageHeader = $GLOBALS['TYPO3_REQUEST']->getHeader($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']);
         $languageUid = (int)(!empty($languageHeader) ? array_shift($languageHeader) : 0);
-        $language = $this->objectManager->get(SiteFinder::class)
-            ->getSiteByIdentifier('main')
-            ->getLanguageById($languageUid);
+        $language = $request->getAttribute('site')->getLanguageById($languageUid);
         $this->objectManager->get(Context::class)
             ->setAspect('language', LanguageAspectFactory::createFromSiteLanguage($language));
-
         $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute('language', $language);
     }
 }
