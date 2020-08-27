@@ -7,6 +7,8 @@ use Symfony\Component\Routing\Route;
 
 interface OperationInterface
 {
+    public function getKey(): string;
+
     public function getRoute(): Route;
 
     public function getPath(): string;
@@ -18,6 +20,8 @@ interface OperationInterface
     public function getNormalizationContext(): array;
 
     public function getSecurity(): string;
+
+    public function getSecurityPostDenormalize(): string;
 
     public function getPersistenceSettings(): PersistenceSettings;
 
