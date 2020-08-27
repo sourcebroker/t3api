@@ -33,6 +33,11 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
      */
     protected $validationService;
 
+    /**
+     * @var OperationAccessChecker
+     */
+    protected $operationAccessChecker;
+
     public function injectObjectManager(ObjectManagerInterface $objectManager): void
     {
         $this->objectManager = $objectManager;
@@ -48,6 +53,11 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
     public function injectValidationService(ValidationService $validationService): void
     {
         $this->validationService = $validationService;
+    }
+
+    public function injectOperationAccessChecker(OperationAccessChecker $operationAccessChecker): void
+    {
+        $this->operationAccessChecker = $operationAccessChecker;
     }
 
     protected function getRepositoryForOperation(OperationInterface $operation): CommonRepository
@@ -73,7 +83,7 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
             DeserializationContextBuilder::createFromOperation($operation, $request, $targetObject)
         );
 
-        if (!OperationAccessChecker::isGrantedPostDenormalize($operation, ['object' => $object])) {
+        if (!$this->operationAccessChecker->isGrantedPostDenormalize($operation, ['object' => $object])) {
             throw new OperationNotAllowedException($operation, 1574782843388);
         }
 

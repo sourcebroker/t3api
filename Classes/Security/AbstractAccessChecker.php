@@ -16,7 +16,7 @@ use TYPO3\CMS\Frontend\Configuration\TypoScript\ConditionMatching\ConditionMatch
 
 class AbstractAccessChecker
 {
-    protected static function getExpressionLanguageResolver(): Resolver
+    protected function getExpressionLanguageResolver(): Resolver
     {
         static $expressionLanguageResolver;
 
@@ -66,7 +66,7 @@ class AbstractAccessChecker
      * @todo Remove when support for version lower than 9.4 is dropped
      * @deprecated
      */
-    protected static function shouldUseLegacyCheckMethod(): bool
+    protected function shouldUseLegacyCheckMethod(): bool
     {
         return version_compare(TYPO3_branch, '9.4', '<');
     }
@@ -75,17 +75,20 @@ class AbstractAccessChecker
      * @todo Remove when support for version lower than 9.4 is dropped
      * @deprecated
      */
-    protected static function evaluateLegacyExpressionLanguage(string $expression, array $additionalVariables = [])
+    protected function evaluateLegacyExpressionLanguage(string $expression, array $additionalVariables = [])
     {
-        return static::getLegacyExpressionLanguageEvaluator()
-            ->evaluate($expression, array_merge(static::getLegacyExpressionLanguageDefaultVariables(), $additionalVariables));
+        return $this->getLegacyExpressionLanguageEvaluator()
+            ->evaluate(
+                $expression,
+                array_merge($this->getLegacyExpressionLanguageDefaultVariables(), $additionalVariables)
+            );
     }
 
     /**
      * @todo Remove when support for version lower than 9.4 is dropped
      * @deprecated
      */
-    protected static function getLegacyExpressionLanguageDefaultVariables(): array
+    protected function getLegacyExpressionLanguageDefaultVariables(): array
     {
         /** @var FrontendBackendUserAuthentication|null $backendUserAuthentication */
         $backendUserAuthentication = $GLOBALS['BE_USER'];
@@ -119,7 +122,7 @@ class AbstractAccessChecker
      * @todo Remove when support for version lower than 9.4 is dropped
      * @deprecated
      */
-    protected static function getLegacyExpressionLanguageEvaluator(): ExpressionLanguage
+    protected function getLegacyExpressionLanguageEvaluator(): ExpressionLanguage
     {
         static $expressionLanguageEvaluator;
 

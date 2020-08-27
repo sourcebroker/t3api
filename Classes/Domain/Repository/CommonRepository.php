@@ -53,6 +53,11 @@ class CommonRepository
     protected $objectType;
 
     /**
+     * @var FilterAccessChecker
+     */
+    protected $filterAccessChecker;
+
+    /**
      * @param OperationInterface $operation
      *
      * @return CommonRepository
@@ -101,6 +106,12 @@ class CommonRepository
     public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager)
     {
         $this->persistenceManager = $persistenceManager;
+    }
+
+
+    public function injectFilterAccessChecker(FilterAccessChecker $filterAccessChecker): void
+    {
+        $this->filterAccessChecker = $filterAccessChecker;
     }
 
     /**
@@ -195,8 +206,8 @@ class CommonRepository
     {
         return array_filter(
             $apiFilters,
-            static function (ApiFilter $apiFilter) {
-                return FilterAccessChecker::isGranted($apiFilter);
+            function (ApiFilter $apiFilter) {
+                return $this->filterAccessChecker->isGranted($apiFilter);
             }
         );
     }
