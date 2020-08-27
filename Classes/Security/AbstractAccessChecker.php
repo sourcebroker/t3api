@@ -11,11 +11,22 @@ use TYPO3\CMS\Core\Context\Exception\AspectPropertyNotFoundException;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Configuration\TypoScript\ConditionMatching\ConditionMatcher;
 
 class AbstractAccessChecker
 {
+    /**
+     * @var ObjectManager
+     */
+    protected $objectManager;
+
+    public function injectObjectManager(ObjectManager $objectManager): void
+    {
+        $this->objectManager = $objectManager;
+    }
+
     protected function getExpressionLanguageResolver(): Resolver
     {
         static $expressionLanguageResolver;
