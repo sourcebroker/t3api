@@ -129,10 +129,10 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         if (preg_match('#video/.*#', $originalFile->getMimeType())) {
             $fileRenderer = RendererRegistry::getInstance()->getRenderer($originalFile);
             if ($fileRenderer !== null && preg_match(
-                    '/src="([^"]+)"/',
-                    $fileRenderer->render($originalFile, 1, 1),
-                    $match
-                )) {
+                '/src="([^"]+)"/',
+                $fileRenderer->render($originalFile, 1, 1),
+                $match
+            )) {
                 $urlEmbed = $match[1];
                 if (parse_url($urlEmbed, PHP_URL_SCHEME) === null) {
                     $urlEmbed = $context->getAttribute('TYPO3_SITE_URL') . $urlEmbed;

@@ -239,10 +239,10 @@ class CommonRepository
                     && $apiFilterA->getProperty() !== $apiFilterB->getProperty()
                 ) {
                     return array_search(
-                            $apiFilterA->getProperty(),
-                            array_keys($queryParams[$apiFilterA->getParameterName()]),
-                            true
-                        ) - array_search(
+                        $apiFilterA->getProperty(),
+                        array_keys($queryParams[$apiFilterA->getParameterName()]),
+                        true
+                    ) - array_search(
                             $apiFilterB->getProperty(),
                             array_keys($queryParams[$apiFilterA->getParameterName()]),
                             true

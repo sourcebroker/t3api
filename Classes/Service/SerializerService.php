@@ -175,8 +175,8 @@ class SerializerService implements SingletonInterface
                 ->addMetadataDirs(self::getMetadataDirs())
                 ->setObjectConstructor($this->objectManager->get(
                     ObjectConstructorChain::class,
-                    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors'])
-                );
+                    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors']
+                ));
         }
 
         return clone $serializerBuilder;
