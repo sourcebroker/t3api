@@ -59,3 +59,13 @@ It may happen that conflict of names will occur if ``order`` is also the name of
    class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
    {
    }
+
+
+.. admonition:: Real examples. Install `T3API Demo <https://github.com/sourcebroker/t3apidemo>`__  and try those links below.
+
+   * | Get list of news sorted by titles ascending:
+     | https://t3api-demo.ddev.site/_api/news/news?order[title]=asc
+     |
+   * | Get list of news sorted by date descending and then by title ascending:
+     | https://t3api-demo.ddev.site/_api/news/news?order[datetime]=desc&order[title]=asc
+
