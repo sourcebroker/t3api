@@ -306,7 +306,11 @@ class SerializerMetadataService
             } elseif ($annotation instanceof ReadOnly) {
                 $metadata['read_only'] = (bool)$annotation->readOnly;
             } elseif ($annotation instanceof Exclude) {
-                $metadata['exclude'] = true;
+                if ($annotation->if !== '') {
+                    $metadata['exclude_if'] = $annotation->if;
+                } else {
+                    $metadata['exclude'] = true;
+                }
             } elseif ($annotation instanceof MaxDepth) {
                 $metadata['max_depth'] = $annotation->depth;
             } elseif ($annotation instanceof SerializedName) {
