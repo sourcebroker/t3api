@@ -243,10 +243,10 @@ class CommonRepository
                         array_keys($queryParams[$apiFilterA->getParameterName()]),
                         true
                     ) - array_search(
-                            $apiFilterB->getProperty(),
-                            array_keys($queryParams[$apiFilterA->getParameterName()]),
-                            true
-                        );
+                        $apiFilterB->getProperty(),
+                        array_keys($queryParams[$apiFilterA->getParameterName()]),
+                        true
+                    );
                 }
 
                 return array_search($apiFilterA->getParameterName(), array_keys($queryParams), true)
