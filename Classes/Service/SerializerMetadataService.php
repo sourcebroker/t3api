@@ -6,6 +6,7 @@ namespace SourceBroker\T3api\Service;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Annotations\AnnotationReader;
+use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -23,9 +24,6 @@ use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
 use Symfony\Component\PropertyInfo\Type;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * Class SerializerMetadataService
- */
 class SerializerMetadataService
 {
     /**
@@ -63,6 +61,31 @@ class SerializerMetadataService
 
             self::$runtimeGeneratedCache[] = $reflectionClass->getName();
         }
+    }
+
+    /**
+     * This method should invert encoding done in static::encodeToSingleHandlerParam
+     * @see \SourceBroker\T3api\Service\SerializerMetadataService::encodeToSingleHandlerParam()
+     *
+     * @param string $value
+     * @return mixed
+     */
+    public static function decodeFromSingleHandlerParam(string $value)
+    {
+        if (is_string($value)) {
+            /**
+             * @noinspection JsonEncodingApiUsageInspection
+             * Do not use JsonException and JSON_THROW_ON_ERROR as it was introduced in PHP 7.3.
+             * Code below can be refactored after drop support for PHP 7.2.
+             */
+            $json = json_decode($value, true);
+
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $json;
+            }
+        }
+
+        return $value;
     }
 
     /**
@@ -267,14 +290,14 @@ class SerializerMetadataService
         if ($type->getClassName()) {
             if (is_a($type->getClassName(), DateTime::class, true)) {
                 return sprintf(
-                    'DateTime<"%s">',
+                    'DateTime<\'%s\'>',
                     PHP_VERSION_ID >= 70300 ? DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP'
                 );
             }
 
             if (is_a($type->getClassName(), DateTimeImmutable::class, true)) {
                 return sprintf(
-                    'DateTimeImmutable<"%s">',
+                    'DateTimeImmutable<\'%s\'>',
                     PHP_VERSION_ID >= 70300 ? DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP'
                 );
             }
@@ -301,12 +324,16 @@ class SerializerMetadataService
                 $metadata['type'] = $annotation->getName();
 
                 if (!empty($annotation->getParams())) {
-                    $metadata['type'] .= '<"' . implode('","', $annotation->getParams()) . '">';
+                    $metadata['type'] .= sprintf('<%s>', static::encodeToHandlerParams($annotation->getParams()));
                 }
             } elseif ($annotation instanceof ReadOnly) {
                 $metadata['read_only'] = (bool)$annotation->readOnly;
             } elseif ($annotation instanceof Exclude) {
-                $metadata['exclude'] = true;
+                if ($annotation->if !== '') {
+                    $metadata['exclude_if'] = $annotation->if;
+                } else {
+                    $metadata['exclude'] = true;
+                }
             } elseif ($annotation instanceof MaxDepth) {
                 $metadata['max_depth'] = $annotation->depth;
             } elseif ($annotation instanceof SerializedName) {
@@ -336,5 +363,58 @@ class SerializerMetadataService
         }
 
         return $propertyExtractors;
+    }
+
+    protected static function encodeToHandlerParams(array $params): string
+    {
+        if (empty($params)) {
+            return '';
+        }
+
+        $encodedParams = array_map('static::encodeToSingleHandlerParam', $params);
+
+        return '\''.implode('\',\'', $encodedParams).'\'';
+    }
+
+    /**
+     * This method should invert encoding done in static::decodeFromSingleHandlerParam
+     * @see \SourceBroker\T3api\Service\SerializerMetadataService::decodeFromSingleHandlerParam()
+     * @param $value
+     * @return string
+     */
+    protected static function encodeToSingleHandlerParam($value): string
+    {
+        if (is_string($value) || is_numeric($value) || is_null($value)) {
+            return (string)$value;
+        }
+
+        if (is_array($value)) {
+            /**
+             * @noinspection JsonEncodingApiUsageInspection
+             * Do not use JsonException and JSON_THROW_ON_ERROR as it was introduced in PHP 7.3.
+             * Code below can be refactored after drop support for PHP 7.2.
+             */
+            $json = json_encode(
+                $value,
+                JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_HEX_TAG
+            );
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Could not encode array parameter to json inside %s::%s',
+                        static::class, __METHOD__
+                    ),
+                    1600582676444
+                );
+            }
+
+            return $json;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf('Unsupported handler parameter type'),
+            1600582783504
+        );
     }
 }

@@ -11,6 +11,7 @@ use JMS\Serializer\Builder\DriverFactoryInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -28,6 +29,7 @@ use SourceBroker\T3api\Serializer\Construction\ObjectConstructorChain;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Utility\FileUtility;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -176,7 +178,8 @@ class SerializerService implements SingletonInterface
                 ->setObjectConstructor($this->objectManager->get(
                     ObjectConstructorChain::class,
                     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors']
-                ));
+                ))
+                ->setExpressionEvaluator(new ExpressionEvaluator(new ExpressionLanguage()));
         }
 
         return clone $serializerBuilder;
@@ -232,6 +235,6 @@ class SerializerService implements SingletonInterface
      */
     protected function getDriverFactory(): DriverFactoryInterface
     {
-        return new DefaultDriverFactory($this->getPropertyNamingStrategy(), new Parser());
+        return new DefaultDriverFactory($this->getPropertyNamingStrategy(), new Parser(), new ExpressionEvaluator(new ExpressionLanguage()));
     }
 }
