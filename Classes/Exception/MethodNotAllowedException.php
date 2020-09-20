@@ -4,12 +4,12 @@ namespace SourceBroker\T3api\Exception;
 
 use ReflectionClass;
 use ReflectionException;
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
+use SourceBroker\T3api\Domain\Model\OperationInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class MethodNotAllowedException extends AbstractException
 {
-    public function __construct(AbstractOperation $operation, int $code)
+    public function __construct(OperationInterface $operation, int $code)
     {
         $this->title = self::translate('exception.method_not_allowed.title');
 

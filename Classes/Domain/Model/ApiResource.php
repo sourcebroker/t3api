@@ -32,7 +32,7 @@ class ApiResource
     protected $routes;
 
     /**
-     * @var AbstractOperation[]
+     * @var OperationInterface[]
      */
     protected $routeNameToOperation;
 
@@ -73,7 +73,6 @@ class ApiResource
             $this->collectionOperations[] = new CollectionOperation($operationKey, $this, $operationData);
         }
 
-        /** @var AbstractOperation $operation */
         foreach ($this->getOperations() as $operation) {
             $routeName = spl_object_hash($operation);
             $this->routes->add($routeName, $operation->getRoute());
@@ -90,7 +89,7 @@ class ApiResource
     }
 
     /**
-     * @return AbstractOperation[]
+     * @return OperationInterface[]
      */
     public function getOperations(): array
     {
@@ -153,12 +152,7 @@ class ApiResource
         return $this->routes;
     }
 
-    /**
-     * @param string $routeName
-     *
-     * @return AbstractOperation
-     */
-    public function getOperationByRouteName(string $routeName): AbstractOperation
+    public function getOperationByRouteName(string $routeName): OperationInterface
     {
         if (!isset($this->routeNameToOperation[$routeName])) {
             throw new \InvalidArgumentException(sprintf('Operation for %s not found', $routeName), 1557217180348);

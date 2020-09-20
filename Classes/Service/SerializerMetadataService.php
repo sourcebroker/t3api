@@ -403,7 +403,8 @@ class SerializerMetadataService
                 throw new InvalidArgumentException(
                     sprintf(
                         'Could not encode array parameter to json inside %s::%s',
-                        static::class, __METHOD__
+                        static::class,
+                        __METHOD__
                     ),
                     1600582676444
                 );

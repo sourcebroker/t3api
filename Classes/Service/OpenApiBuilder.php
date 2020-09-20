@@ -22,10 +22,11 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MetadataFactoryInterface;
 use RuntimeException;
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
+use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
+use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Exception\ResourceNotFoundException;
 use SourceBroker\T3api\Exception\ValidationException;
@@ -152,25 +153,25 @@ class OpenApiBuilder
     }
 
     /**
-     * @param AbstractOperation $apiOperation
+     * @param OperationInterface $apiOperation
      *
      * @throws OasInvalidArgumentException
      * @return Operation
      */
-    protected static function getOperation(AbstractOperation $apiOperation): Operation
+    protected static function getOperation(OperationInterface $apiOperation): Operation
     {
         $summary = null;
-        if ($apiOperation instanceof ItemOperation && $apiOperation->getMethod() === 'GET') {
+        if ($apiOperation instanceof ItemOperation && $apiOperation->isMethodGet()) {
             $summary = 'Retrieves the resource.';
-        } elseif ($apiOperation instanceof CollectionOperation && $apiOperation->getMethod() === 'GET') {
+        } elseif ($apiOperation instanceof CollectionOperation && $apiOperation->isMethodGet()) {
             $summary = 'Retrieves the collection of resources.';
-        } elseif ($apiOperation instanceof CollectionOperation && $apiOperation->getMethod() === 'POST') {
+        } elseif ($apiOperation instanceof CollectionOperation && $apiOperation->isMethodPost()) {
             $summary = 'Creates the resource.';
-        } elseif ($apiOperation instanceof ItemOperation && $apiOperation->getMethod() === 'PUT') {
+        } elseif ($apiOperation instanceof ItemOperation && $apiOperation->isMethodPut()) {
             $summary = 'Replaces the resource';
-        } elseif ($apiOperation instanceof ItemOperation && $apiOperation->getMethod() === 'PATCH') {
+        } elseif ($apiOperation instanceof ItemOperation && $apiOperation->isMethodPatch()) {
             $summary = 'Updates the resource';
-        } elseif ($apiOperation instanceof ItemOperation && $apiOperation->getMethod() === 'DELETE') {
+        } elseif ($apiOperation instanceof ItemOperation && $apiOperation->isMethodDelete()) {
             $summary = 'Removes the resource';
         }
 
@@ -184,12 +185,12 @@ class OpenApiBuilder
     }
 
     /**
-     * @param AbstractOperation $operation
+     * @param OperationInterface $operation
      *
      * @throws OasInvalidArgumentException
      * @return Parameter[]
      */
-    protected static function getOperationParameters(AbstractOperation $operation): array
+    protected static function getOperationParameters(OperationInterface $operation): array
     {
         return array_merge(
             self::getPathParametersForOperation($operation),
@@ -199,11 +200,11 @@ class OpenApiBuilder
     }
 
     /**
-     * @param AbstractOperation $operation
+     * @param OperationInterface $operation
      *
      * @return Parameter[]
      */
-    protected static function getPathParametersForOperation(AbstractOperation $operation): array
+    protected static function getPathParametersForOperation(OperationInterface $operation): array
     {
         if (!$operation instanceof ItemOperation || strpos($operation->getPath(), '{id}') === false) {
             return [];
@@ -220,15 +221,15 @@ class OpenApiBuilder
     }
 
     /**
-     * @param AbstractOperation $operation
+     * @param OperationInterface $operation
      *
      * @return Parameter[]
      */
-    protected static function getFilterParametersForOperation(AbstractOperation $operation): array
+    protected static function getFilterParametersForOperation(OperationInterface $operation): array
     {
         $parameters = [];
 
-        if (!$operation instanceof CollectionOperation || $operation->getMethod() !== 'GET') {
+        if (!$operation instanceof CollectionOperation || !$operation->isMethodGet()) {
             return $parameters;
         }
 
@@ -249,23 +250,24 @@ class OpenApiBuilder
     }
 
     /**
-     * @param AbstractOperation $operation
+     * @param OperationInterface $operation
      *
      * @throws OasInvalidArgumentException
      * @return Parameter[]
      */
-    protected static function getPaginationParametersForOperation(AbstractOperation $operation): array
+    protected static function getPaginationParametersForOperation(OperationInterface $operation): array
     {
-        $pagination = $operation->getPagination();
         $parameters = [];
 
         if (
             !$operation instanceof CollectionOperation
-            || $operation->getMethod() !== 'GET'
-            || (!$pagination->isClientEnabled() && !$pagination->isServerEnabled())
+            || !$operation->isMethodGet()
+            || (!$operation->getPagination()->isClientEnabled() && !$operation->getPagination()->isServerEnabled())
         ) {
             return [];
         }
+
+        $pagination = $operation->getPagination();
 
         if ($pagination->isClientEnabled()) {
             $parameters[] = Parameter::create()
@@ -302,11 +304,11 @@ class OpenApiBuilder
     }
 
     /**
-     * @param AbstractOperation $operation
+     * @param OperationInterface $operation
      *
      * @return Response[]
      */
-    protected static function getOperationResponses(AbstractOperation $operation): array
+    protected static function getOperationResponses(OperationInterface $operation): array
     {
         $responses = [
             Response::create()
@@ -314,7 +316,7 @@ class OpenApiBuilder
                 ->content(
                     MediaType::json()->schema(self::getOperationSchema($operation))
                 )
-                ->statusCode($operation->getMethod() === 'POST' ? 201 : 200),
+                ->statusCode($operation->isMethodPost() ? 201 : 200),
         ];
 
         if ($operation instanceof ItemOperation) {
@@ -332,16 +334,11 @@ class OpenApiBuilder
         return $responses;
     }
 
-    /**
-     * @param AbstractOperation $operation
-     *
-     * @return Schema
-     */
-    protected static function getOperationSchema(AbstractOperation $operation): Schema
+    protected static function getOperationSchema(OperationInterface $operation): Schema
     {
-        if ($operation instanceof CollectionOperation && $operation->getMethod() === 'GET') {
+        if ($operation instanceof CollectionOperation && $operation->isMethodGet()) {
             /** @var AbstractCollectionResponse $collectionResponseClass */
-            $collectionResponseClass = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'];
+            $collectionResponseClass = Configuration::getCollectionResponseClass();
 
             return $collectionResponseClass::getOpenApiSchema(
                 self::getComponentsSchemaReference($operation->getApiResource()->getEntity())
@@ -408,7 +405,7 @@ class OpenApiBuilder
                     1577637116148
                 );
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new RuntimeException(
                 sprintf('An error occurred while generating metadata for class `%s`', $class),
                 1577637267693,
@@ -527,12 +524,7 @@ class OpenApiBuilder
         return false;
     }
 
-    /**
-     * @param AbstractOperation $operation
-     *
-     * @return RequestBody|null
-     */
-    protected static function getOperationRequestBody(AbstractOperation $operation): ?RequestBody
+    protected static function getOperationRequestBody(OperationInterface $operation): ?RequestBody
     {
         if ($operation->isMethodGet() || $operation->isMethodDelete()) {
             return null;

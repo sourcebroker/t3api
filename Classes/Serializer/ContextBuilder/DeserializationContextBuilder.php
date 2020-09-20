@@ -4,7 +4,7 @@ namespace SourceBroker\T3api\Serializer\ContextBuilder;
 
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
-use SourceBroker\T3api\Domain\Model\AbstractOperation;
+use SourceBroker\T3api\Domain\Model\OperationInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class DeserializationContextBuilder extends AbstractContextBuilder
@@ -19,12 +19,12 @@ class DeserializationContextBuilder extends AbstractContextBuilder
     }
 
     /**
-     * @param AbstractOperation $operation
+     * @param OperationInterface $operation
      * @param Request $request
      * @param null $targetObject
      * @return DeserializationContext
      */
-    public static function createFromOperation(AbstractOperation $operation, Request $request, $targetObject = null): Context
+    public static function createFromOperation(OperationInterface $operation, Request $request, $targetObject = null): Context
     {
         $context = self::create();
 
