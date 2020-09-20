@@ -58,4 +58,5 @@ If you find an error or something is missing, please: `Report a Problem
    Multilanguage/Index
    HandlingFileUpload/Index
    HandlingCascadePersistence/Index
+   UseCases/Index
    Sitemap
