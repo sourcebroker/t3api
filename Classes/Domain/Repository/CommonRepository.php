@@ -53,6 +53,11 @@ class CommonRepository
     protected $objectType;
 
     /**
+     * @var FilterAccessChecker
+     */
+    protected $filterAccessChecker;
+
+    /**
      * @param OperationInterface $operation
      *
      * @return CommonRepository
@@ -101,6 +106,12 @@ class CommonRepository
     public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager)
     {
         $this->persistenceManager = $persistenceManager;
+    }
+
+
+    public function injectFilterAccessChecker(FilterAccessChecker $filterAccessChecker): void
+    {
+        $this->filterAccessChecker = $filterAccessChecker;
     }
 
     /**
@@ -195,8 +206,8 @@ class CommonRepository
     {
         return array_filter(
             $apiFilters,
-            static function (ApiFilter $apiFilter) {
-                return FilterAccessChecker::isGranted($apiFilter);
+            function (ApiFilter $apiFilter) {
+                return $this->filterAccessChecker->isGranted($apiFilter);
             }
         );
     }
@@ -228,14 +239,14 @@ class CommonRepository
                     && $apiFilterA->getProperty() !== $apiFilterB->getProperty()
                 ) {
                     return array_search(
-                            $apiFilterA->getProperty(),
-                            array_keys($queryParams[$apiFilterA->getParameterName()]),
-                            true
-                        ) - array_search(
-                            $apiFilterB->getProperty(),
-                            array_keys($queryParams[$apiFilterA->getParameterName()]),
-                            true
-                        );
+                        $apiFilterA->getProperty(),
+                        array_keys($queryParams[$apiFilterA->getParameterName()]),
+                        true
+                    ) - array_search(
+                        $apiFilterB->getProperty(),
+                        array_keys($queryParams[$apiFilterA->getParameterName()]),
+                        true
+                    );
                 }
 
                 return array_search($apiFilterA->getParameterName(), array_keys($queryParams), true)

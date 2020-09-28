@@ -8,7 +8,6 @@ use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Exception\ResourceNotFoundException;
-use SourceBroker\T3api\Security\OperationAccessChecker;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
@@ -37,10 +36,10 @@ abstract class AbstractItemOperationHandler extends AbstractOperationHandler
         $object = $repository->findByUid((int)$route['id']);
 
         if (!$object instanceof AbstractDomainObject) {
-            throw new ResourceNotFoundException($operation->getApiResource()->getEntity(), $route['id'], 1581461016515);
+            throw new ResourceNotFoundException($operation->getApiResource()->getEntity(), (int)$route['id'], 1581461016515);
         }
 
-        if (!OperationAccessChecker::isGranted($operation, ['object' => $object])) {
+        if (!$this->operationAccessChecker->isGranted($operation, ['object' => $object])) {
             throw new OperationNotAllowedException($operation, 1574411504130);
         }
 

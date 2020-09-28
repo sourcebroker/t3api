@@ -1,6 +1,6 @@
 <?php
-
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Annotation\Serializer;
 
 /**
@@ -9,4 +9,8 @@ namespace SourceBroker\T3api\Annotation\Serializer;
  */
 class Exclude
 {
+    /**
+     * @var string
+     */
+    public $if = '';
 }

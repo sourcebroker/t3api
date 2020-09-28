@@ -2,9 +2,9 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
+use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -82,7 +82,6 @@ class RouteService implements SingletonInterface
     }
 
     /**
-     * @throws SiteNotFoundException
      * @return Site
      */
     protected static function getSite(): Site
@@ -93,11 +92,27 @@ class RouteService implements SingletonInterface
             return $site;
         }
 
-        /** @var Site $site */
-        $site = GeneralUtility::makeInstance(ObjectManager::class)
-            ->get(SiteFinder::class)
-            ->getSiteByIdentifier('main');
-
+        if ($GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface
+            && $GLOBALS['TYPO3_REQUEST']->getAttribute('site') instanceof Site) {
+            $site = $GLOBALS['TYPO3_REQUEST']->getAttribute('site');
+        } else {
+            // fallback for backend requests (swagger module)
+            $allSites = GeneralUtility::makeInstance(ObjectManager::class)->get(SiteFinder::class)->getAllSites();
+            $siteFallback = null;
+            foreach ($allSites as $siteToCheck) {
+                $base = trim((string)$siteToCheck->getBase());
+                if ($base === '/') {
+                    $siteFallback = $siteToCheck;
+                }
+                if (rtrim($base, '/') === GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST')) {
+                    $site = $siteToCheck;
+                    break;
+                }
+            }
+            if (empty($site)) {
+                $site = $siteFallback;
+            }
+        }
         return $site;
     }
 }
