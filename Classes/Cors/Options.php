@@ -80,7 +80,13 @@ class Options
         $configuration =
             $objectManager->get(ConfigurationManagerInterface::class)->getConfiguration(
                 ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
-            )['config.']['tx_t3api.']['cors.'] ?: [];
+            ) ?: [];
+
+        if (empty($configuration)) {
+            throw new \Exception('TypoScript configuration for "tx_t3api" is misssing!');
+        }
+
+        $configuration = $configuration['config.']['tx_t3api.']['cors.'] ?? [];
         foreach ($configuration as $option => $value) {
             $internalValue = '';
             switch ($option) {

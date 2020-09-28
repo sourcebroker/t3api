@@ -52,6 +52,7 @@ class Processor implements SingletonInterface
     public function process(\Symfony\Component\HttpFoundation\Request $request, ResponseInterface &$response)
     {
         $this->setRequestAndResponse($request, $response);
+
         if ($this->checkOptionsAndCorsRequest()) {
             $originUri = $this->request->getOriginUri();
             if ($this->isOriginUriAllowed('*') && !$this->request->hasCredentials()) {
@@ -70,7 +71,7 @@ class Processor implements SingletonInterface
 
     protected function checkOptionsAndCorsRequest()
     {
-        return !empty($this->options->isEmpty()) && $this->request->isCrossOrigin();
+        return $this->options->isEmpty() && $this->request->isCrossOrigin();
     }
 
     protected function setRequestAndResponse(\Symfony\Component\HttpFoundation\Request $request, ResponseInterface &$response)

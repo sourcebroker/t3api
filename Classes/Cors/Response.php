@@ -129,18 +129,18 @@ class Response
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getMaximumAge(): ?string
+    public function getMaximumAge(): ?int
     {
         return $this->maximumAge;
     }
 
     /**
-     * @param string $maximumAge
+     * @param int $maximumAge
      * @return void
      */
-    public function setMaximumAge(?string $maximumAge): void
+    public function setMaximumAge(?int $maximumAge): void
     {
         $this->maximumAge = $maximumAge;
     }
