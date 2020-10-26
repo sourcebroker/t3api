@@ -8,9 +8,6 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 
-/**
- * Class AbstractHandler
- */
 abstract class AbstractHandler implements SubscribingHandlerInterface
 {
     /**
@@ -71,5 +68,10 @@ abstract class AbstractHandler implements SubscribingHandlerInterface
         } catch (\ReflectionException $e) {
             throw new \RuntimeException('Could not clone deserialization object', 1589868671607, $e);
         }
+    }
+
+    protected function getDecodedParams(array $params): array
+    {
+        return array_map('\SourceBroker\T3api\Service\SerializerMetadataService::decodeFromSingleHandlerParam', $params);
     }
 }

@@ -3,20 +3,27 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Security;
 
 use SourceBroker\T3api\Domain\Model\ApiFilter;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 class FilterAccessChecker extends AbstractAccessChecker
 {
-    public static function isGranted(ApiFilter $filter, array $expressionLanguageVariables = []): bool
+    public const SIGNAL_BEFORE_IS_GRANTED = 'beforeIsGranted';
+
+    public function isGranted(ApiFilter $filter, array $expressionLanguageVariables = []): bool
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        [$filter, $expressionLanguageVariables] = $this->objectManager->get(Dispatcher::class)
+            ->dispatch(self::class, self::SIGNAL_BEFORE_IS_GRANTED, [$filter, $expressionLanguageVariables]);
+
         if (empty($filter->getStrategy()->getCondition())) {
             return true;
         }
 
-        if (self::shouldUseLegacyCheckMethod()) {
-            return static::isGrantedLegacy($filter, $expressionLanguageVariables);
+        if ($this->shouldUseLegacyCheckMethod()) {
+            return $this->isGrantedLegacy($filter, $expressionLanguageVariables);
         }
 
-        $resolver = self::getExpressionLanguageResolver();
+        $resolver = $this->getExpressionLanguageResolver();
         $resolver->expressionLanguageVariables['t3apiFilter'] = $filter;
         $resolver->expressionLanguageVariables = array_merge(
             $resolver->expressionLanguageVariables,
@@ -28,11 +35,12 @@ class FilterAccessChecker extends AbstractAccessChecker
 
     /**
      * @deprecated
+     * @noinspection PhpDocSignatureInspection
      * @todo Remove when support for version lower than 9.4 is dropped
      */
-    public static function isGrantedLegacy(ApiFilter $filter, array $expressionLanguageVariables = []): bool
+    public function isGrantedLegacy(ApiFilter $filter, array $expressionLanguageVariables = []): bool
     {
-        return (bool)static::evaluateLegacyExpressionLanguage(
+        return (bool)$this->evaluateLegacyExpressionLanguage(
             $filter->getStrategy()->getCondition(),
             array_merge(['t3apiFilter' => $filter], $expressionLanguageVariables)
         );

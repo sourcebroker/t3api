@@ -181,3 +181,9 @@ To disable main endpoint it is just needed to set ``mainEndpointResponseClass`` 
 .. code-block:: php
 
    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'] = null;
+
+.. toctree::
+   :maxdepth: 3
+   :hidden:
+
+   CustomizingOperationHandler/Index

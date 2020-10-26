@@ -95,3 +95,9 @@ Should be used to filter items by text fields. ``SearchFilter`` supports 3 strat
    {
    }
 
+
+.. admonition:: Real examples. Install `T3API Demo <https://github.com/sourcebroker/t3apidemo>`__  and try those links below.
+
+   * | Get list of news filtered by search word "minima" and sort by datetime.
+     | https://t3api-demo.ddev.site/_api/news/news?search=minima&order[datetime]=asc
+     |

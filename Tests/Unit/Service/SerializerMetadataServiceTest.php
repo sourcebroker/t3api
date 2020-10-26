@@ -50,7 +50,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     return [$image];
                 },
                 [
-                    'type' => 'Image<"800c","600","","">',
+                    'type' => 'Image<\'800c\',\'600\',\'\',\'\'>',
                 ],
             ],
             'Type - Image (with maxWidth)' => [
@@ -61,7 +61,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     return [$image];
                 },
                 [
-                    'type' => 'Image<"","","450","">',
+                    'type' => 'Image<\'\',\'\',\'450\',\'\'>',
                 ],
             ],
             'Type - RecordUri' => [
@@ -72,7 +72,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     return [$recordUri];
                 },
                 [
-                    'type' => 'RecordUri<"tx_example_identifier">',
+                    'type' => 'RecordUri<\'tx_example_identifier\'>',
                 ],
             ],
             'RecordUri with groups' => [
@@ -85,7 +85,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     return [$groups, $recordUri];
                 },
                 [
-                    'type' => 'RecordUri<"tx_another_identifier">',
+                    'type' => 'RecordUri<\'tx_another_identifier\'>',
                     'groups' => [
                         'api_group_sample',
                         'api_group_sample_2',
@@ -121,11 +121,11 @@ class SerializerMetadataServiceTest extends UnitTestCase
         return [
             'DateTime' => [
                 new Type('object', false, 'DateTime'),
-                sprintf('DateTime<"%s">', $dateTimeFormat),
+                sprintf('DateTime<\'%s\'>', $dateTimeFormat),
             ],
             'DateTimeImmutable' => [
                 new Type('object', true, 'DateTimeImmutable'),
-                sprintf('DateTimeImmutable<"%s">', $dateTimeFormat),
+                sprintf('DateTimeImmutable<\'%s\'>', $dateTimeFormat),
             ],
             'TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference>' => [
                 new Type(
@@ -229,10 +229,10 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         'serialized_name' => 'familyName',
                     ],
                     'dateOfBirth' => [
-                        'type' => sprintf('DateTime<"%s">', $dateTimeFormat),
+                        'type' => sprintf('DateTime<\'%s\'>', $dateTimeFormat),
                     ],
                     'created' => [
-                        'type' => sprintf('DateTimeImmutable<"%s">', $dateTimeFormat),
+                        'type' => sprintf('DateTimeImmutable<\'%s\'>', $dateTimeFormat),
                     ],
                     'bankAccountNumber' => [
                         'type' => 'string',
@@ -315,10 +315,10 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         'type' => 'string',
                     ],
                     'created' => [
-                        'type' => sprintf('DateTimeImmutable<"%s">', $dateTimeFormat),
+                        'type' => sprintf('DateTimeImmutable<\'%s\'>', $dateTimeFormat),
                     ],
                     'modified' => [
-                        'type' => sprintf('DateTime<"%s">', $dateTimeFormat),
+                        'type' => sprintf('DateTime<\'%s\'>', $dateTimeFormat),
                     ]
                 ]
             ]
@@ -376,7 +376,12 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         'name' => 'bankAccountIban',
                         'serialized_name' => 'bankAccountIban',
                         'type' => 'string',
-                    ]
+                    ],
+                    'getPrivateAddress' => [
+                        'name' => 'privateAddress',
+                        'serialized_name' => 'privateAddress',
+                        'type' => 'ExampleTypeWithNestedParams<\'PrivateAddress\',\'{"parameter1":"value1","parameter2":["value2a","value2b"],"parameter3":{"parameter3a":"value3a","parameter3b":3}}\'>',
+                    ],
                 ]
             ],
             Company::class => [

@@ -6,6 +6,7 @@ namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
 use DateTimeImmutable;
 use SourceBroker\T3api\Annotation\Serializer\SerializedName;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
+use SourceBroker\T3api\Tests\Unit\Fixtures\Annotation\Serializer\Type\ExampleTypeWithNestedParams;
 
 class Person extends AbstractEntry
 {
@@ -42,5 +43,27 @@ class Person extends AbstractEntry
     public function getFullName(): string
     {
         return $this->firstName . ' ' . $this->lastName;
+    }
+
+    /**
+     * @VirtualProperty("privateAddress")
+     * @ExampleTypeWithNestedParams(
+     *     "PrivateAddress",
+     *     config={
+     *          "parameter1": "value1",
+     *          "parameter2": {
+     *              "value2a",
+     *              "value2b",
+     *          },
+     *          "parameter3": {
+     *              "parameter3a": "value3a",
+     *              "parameter3b": 3,
+     *          },
+     *     }
+     * )
+     */
+    public function getPrivateAddress(): ?Address
+    {
+        return $this->address;
     }
 }

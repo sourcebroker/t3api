@@ -60,3 +60,11 @@ Syntax: ``?property[<lt|gt|lte|gte|between>]=value``
    class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
    {
    }
+
+
+.. admonition:: Real examples. Install `T3API Demo <https://github.com/sourcebroker/t3apidemo>`__  and try those links below.
+
+   * | Get news from between two dates:
+     | https://t3api-demo.ddev.site/_api/news/news?datetime[between]=2020-05-28T21:35:55.000..2020-05-29T21:20:00.000
+     |
+
