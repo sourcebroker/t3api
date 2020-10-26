@@ -129,18 +129,18 @@ class Response
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getMaximumAge(): ?string
+    public function getMaximumAge(): ?int
     {
         return $this->maximumAge;
     }
 
     /**
-     * @param string $maximumAge
+     * @param int|null $maximumAge
      * @return void
      */
-    public function setMaximumAge(?string $maximumAge): void
+    public function setMaximumAge(?int $maximumAge): void
     {
         $this->maximumAge = $maximumAge;
     }
@@ -178,7 +178,7 @@ class Response
             }
 
             if ($this->getMaximumAge()) {
-                $this->sendHeader('Access-Control-Max-Age', (string)$this->getMaximumAge());
+                $this->sendHeader('Access-Control-Max-Age', (int)$this->getMaximumAge());
             }
 
             $this->response = $this->response->withStatus(204);

@@ -1,14 +1,14 @@
 <?php
-
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Cors;
 
-use TYPO3\CMS\Core\SingletonInterface;
+use SourceBroker\T3api\Processor\ProcessorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Psr\Http\Message\ResponseInterface;
 
-class Processor implements SingletonInterface
+class Processor implements ProcessorInterface
 {
     /**
      * @var Options
@@ -30,7 +30,7 @@ class Processor implements SingletonInterface
         $this->options = $this->getObjectManager()->get(Options::class);
     }
 
-    public function processPreflight(\Symfony\Component\HttpFoundation\Request $request, ResponseInterface &$response)
+    public function processPreflight(\Symfony\Component\HttpFoundation\Request $request, ResponseInterface &$response): void
     {
         $this->setRequestAndResponse($request, $response);
         if ($this->checkOptionsAndCorsRequest() && $this->request->isPreflight()) {
@@ -49,7 +49,7 @@ class Processor implements SingletonInterface
         }
     }
 
-    public function process(\Symfony\Component\HttpFoundation\Request $request, ResponseInterface &$response)
+    public function process(\Symfony\Component\HttpFoundation\Request $request, ResponseInterface &$response): void
     {
         $this->setRequestAndResponse($request, $response);
         if ($this->checkOptionsAndCorsRequest()) {
@@ -68,12 +68,12 @@ class Processor implements SingletonInterface
         }
     }
 
-    protected function checkOptionsAndCorsRequest()
+    protected function checkOptionsAndCorsRequest(): bool
     {
-        return !empty($this->options->isEmpty()) && $this->request->isCrossOrigin();
+        return !$this->options->isEmpty() && $this->request->isCrossOrigin();
     }
 
-    protected function setRequestAndResponse(\Symfony\Component\HttpFoundation\Request $request, ResponseInterface &$response)
+    protected function setRequestAndResponse(\Symfony\Component\HttpFoundation\Request $request, ResponseInterface &$response): void
     {
         if (empty($this->request)) {
             $this->request = $this->getObjectManager()->get(Request::class, $request);
@@ -101,7 +101,7 @@ class Processor implements SingletonInterface
     protected function isOriginUriAllowed($originUri): bool
     {
         // Check for exact match
-        if (in_array($originUri, $this->options->getAllowOrigin())) {
+        if (in_array($originUri, $this->options->getAllowOrigin(), true)) {
             return true;
         }
         // Check for pattern match
@@ -113,6 +113,9 @@ class Processor implements SingletonInterface
         return false;
     }
 
+    /**
+     * @noinspection PhpIncompatibleReturnTypeInspection
+     */
     protected function getObjectManager(): ObjectManager
     {
         return GeneralUtility::makeInstance(ObjectManager::class);

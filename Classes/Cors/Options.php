@@ -1,6 +1,6 @@
 <?php
-
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Cors;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -185,6 +185,6 @@ class Options
      */
     public function isEmpty(): bool
     {
-        return !$this->empty;
+        return $this->empty;
     }
 }

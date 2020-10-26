@@ -1,6 +1,6 @@
 <?php
-
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Cors;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -21,9 +21,8 @@ class Request
     {
         if ($this->isPreflight() && $this->request->headers->has('Access-Control-Request-Method')) {
             return $this->request->headers->get('Access-Control-Request-Method');
-        } else {
-            return '';
         }
+        return '';
     }
 
     /**
@@ -33,9 +32,8 @@ class Request
     {
         if ($this->isPreflight() && $this->request->headers->has('Access-Control-Request-Headers')) {
             return GeneralUtility::trimExplode(',', $this->request->headers->get('Access-Control-Request-Headers'));
-        } else {
-            return [];
         }
+        return [];
     }
 
     /**
@@ -53,7 +51,7 @@ class Request
     {
         return
             $this->request->headers->has('origin') &&
-            $this->request->headers->get('origin') != $this->getSchemeAndHttpHost();
+            $this->request->headers->get('origin') !== $this->getSchemeAndHttpHost();
     }
 
     /**

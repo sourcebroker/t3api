@@ -7,11 +7,11 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use SourceBroker\T3api\Configuration\Configuration;
-use SourceBroker\T3api\Cors\Processor;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Exception\RouteNotFoundException;
 use SourceBroker\T3api\OperationHandler\OperationHandlerInterface;
+use SourceBroker\T3api\Processor\ProcessorInterface;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,11 +54,6 @@ abstract class AbstractDispatcher
     protected $apiResourceRepository;
 
     /**
-     * @var Processor
-     */
-    protected $corsProcessor;
-
-    /**
      * Bootstrap constructor.
      */
     public function __construct()
@@ -66,7 +61,6 @@ abstract class AbstractDispatcher
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->serializerService = $this->objectManager->get(SerializerService::class);
         $this->apiResourceRepository = $this->objectManager->get(ApiResourceRepository::class);
-        $this->corsProcessor = $this->objectManager->get(Processor::class);
     }
 
     /**
@@ -130,8 +124,6 @@ abstract class AbstractDispatcher
             );
         }
 
-        $this->corsProcessor->process($request, $response);
-
         /** @var OperationHandlerInterface $handler */
         $handler = $this->objectManager->get(array_shift($handlers));
         $result = $handler->handle($operation, $request, $route ?? [], $response);
@@ -168,6 +160,27 @@ abstract class AbstractDispatcher
                 }
 
                 return call_user_func($operationHandlerClass . '::supports', $operation, $request);
+            }
+        );
+    }
+
+    protected function callProcessors(Request $request, &$response): void
+    {
+        $objectManager = $this->objectManager;
+        array_filter(
+            Configuration::getProcessors(),
+            static function (string $processorClass) use ($request, &$response, $objectManager) {
+                if (!is_subclass_of($processorClass, ProcessorInterface::class, true)) {
+                    throw new RuntimeException(
+                        sprintf(
+                            'Process `%s` needs to be an instance of `%s`',
+                            $processorClass,
+                            ProcessorInterface::class
+                        ),
+                        1603705384
+                    );
+                }
+                call_user_func_array([$objectManager->get($processorClass), 'process'], [$request, &$response]);
             }
         );
     }

@@ -20,6 +20,11 @@ call_user_func(
             \SourceBroker\T3api\OperationHandler\ItemMethodNotAllowedOperationHandler::class => -9999,
         ];
 
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['processors'] = [
+            \SourceBroker\T3api\Cors\Processor::class => 100,
+            \SourceBroker\T3api\Processor\LanguageProcessor::class => 200,
+        ];
+
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors'] = [
             \SourceBroker\T3api\Serializer\Construction\InitializedObjectConstructor::class,
             \SourceBroker\T3api\Serializer\Construction\ExtbaseObjectConstructor::class,
