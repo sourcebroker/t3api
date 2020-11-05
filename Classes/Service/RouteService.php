@@ -2,23 +2,12 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
-use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-/**
- * Class RouteService
- */
 class RouteService implements SingletonInterface
 {
-    /**
-     * @return string
-     */
     public static function getApiBasePath(): string
     {
         if (version_compare(TYPO3_branch, '9.5', '<')) {
@@ -40,9 +29,12 @@ class RouteService implements SingletonInterface
         return trim(self::getDefaultLanguageBasePath() . self::getApiBasePath(), '/');
     }
 
-    /**
-     * @return array
-     */
+    public static function getFullApiBaseUrl(): string
+    {
+        return rtrim((string)SiteService::getCurrent()->getBase(), '/')
+            . '/' . ltrim(self::getFullApiBasePath(), '/');
+    }
+
     protected static function getApiRouteEnhancer(): array
     {
         static $apiRouteEnhancer;
@@ -51,12 +43,10 @@ class RouteService implements SingletonInterface
             return $apiRouteEnhancer;
         }
 
-        foreach ((self::getSite()->getConfiguration()['routeEnhancers'] ?? []) as $routeEnhancer) {
-            if ($routeEnhancer['type'] === ResourceEnhancer::ENHANCER_NAME) {
-                $apiRouteEnhancer = $routeEnhancer;
+        $routeEnhancer = SiteService::getT3apiRouteEnhancer(SiteService::getCurrent());
 
-                return $apiRouteEnhancer;
-            }
+        if ($routeEnhancer !== null) {
+            return $routeEnhancer;
         }
 
         throw new RuntimeException(
@@ -69,50 +59,12 @@ class RouteService implements SingletonInterface
         );
     }
 
-    /**
-     * @return string
-     */
     protected static function getDefaultLanguageBasePath(): string
     {
         if (version_compare(TYPO3_branch, '9.4', '<')) {
             return '/';
         }
 
-        return self::getSite()->getDefaultLanguage()->getBase()->getPath();
-    }
-
-    /**
-     * @return Site
-     */
-    protected static function getSite(): Site
-    {
-        static $site;
-
-        if (!empty($site)) {
-            return $site;
-        }
-
-        if ($GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface
-            && $GLOBALS['TYPO3_REQUEST']->getAttribute('site') instanceof Site) {
-            $site = $GLOBALS['TYPO3_REQUEST']->getAttribute('site');
-        } else {
-            // fallback for backend requests (swagger module)
-            $allSites = GeneralUtility::makeInstance(ObjectManager::class)->get(SiteFinder::class)->getAllSites();
-            $siteFallback = null;
-            foreach ($allSites as $siteToCheck) {
-                $base = trim((string)$siteToCheck->getBase());
-                if ($base === '/') {
-                    $siteFallback = $siteToCheck;
-                }
-                if (rtrim($base, '/') === GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST')) {
-                    $site = $siteToCheck;
-                    break;
-                }
-            }
-            if (empty($site)) {
-                $site = $siteFallback;
-            }
-        }
-        return $site;
+        return SiteService::getCurrent()->getDefaultLanguage()->getBase()->getPath();
     }
 }
