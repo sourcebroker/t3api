@@ -8,9 +8,12 @@ call_user_func(
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
                 'SourceBroker.t3api',
                 'tools',
-                'tx_t3api_m1',
+                'm1',
                 '',
-                ['Administration' => 'documentation, openApiData'],
+                [
+                    'Administration' => 'documentation',
+                    'OpenApi' => 'display, spec',
+                ],
                 [
                     'access' => 'user,group',
                     'icon' => 'EXT:t3api/Resources/Public/Icons/Extension.svg',

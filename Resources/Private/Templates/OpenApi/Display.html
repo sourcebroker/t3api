@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <f:comment><!--
+    If you would ever need to overwrite this template (because e.g. cdn resources does not work anymore) you can
+    can override the template by adding TS to path: `module.tx_t3api_tools_t3apim1.view.templateRootPaths`
+    --></f:comment>
+    <meta charset="UTF-8">
+    <title>T3API</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/esprima/2.7.3/esprima.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.36.0/swagger-ui-bundle.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.36.0/swagger-ui-standalone-preset.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.36.0/swagger-ui.min.css" />
+
+    <style>
+        /* Hides server selection as it is useless for now - we display always only one server */
+        #t3api-swagger-ui .scheme-container {
+            display: none;
+        }
+    </style>
+
+    <script>
+        /* <f:format.raw> */
+        window.onload = function () {
+            var element = document.getElementById('t3api-swagger-ui');
+            window.ui = SwaggerUIBundle({
+                url: element.dataset.specUrl,
+                dom_id: '#t3api-swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: 'BaseLayout'
+            });
+        }
+        /* </f:format.raw> */
+    </script>
+</head>
+
+<body>
+<div id="t3api-swagger-ui" data-spec-url="{specUrl}"></div>
+</body>
+</html>

@@ -1,61 +1,7 @@
-<!-- HTML for static distribution bundle build -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Swagger UI</title>
-	<link rel="stylesheet" type="text/css" href="/typo3conf/ext/t3api/Resources/Public/vendor/swagger-ui/swagger-ui.css">
-	<link rel="icon" type="image/png" href="/typo3conf/ext/t3api/Resources/Public/vendor/swagger-ui/favicon-32x32.png" sizes="32x32"/>
-	<link rel="icon" type="image/png" href="/typo3conf/ext/t3api/Resources/Public/vendor/swagger-ui/favicon-16x16.png" sizes="16x16"/>
-	<style>
-		html {
-			height: 100%;
-			box-sizing: border-box;
-			overflow: -moz-scrollbars-vertical;
-			overflow-y: scroll;
-		}
+{namespace core=TYPO3\CMS\Core\ViewHelpers}
 
-		*,
-		*:before,
-		*:after {
-			box-sizing: inherit;
-		}
+<f:flashMessages />
 
-		body {
-			height: 100%;
-			margin: 0;
-			background: #fafafa;
-			overflow-y: scroll;
-		}
-	</style>
-</head>
-
-<body>
-<div id="swagger-ui"></div>
-
-<script src="/typo3conf/ext/t3api/Resources/Public/vendor/swagger-ui/swagger-ui-bundle.js"></script>
-<script src="/typo3conf/ext/t3api/Resources/Public/vendor/swagger-ui/swagger-ui-standalone-preset.js"></script>
-<f:format.raw>
-	<script>
-      var dataUrl = '{dataUrl}';
-	</script>
-</f:format.raw>
-<script>
-  window.onload = function () {
-    window.ui = SwaggerUIBundle({
-      url: dataUrl,
-      dom_id: '#swagger-ui',
-      deepLinking: true,
-      presets: [
-        SwaggerUIBundle.presets.apis,
-        SwaggerUIStandalonePreset
-      ],
-      plugins: [
-        SwaggerUIBundle.plugins.DownloadUrl
-      ],
-      layout: 'BaseLayout'
-    });
-  }
-</script>
-</body>
-</html>
+<f:if condition="{displayUrl}">
+    <iframe src="{displayUrl}" style="width: 100%; height: 100%; border: 0;"></iframe>
+</f:if>
