@@ -40,7 +40,7 @@ class AdministrationController extends AbstractModuleController
                 ),
                 '',
                 AbstractMessage::ERROR,
-                false,
+                false
             );
 
             return;
