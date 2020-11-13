@@ -36,7 +36,7 @@ class OpenApiController extends ActionController
             'specUrl',
             $this->uriBuilder->reset()->uriFor(
                 'spec',
-                ['siteIdentifier' => $siteIdentifier],
+                ['siteIdentifier' => $siteIdentifier]
             )
         );
         $this->view->assign(
