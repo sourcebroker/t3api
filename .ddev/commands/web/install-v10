@@ -1,0 +1,36 @@
+#!/bin/bash
+
+VERSION=v10
+DATABASE=database_v10
+
+rm -rf /var/www/html/$VERSION/*
+composer init -n -d /var/www/html/$VERSION
+composer config extra.typo3/cms.web-dir public -d /var/www/html/$VERSION
+composer config repositories.$EXTENSION_KEY path ../../$EXTENSION_KEY -d /var/www/html/$VERSION
+composer req t3/cms:'^10.4' jigal/t3adminer:'^9.4' georgringer/news:'^8.0' sourcebroker/t3apinews $PACKAGE_NAME:'dev-master as 1.0.0' --no-progress --no-suggest -n -d /var/www/html/$VERSION
+mysql -uroot -proot -e "DROP DATABASE IF EXISTS $DATABASE"
+
+cd /var/www/html/$VERSION
+
+TYPO3_INSTALL_DB_DBNAME=$VERSION
+vendor/bin/typo3cms install:setup -n --database-name $DATABASE
+vendor/bin/typo3cms configuration:set 'BE/debug' 1
+vendor/bin/typo3cms configuration:set 'FE/debug' 1
+vendor/bin/typo3cms configuration:set 'SYS/devIPmask' '*'
+vendor/bin/typo3cms configuration:set 'SYS/displayErrors' 1
+vendor/bin/typo3cms configuration:set 'SYS/trustedHostsPattern' '.*.*'
+vendor/bin/typo3cms configuration:set 'MAIL/transport' 'smtp'
+vendor/bin/typo3cms configuration:set 'MAIL/transport_smtp_server' 'localhost:1025'
+vendor/bin/typo3cms configuration:set 'GFX/processor' 'ImageMagick'
+vendor/bin/typo3cms configuration:set 'GFX/processor_path' '/usr/bin/'
+vendor/bin/typo3cms configuration:set 'GFX/processor_path_lzw' '/usr/bin/'
+vendor/bin/typo3cms install:generatepackagestates
+
+sed -i -e "s/base: ht\//base: \//g" /var/www/html/$VERSION/config/sites/main/config.yaml
+sed -i -e 's/base: \/en\//base: \//g' /var/www/html/$VERSION/config/sites/main/config.yaml
+printf "imports:\n  -\n    resource: 'EXT:$EXTENSION_KEY/Configuration/Routing/config.yaml'" >> /var/www/html/$VERSION/config/sites/main/config.yaml
+
+cp -r "/var/www/$EXTENSION_KEY/.ddev/data-init/fileadmin/" "/var/www/html/$VERSION/public/"
+mysql -uroot -proot  $DATABASE < "/var/www/$EXTENSION_KEY/.ddev/data-init/db.sql"
+vendor/bin/typo3cms database:updateschema
+vendor/bin/typo3cms cache:flush
