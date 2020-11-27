@@ -6,7 +6,7 @@ DATABASE=database_v9
 rm -rf /var/www/html/$VERSION/*
 composer init -n -d /var/www/html/$VERSION
 composer config extra.typo3/cms.web-dir public -d /var/www/html/$VERSION
-composer config repositories.$EXTENSION_KEY path ../../$EXTENSION_KEY -d /var/www/html/$VERSION
+composer config repositories.$EXTENSION_KEY path ../$EXTENSION_KEY -d /var/www/html/$VERSION
 composer req t3/cms:'^9.5' jigal/t3adminer:'^9.4' georgringer/news:'^8.0' sourcebroker/t3apinews $PACKAGE_NAME:'dev-master as 1.0.0' --no-progress --no-suggest -n -d /var/www/html/$VERSION
 mysql -uroot -proot -e "DROP DATABASE IF EXISTS $DATABASE"
 

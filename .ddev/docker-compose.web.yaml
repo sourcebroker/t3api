@@ -20,12 +20,7 @@ services:
         volumes:
             - type: bind
               source: ../
-              target: /var/www/t3api
+              target: /var/www/html/t3api
               consistency: cached
-            - v9-data:/var/www/html/v9
-            - v10-data:/var/www/html/v10
-volumes:
-    v9-data:
-        name: "${DDEV_SITENAME}-v9-data"
-    v10-data:
-        name: "${DDEV_SITENAME}-v10-data"
+            - ../.build/v9:/var/www/html/v9
+            - ../.build/v10:/var/www/html/v10

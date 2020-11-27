@@ -17,6 +17,9 @@ extra_services:
     - v9-data
     - v10-data
 hooks:
+    pre-start:
+        - exec-host: "mkdir -p .build/v9 .build/v10"
+        - exec-host: "[ -L .build/t3api ] || ln -snvf ../. .build/t3api"
     post-start:
         - exec: sudo sed -i '1s/^/TERM=xterm-256color\n/' ~/.bashrc
 
