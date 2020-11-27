@@ -15,6 +15,7 @@ cd /var/www/html/$VERSION
 TYPO3_INSTALL_DB_DBNAME=$VERSION
 vendor/bin/typo3cms install:setup -n --database-name $DATABASE
 vendor/bin/typo3cms configuration:set 'BE/debug' 1
+vendor/bin/typo3cms configuration:set 'BE/lockSSL' true
 vendor/bin/typo3cms configuration:set 'FE/debug' 1
 vendor/bin/typo3cms configuration:set 'SYS/devIPmask' '*'
 vendor/bin/typo3cms configuration:set 'SYS/displayErrors' 1
