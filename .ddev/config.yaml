@@ -8,14 +8,12 @@ router_http_port: "80"
 router_https_port: "443"
 xdebug_enabled: false
 additional_hostnames:
-    - v8.t3api
     - v9.t3api
     - v10.t3api
 additional_fqdns: []
 provider: default
 use_dns_when_possible: true
 extra_services:
-    - v8-data
     - v9-data
     - v10-data
 hooks:
