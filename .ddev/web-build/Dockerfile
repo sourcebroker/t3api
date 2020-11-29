@@ -6,6 +6,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install \
     mc \
     imagemagick
 
+RUN a2enmod macro
+
 ENV EXTENSION_KEY "t3api"
 ENV DDEV_SITENAME "t3api"
 

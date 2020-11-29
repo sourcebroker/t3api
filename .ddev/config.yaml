@@ -9,7 +9,9 @@ router_https_port: "443"
 xdebug_enabled: false
 additional_hostnames:
     - v9.t3api
+    - v9-api.t3api
     - v10.t3api
+    - v10-api.t3api
 additional_fqdns: []
 provider: default
 use_dns_when_possible: true
