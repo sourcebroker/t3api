@@ -32,6 +32,7 @@ call_user_func(
             \SourceBroker\T3api\Serializer\Handler\RecordUriHandler::class,
             \SourceBroker\T3api\Serializer\Handler\TypolinkHandler::class,
             \SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\RteHandler::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] = [
