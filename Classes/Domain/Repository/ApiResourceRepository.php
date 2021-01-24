@@ -7,12 +7,12 @@ use ReflectionClass;
 use ReflectionException;
 use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
+use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
 /**
@@ -111,9 +111,8 @@ class ApiResourceRepository
     protected function getAllDomainModels(): array
     {
         $classes = [];
-        foreach (ExtensionManagementUtility::getLoadedExtensionListArray() as $extKey) {
-            $extPath = ExtensionManagementUtility::extPath($extKey);
-            foreach (glob($extPath . 'Classes/Domain/Model/*.php') as $domainModelClassFile) {
+        foreach (Configuration::getApiResourcePathProviders() as $apiResourcePathProvider) {
+            foreach ($apiResourcePathProvider->getAll() as $domainModelClassFile) {
                 $classes[] = $this->getClassNameFromFile($domainModelClassFile);
             }
         }

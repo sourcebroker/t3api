@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpFullyQualifiedNameUsageInspection */
 
 defined('TYPO3_MODE') || die('Access denied.');
 
@@ -17,6 +17,10 @@ call_user_func(
             \SourceBroker\T3api\OperationHandler\ItemPatchOperationHandler::class => -500,
             \SourceBroker\T3api\OperationHandler\ItemDeleteOperationHandler::class => -500,
             \SourceBroker\T3api\OperationHandler\ItemMethodNotAllowedOperationHandler::class => -9999,
+        ];
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['apiResourcePathProviders'] = [
+            \SourceBroker\T3api\Provider\ApiResourcePath\LoadedExtensionsDomainModelApiResourcePathProvider::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors'] = [
