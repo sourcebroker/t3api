@@ -18,7 +18,9 @@ class SiteService
         static $site;
 
         if ($site === null) {
-            $site = self::getResolvedByTypo3() ?? self::getMatchingCurrentUrl();
+            $site = self::getResolvedByTypo3() ??
+                self::getFirstMatchingCurrentUrl() ??
+                self::getFirstWithWildcardDomain();
         }
 
         if (!$site instanceof Site) {
@@ -71,11 +73,22 @@ class SiteService
             ? $GLOBALS['TYPO3_REQUEST']->getAttribute('site') : null;
     }
 
-    protected static function getMatchingCurrentUrl(): ?Site
+    protected static function getFirstMatchingCurrentUrl(): ?Site
     {
         foreach (self::getAll() as $site) {
             if (rtrim(trim((string)$site->getBase()), '/')
                 === GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST')) {
+                return $site;
+            }
+        }
+
+        return null;
+    }
+
+    protected static function getFirstWithWildcardDomain(): ?Site
+    {
+        foreach (self::getAll() as $site) {
+            if (trim((string)$site->getBase()) === '/') {
                 return $site;
             }
         }
