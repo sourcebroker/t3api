@@ -16,7 +16,8 @@
 .webprj
 nbproject
 
-/.build
+/.Build
+/.test
 /composer.lock
 /var
 /.php_cs.cache
