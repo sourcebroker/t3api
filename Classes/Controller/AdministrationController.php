@@ -103,12 +103,9 @@ class AdministrationController extends AbstractModuleController
         MenuItem $menuItem,
         Site $site
     ): MenuItem {
+        $host = $site->getBase()->getHost();
         $menuItem->setTitle(
-            sprintf(
-                '%s (%s)',
-                $site->getBase()->getHost(),
-                $site->getIdentifier()
-            )
+            $site->getIdentifier() . ($host ? ' (' . $host . ')' : '')
         );
         $menuItem->setHref(
             $this->uriBuilder->reset()->uriFor(
