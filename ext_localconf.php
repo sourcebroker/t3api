@@ -31,6 +31,8 @@ call_user_func(
             \SourceBroker\T3api\Serializer\Handler\ImageHandler::class,
             \SourceBroker\T3api\Serializer\Handler\RecordUriHandler::class,
             \SourceBroker\T3api\Serializer\Handler\TypolinkHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\RteHandler::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] = [
@@ -38,6 +40,7 @@ call_user_func(
             SourceBroker\T3api\Serializer\Subscriber\FileReferenceSubscriber::class,
             SourceBroker\T3api\Serializer\Subscriber\AbstractEntitySubscriber::class,
             SourceBroker\T3api\Serializer\Subscriber\ThrowableSubscriber::class,
+            \SourceBroker\T3api\Serializer\Subscriber\CurrentFeUserSubscriber::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerMetadataDirs'] = [
