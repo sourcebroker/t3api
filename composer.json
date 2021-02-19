@@ -60,5 +60,11 @@
         "next-patch": "./Resources/Private/Php/nextVersion.php",
         "next-minor": "./Resources/Private/Php/nextVersion.php --version-type=minor",
         "next-major": "./Resources/Private/Php/nextVersion.php --version-type=major"
+    },
+    "extra": {
+        "typo3/cms": {
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "web-dir": ".build/dev/public"
+        }
     }
 }
