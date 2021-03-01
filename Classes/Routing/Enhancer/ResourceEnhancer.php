@@ -22,20 +22,9 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
      */
     protected $configuration;
 
-    /**
-     * @var string
-     */
-    protected $basePath;
-
-    /**
-     * ResourceEnhancer constructor.
-     *
-     * @param array $configuration
-     */
     public function __construct(array $configuration)
     {
         $this->configuration = $configuration;
-        $this->basePath = RouteService::getApiBasePath();
     }
 
     /**
@@ -45,9 +34,9 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
     {
         /** @var Route $variant */
         $variant = clone $collection->get('default');
-        $variant->setPath($this->basePath . '/{t3apiResource?}');
+        $variant->setPath($this->getBasePath() . '/{t3apiResource?}');
         $variant->setRequirement('t3apiResource', '.*');
-        $collection->add('enhancer_' . $this->basePath . spl_object_hash($variant), $variant);
+        $collection->add('enhancer_' . $this->getBasePath() . spl_object_hash($variant), $variant);
     }
 
     /**
@@ -56,5 +45,12 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
      */
     public function enhanceForGeneration(RouteCollection $collection, array $parameters): void
     {
+    }
+
+    protected function getBasePath(): string
+    {
+        static $basePath;
+
+        return $basePath ?? $basePath = RouteService::getApiBasePath();
     }
 }

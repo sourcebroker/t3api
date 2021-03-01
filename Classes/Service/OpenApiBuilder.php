@@ -7,7 +7,6 @@ use DateTime;
 use Exception;
 use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Components;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Info;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
@@ -65,21 +64,9 @@ class OpenApiBuilder
         return OpenApi::create()
             ->openapi(OpenApi::OPENAPI_3_0_2)
             ->servers(...self::getServers())
-            ->info(self::getInfo())
             ->tags(...self::getTags($apiResources))
             ->paths(...self::getPaths($apiResources))
             ->components(self::$components);
-    }
-
-    /**
-     * @return Info
-     */
-    protected static function getInfo(): Info
-    {
-        return Info::create()
-            ->title(sprintf('REST API of %s', GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY')))
-            // @todo make version configurable
-            ->version('1.0.0');
     }
 
     /**
@@ -89,7 +76,7 @@ class OpenApiBuilder
     {
         return [
             Server::create()
-                ->url('/' . RouteService::getFullApiBasePath()),
+                ->url(RouteService::getFullApiBaseUrl()),
         ];
     }
 

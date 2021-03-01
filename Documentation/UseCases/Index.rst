@@ -10,3 +10,4 @@ Use cases
    :maxdepth: 3
 
    CurrentUserEndpoint/Index
+   CurrentUserAssignment/Index

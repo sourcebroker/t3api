@@ -52,13 +52,18 @@
         "bin-dir": ".Build/bin"
     },
     "scripts": {
-        "phpunit-test": "TYPO3_PATH_ROOT=.Build/Web/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/",
+        "test-unit-v9": "TYPO3_PATH_ROOT=.test/v9/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/",
+        "test-functional-v9": "TYPO3_PATH_ROOT=.test/v9/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional/",
+        "test-unit-v10": "TYPO3_PATH_ROOT=.test/v10/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/",
+        "test-functional-v10": "TYPO3_PATH_ROOT=.test/v10/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional/",
+        "test": [
+            "composer run test-unit-v9",
+            "composer run test-functional-v9",
+            "composer run test-unit-v10",
+            "composer run test-functional-v10"
+        ],
         "cs": "./.Build/bin/php-cs-fixer fix --dry-run --diff --config=./.php_cs -vvv",
         "csfix": "./.Build/bin/php-cs-fixer fix --config=./.php_cs -vvv",
-        "post-autoload-dump": [
-            "mkdir -p .Build/Web/typo3conf/ext/",
-            "[ -L .Build/Web/typo3conf/ext/t3api ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/t3api"
-        ],
         "t3doc": "rm -rf ./Documentation-GENERATED-temp && docker-compose run --rm t3docmake && open \"Documentation-GENERATED-temp/Result/project/0.0.0/Index.html\"",
         "next-patch": "./Resources/Private/Php/nextVersion.php",
         "next-minor": "./Resources/Private/Php/nextVersion.php --version-type=minor",
@@ -67,7 +72,7 @@
     "extra": {
         "typo3/cms": {
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
-            "web-dir": ".Build/Web"
+            "web-dir": ".Build/public"
         }
     }
 }

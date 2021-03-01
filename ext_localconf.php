@@ -37,6 +37,9 @@ call_user_func(
             \SourceBroker\T3api\Serializer\Handler\ImageHandler::class,
             \SourceBroker\T3api\Serializer\Handler\RecordUriHandler::class,
             \SourceBroker\T3api\Serializer\Handler\TypolinkHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\RteHandler::class,
+            \SourceBroker\T3api\Serializer\Handler\PasswordHashHandler::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] = [
@@ -44,6 +47,7 @@ call_user_func(
             SourceBroker\T3api\Serializer\Subscriber\FileReferenceSubscriber::class,
             SourceBroker\T3api\Serializer\Subscriber\AbstractEntitySubscriber::class,
             SourceBroker\T3api\Serializer\Subscriber\ThrowableSubscriber::class,
+            \SourceBroker\T3api\Serializer\Subscriber\CurrentFeUserSubscriber::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerMetadataDirs'] = [
@@ -122,7 +126,8 @@ call_user_func(
 
             // since version 9.0.0 registration of loader for doctrine's annotation registry is done in TYPO3 core bootstrap
             /** @var \Composer\Autoload\ClassLoader $loader */
-            $loader = require PATH_site . 'vendor/autoload.php';
+            $requireBase = file_exists(PATH_site . 'vendor/autoload.php') ? PATH_site . '/' : dirname(PATH_site);
+            $loader = require $requireBase . 'vendor/autoload.php';
             \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
             \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('inject');
             \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('transient');

@@ -17,6 +17,7 @@
 nbproject
 
 /.Build
+/.test
 /composer.lock
 /var
 /.php_cs.cache
