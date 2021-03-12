@@ -7,14 +7,12 @@ class Configuration
 {
     public static function getOperationHandlers(): array
     {
-        $operationHandlers = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['operationHandlers'];
-        return self::getClassNames($operationHandlers);
+        return self::getClassNamesSortedByPriority($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['operationHandlers']);
     }
 
     public static function getProcessors(): array
     {
-        $processors = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['processors'];
-        return self::getClassNames($processors);
+        return self::getClassNamesSortedByPriority($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['processors']);
     }
 
     public static function getCollectionResponseClass(): string
@@ -22,7 +20,7 @@ class Configuration
         return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'];
     }
 
-    protected static function getClassNames(?array $items): array
+    protected static function getClassNamesSortedByPriority(?array $items): array
     {
         $items = $items ?: [];
         $items = array_map(
