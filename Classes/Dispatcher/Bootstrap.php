@@ -49,15 +49,15 @@ class Bootstrap extends AbstractDispatcher
     }
 
     /**
-     * @param ServerRequestInterface $request
+     * @param ServerRequestInterface $inputRequest
      *
      * @throws Throwable
      * @return Response
      */
-    public function process(ServerRequestInterface $request): ResponseInterface
+    public function process(ServerRequestInterface $inputRequest): ResponseInterface
     {
         try {
-            $request = $this->httpFoundationFactory->createRequest($request);
+            $request = $this->httpFoundationFactory->createRequest($inputRequest);
             $context = (new RequestContext())->fromRequest($request);
             $matchedRoute = null;
             $this->callProcessors($request, $this->response);
