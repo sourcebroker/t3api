@@ -11,6 +11,7 @@ use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Exception\RouteNotFoundException;
 use SourceBroker\T3api\OperationHandler\OperationHandlerInterface;
+use SourceBroker\T3api\Processor\ProcessorInterface;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Component\HttpFoundation\Request;
@@ -159,6 +160,28 @@ abstract class AbstractDispatcher
                 }
 
                 return call_user_func($operationHandlerClass . '::supports', $operation, $request);
+            }
+        );
+    }
+
+    protected function callProcessors(Request $request, &$response): void
+    {
+        array_filter(
+            Configuration::getProcessors(),
+            function (string $processorClass) use ($request, &$response) {
+                if (!is_subclass_of($processorClass, ProcessorInterface::class, true)) {
+                    throw new RuntimeException(
+                        sprintf(
+                            'Process `%s` needs to be an instance of `%s`',
+                            $processorClass,
+                            ProcessorInterface::class
+                        ),
+                        1603705384
+                    );
+                }
+                /** @var ProcessorInterface $processor */
+                $processor = $this->objectManager->get($processorClass);
+                $processor->process($request, $response);
             }
         );
     }

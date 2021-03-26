@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Model;
 
 use SourceBroker\T3api\Service\RouteService;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Route;
 
 abstract class AbstractOperation implements OperationInterface
@@ -76,7 +77,7 @@ abstract class AbstractOperation implements OperationInterface
             [],
             null,
             [],
-            [$this->method]
+            [$this->method, Request::METHOD_OPTIONS]
         );
         $this->persistenceSettings = PersistenceSettings::create(
             $params['attributes']['persistence'] ?? [],
