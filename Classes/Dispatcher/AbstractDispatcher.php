@@ -168,7 +168,7 @@ abstract class AbstractDispatcher
     {
         array_filter(
             Configuration::getProcessors(),
-            static function (string $processorClass) use ($request, &$response) {
+            function (string $processorClass) use ($request, &$response) {
                 if (!is_subclass_of($processorClass, ProcessorInterface::class, true)) {
                     throw new RuntimeException(
                         sprintf(
@@ -180,7 +180,7 @@ abstract class AbstractDispatcher
                     );
                 }
                 /** @var ProcessorInterface $processor */
-                $processor = GeneralUtility::makeInstance($processorClass);
+                $processor = $this->objectManager->get($processorClass);
                 $processor->process($request, $response);
             }
         );

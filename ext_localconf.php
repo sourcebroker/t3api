@@ -21,7 +21,7 @@ call_user_func(
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['processors'] = [
-            \SourceBroker\T3api\Cors\Processor::class => 100,
+            \SourceBroker\T3api\Processor\CorsProcessor::class => 100,
             \SourceBroker\T3api\Processor\LanguageProcessor::class => 200,
         ];
 
@@ -72,6 +72,22 @@ call_user_func(
             'enabled_parameter_name' => 'pagination',
             'page_parameter_name' => 'page',
         ];
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['cors']['allowCredentials'] = false;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['cors']['allowOrigin'] = [];
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['cors']['allowHeaders'] = [];
+        // simple headers are always accepted. They are kept in separate element than `allowHeaders` to avoid mistakenly override by 3rd party extensions
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['cors']['simpleHeaders'] = [
+            'Accept',
+            'Accept-Language',
+            'Content-Language',
+            'Origin',
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader'],
+        ];
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['cors']['allowMethods'] = [];
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['cors']['exposeHeaders'] = [];
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['cors']['maxAge'] = 0;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['cors']['originRegex'] = false;
 
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['t3api'])) {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['t3api'] = [

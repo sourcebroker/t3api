@@ -20,6 +20,11 @@ class Configuration
         return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'];
     }
 
+    public static function getCors(): array
+    {
+        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['cors'];
+    }
+
     protected static function getClassNamesSortedByPriority(?array $items): array
     {
         $items = $items ?: [];
