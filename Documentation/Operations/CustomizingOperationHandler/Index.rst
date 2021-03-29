@@ -16,7 +16,11 @@ To register new operation handler it is needed to add new item to `t3api` config
 
    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['operationHandlers'][\Vendor\Extension\OperationHandler\MyCustomOperationHandler::class] = 100;
 
-Name of the element of array is the name of the class and the value is the priority. Priority is needed because there may be multiple handlers which supports current request. Higher priority means that handler wins and will be executed. Only one handler will be executed for every request. All build-in handlers have negative priorities so it is suggested to use priority higher than 0 in custom handlers.
+Name of the element of array is the name of the class and the value is the priority. Priority is needed because there may be multiple handlers which supports current request. Higher priority means that handler wins and will be executed. Only one handler will be executed for every request. Most of build-in handlers have negative priorities so it is suggested to use priority higher than 0 in custom handlers.
+
+.. important::
+
+   At the moment there is one exception in core when build-in handler should be executed before any other: ``\SourceBroker\T3api\OperationHandler\OptionsOperationHandler``. This is a handler used for preflight requests (`OPTIONS`) and it handles request according to :ref:`CORS configuration <cors>`. We do not exclude case of other core handlers which should be executed before the custom ones. All of them will have priority higher than 10000. **It means suggested priority for custom handlers is higher than 0 and lower than 10000.**
 
 Every handler has to implement interface ``\SourceBroker\T3api\OperationHandler\OperationHandlerInterface``. This interface forces handler class to contain two methods:
 

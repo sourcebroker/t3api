@@ -8,7 +8,7 @@ call_user_func(
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader'] = 'X-Locale';
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['operationHandlers'] = [
-            \SourceBroker\T3api\OperationHandler\OptionsOperationHandler::class => -300,
+            \SourceBroker\T3api\OperationHandler\OptionsOperationHandler::class => 10500,
             \SourceBroker\T3api\OperationHandler\FileUploadOperationHandler::class => -400,
             \SourceBroker\T3api\OperationHandler\CollectionGetOperationHandler::class => -500,
             \SourceBroker\T3api\OperationHandler\CollectionPostOperationHandler::class => -500,
