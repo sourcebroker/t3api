@@ -9,6 +9,7 @@ use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\ApiResource;
+use SourceBroker\T3api\Service\RouteService;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
@@ -41,7 +42,7 @@ class ApiResourceRepository
      */
     public function getAll(): array
     {
-        $cacheIdentifier = 'ApiResourceRepository__getAll';
+        $cacheIdentifier = $this->buildCacheIdentifier();
 
         $apiResources = $this->cache->get($cacheIdentifier);
 
@@ -161,5 +162,11 @@ class ApiResourceRepository
         }
 
         return null;
+    }
+
+    protected function buildCacheIdentifier(): string
+    {
+        return 'ApiResourceRepository_getAll'
+            . preg_replace('~[^\pL\d]+~u', '_', RouteService::getFullApiBasePath());
     }
 }
