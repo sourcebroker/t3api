@@ -17,7 +17,9 @@ interface OperationInterface
 
     public function getMethod(): string;
 
-    public function getNormalizationContext(): array;
+    public function getNormalizationContext(): ?array;
+
+    public function getDenormalizationContext(): ?array;
 
     public function getSecurity(): string;
 

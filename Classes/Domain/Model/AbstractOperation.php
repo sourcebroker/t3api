@@ -35,9 +35,14 @@ abstract class AbstractOperation implements OperationInterface
     protected $route;
 
     /**
-     * @var array
+     * @var array|null
      */
-    protected $normalizationContext = [];
+    protected $normalizationContext;
+
+    /**
+     * @var array|null
+     */
+    protected $denormalizationContext;
 
     /**
      * @var string
@@ -68,8 +73,11 @@ abstract class AbstractOperation implements OperationInterface
         $this->security = $params['security'] ?? $this->security;
         $this->securityPostDenormalize = $params['security_post_denormalize'] ?? $this->securityPostDenormalize;
         $this->normalizationContext = isset($params['normalizationContext'])
-            ? array_replace_recursive($this->normalizationContext, $params['normalizationContext'])
+            ? array_replace_recursive([], $params['normalizationContext'])
             : $this->normalizationContext;
+        $this->denormalizationContext = isset($params['denormalizationContext'])
+            ? array_replace_recursive([], $params['denormalizationContext'])
+            : $this->denormalizationContext;
         $this->route = new Route(
             RouteService::getFullApiBasePath() . $this->path,
             [],
@@ -124,9 +132,14 @@ abstract class AbstractOperation implements OperationInterface
         return $this->apiResource;
     }
 
-    public function getNormalizationContext(): array
+    public function getNormalizationContext(): ?array
     {
         return $this->normalizationContext;
+    }
+
+    public function getDenormalizationContext(): ?array
+    {
+        return $this->denormalizationContext;
     }
 
     public function isMethodGet(): bool
