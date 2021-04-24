@@ -12,32 +12,46 @@ class Configuration
 {
     public static function getOperationHandlers(): array
     {
-        $operationHandlers = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['operationHandlers'];
+        return self::getClassNamesSortedByPriority($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['operationHandlers']);
+    }
 
-        $operationHandlers = array_map(
+    public static function getProcessors(): array
+    {
+        return self::getClassNamesSortedByPriority($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['processors']);
+    }
+
+    public static function getCollectionResponseClass(): string
+    {
+        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'];
+    }
+
+    public static function getCors(): array
+    {
+        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['cors'];
+    }
+
+    protected static function getClassNamesSortedByPriority(?array $items): array
+    {
+        $items = $items ?: [];
+        $items = array_map(
             static function ($class, $priority) {
                 return [
                     'className' => $class,
                     'priority' => is_numeric($priority) ? $priority : 50,
                 ];
             },
-            array_keys($operationHandlers),
-            $operationHandlers
+            array_keys($items),
+            $items
         );
 
         usort(
-            $operationHandlers,
-            static function (array $operationHandlerA, array $operationHandlerB) {
-                return $operationHandlerB['priority'] <=> $operationHandlerA['priority'];
+            $items,
+            static function (array $itemA, array $itemB) {
+                return $itemB['priority'] <=> $itemA['priority'];
             }
         );
 
-        return array_column($operationHandlers, 'className');
-    }
-
-    public static function getCollectionResponseClass(): string
-    {
-        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['collectionResponseClass'];
+        return array_column($items, 'className');
     }
 
     /**

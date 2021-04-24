@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/usr/bin/php /var/www/html/v9/vendor/bin/typo3cms cache:flush
+/usr/bin/php /var/www/html/v10/vendor/bin/typo3cms cache:flush

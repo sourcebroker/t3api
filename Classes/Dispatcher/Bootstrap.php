@@ -2,10 +2,8 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Dispatcher;
 
-use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use RuntimeException;
 use SourceBroker\T3api\Exception\ExceptionInterface;
 use SourceBroker\T3api\Service\RouteService;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -16,8 +14,6 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Throwable;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Http\Response;
 
 /**
@@ -53,19 +49,18 @@ class Bootstrap extends AbstractDispatcher
     }
 
     /**
-     * @param ServerRequestInterface $request
+     * @param ServerRequestInterface $inputRequest
      *
      * @throws Throwable
      * @return Response
      */
-    public function process(ServerRequestInterface $request): ResponseInterface
+    public function process(ServerRequestInterface $inputRequest): ResponseInterface
     {
         try {
-            $this->setLanguage($request);
-            $request = $this->httpFoundationFactory->createRequest($request);
+            $request = $this->httpFoundationFactory->createRequest($inputRequest);
             $context = (new RequestContext())->fromRequest($request);
             $matchedRoute = null;
-
+            $this->callProcessors($request, $this->response);
             if ($this->isMainEndpointResponseClassDefined() && $this->isContextMatchingMainEndpointRoute($context)) {
                 $output = $this->processMainEndpoint();
             } else {
@@ -128,28 +123,5 @@ class Bootstrap extends AbstractDispatcher
         return $this->serializerService->serialize(
             $this->objectManager->get($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'])
         );
-    }
-
-    /**
-     * Sets language according to language identifier sent in `languageHeader`
-     *
-     * @param ServerRequestInterface $request
-     * @return void
-     * @throws \TYPO3\CMS\Extbase\Object\Exception
-     */
-    protected function setLanguage(ServerRequestInterface $request): void
-    {
-        if (!$GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface) {
-            throw new RuntimeException(
-                sprintf('`TYPO3_REQUEST` is not an instance of `%s`', ServerRequestInterface::class),
-                1580483236906
-            );
-        }
-        $languageHeader = $GLOBALS['TYPO3_REQUEST']->getHeader($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']);
-        $languageUid = (int)(!empty($languageHeader) ? array_shift($languageHeader) : 0);
-        $language = $request->getAttribute('site')->getLanguageById($languageUid);
-        $this->objectManager->get(Context::class)
-            ->setAspect('language', LanguageAspectFactory::createFromSiteLanguage($language));
-        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute('language', $language);
     }
 }

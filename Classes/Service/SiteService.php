@@ -7,6 +7,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ServerRequestFactory;
+use TYPO3\CMS\Core\Routing\SiteMatcher;
+use TYPO3\CMS\Core\Routing\SiteRouteResult;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -18,7 +21,10 @@ class SiteService
         static $site;
 
         if ($site === null) {
-            $site = self::getResolvedByTypo3() ?? self::getMatchingCurrentUrl();
+            $site = self::getResolvedByTypo3() ??
+                self::getResolvedByLegacyTypo3() ??
+                self::getFirstMatchingCurrentUrl() ??
+                self::getFirstWithWildcardDomain();
         }
 
         if (!$site instanceof Site) {
@@ -66,16 +72,43 @@ class SiteService
 
     protected static function getResolvedByTypo3(): ?Site
     {
+        if (!class_exists(SiteMatcher::class)) {
+            return null;
+        }
+        $routeResult = GeneralUtility::makeInstance(SiteMatcher::class)
+            ->matchRequest(ServerRequestFactory::fromGlobals());
+
+        return $routeResult instanceof SiteRouteResult ? $routeResult->getSite() : null;
+    }
+
+    /**
+     * @todo Remove when support for TYPO3 8.7 is dropped
+     * https://docs.typo3.org/c/typo3/cms-core/10.2/en-us/Changelog/9.2/Deprecation-83736-DeprecatedGlobalsTYPO3_REQUEST.html
+     * @return Site|null
+     */
+    protected static function getResolvedByLegacyTypo3(): ?Site
+    {
         return $GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface
         && $GLOBALS['TYPO3_REQUEST']->getAttribute('site') instanceof Site
             ? $GLOBALS['TYPO3_REQUEST']->getAttribute('site') : null;
     }
 
-    protected static function getMatchingCurrentUrl(): ?Site
+    protected static function getFirstMatchingCurrentUrl(): ?Site
     {
         foreach (self::getAll() as $site) {
             if (rtrim(trim((string)$site->getBase()), '/')
                 === GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST')) {
+                return $site;
+            }
+        }
+
+        return null;
+    }
+
+    protected static function getFirstWithWildcardDomain(): ?Site
+    {
+        foreach (self::getAll() as $site) {
+            if (trim((string)$site->getBase()) === '/') {
                 return $site;
             }
         }

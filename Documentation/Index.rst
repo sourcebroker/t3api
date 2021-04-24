@@ -59,4 +59,6 @@ If you find an error or something is missing, please: `Report a Problem
    HandlingFileUpload/Index
    HandlingCascadePersistence/Index
    UseCases/Index
+   Cors/Index
+   Miscellaneous/Index
    Sitemap

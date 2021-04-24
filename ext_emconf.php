@@ -1,4 +1,4 @@
-<?php
+<?php /** @var string $_EXTKEY */
 
 $EM_CONF[$_EXTKEY] = [
     'title' => 'T3api',
@@ -10,7 +10,7 @@ $EM_CONF[$_EXTKEY] = [
     'uploadfolder' => 0,
     'createDirs' => '',
     'clearCacheOnLoad' => 0,
-    'version' => '1.1.0',
+    'version' => '1.2.0',
     'constraints' => [
         'depends' => [
             'php' => '7.2.0-7.4.99',
