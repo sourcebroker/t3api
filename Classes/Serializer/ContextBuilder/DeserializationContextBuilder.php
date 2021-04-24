@@ -28,7 +28,9 @@ class DeserializationContextBuilder extends AbstractContextBuilder
     {
         $context = self::create();
 
-        $attributes = $operation->getNormalizationContext() ?? [];
+        // There is a fallback to `normalizationContext` because of backward compatibility. Until version 1.2.x
+        // `denormalizationContext` did not exist and same attributes were used for both contexts
+        $attributes = $operation->getDenormalizationContext() ?? $operation->getNormalizationContext() ?? [];
 
         if (!empty($targetObject)) {
             $attributes['target'] = $targetObject;
