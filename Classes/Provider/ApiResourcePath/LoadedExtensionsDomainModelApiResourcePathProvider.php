@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Provider\ApiResourcePath;
 
-use Generator;
+use SourceBroker\T3api\Utility\FileUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 class LoadedExtensionsDomainModelApiResourcePathProvider implements ApiResourcePathProvider
 {
-    public function getAll(): Generator
+    public function getAll(): iterable
     {
         foreach (ExtensionManagementUtility::getLoadedExtensionListArray() as $extKey) {
-            $extPath = ExtensionManagementUtility::extPath($extKey);
-            foreach (glob($extPath . 'Classes/Domain/Model/*.php') as $domainModelClassFile) {
+            $extDomainModelPath = ExtensionManagementUtility::extPath($extKey) . 'Classes/Domain/Model/';
+            foreach (FileUtility::getFilesRecursivelyByExtension($extDomainModelPath, 'php') as $domainModelClassFile) {
                 yield $domainModelClassFile;
             }
         }

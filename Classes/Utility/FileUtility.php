@@ -2,6 +2,10 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Utility;
 
+use Generator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RegexIterator;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -30,5 +34,27 @@ class FileUtility
         }
 
         return $path;
+    }
+
+    public static function getFilesRecursivelyByExtension(string $directoryPath, string $extension): Generator
+    {
+        return self::getFilesRecursively($directoryPath, sprintf('/^.*\.'.preg_quote($extension, '/').'$/i'));
+    }
+
+    public static function getFilesRecursively(string $directoryPath, string $pattern = '/.*/'): Generator
+    {
+        if (!file_exists($directoryPath)) {
+            return;
+        }
+
+        $files = new RegexIterator(
+            new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directoryPath)),
+            $pattern,
+            RegexIterator::MATCH
+        );
+
+        foreach($files as $file) {
+            yield $file->getPathName();
+        }
     }
 }
