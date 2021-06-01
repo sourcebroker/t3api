@@ -1,9 +1,6 @@
 TYPO3 Extension t3api
 =====================
 
-    .. image:: https://styleci.io/repos/205416349/shield?branch=master
-       :target: https://styleci.io/repos/205416349
-
     .. image:: https://scrutinizer-ci.com/g/sourcebroker/t3api/badges/quality-score.png?b=master
        :target: https://scrutinizer-ci.com/g/sourcebroker/t3api/?branch=master
 
