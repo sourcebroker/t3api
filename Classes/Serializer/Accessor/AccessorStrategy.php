@@ -9,7 +9,7 @@ use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Metadata\ExpressionPropertyMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
@@ -24,7 +24,7 @@ class AccessorStrategy implements AccessorStrategyInterface
 
     public function __construct()
     {
-        $this->evaluator = new ExpressionEvaluator(new ExpressionLanguage());
+        $this->evaluator = SerializerService::getExpressionEvaluator();
     }
 
     /**

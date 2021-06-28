@@ -7,9 +7,9 @@
 Customization
 ================
 
-@todo - write docs
+.. toctree::
+   :maxdepth: 3
+   :hidden:
 
-Collection response schema
-===========================
-
-@todo - write docs
+   ExpressionLanguage/Index
+   CollectionResponseSchema/Index

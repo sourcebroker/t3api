@@ -29,7 +29,6 @@ use SourceBroker\T3api\Serializer\Construction\ObjectConstructorChain;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Utility\FileUtility;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -179,7 +178,7 @@ class SerializerService implements SingletonInterface
                     ObjectConstructorChain::class,
                     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors']
                 ))
-                ->setExpressionEvaluator(new ExpressionEvaluator(new ExpressionLanguage()));
+                ->setExpressionEvaluator(self::getExpressionEvaluator());
         }
 
         return clone $serializerBuilder;
@@ -196,6 +195,11 @@ class SerializerService implements SingletonInterface
         $metadataFactory->setCache(self::getMetadataCache());
 
         return $metadataFactory;
+    }
+
+    public static function getExpressionEvaluator(): ExpressionEvaluator
+    {
+        return new ExpressionEvaluator(ExpressionLanguageService::getT3apiExpressionLanguage());
     }
 
     /**
@@ -235,6 +239,10 @@ class SerializerService implements SingletonInterface
      */
     protected function getDriverFactory(): DriverFactoryInterface
     {
-        return new DefaultDriverFactory($this->getPropertyNamingStrategy(), new Parser(), new ExpressionEvaluator(new ExpressionLanguage()));
+        return new DefaultDriverFactory(
+            $this->getPropertyNamingStrategy(),
+            new Parser(),
+            self::getExpressionEvaluator()
+        );
     }
 }
