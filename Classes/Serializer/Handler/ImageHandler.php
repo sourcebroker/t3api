@@ -4,6 +4,7 @@ namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use SourceBroker\T3api\Service\UrlService;
 use Traversable;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -75,6 +76,6 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
             'maxHeight' => $type['params'][3] ?? '',
         ]);
 
-        return $context->getAttribute('TYPO3_SITE_URL') . $file->getPublicUrl();
+        return UrlService::forceAbsoluteUrl($file->getPublicUrl(), $context->getAttribute('TYPO3_SITE_URL'));
     }
 }

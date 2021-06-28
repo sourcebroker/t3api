@@ -16,4 +16,4 @@ TYPO3\CMS\Core\Resource\AbstractFile:
       type: string
     absolutePublicUrl:
       type: string
-      exp: context.getAttribute('TYPO3_SITE_URL')~object.getPublicUrl()
+      exp: force_absolute_url(object.getPublicUrl(), context.getAttribute('TYPO3_SITE_URL'))
