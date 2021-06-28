@@ -5,6 +5,7 @@ namespace SourceBroker\T3api\Serializer\Handler;
 use InvalidArgumentException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use SourceBroker\T3api\Service\UrlService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -45,12 +46,14 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
             );
         }
 
-        return rtrim($context->getAttribute('TYPO3_SITE_URL'), '/')
-            . $this->getContentObjectRenderer()->getTypoLink_URL(sprintf(
+        return UrlService::forceAbsoluteUrl(
+            $this->getContentObjectRenderer()->getTypoLink_URL(sprintf(
                 't3://record?identifier=%s&uid=%s',
                 $type['params'][0],
                 $entity->getUid()
-            ));
+            )),
+            $context->getAttribute('TYPO3_SITE_URL')
+        );
     }
 
     /**

@@ -16,3 +16,4 @@ Serialization
    Handlers/Index
    Subscribers/Index
    YamlMetadata/Index
+   Customization/Index

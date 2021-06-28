@@ -11,6 +11,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use RuntimeException;
 use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Service\SerializerService;
+use SourceBroker\T3api\Service\UrlService;
 use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
 use TYPO3\CMS\Core\Resource\Rendering\RendererRegistry;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -109,10 +110,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
             : $fileReference;
         $originalFile = $originalResource->getOriginalFile();
 
-        $url = $originalResource->getPublicUrl();
-        if (parse_url($url, PHP_URL_SCHEME) === null) {
-            $url = $context->getAttribute('TYPO3_SITE_URL') . $url;
-        }
+        $url = UrlService::forceAbsoluteUrl($originalResource->getPublicUrl(), $context->getAttribute('TYPO3_SITE_URL'));
 
         $out = [
             'uid' => $fileReference->getUid(),
@@ -133,11 +131,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                 $fileRenderer->render($originalFile, 1, 1),
                 $match
             )) {
-                $urlEmbed = $match[1];
-                if (parse_url($urlEmbed, PHP_URL_SCHEME) === null) {
-                    $urlEmbed = $context->getAttribute('TYPO3_SITE_URL') . $urlEmbed;
-                }
-                $out['urlEmbed'] = $urlEmbed;
+                $out['urlEmbed'] = UrlService::forceAbsoluteUrl($match[1], $context->getAttribute('TYPO3_SITE_URL'));
             }
         }
 
