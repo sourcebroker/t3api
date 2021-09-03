@@ -4,6 +4,7 @@ namespace SourceBroker\T3api\Service;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\CachedReader;
+use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\FilesystemCache;
 use JMS\Serializer\Builder\DefaultDriverFactory;
@@ -29,6 +30,7 @@ use SourceBroker\T3api\Serializer\Construction\ObjectConstructorChain;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Utility\FileUtility;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -216,9 +218,9 @@ class SerializerService implements SingletonInterface
      */
     protected static function getAnnotationReader(): Reader
     {
-        return new CachedReader(
+        return new PsrCachedReader(
             new AnnotationReader(),
-            new FilesystemCache(self::getAnnotationsCacheDirectory()),
+            new FilesystemAdapter('', 0, self::getAnnotationsCacheDirectory()),
             self::isDebugMode()
         );
     }
