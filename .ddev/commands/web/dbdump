@@ -1,0 +1,16 @@
+#!/bin/bash
+
+## Description: Dump v10/v11 database to data-init folder.
+## Usage: dbdump v10|v11
+## Example: "ddev dbdump v11"
+
+if [[ ${@} = "" ]]; then echo "Set either v10 or v11 as argument." && exit 1; fi
+
+DATABASE=database_$@
+echo 'TRUNCATE sys_history; TRUNCATE sys_log; TRUNCATE be_sessions; TRUNCATE fe_sessions; TRUNCATE fe_sessions; TRUNCATE sys_file_processedfile; TRUNCATE sys_lockedrecords; TRUNCATE tx_extensionmanager_domain_model_extension;' | mysql -uroot -proot $DATABASE
+echo "SELECT concat('TRUNCATE TABLE ', TABLE_NAME, ';') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$DATABASE' AND TABLE_NAME LIKE 'cache%'" | mysql -uroot -proot $DATABASE | sed 1d > tmp.sql
+cat tmp.sql | mysql -uroot -proot $DATABASE
+rm tmp.sql
+
+mysqldump --skip-triggers --extended-insert --single-transaction --skip-add-locks --skip-disable-keys --quick --skip-comments -uroot -proot -hdb $DATABASE > /var/www/html/t3api/.ddev/data-init/$DATABASE.sql
+echo "Dump finished"
