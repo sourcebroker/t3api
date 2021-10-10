@@ -24,9 +24,9 @@ class EnrichSerializationContext
         $attributes['TYPO3_PROXY'] = GeneralUtility::getIndpEnv('TYPO3_PROXY');
 
         return [
-            'operation' => $operation,
-            'request' => $request,
-            'attributes' => $attributes,
+            $operation,
+            $request,
+            $attributes,
         ];
     }
 }

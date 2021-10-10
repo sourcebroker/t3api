@@ -21,23 +21,22 @@ abstract class AbstractContextBuilder implements ContextBuilderInterface
                 ContextBuilderInterface::class,
                 ContextBuilderInterface::SIGNAL_CUSTOMIZE_SERIALIZER_CONTEXT_ATTRIBUTES,
                 [
-                    'operation' => clone $operation,
-                    'request' => clone $request,
-                    'attributes' => $attributes,
+                    clone $operation,
+                    clone $request,
+                    $attributes,
                 ]
             );
-
-        if (!is_array($signalOutput['attributes'])) {
+        if (!is_array($signalOutput[2])) {
             throw new \RuntimeException(
                 sprintf(
                     'Serializer context `attributes` returned from `%s` has to be an type of array %s returned',
                     ContextBuilderInterface::SIGNAL_CUSTOMIZE_SERIALIZER_CONTEXT_ATTRIBUTES,
-                    gettype($signalOutput['attributes'])
+                    gettype($signalOutput[2])
                 ),
                 1587379831963
             );
         }
 
-        return $signalOutput['attributes'];
+        return $signalOutput[2];
     }
 }
