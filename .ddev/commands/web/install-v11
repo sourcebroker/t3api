@@ -17,7 +17,7 @@ cp -r "/var/www/html/$EXTENSION_KEY/.ddev/data-init/typo3_core_composer_fix.diff
 composer config --json extra.patches.typo3/cms-core '{"[BUGFIX] Populate composer name to extension key map early": "/var/www/html/v11/typo3_core_composer_fix.diff"}'
 composer req cweagans/composer-patches:'dev-master'
 # Remove when TYPO3 11.5.1 is installed - end
-composer req typo3/minimal:'^11.5' helhum/typo3-console:'^7.0' georgringer/news:'dev-master as 8.6.0' sourcebroker/t3api:'dev-typo3-115-support' sourcebroker/t3apinews:'dev-typo3-115-support' --no-progress -n -d /var/www/html/$VERSION
+composer req typo3/minimal:'^11.5' typo3/cms-extensionmanager:'^11.5' helhum/typo3-console:'^7.0' georgringer/news:'dev-master as 8.6.0' sourcebroker/t3api:'dev-typo3-115-support' sourcebroker/t3apinews:'dev-typo3-115-support' --no-progress -n -d /var/www/html/$VERSION
 
 vendor/bin/typo3cms install:setup -n --database-name $DATABASE
 vendor/bin/typo3cms configuration:set 'BE/debug' 1
