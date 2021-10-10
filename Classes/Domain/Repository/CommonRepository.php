@@ -123,7 +123,6 @@ class CommonRepository
     {
         $this->objectManager = $objectManager;
         $this->defaultQuerySettings = $this->objectManager->get(Typo3QuerySettings::class);
-        $this->defaultQuerySettings->initializeObject();
     }
 
     /**
