@@ -102,7 +102,7 @@ class SerializerService implements SingletonInterface
      */
     public static function isDebugMode(): bool
     {
-        return GeneralUtility::getApplicationContext()->isDevelopment();
+        return Environment::getContext()->isDevelopment();
     }
 
     /**

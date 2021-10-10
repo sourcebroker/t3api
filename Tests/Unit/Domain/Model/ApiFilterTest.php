@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Tests\Unit\Domain\Model;
 
+use SourceBroker\T3api\Domain\Model\ApiFilter;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
@@ -17,7 +18,7 @@ class ApiFilterTest extends UnitTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->subject = new \SourceBroker\T3api\Domain\Model\ApiFilter('filterClass', 'property', 'strategy', ['argument' => 'argumentValue']);
+        $this->subject = new ApiFilter('filterClass', 'property', 'strategy', ['argument' => 'argumentValue']);
     }
 
     protected function tearDown()

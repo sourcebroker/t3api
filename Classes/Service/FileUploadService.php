@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
+use TYPO3\CMS\Core\Resource\Security\FileNameValidator;
 use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Model\UploadSettings;
@@ -73,7 +74,7 @@ class FileUploadService implements SingletonInterface
      */
     protected function verifyFileExtension(UploadSettings $uploadSettings, UploadedFile $uploadedFile): void
     {
-        if (!GeneralUtility::verifyFilenameAgainstDenyPattern($uploadedFile->getClientOriginalName())) {
+        if (!GeneralUtility::makeInstance(FileNameValidator::class)->isValid($uploadedFile->getClientOriginalName())) {
             throw new InvalidArgumentException(
                 'Uploading files with PHP file extensions is not allowed!',
                 1576999829435

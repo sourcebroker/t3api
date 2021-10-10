@@ -1,18 +1,18 @@
 <?php
 
-defined('TYPO3_MODE') || die('Access denied.');
+defined('TYPO3') || die('Access denied.');
 
 call_user_func(
     function () {
         if (TYPO3_MODE === 'BE') {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-                'SourceBroker.t3api',
+                'T3api',
                 'tools',
                 'm1',
                 '',
                 [
-                    'Administration' => 'documentation',
-                    'OpenApi' => 'display, spec',
+                    \SourceBroker\T3api\Controller\AdministrationController::class => 'documentation',
+                    \SourceBroker\T3api\Controller\OpenApiController::class => 'display, spec',
                 ],
                 [
                     'access' => 'user,group',

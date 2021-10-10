@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Controller;
 
+use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use SourceBroker\T3api\Service\SiteService;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
@@ -20,7 +21,7 @@ class AdministrationController extends AbstractModuleController
 {
     protected const SITE_SELECTOR_MENU_KEY = 'spec_site_selector_menu';
 
-    public function documentationAction(string $siteIdentifier = null): void
+    public function documentationAction(string $siteIdentifier = null): ResponseInterface
     {
         $siteIdentifier = $siteIdentifier ?? $this->getDefaultSiteIdentifier();
         try {
@@ -43,7 +44,7 @@ class AdministrationController extends AbstractModuleController
                 false
             );
 
-            return;
+            return $this->htmlResponse(null);
         }
 
         $this->view->assign(
@@ -54,6 +55,7 @@ class AdministrationController extends AbstractModuleController
                 'OpenApi'
             )
         );
+        return $this->htmlResponse();
     }
 
     protected function getDefaultSiteIdentifier(): string
