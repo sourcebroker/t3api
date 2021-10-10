@@ -12,7 +12,7 @@ cd /var/www/html/$VERSION
 composer init --name=sourcebroker/typo3$VERSION --description=TYPO3$VERSION -n -d /var/www/html/$VERSION
 composer config extra.typo3/cms.web-dir public -d /var/www/html/$VERSION
 composer config repositories.$EXTENSION_KEY path ../$EXTENSION_KEY -d /var/www/html/$VERSION
-composer req typo3/minimal:'^10.4' typo3/cms-impexp:'^10.4' helhum/typo3-console:'^6.3' jigal/t3adminer:'^9.4' georgringer/news:'^8.0' sourcebroker/t3apinews $PACKAGE_NAME:'dev-master as 1.0.0' --no-progress -n -d /var/www/html/$VERSION
+composer req typo3/minimal:'^10.4' helhum/typo3-console:'^6.3' jigal/t3adminer:'^9.4' georgringer/news:'^8.0' sourcebroker/t3api:'dev-typo3-115-support' sourcebroker/t3apinews:'dev-typo3-115-support' --no-progress -n -d /var/www/html/$VERSION
 
 vendor/bin/typo3cms install:setup -n --database-name $DATABASE
 vendor/bin/typo3cms configuration:set 'BE/debug' 1
