@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
 
-use SourceBroker\T3api\Annotation\Serializer\ReadOnly;
+use SourceBroker\T3api\Annotation\Serializer\OnlyRead;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -12,7 +12,7 @@ abstract class AbstractEntry implements TaggableInterface, IdentifiableInterface
     use ContactDataTrait;
 
     /**
-     * @ReadOnly()
+     * @OnlyRead()
      * @var int
      */
     protected $id;
