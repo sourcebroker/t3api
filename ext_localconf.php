@@ -119,42 +119,6 @@ call_user_func(
                 $customizeSerializerContextAttributesSlot[1]
             );
         }
-
-        if (version_compare(TYPO3_branch, '9.5', '>=')) {
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::ENHANCER_NAME] = \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::class;
-        } else {
-            if (
-                PHP_SAPI !== 'cli'
-                && (
-                    $_SERVER['REQUEST_URI'] === ('/' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'])
-                    || \TYPO3\CMS\Core\Utility\StringUtility::beginsWith($_SERVER['REQUEST_URI'],
-                        '/' . $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] . '/')
-                )
-            ){
-                $headerKey = 'HTTP_' . strtoupper(str_replace('-', '_', $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']));
-                $languageUid = $_SERVER[$headerKey] ? (int)$_SERVER[$headerKey] : 0;
-                \SourceBroker\T3api\Dispatcher\LegacyTypoScriptDispatcher::storeRequest();
-                $_SERVER['REQUEST_URI'] = sprintf('/?type=1583185521180&L=%s', $languageUid);
-                $_GET['type'] = 1583185521180;
-                $_GET['L'] = $languageUid;
-                define('IS_T3API_LEGACY_REQUEST', true);
-            }
-
-            // since version 9.0.0 registration of loader for doctrine's annotation registry is done in TYPO3 core bootstrap
-            /** @var \Composer\Autoload\ClassLoader $loader */
-            $requireBase = file_exists(PATH_site . 'vendor/autoload.php') ? PATH_site . '/' : dirname(PATH_site);
-            $loader = require $requireBase . 'vendor/autoload.php';
-            \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
-            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('inject');
-            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('transient');
-            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('lazy');
-            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('validate');
-            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('cascade');
-            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('ignorevalidation');
-            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('cli');
-            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('flushesCaches');
-            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('uuid');
-            \Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('identity');
-        }
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::ENHANCER_NAME] = \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::class;
     }
 );

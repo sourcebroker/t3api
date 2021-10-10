@@ -1,11 +1,3 @@
-T3apiResponse = PAGE
-T3apiResponse {
-    typeNum = 1583185521180
-
-    10 = USER_INT
-    10.userFunc = SourceBroker\T3api\Dispatcher\LegacyTypoScriptDispatcher->process
-}
-
 config.tx_t3api {
     cors {
         allowOrigin =

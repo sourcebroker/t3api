@@ -22,7 +22,6 @@ class SiteService
 
         if ($site === null) {
             $site = self::getResolvedByTypo3() ??
-                self::getResolvedByLegacyTypo3() ??
                 self::getFirstMatchingCurrentUrl() ??
                 self::getFirstWithWildcardDomain();
         }
@@ -79,18 +78,6 @@ class SiteService
             ->matchRequest(ServerRequestFactory::fromGlobals());
 
         return $routeResult instanceof SiteRouteResult ? $routeResult->getSite() : null;
-    }
-
-    /**
-     * @todo Remove when support for TYPO3 8.7 is dropped
-     * https://docs.typo3.org/c/typo3/cms-core/10.2/en-us/Changelog/9.2/Deprecation-83736-DeprecatedGlobalsTYPO3_REQUEST.html
-     * @return Site|null
-     */
-    protected static function getResolvedByLegacyTypo3(): ?Site
-    {
-        return $GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface
-        && $GLOBALS['TYPO3_REQUEST']->getAttribute('site') instanceof Site
-            ? $GLOBALS['TYPO3_REQUEST']->getAttribute('site') : null;
     }
 
     protected static function getFirstMatchingCurrentUrl(): ?Site

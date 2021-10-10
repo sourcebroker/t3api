@@ -19,10 +19,6 @@ class FilterAccessChecker extends AbstractAccessChecker
             return true;
         }
 
-        if ($this->shouldUseLegacyCheckMethod()) {
-            return $this->isGrantedLegacy($filter, $expressionLanguageVariables);
-        }
-
         $resolver = $this->getExpressionLanguageResolver();
         $resolver->expressionLanguageVariables['t3apiFilter'] = $filter;
         $resolver->expressionLanguageVariables = array_merge(
@@ -31,18 +27,5 @@ class FilterAccessChecker extends AbstractAccessChecker
         );
 
         return $resolver->evaluate($filter->getStrategy()->getCondition());
-    }
-
-    /**
-     * @deprecated
-     * @noinspection PhpDocSignatureInspection
-     * @todo Remove when support for version lower than 9.4 is dropped
-     */
-    public function isGrantedLegacy(ApiFilter $filter, array $expressionLanguageVariables = []): bool
-    {
-        return (bool)$this->evaluateLegacyExpressionLanguage(
-            $filter->getStrategy()->getCondition(),
-            array_merge(['t3apiFilter' => $filter], $expressionLanguageVariables)
-        );
     }
 }
