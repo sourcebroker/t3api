@@ -7,7 +7,7 @@ namespace SourceBroker\T3api\Annotation\Serializer;
  * @Annotation
  * @Target({"PROPERTY"})
  */
-class OnlyRead
+class ReadOnlyProperty
 {
     /**
      * @var bool
