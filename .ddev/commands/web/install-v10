@@ -6,7 +6,6 @@ DATABASE=database_${VERSION}
 rm -rf /var/www/html/$VERSION/*
 mysql -uroot -proot -e "DROP DATABASE IF EXISTS $DATABASE"
 
-
 cd /var/www/html/$VERSION
 
 composer init --name=sourcebroker/typo3$VERSION --description=TYPO3$VERSION -n -d /var/www/html/$VERSION
