@@ -8,7 +8,7 @@ class UrlService
     public static function forceAbsoluteUrl(string $url, string $host): string
     {
         if (parse_url($url, PHP_URL_HOST) === null) {
-            return $host . $url;
+            return rtrim($host, '/') . '/' . ltrim($url, '/');
         }
 
         return $url;
