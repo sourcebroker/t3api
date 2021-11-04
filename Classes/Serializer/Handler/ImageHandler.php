@@ -43,7 +43,7 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
      * @param array $type
      * @param SerializationContext $context
      *
-     * @return string|string[]|null
+     * @return string|string[]|null|null[]
      */
     public function serialize(
         SerializationVisitorInterface $visitor,
