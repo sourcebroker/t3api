@@ -58,6 +58,11 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
     protected $serializerService;
 
     /**
+     * @var FileReferenceService
+     */
+    private $fileReferenceService;
+
+    /**
      * @param ResourceFactory $resourceFactory
      */
     public function injectResourceFactory(ResourceFactory $resourceFactory): void
@@ -90,6 +95,14 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
     }
 
     /**
+     * @param FileReferenceService $fileReferenceService
+     */
+    public function injectFileReferenceService(FileReferenceService $fileReferenceService): void
+    {
+        $this->fileReferenceService = $fileReferenceService;
+    }
+
+    /**
      * @param SerializationVisitorInterface $visitor
      * @param ExtbaseFileReference|Typo3FileReference $fileReference
      * @param array $type
@@ -113,7 +126,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
 
         $out = [
             'uid' => $fileReference->getUid(),
-            'url' => FileReferenceService::getUrlFromResource($originalResource, $context),
+            'url' => $this->fileReferenceService->getUrlFromResource($originalResource, $context),
             'file' => [
                 'uid' => $originalFile->getUid(),
                 'name' => $originalFile->getName(),

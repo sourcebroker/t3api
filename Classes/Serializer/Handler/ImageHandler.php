@@ -20,6 +20,19 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
     public const TYPE = 'Image';
 
     /**
+     * @var FileReferenceService
+     */
+    private $fileReferenceService;
+
+    /**
+     * @param FileReferenceService $fileReferenceService
+     */
+    public function injectFileReferenceService(FileReferenceService $fileReferenceService): void
+    {
+        $this->fileReferenceService = $fileReferenceService;
+    }
+
+    /**
      * @var string[]
      */
     protected static $supportedTypes = [self::TYPE];
@@ -69,13 +82,13 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
         }
 
         $file = $fileResource->getOriginalFile();
-        $file->process(ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, [
+        $processedFile = $file->process(ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, [
             'width' => $type['params'][0] ?? '',
             'height' => $type['params'][1] ?? '',
             'maxWidth' => $type['params'][2] ?? '',
             'maxHeight' => $type['params'][3] ?? '',
         ]);
 
-        return FileReferenceService::getUrlFromResource($fileResource, $context);
+        return $this->fileReferenceService->getUrlFromResource($processedFile, $context);
     }
 }

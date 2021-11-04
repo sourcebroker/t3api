@@ -8,7 +8,7 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 
 class FileReferenceService
 {
-    public static function getUrlFromResource(FileInterface $originalResource, SerializationContext $context): ?string
+    public function getUrlFromResource(FileInterface $originalResource, SerializationContext $context): ?string
     {
         if (!$originalResource->getPublicUrl()) {
             trigger_error(
