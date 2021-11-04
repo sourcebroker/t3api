@@ -10,6 +10,7 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use RuntimeException;
 use SourceBroker\T3api\Exception\ValidationException;
+use SourceBroker\T3api\Service\FileReferenceService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\UrlService;
 use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
@@ -110,11 +111,9 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
             : $fileReference;
         $originalFile = $originalResource->getOriginalFile();
 
-        $url = UrlService::forceAbsoluteUrl($originalResource->getPublicUrl(), $context->getAttribute('TYPO3_SITE_URL'));
-
         $out = [
             'uid' => $fileReference->getUid(),
-            'url' => $url,
+            'url' => FileReferenceService::getUrlFromResource($originalResource, $context),
             'file' => [
                 'uid' => $originalFile->getUid(),
                 'name' => $originalFile->getName(),
