@@ -4,7 +4,7 @@ namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
-use SourceBroker\T3api\Service\UrlService;
+use SourceBroker\T3api\Service\FileReferenceService;
 use Traversable;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -20,6 +20,19 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
     public const TYPE = 'Image';
 
     /**
+     * @var FileReferenceService
+     */
+    private $fileReferenceService;
+
+    /**
+     * @param FileReferenceService $fileReferenceService
+     */
+    public function injectFileReferenceService(FileReferenceService $fileReferenceService): void
+    {
+        $this->fileReferenceService = $fileReferenceService;
+    }
+
+    /**
      * @var string[]
      */
     protected static $supportedTypes = [self::TYPE];
@@ -30,7 +43,7 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
      * @param array $type
      * @param SerializationContext $context
      *
-     * @return string|string[]
+     * @return string|string[]|null|null[]
      */
     public function serialize(
         SerializationVisitorInterface $visitor,
@@ -56,9 +69,9 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
      * @param FileReference|int $fileReference
      * @param array $type
      * @param SerializationContext $context
-     * @return string
+     * @return string|null
      */
-    protected function processSingleImage($fileReference, array $type, SerializationContext $context): string
+    protected function processSingleImage($fileReference, array $type, SerializationContext $context): ?string
     {
         if (is_int($fileReference)) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -69,13 +82,13 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
         }
 
         $file = $fileResource->getOriginalFile();
-        $file = $file->process(ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, [
+        $processedFile = $file->process(ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, [
             'width' => $type['params'][0] ?? '',
             'height' => $type['params'][1] ?? '',
             'maxWidth' => $type['params'][2] ?? '',
             'maxHeight' => $type['params'][3] ?? '',
         ]);
 
-        return UrlService::forceAbsoluteUrl($file->getPublicUrl(), $context->getAttribute('TYPO3_SITE_URL'));
+        return $this->fileReferenceService->getUrlFromResource($processedFile, $context);
     }
 }
