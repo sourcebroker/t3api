@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Controller;
 
-use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use SourceBroker\T3api\Service\SiteService;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
@@ -16,12 +15,24 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extensionmanager\Controller\AbstractModuleController;
+use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 class AdministrationController extends AbstractModuleController
 {
     protected const SITE_SELECTOR_MENU_KEY = 'spec_site_selector_menu';
 
-    public function documentationAction(string $siteIdentifier = null): ResponseInterface
+    /**
+     * BackendTemplateView Container
+     * @var string
+     */
+    protected $defaultViewObjectName = BackendTemplateView::class;
+
+    protected function initializeView(ViewInterface $view)
+    {
+        parent::initializeView($view);
+    }
+
+    public function documentationAction(string $siteIdentifier = null): void
     {
         $siteIdentifier = $siteIdentifier ?? $this->getDefaultSiteIdentifier();
         try {
@@ -43,8 +54,7 @@ class AdministrationController extends AbstractModuleController
                 AbstractMessage::ERROR,
                 false
             );
-
-            return $this->htmlResponse(null);
+            return;
         }
 
         $this->view->assign(
@@ -55,7 +65,6 @@ class AdministrationController extends AbstractModuleController
                 'OpenApi'
             )
         );
-        return $this->htmlResponse();
     }
 
     protected function getDefaultSiteIdentifier(): string
@@ -91,8 +100,8 @@ class AdministrationController extends AbstractModuleController
         foreach ($this->getSites() as $site) {
             $siteSelectorMenu->addMenuItem(
                 $this->enrichSiteSelectorMenuItem(
-                    $siteSelectorMenu->makeMenuItem(),
-                    $site
+                $siteSelectorMenu->makeMenuItem(),
+                $site
                 )
             );
         }
