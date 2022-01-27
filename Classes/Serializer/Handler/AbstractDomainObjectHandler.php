@@ -182,8 +182,7 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
 
         $deserializationContext = $this->cloneDeserializationContext($context, ['target' => $object]);
 
-        // Check if `JSON_THROW_ON_ERROR` is defined is needed only for PHP < 7.2, so can be removed when support is dropped
-        return $this->serializerService->deserialize(json_encode($data, defined('JSON_THROW_ON_ERROR') ? JSON_THROW_ON_ERROR : 0), $targetObjectType, $deserializationContext);
+        return $this->serializerService->deserialize(json_encode($data, JSON_THROW_ON_ERROR), $targetObjectType, $deserializationContext);
     }
 
     private function isObjectInContextScope(

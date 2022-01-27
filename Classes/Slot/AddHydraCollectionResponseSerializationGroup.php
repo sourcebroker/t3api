@@ -23,9 +23,9 @@ class AddHydraCollectionResponseSerializationGroup
         }
 
         return [
-            'operation' => $operation,
-            'request' => $request,
-            'attributes' => $attributes,
+            $operation,
+            $request,
+            $attributes,
         ];
     }
 }

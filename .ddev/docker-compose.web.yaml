@@ -22,5 +22,5 @@ services:
               source: ../
               target: /var/www/html/t3api
               consistency: cached
-            - ../.test/v9:/var/www/html/v9
             - ../.test/v10:/var/www/html/v10
+            - ../.test/v11:/var/www/html/v11

@@ -14,7 +14,7 @@ use ReflectionProperty;
 use SourceBroker\T3api\Annotation\Serializer\Exclude;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
 use SourceBroker\T3api\Annotation\Serializer\MaxDepth;
-use SourceBroker\T3api\Annotation\Serializer\ReadOnly;
+use SourceBroker\T3api\Annotation\Serializer\ReadOnlyProperty;
 use SourceBroker\T3api\Annotation\Serializer\SerializedName;
 use SourceBroker\T3api\Annotation\Serializer\Type\TypeInterface;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
@@ -326,7 +326,7 @@ class SerializerMetadataService
                 if (!empty($annotation->getParams())) {
                     $metadata['type'] .= sprintf('<%s>', static::encodeToHandlerParams($annotation->getParams()));
                 }
-            } elseif ($annotation instanceof ReadOnly) {
+            } elseif ($annotation instanceof ReadOnlyProperty) {
                 $metadata['read_only'] = (bool)$annotation->readOnly;
             } elseif ($annotation instanceof Exclude) {
                 if ($annotation->if !== '') {
