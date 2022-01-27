@@ -2,13 +2,9 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Repository;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use ReflectionClass;
-use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
-use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\T3api\Configuration\Configuration;
-use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\ApiResource;
+use SourceBroker\T3api\Factory\ApiResourceFactory;
 use SourceBroker\T3api\Service\RouteService;
 use SourceBroker\T3api\Service\ReflectionService;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -16,9 +12,6 @@ use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
-/**
- * Class ApiResourceRepository
- */
 class ApiResourceRepository
 {
     /**
@@ -30,6 +23,11 @@ class ApiResourceRepository
      * @var ReflectionService
      */
     protected $reflectionService;
+
+    /**
+     * @var ApiResourceFactory
+     */
+    protected $apiResourceFactory;
 
     /**
      * @param CacheManager $cacheManager
@@ -46,6 +44,11 @@ class ApiResourceRepository
         $this->reflectionService = $reflectionService;
     }
 
+    public function injectApiResourceFactory(ApiResourceFactory $apiResourceFactory): void
+    {
+        $this->apiResourceFactory = $apiResourceFactory;
+    }
+
     /**
      * @return ApiResource[]
      */
@@ -59,39 +62,13 @@ class ApiResourceRepository
             return $apiResources;
         }
 
-        $annotationReader = new AnnotationReader();
         $apiResources = [];
 
-        // @todo refactor loop below - decrease complexity and move to better place
-        foreach ($this->getAllDomainModels() as $domainModel) {
-            $modelReflection = new ReflectionClass($domainModel);
-
-            /** @var ApiResourceAnnotation $apiResourceAnnotation */
-            $apiResourceAnnotation = $annotationReader->getClassAnnotation(
-                $modelReflection,
-                ApiResourceAnnotation::class
-            );
-
-            if (!$apiResourceAnnotation) {
-                continue;
-            }
-
-            $apiResource = new ApiResource($domainModel, $apiResourceAnnotation);
-            $apiResources[] = $apiResource;
-
-            $filterAnnotations = array_filter(
-                $annotationReader->getClassAnnotations($modelReflection),
-                function ($annotation) {
-                    return $annotation instanceof ApiFilterAnnotation;
-                }
-            );
-
-            foreach ($filterAnnotations as $filterAnnotation) {
-                foreach (ApiFilter::createFromAnnotations($filterAnnotation) as $apiFilter) {
-                    $apiResource->addFilter($apiFilter);
-                }
-            }
+        foreach ($this->getAllDomainModels() as $fqcn) {
+            $apiResources[] = $this->apiResourceFactory->createApiResourceFromFqcn($fqcn);
         }
+
+        $apiResources = array_filter($apiResources);
 
         $this->cache->set($cacheIdentifier, $apiResources);
 
