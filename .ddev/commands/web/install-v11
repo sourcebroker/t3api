@@ -11,7 +11,7 @@ cd /var/www/html/$VERSION
 composer init --name=sourcebroker/typo3$VERSION --description=TYPO3$VERSION -n -d /var/www/html/$VERSION
 composer config extra.typo3/cms.web-dir public -d /var/www/html/$VERSION
 composer config repositories.$EXTENSION_KEY path ../$EXTENSION_KEY -d /var/www/html/$VERSION
-composer req typo3/minimal:'^11.5' typo3/cms-extensionmanager:'^11.5' helhum/typo3-console:'^7.0' georgringer/news:'dev-master as 8.6.0' sourcebroker/t3api:'dev-typo3-115-support' sourcebroker/t3apinews:'dev-typo3-115-support' --no-progress -n -d /var/www/html/$VERSION
+composer req typo3/minimal:'^11.5' typo3/cms-extensionmanager:'^11.5' helhum/typo3-console:'^7.0' georgringer/news:'^9.2.0' sourcebroker/t3api:'@dev' sourcebroker/t3apinews:'@dev' --no-progress -n -d /var/www/html/$VERSION
 
 vendor/bin/typo3cms install:setup -n --database-name $DATABASE
 vendor/bin/typo3cms configuration:set 'BE/debug' 1
