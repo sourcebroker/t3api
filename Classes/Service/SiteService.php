@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
-use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
