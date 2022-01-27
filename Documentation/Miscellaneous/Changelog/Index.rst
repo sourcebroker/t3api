@@ -6,6 +6,15 @@
 Changelog
 =====================================
 
+2.0.0
+=====
+- Adds support for TYPO3 v11 [`issue <https://github.com/sourcebroker/t3api/issues/48>`__]
+- Makes it possible to include custom paths as API resources [`issue <https://github.com/sourcebroker/t3api/issues/22>`__]
+- Adds support for API resources inside subdirectories of ``Classes/Domain/Model/`` [`issue <https://github.com/sourcebroker/t3api/issues/22>`__]
+- [!!!] Drops support for TYPO3 < 10.4
+- [!!!] Changes annotation ``ReadOnly`` to ``ReadOnlyProperty`` [`commit 1 <https://github.com/sourcebroker/t3api/commit/dc51a69c2b09edfb429a31e687b94cbcd267c8ff>`__; `commit 2 <https://github.com/sourcebroker/t3api/commit/1c1bbc99121ddf8d4f6bbb8da2ff18dd461227f0>`__]
+- [!!!] Changes signal slot ``\SourceBroker\T3api\Serializer\ContextBuilder\ContextBuilderInterface::SIGNAL_CUSTOMIZE_SERIALIZER_CONTEXT_ATTRIBUTES`` parameters structure to indexed array instead of associative [`commit <https://github.com/sourcebroker/t3api/commit/6eb56b9161956150c654be1421ca05dbc17ec3b0>`__]
+
 1.2.2
 =====
 - Fixes composer dependencies conflict regarding doctrine/cache [`pull request <https://github.com/sourcebroker/t3api/pull/43>`__; `discussion <https://github.com/sourcebroker/t3api/discussions/37>`__]
