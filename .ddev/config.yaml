@@ -8,7 +8,6 @@ webserver_type: apache-fpm
 router_http_port: "80"
 router_https_port: "443"
 xdebug_enabled: false
-composer_version: 1
 additional_hostnames:
     - v10.t3api
     - v10-api.t3api
