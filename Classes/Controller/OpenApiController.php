@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Controller;
 
-use Psr\Http\Message\ResponseInterface;
 use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
 use ReflectionException;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
@@ -31,7 +30,7 @@ class OpenApiController extends ActionController
      * @param string $siteIdentifier
      * @throws SiteNotFoundException
      */
-    public function displayAction(string $siteIdentifier): ResponseInterface
+    public function displayAction(string $siteIdentifier): void
     {
         $this->view->assign(
             'specUrl',
@@ -45,7 +44,6 @@ class OpenApiController extends ActionController
             GeneralUtility::makeInstance(SiteFinder::class)
                 ->getSiteByIdentifier($siteIdentifier)
         );
-        return $this->htmlResponse();
     }
 
     /**
@@ -55,7 +53,7 @@ class OpenApiController extends ActionController
      * @throws ReflectionException
      * @throws SiteNotFoundException
      */
-    public function specAction(string $siteIdentifier): ResponseInterface
+    public function specAction(string $siteIdentifier): string
     {
         $originalRequest = $GLOBALS['TYPO3_REQUEST'];
         $site = GeneralUtility::makeInstance(SiteFinder::class)
@@ -66,6 +64,6 @@ class OpenApiController extends ActionController
             ->toJson();
         $GLOBALS['TYPO3_REQUEST'] = $originalRequest;
 
-        return $this->htmlResponse($output);
+        return $output;
     }
 }
