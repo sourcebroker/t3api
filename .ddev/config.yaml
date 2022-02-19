@@ -1,7 +1,6 @@
 name: t3api
 type: php
-docroot: ~
-no_project_mount: true
+docroot: .test
 php_version: "7.4"
 composer_version: 2
 webserver_type: apache-fpm
@@ -16,13 +15,8 @@ additional_hostnames:
 additional_fqdns: []
 provider: default
 use_dns_when_possible: true
-extra_services:
-    - v10-data
-    - v11-data
 hooks:
-    pre-start:
-        - exec-host: "mkdir -p .test/v10 .test/v11"
-        - exec-host: "[ -L .test/t3api ] || ln -snvf ../. .test/t3api"
     post-start:
         - exec: sudo sed -i '1s/^/TERM=xterm-256color\n/' ~/.bashrc
+        - exec: mkdir -p .test && cp /var/www/html/.ddev/data-init/index.html /var/www/html/.test/
 

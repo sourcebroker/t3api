@@ -1,37 +1,45 @@
 #!/bin/bash
 
-VERSION=v11
-DATABASE=database_${VERSION}
+## Description: Install TYPO3 11 with t3api linked to it.
+## Usage: install-v11
+## Example: "ddev install-v11"
 
-rm -rf /var/www/html/$VERSION/*
+VERSION=v11
+DATABASE=database_$VERSION
+BASE_PATH=/var/www/html/.test/$VERSION
+
+[ -L /var/www/html/.test/t3api ] || ln -sr /var/www/html/ /var/www/html/.test/t3api
+rm -rf $BASE_PATH
+mkdir -p $BASE_PATH
+
 mysql -uroot -proot -e "DROP DATABASE IF EXISTS $DATABASE"
 
-cd /var/www/html/$VERSION
+composer init --name=sourcebroker/typo3$VERSION --description=TYPO3$VERSION --no-interaction --working-dir $BASE_PATH
+composer config extra.typo3/cms.web-dir public --working-dir $BASE_PATH
+composer config repositories.$EXTENSION_KEY path ../$EXTENSION_KEY --working-dir $BASE_PATH
+composer req typo3/minimal:'^11.5' helhum/typo3-console:'^7.0' georgringer/news:'^9.2.0' \
+         sourcebroker/t3api:'@dev' sourcebroker/t3apinews:'@dev' \
+         --no-progress --no-interaction --working-dir $BASE_PATH
 
-composer init --name=sourcebroker/typo3$VERSION --description=TYPO3$VERSION -n -d /var/www/html/$VERSION
-composer config extra.typo3/cms.web-dir public -d /var/www/html/$VERSION
-composer config repositories.$EXTENSION_KEY path ../$EXTENSION_KEY -d /var/www/html/$VERSION
-composer req typo3/minimal:'^11.5' typo3/cms-extensionmanager:'^11.5' helhum/typo3-console:'^7.0' georgringer/news:'^9.2.0' sourcebroker/t3api:'@dev' sourcebroker/t3apinews:'@dev' --no-progress -n -d /var/www/html/$VERSION
+$BASE_PATH/vendor/bin/typo3cms install:setup -n --database-name $DATABASE
+$BASE_PATH/vendor/bin/typo3cms configuration:set 'BE/debug' 1
+$BASE_PATH/vendor/bin/typo3cms configuration:set 'BE/lockSSL' true
+$BASE_PATH/vendor/bin/typo3cms configuration:set 'FE/debug' 1
+$BASE_PATH/vendor/bin/typo3cms configuration:set 'SYS/devIPmask' '*'
+$BASE_PATH/vendor/bin/typo3cms configuration:set 'SYS/displayErrors' 1
+$BASE_PATH/vendor/bin/typo3cms configuration:set 'SYS/trustedHostsPattern' '.*.*'
+$BASE_PATH/vendor/bin/typo3cms configuration:set 'MAIL/transport' 'smtp'
+$BASE_PATH/vendor/bin/typo3cms configuration:set 'MAIL/transport_smtp_server' 'localhost:1025'
+$BASE_PATH/vendor/bin/typo3cms configuration:set 'GFX/processor' 'ImageMagick'
+$BASE_PATH/vendor/bin/typo3cms configuration:set 'GFX/processor_path' '/usr/bin/'
+$BASE_PATH/vendor/bin/typo3cms configuration:set 'GFX/processor_path_lzw' '/usr/bin/'
 
-vendor/bin/typo3cms install:setup -n --database-name $DATABASE
-vendor/bin/typo3cms configuration:set 'BE/debug' 1
-vendor/bin/typo3cms configuration:set 'BE/lockSSL' true
-vendor/bin/typo3cms configuration:set 'FE/debug' 1
-vendor/bin/typo3cms configuration:set 'SYS/devIPmask' '*'
-vendor/bin/typo3cms configuration:set 'SYS/displayErrors' 1
-vendor/bin/typo3cms configuration:set 'SYS/trustedHostsPattern' '.*.*'
-vendor/bin/typo3cms configuration:set 'MAIL/transport' 'smtp'
-vendor/bin/typo3cms configuration:set 'MAIL/transport_smtp_server' 'localhost:1025'
-vendor/bin/typo3cms configuration:set 'GFX/processor' 'ImageMagick'
-vendor/bin/typo3cms configuration:set 'GFX/processor_path' '/usr/bin/'
-vendor/bin/typo3cms configuration:set 'GFX/processor_path_lzw' '/usr/bin/'
+sed -i -e "s/base: ht\//base: \//g" $BASE_PATH/config/sites/main/config.yaml
+sed -i -e 's/base: \/en\//base: \//g' $BASE_PATH/config/sites/main/config.yaml
+printf "imports:\n  -\n    resource: 'EXT:$EXTENSION_KEY/Configuration/Routing/config.yaml'" >> $BASE_PATH/config/sites/main/config.yaml
 
-sed -i -e "s/base: ht\//base: \//g" /var/www/html/$VERSION/config/sites/main/config.yaml
-sed -i -e 's/base: \/en\//base: \//g' /var/www/html/$VERSION/config/sites/main/config.yaml
-printf "imports:\n  -\n    resource: 'EXT:$EXTENSION_KEY/Configuration/Routing/config.yaml'" >> /var/www/html/$VERSION/config/sites/main/config.yaml
+cp -r "$BASE_PATH/../$EXTENSION_KEY/.ddev/data-init/fileadmin/" "$BASE_PATH/public/"
+mysql -uroot -proot  $DATABASE < "$BASE_PATH/../$EXTENSION_KEY/.ddev/data-init/$DATABASE.sql"
 
-cp -r "/var/www/html/$EXTENSION_KEY/.ddev/data-init/fileadmin/" "/var/www/html/$VERSION/public/"
-mysql -uroot -proot  $DATABASE < "/var/www/html/$EXTENSION_KEY/.ddev/data-init/$DATABASE.sql"
-
-vendor/bin/typo3cms database:updateschema
-vendor/bin/typo3cms cache:flush
+$BASE_PATH/vendor/bin/typo3cms database:updateschema
+$BASE_PATH/vendor/bin/typo3cms cache:flush

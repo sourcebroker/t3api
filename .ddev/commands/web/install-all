@@ -1,5 +1,9 @@
 #!/bin/bash
 
+## Description: Install TYPO3 10 and TYPO3 11 with t3api linked to it.
+## Usage: install-all
+## Example: "ddev install-all"
+
 ABSOLUTE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}/.")"
 
 $ABSOLUTE_PATH/install-v10

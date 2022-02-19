@@ -17,10 +17,4 @@ services:
             - TYPO3_INSTALL_SITE_NAME=EXT:t3api Dev Environment
             - TYPO3_INSTALL_SITE_SETUP_TYPE=site
             - TYPO3_INSTALL_WEB_SERVER_CONFIG=apache
-        volumes:
-            - type: bind
-              source: ../
-              target: /var/www/html/t3api
-              consistency: cached
-            - ../.test/v10:/var/www/html/v10
-            - ../.test/v11:/var/www/html/v11
+
