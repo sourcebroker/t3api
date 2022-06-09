@@ -8,6 +8,9 @@ Changelog
 
 2.0.0
 =====
+- Move from travis to github actions [`commit <https://github.com/sourcebroker/t3api/commit/1e10ad6b>`__]
+- Make php-cs-fixer config form TYPO3/coding-standards. Update .editorconfig from TYPO3/coding-standards [`commit <https://github.com/sourcebroker/t3api/commit/6a36dd3d>`__]
+- Refactor ddev for test instances. [`commit <https://github.com/sourcebroker/t3api/commit/96e2903f>`__]
 - Adds support for TYPO3 v11 [`issue <https://github.com/sourcebroker/t3api/issues/48>`__]
 - Makes it possible to include custom paths as API resources [`issue <https://github.com/sourcebroker/t3api/issues/22>`__]
 - Adds support for API resources inside subdirectories of ``Classes/Domain/Model/`` [`issue <https://github.com/sourcebroker/t3api/issues/22>`__]
