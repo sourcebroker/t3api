@@ -1,14 +1,23 @@
 TYPO3 Extension t3api
 =====================
 
-    .. image:: https://scrutinizer-ci.com/g/sourcebroker/t3api/badges/quality-score.png?b=master
-       :target: https://scrutinizer-ci.com/g/sourcebroker/t3api/?branch=master
+.. image:: https://poser.pugx.org/sourcebroker/t3api/v/stable
+   :target: https://extensions.typo3.org/extension/t3api/
 
-    .. image:: https://travis-ci.org/sourcebroker/t3api.svg?branch=master
-       :target: https://travis-ci.org/sourcebroker/t3api
+.. image:: https://img.shields.io/badge/TYPO3-11-orange.svg
+   :target: https://get.typo3.org/version/11
 
-    .. image:: https://poser.pugx.org/sourcebroker/t3api/license
-       :target: https://packagist.org/packages/sourcebroker/t3api
+.. image:: https://img.shields.io/badge/TYPO3-10-orange.svg
+   :target: https://get.typo3.org/version/10
+
+.. image:: https://scrutinizer-ci.com/g/sourcebroker/t3api/badges/quality-score.png?b=master
+   :target: https://scrutinizer-ci.com/g/sourcebroker/t3api/?branch=master
+
+.. image:: https://travis-ci.org/sourcebroker/t3api.svg?branch=master
+   :target: https://travis-ci.org/sourcebroker/t3api
+
+.. image:: https://poser.pugx.org/sourcebroker/t3api/license
+   :target: https://packagist.org/packages/sourcebroker/t3api
 
 Features
 --------

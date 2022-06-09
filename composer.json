@@ -1,7 +1,7 @@
 {
     "name": "sourcebroker/t3api",
     "license": [
-        "GPL-2.0+"
+        "GPL-2.0-or-later"
     ],
     "type": "typo3-cms-extension",
     "description": "REST API for your TYPO3 project. Config with annotations, build in filtering, pagination, typolinks, image processing, serialization contexts, responses in Hydra/JSON-LD format.",
