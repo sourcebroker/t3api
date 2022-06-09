@@ -13,8 +13,8 @@ TYPO3 Extension t3api
 .. image:: https://scrutinizer-ci.com/g/sourcebroker/t3api/badges/quality-score.png?b=master
    :target: https://scrutinizer-ci.com/g/sourcebroker/t3api/?branch=master
 
-.. image:: https://travis-ci.org/sourcebroker/t3api.svg?branch=master
-   :target: https://travis-ci.org/sourcebroker/t3api
+.. image:: https://github.com/sourcebroker/t3api/actions/workflows/ci.yml/badge.svg
+   :target: https://github.com/sourcebroker/t3api/actions/workflows/ci.yml
 
 .. image:: https://poser.pugx.org/sourcebroker/t3api/license
    :target: https://packagist.org/packages/sourcebroker/t3api
