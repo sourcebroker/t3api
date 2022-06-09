@@ -73,7 +73,7 @@ class AdministrationController extends AbstractModuleController
         $lastSelectedSiteIdentifier
             = $this->getUserModuleData('lastSelectedSiteIdentifier');
 
-        if ($sites[$lastSelectedSiteIdentifier] instanceof Site) {
+        if ($lastSelectedSiteIdentifier !== null && $sites[$lastSelectedSiteIdentifier] instanceof Site) {
             return $sites[$lastSelectedSiteIdentifier]->getIdentifier();
         }
 
