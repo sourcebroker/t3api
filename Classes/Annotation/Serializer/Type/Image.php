@@ -7,7 +7,7 @@ use SourceBroker\T3api\Serializer\Handler\ImageHandler;
 
 /**
  * @Annotation
- * @Target({"PROPERTY","METHOD"})
+ * @Target({"PROPERTY", "METHOD"})
  */
 class Image implements TypeInterface
 {

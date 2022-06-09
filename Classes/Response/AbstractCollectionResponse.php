@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Response;
 
@@ -30,12 +31,12 @@ abstract class AbstractCollectionResponse
     /**
      * @var array|null
      */
-    protected $membersCache = null;
+    protected $membersCache;
 
     /**
      * @var int|null
      */
-    protected $totalItemsCache = null;
+    protected $totalItemsCache;
 
     /**
      * @param string $membersReference

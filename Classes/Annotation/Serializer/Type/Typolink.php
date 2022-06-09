@@ -7,7 +7,7 @@ use SourceBroker\T3api\Serializer\Handler\TypolinkHandler;
 
 /**
  * @Annotation
- * @Target({"PROPERTY","METHOD"})
+ * @Target({"PROPERTY", "METHOD"})
  */
 class Typolink implements TypeInterface
 {

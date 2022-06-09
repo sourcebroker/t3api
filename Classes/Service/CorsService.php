@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
@@ -22,7 +23,7 @@ class CorsService
 
         if ($options->originRegex) {
             foreach ($options->allowOrigin as $originRegexp) {
-                if (preg_match('{'.$originRegexp.'}i', $origin)) {
+                if (preg_match('{' . $originRegexp . '}i', $origin)) {
                     return true;
                 }
             }

@@ -1,9 +1,10 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Tests\Unit\Domain\Model;
 
-use SourceBroker\T3api\Domain\Model\ApiFilter;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use SourceBroker\T3api\Domain\Model\ApiFilter;
 
 /**
  * Test case.
@@ -13,7 +14,7 @@ class ApiFilterTest extends UnitTestCase
     /**
      * @var \SourceBroker\T3api\Domain\Model\ApiFilter
      */
-    protected $subject = null;
+    protected $subject;
 
     protected function setUp(): void
     {

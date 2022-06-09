@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
@@ -12,7 +13,7 @@ abstract class AbstractEntry implements TaggableInterface, IdentifiableInterface
     use ContactDataTrait;
 
     /**
-     * @ReadOnlyProperty()
+     * @ReadOnlyProperty
      * @var int
      */
     protected $id;
@@ -38,7 +39,7 @@ abstract class AbstractEntry implements TaggableInterface, IdentifiableInterface
     }
 
     /**
-     * @VirtualProperty()
+     * @VirtualProperty
      * @return int[]
      */
     public function getTagIds()
@@ -56,7 +57,7 @@ abstract class AbstractEntry implements TaggableInterface, IdentifiableInterface
     }
 
     /**
-     * @VirtualProperty()
+     * @VirtualProperty
      * @return ObjectStorage<Tag>
      */
     public function getTags(): ObjectStorage

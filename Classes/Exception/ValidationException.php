@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Exception;
 
@@ -14,7 +15,7 @@ class ValidationException extends AbstractException implements OpenApiSupporting
 {
     /**
      * @var Result
-     * @Exclude()
+     * @Exclude
      */
     protected $validationResult;
 

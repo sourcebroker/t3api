@@ -12,7 +12,6 @@ use SourceBroker\T3api\Serializer\Handler\PasswordHashHandler;
  */
 class PasswordHash implements TypeInterface
 {
-
     public function getParams(): array
     {
         return [];

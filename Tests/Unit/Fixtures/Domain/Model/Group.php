@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
@@ -18,7 +19,7 @@ class Group implements IdentifiableInterface
     }
 
     /**
-     * @VirtualProperty()
+     * @VirtualProperty
      * @return int
      */
     public function getNumberOfAssignedEntries(): int

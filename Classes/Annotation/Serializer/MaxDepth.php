@@ -5,7 +5,7 @@ namespace SourceBroker\T3api\Annotation\Serializer;
 
 /**
  * @Annotation
- * @Target({"PROPERTY","METHOD"})
+ * @Target({"PROPERTY", "METHOD"})
  */
 final class MaxDepth
 {

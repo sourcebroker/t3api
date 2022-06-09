@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Exception;
 
@@ -16,7 +17,7 @@ abstract class AbstractException extends Exception implements ExceptionInterface
 {
     /**
      * @var string
-     * @Exclude()
+     * @Exclude
      */
     protected $title;
 

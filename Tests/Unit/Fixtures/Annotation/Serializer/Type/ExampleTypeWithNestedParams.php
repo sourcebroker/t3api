@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Unit\Fixtures\Annotation\Serializer\Type;
@@ -7,7 +8,7 @@ use SourceBroker\T3api\Annotation\Serializer\Type\TypeInterface;
 
 /**
  * @Annotation
- * @Target({"PROPERTY","METHOD"})
+ * @Target({"PROPERTY", "METHOD"})
  */
 class ExampleTypeWithNestedParams implements TypeInterface
 {

@@ -57,11 +57,11 @@ $docsSettingsFile = './Documentation/Settings.cfg';
 $newDocsSettings = preg_replace(
     [
         "/version     = (\d+\.\d+)/",
-        "/release     = (\d+\.\d+\.\d+)/"
+        "/release     = (\d+\.\d+\.\d+)/",
     ],
     [
         "version     = $major.$minor",
-        "release     = $nextTag"
+        "release     = $nextTag",
     ],
     file_get_contents($docsSettingsFile)
 );

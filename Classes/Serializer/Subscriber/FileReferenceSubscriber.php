@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Serializer\Subscriber;
 
@@ -82,7 +83,6 @@ class FileReferenceSubscriber implements EventSubscriberInterface
 
     /**
      * @param Event $event
-     * @return void
      */
     protected function changeTypeToHandleAllFileReferenceExtendingClasses(Event $event): void
     {

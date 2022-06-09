@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Serializer\Handler;
 
@@ -43,7 +44,7 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
      * @param array $type
      * @param SerializationContext $context
      *
-     * @return string|string[]|null|null[]
+     * @return string|string[]|null[]|null
      */
     public function serialize(
         SerializationVisitorInterface $visitor,

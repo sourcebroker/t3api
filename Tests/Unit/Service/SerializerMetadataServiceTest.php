@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Unit\Service;
@@ -219,10 +220,10 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\\Address',
                     ],
                     'firstName' => [
-                        'type' => 'string'
+                        'type' => 'string',
                     ],
                     'lastName' => [
-                        'type' => 'string'
+                        'type' => 'string',
                     ],
                     'maidenName' => [
                         'type' => 'string',
@@ -243,7 +244,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     'hidden' => [
                         'type' => 'bool',
                     ],
-                ]
+                ],
             ],
             Company::class => [
                 Company::class,
@@ -276,7 +277,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     'hidden' => [
                         'type' => 'bool',
                     ],
-                ]
+                ],
             ],
             Group::class => [
                 Group::class,
@@ -284,23 +285,23 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     'title' => [
                         'type' => 'string',
                     ],
-                ]
+                ],
             ],
             Tag::class => [
                 Tag::class,
                 [
                     'title' => [
                         'type' => 'string',
-                    ]
-                ]
+                    ],
+                ],
             ],
             Category::class => [
                 Category::class,
                 [
                     'title' => [
                         'type' => 'string',
-                    ]
-                ]
+                    ],
+                ],
             ],
             Address::class => [
                 Address::class,
@@ -319,9 +320,9 @@ class SerializerMetadataServiceTest extends UnitTestCase
                     ],
                     'modified' => [
                         'type' => sprintf('DateTime<\'%s\'>', $dateTimeFormat),
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -382,7 +383,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         'serialized_name' => 'privateAddress',
                         'type' => 'ExampleTypeWithNestedParams<\'PrivateAddress\',\'{"parameter1":"value1","parameter2":["value2a","value2b"],"parameter3":{"parameter3a":"value3a","parameter3b":3}}\'>',
                     ],
-                ]
+                ],
             ],
             Company::class => [
                 Company::class,
@@ -406,8 +407,8 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         'name' => 'bankAccountIban',
                         'serialized_name' => 'bankAccountIban',
                         'type' => 'string',
-                    ]
-                ]
+                    ],
+                ],
             ],
             Group::class => [
                 Group::class,
@@ -417,20 +418,20 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         'serialized_name' => 'numberOfAssignedEntries',
                         'type' => 'int',
                     ],
-                ]
+                ],
             ],
             Tag::class => [
                 Tag::class,
-                []
+                [],
             ],
             Category::class => [
                 Category::class,
-                []
+                [],
             ],
             Address::class => [
                 Address::class,
-                []
-            ]
+                [],
+            ],
         ];
     }
 

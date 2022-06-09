@@ -1,5 +1,6 @@
-<?php /** @noinspection PhpFullyQualifiedNameUsageInspection */
+<?php
 
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
 defined('TYPO3') || die('Access denied.');
 
 call_user_func(

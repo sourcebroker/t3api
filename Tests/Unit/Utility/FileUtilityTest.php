@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Tests\Utility;
 
@@ -18,8 +19,8 @@ class FileUtilityTest extends UnitTestCase
     {
         $directoryPath = FileUtility::createWritableDirectory($this->getPathToNotExistingDirectory(sys_get_temp_dir()));
 
-        $this->assertDirectoryExists($directoryPath);
-        $this->assertDirectoryIsWritable($directoryPath);
+        self::assertDirectoryExists($directoryPath);
+        self::assertDirectoryIsWritable($directoryPath);
     }
 
     /**
@@ -75,7 +76,8 @@ class FileUtilityTest extends UnitTestCase
         foreach ($dirs as $dir) {
             if (!is_writable($dir)) {
                 return $dir;
-            } elseif (!is_writable($childDir = $this->getPathToNotWritableDirectory($rootPath))) {
+            }
+            if (!is_writable($childDir = $this->getPathToNotWritableDirectory($rootPath))) {
                 return $childDir;
             }
         }

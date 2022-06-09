@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Repository;
 
 use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Factory\ApiResourceFactory;
-use SourceBroker\T3api\Service\RouteService;
 use SourceBroker\T3api\Service\ReflectionService;
+use SourceBroker\T3api\Service\RouteService;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;

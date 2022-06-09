@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
@@ -373,7 +374,7 @@ class SerializerMetadataService
 
         $encodedParams = array_map('static::encodeToSingleHandlerParam', $params);
 
-        return '\''.implode('\',\'', $encodedParams).'\'';
+        return '\'' . implode('\',\'', $encodedParams) . '\'';
     }
 
     /**

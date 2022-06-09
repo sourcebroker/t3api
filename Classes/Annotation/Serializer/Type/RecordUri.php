@@ -7,7 +7,7 @@ use SourceBroker\T3api\Serializer\Handler\RecordUriHandler;
 
 /**
  * @Annotation
- * @Target({"PROPERTY","METHOD"})
+ * @Target({"PROPERTY", "METHOD"})
  */
 class RecordUri implements TypeInterface
 {

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Serializer\Handler;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class RteHandler extends AbstractHandler implements SerializeHandlerInterface
 {

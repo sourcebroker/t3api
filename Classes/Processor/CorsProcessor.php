@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SourceBroker\T3api\Processor;
 
+use Psr\Http\Message\ResponseInterface;
 use SourceBroker\T3api\Service\CorsService;
 use Symfony\Component\HttpFoundation\Request;
-use Psr\Http\Message\ResponseInterface;
 
 class CorsProcessor implements ProcessorInterface
 {

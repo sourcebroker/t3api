@@ -8,7 +8,7 @@ use SourceBroker\T3api\Serializer\Handler\RteHandler;
 
 /**
  * @Annotation
- * @Target({"PROPERTY","METHOD"})
+ * @Target({"PROPERTY", "METHOD"})
  */
 class Rte implements TypeInterface
 {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Repository;
 
@@ -107,7 +108,6 @@ class CommonRepository
     {
         $this->persistenceManager = $persistenceManager;
     }
-
 
     public function injectFilterAccessChecker(FilterAccessChecker $filterAccessChecker): void
     {

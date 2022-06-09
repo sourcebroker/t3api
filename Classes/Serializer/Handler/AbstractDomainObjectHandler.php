@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SourceBroker\T3api\Serializer\Handler;
@@ -143,8 +144,8 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
             [
                 'name' => $targetObjectType,
                 'params' => [
-                    '_skipDomainObjectTransport' => true
-                ]
+                    '_skipDomainObjectTransport' => true,
+                ],
             ]
         );
     }

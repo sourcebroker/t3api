@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
@@ -37,7 +38,7 @@ class Person extends AbstractEntry
     protected $created;
 
     /**
-     * @VirtualProperty()
+     * @VirtualProperty
      * @return string
      */
     public function getFullName(): string
@@ -50,15 +51,15 @@ class Person extends AbstractEntry
      * @ExampleTypeWithNestedParams(
      *     "PrivateAddress",
      *     config={
-     *          "parameter1": "value1",
-     *          "parameter2": {
-     *              "value2a",
-     *              "value2b",
-     *          },
-     *          "parameter3": {
-     *              "parameter3a": "value3a",
-     *              "parameter3b": 3,
-     *          },
+     *         "parameter1": "value1",
+     *         "parameter2": {
+     *             "value2a",
+     *             "value2b",
+     *         },
+     *         "parameter3": {
+     *             "parameter3a": "value3a",
+     *             "parameter3b": 3,
+     *         },
      *     }
      * )
      */

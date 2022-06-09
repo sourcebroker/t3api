@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Utility;
 
@@ -38,7 +39,7 @@ class FileUtility
 
     public static function getFilesRecursivelyByExtension(string $directoryPath, string $extension): Generator
     {
-        return self::getFilesRecursively($directoryPath, sprintf('/^.*\.'.preg_quote($extension, '/').'$/i'));
+        return self::getFilesRecursively($directoryPath, sprintf('/^.*\.' . preg_quote($extension, '/') . '$/i'));
     }
 
     public static function getFilesRecursively(string $directoryPath, string $pattern = '/.*/'): Generator
@@ -53,7 +54,7 @@ class FileUtility
             RegexIterator::MATCH
         );
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             yield $file->getPathName();
         }
     }

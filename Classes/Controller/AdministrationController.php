@@ -14,8 +14,8 @@ use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extensionmanager\Controller\AbstractModuleController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\CMS\Extensionmanager\Controller\AbstractModuleController;
 
 class AdministrationController extends AbstractModuleController
 {
@@ -100,8 +100,8 @@ class AdministrationController extends AbstractModuleController
         foreach ($this->getSites() as $site) {
             $siteSelectorMenu->addMenuItem(
                 $this->enrichSiteSelectorMenuItem(
-                $siteSelectorMenu->makeMenuItem(),
-                $site
+                    $siteSelectorMenu->makeMenuItem(),
+                    $site
                 )
             );
         }

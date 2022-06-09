@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
-use TYPO3\CMS\Core\Resource\Security\FileNameValidator;
 use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Model\UploadSettings;
@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\CMS\Core\Resource\Security\FileNameValidator;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -70,7 +71,6 @@ class FileUploadService implements SingletonInterface
      * @param UploadSettings $uploadSettings
      * @param UploadedFile $uploadedFile
      * @throws InvalidArgumentException
-     * @return void
      */
     protected function verifyFileExtension(UploadSettings $uploadSettings, UploadedFile $uploadedFile): void
     {
@@ -187,7 +187,7 @@ class FileUploadService implements SingletonInterface
             );
         }
         return preg_replace_callback(
-            "/\\[([A-Za-z0-9_:]+)\\]/",
+            '/\\[([A-Za-z0-9_:]+)\\]/',
             static function ($match) use ($replacements) {
                 return $replacements[$match[1]];
             },

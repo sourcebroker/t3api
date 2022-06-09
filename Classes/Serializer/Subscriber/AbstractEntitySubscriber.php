@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 namespace SourceBroker\T3api\Serializer\Subscriber;
 
@@ -104,8 +105,6 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
     /**
      * @param AbstractDomainObject $entity
      * @param JsonSerializationVisitor $visitor
-     *
-     * @return void
      */
     protected function addForceEntityProperties(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
     {
@@ -121,8 +120,6 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
     /**
      * @param AbstractDomainObject $entity
      * @param JsonSerializationVisitor $visitor
-     *
-     * @return void
      */
     protected function addIri(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
     {
