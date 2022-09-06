@@ -60,7 +60,6 @@ class Bootstrap extends AbstractDispatcher
         try {
             $request = $this->httpFoundationFactory->createRequest($inputRequest);
             $context = (new RequestContext())->fromRequest($request);
-            $matchedRoute = null;
             $this->callProcessors($request, $this->response);
             if ($this->isMainEndpointResponseClassDefined() && $this->isContextMatchingMainEndpointRoute($context)) {
                 $output = $this->processMainEndpoint();

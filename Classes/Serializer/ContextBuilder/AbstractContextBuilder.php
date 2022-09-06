@@ -3,41 +3,36 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Serializer\ContextBuilder;
 
+use JMS\Serializer\Context;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
+use SourceBroker\T3api\Event\AfterCreateContextForOperationEvent;
 use Symfony\Component\HttpFoundation\Request;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher as SignalSlotDispatcher;
 
 abstract class AbstractContextBuilder implements ContextBuilderInterface
 {
-    protected static function getCustomizedContextAttributes(
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    protected function dispatchAfterCreateContextForOperationEvent(
         OperationInterface $operation,
         Request $request,
-        array $attributes
-    ): array {
-        $signalOutput = GeneralUtility::makeInstance(ObjectManager::class)
-            ->get(SignalSlotDispatcher::class)
-            ->dispatch(
-                ContextBuilderInterface::class,
-                ContextBuilderInterface::SIGNAL_CUSTOMIZE_SERIALIZER_CONTEXT_ATTRIBUTES,
-                [
-                    clone $operation,
-                    clone $request,
-                    $attributes,
-                ]
-            );
-        if (!is_array($signalOutput[2])) {
-            throw new \RuntimeException(
-                sprintf(
-                    'Serializer context `attributes` returned from `%s` has to be an type of array %s returned',
-                    ContextBuilderInterface::SIGNAL_CUSTOMIZE_SERIALIZER_CONTEXT_ATTRIBUTES,
-                    gettype($signalOutput[2])
-                ),
-                1587379831963
-            );
-        }
-
-        return $signalOutput[2];
+        Context $context
+    ): void
+    {
+        $this->eventDispatcher->dispatch(
+            new AfterCreateContextForOperationEvent(
+                $operation,
+                $request,
+                $context
+            )
+        );
     }
 }

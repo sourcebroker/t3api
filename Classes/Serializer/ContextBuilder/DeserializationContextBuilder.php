@@ -13,7 +13,7 @@ class DeserializationContextBuilder extends AbstractContextBuilder
     /**
      * @return DeserializationContext
      */
-    public static function create(): Context
+    public function create(): Context
     {
         return (DeserializationContext::create())
             ->enableMaxDepthChecks();
@@ -25,9 +25,9 @@ class DeserializationContextBuilder extends AbstractContextBuilder
      * @param null $targetObject
      * @return DeserializationContext
      */
-    public static function createFromOperation(OperationInterface $operation, Request $request, $targetObject = null): Context
+    public function createFromOperation(OperationInterface $operation, Request $request, $targetObject = null): Context
     {
-        $context = self::create();
+        $context = $this->create();
 
         // There is a fallback to `normalizationContext` because of backward compatibility. Until version 1.2.x
         // `denormalizationContext` did not exist and same attributes were used for both contexts
@@ -37,11 +37,15 @@ class DeserializationContextBuilder extends AbstractContextBuilder
             $attributes['target'] = $targetObject;
         }
 
-        $attributes = self::getCustomizedContextAttributes($operation, $request, $attributes);
-
         foreach ($attributes as $attributeName => $attributeValue) {
             $context->setAttribute($attributeName, $attributeValue);
         }
+
+        $this->dispatchAfterCreateContextForOperationEvent(
+            $operation,
+            $request,
+            $context
+        );
 
         return $context;
     }

@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Dispatcher;
 
 use Exception;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
+use SourceBroker\T3api\Event\AfterProcessOperationEvent;
 use SourceBroker\T3api\Exception\RouteNotFoundException;
 use SourceBroker\T3api\OperationHandler\OperationHandlerInterface;
 use SourceBroker\T3api\Processor\ProcessorInterface;
+use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,23 +25,12 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher as SignalSlotDispatcher;
 
 /**
  * Class AbstractDispatcher
  */
 abstract class AbstractDispatcher
 {
-    /**
-     * @deprecated Move to another place in 2.0. Kept here only for backward compatibility.
-     */
-    public const SIGNAL_AFTER_DESERIALIZE_OPERATION = 'afterDeserializeOperation';
-
-    /**
-     * @deprecated Move to another place in 2.0. Kept here only for backward compatibility.
-     */
-    public const SIGNAL_AFTER_PROCESS_OPERATION = 'afterProcessOperation';
-
     /**
      * @var ObjectManager
      */
@@ -55,6 +47,11 @@ abstract class AbstractDispatcher
     protected $apiResourceRepository;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
      * Bootstrap constructor.
      */
     public function __construct()
@@ -62,6 +59,9 @@ abstract class AbstractDispatcher
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->serializerService = $this->objectManager->get(SerializerService::class);
         $this->apiResourceRepository = $this->objectManager->get(ApiResourceRepository::class);
+        $this->serializationContextBuilder = $this->objectManager->get(SerializationContextBuilder::class);
+        $this->deserializationContextBuilder = $this->objectManager->get(DeserializationContextBuilder::class);
+        $this->eventDispatcher = $this->objectManager->get(EventDispatcherInterface::class);
     }
 
     /**
@@ -112,7 +112,6 @@ abstract class AbstractDispatcher
         Request $request,
         ResponseInterface &$response = null
     ): string {
-        $result = null;
         $handlers = $this->getHandlersSupportingOperation($operation, $request);
 
         if (empty($handlers)) {
@@ -129,18 +128,18 @@ abstract class AbstractDispatcher
         $handler = $this->objectManager->get(array_shift($handlers));
         $result = $handler->handle($operation, $request, $route ?? [], $response);
 
-        $arguments = [
-            'operation' => $operation,
-            'result' => $result,
-        ];
-        $arguments = $this->objectManager->get(SignalSlotDispatcher::class)
-            ->dispatch(__CLASS__, self::SIGNAL_AFTER_PROCESS_OPERATION, $arguments);
+        $afterProcessOperationEvent = new AfterProcessOperationEvent(
+            $operation,
+            $result
+        );
+        $this->eventDispatcher->dispatch($afterProcessOperationEvent);
+        $result = $afterProcessOperationEvent->getResult();
 
         return $result === null
             ? ''
             : $this->serializerService->serialize(
-                $arguments['result'],
-                SerializationContextBuilder::createFromOperation($operation, $request)
+                $result,
+                $this->serializationContextBuilder->createFromOperation($operation, $request)
             );
     }
 

@@ -9,8 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 interface ContextBuilderInterface
 {
-    public const SIGNAL_CUSTOMIZE_SERIALIZER_CONTEXT_ATTRIBUTES = 'customizeSerializerContextAttributes';
-
-    public static function create(): Context;
-    public static function createFromOperation(OperationInterface $operation, Request $request): Context;
+    public function create(): Context;
+    public function createFromOperation(OperationInterface $operation, Request $request): Context;
 }

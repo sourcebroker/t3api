@@ -6,6 +6,10 @@
 Changelog
 =====================================
 
+3.0.0
+====
+- [!!!] Changes signal slots into PSR-14 events [`issue <https://github.com/sourcebroker/t3api/issues/67>`__]
+
 2.0.0
 =====
 - Move from travis to github actions [`commit <https://github.com/sourcebroker/t3api/commit/1e10ad6b>`__]
