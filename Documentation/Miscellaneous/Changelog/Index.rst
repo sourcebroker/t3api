@@ -6,6 +6,11 @@
 Changelog
 =====================================
 
+2.0.1
+=====
+- Changes signal slot parameters structure to indexed array instead of associative for slots afterProcessOperation and afterDeserializeOperation [`commit <https://github.com/sourcebroker/t3api/commit/1104c97>`__]
+- Excludes property from serialization to avoid an error on serialize process [`commit <https://github.com/sourcebroker/t3api/commit/1ec116c>`__]
+
 2.0.0
 =====
 - Move from travis to github actions [`commit <https://github.com/sourcebroker/t3api/commit/1e10ad6b>`__]
