@@ -89,12 +89,12 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
         }
 
         $arguments = [
-            'operation' => $operation,
-            'object' => $object,
+            $operation,
+            $object,
         ];
         $arguments = $this->objectManager->get(SignalSlotDispatcher::class)
             ->dispatch(AbstractDispatcher::class, AbstractDispatcher::SIGNAL_AFTER_DESERIALIZE_OPERATION, $arguments);
 
-        return $arguments['object'];
+        return $arguments[1];
     }
 }

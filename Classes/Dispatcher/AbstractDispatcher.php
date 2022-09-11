@@ -130,8 +130,8 @@ abstract class AbstractDispatcher
         $result = $handler->handle($operation, $request, $route ?? [], $response);
 
         $arguments = [
-            'operation' => $operation,
-            'result' => $result,
+            $operation,
+            $result,
         ];
         $arguments = $this->objectManager->get(SignalSlotDispatcher::class)
             ->dispatch(__CLASS__, self::SIGNAL_AFTER_PROCESS_OPERATION, $arguments);
@@ -139,7 +139,7 @@ abstract class AbstractDispatcher
         return $result === null
             ? ''
             : $this->serializerService->serialize(
-                $arguments['result'],
+                $arguments[1],
                 SerializationContextBuilder::createFromOperation($operation, $request)
             );
     }
