@@ -1,0 +1,2 @@
+# cat=basic/enable; type=string; label=If set, the extension will write generated spec files to this path (absolute).
+spec_files_path=

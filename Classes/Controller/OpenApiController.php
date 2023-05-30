@@ -8,6 +8,9 @@ use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as Oas
 use ReflectionException;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Service\OpenApiBuilder;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -63,8 +66,22 @@ class OpenApiController extends ActionController
         $GLOBALS['TYPO3_REQUEST'] = $imitateSiteRequest;
         $output = OpenApiBuilder::build($this->apiResourceRepository->getAll())
             ->toJson();
+        $this->writeSpecFile($siteIdentifier, $output);
         $GLOBALS['TYPO3_REQUEST'] = $originalRequest;
 
         return $output;
+    }
+
+    protected function writeSpecFile(string $siteIdentifier, string $output): void
+    {
+        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        try {
+            $specFilePath = $extensionConfiguration->get('t3api', 'spec_files_path');
+        } catch (ExtensionConfigurationPathDoesNotExistException|ExtensionConfigurationExtensionNotConfiguredException $e) {
+            $specFilePath = '';
+        }
+        if ($specFilePath && is_string($specFilePath)) {
+            GeneralUtility::writeFile($specFilePath . '/openapi_' . $siteIdentifier . '.json', $output);
+        }
     }
 }
