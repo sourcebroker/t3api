@@ -6,6 +6,12 @@
 Changelog
 =====================================
 
+2.0.2
+=====
+- PHP 8.1 fix warning about undefined array key "cacheCmd" [`commit <https://github.com/sourcebroker/t3api/commit/1eaf111>`__]
+- Add PHP 8.1 to CI matrix. [`commit <https://github.com/sourcebroker/t3api/commit/e8306d21>`__]
+- Update local installer [`commit <https://github.com/sourcebroker/t3api/commit/5fa2ba12>`__]
+
 2.0.1
 =====
 - Changes signal slot parameters structure to indexed array instead of associative for slots afterProcessOperation and afterDeserializeOperation [`commit <https://github.com/sourcebroker/t3api/commit/1104c97>`__]
