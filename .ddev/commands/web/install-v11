@@ -17,6 +17,8 @@ mysql -uroot -proot -e "DROP DATABASE IF EXISTS $DATABASE"
 composer init --name=sourcebroker/typo3$VERSION --description=TYPO3$VERSION --no-interaction --working-dir $BASE_PATH
 composer config extra.typo3/cms.web-dir public --working-dir $BASE_PATH
 composer config repositories.$EXTENSION_KEY path ../$EXTENSION_KEY --working-dir $BASE_PATH
+composer config --no-plugins allow-plugins.typo3/cms-composer-installers true --working-dir $BASE_PATH
+composer config --no-plugins allow-plugins.typo3/class-alias-loader true --working-dir $BASE_PATH
 composer req typo3/minimal:'^11.5' helhum/typo3-console:'^7.0' georgringer/news:'^9.2.0' \
          sourcebroker/t3api:'@dev' sourcebroker/t3apinews:'@dev' \
          --no-progress --no-interaction --working-dir $BASE_PATH
