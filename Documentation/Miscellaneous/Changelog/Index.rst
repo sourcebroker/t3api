@@ -6,6 +6,10 @@
 Changelog
 =====================================
 
+2.1.0
+=====
+- Protect against "&cHash empty" error when ``cacheHash.enforceValidation`` is set to ``true`` [`issue <https://github.com/sourcebroker/t3api/issues/81>`__]
+
 2.0.0
 =====
 - Move from travis to github actions [`commit <https://github.com/sourcebroker/t3api/commit/1e10ad6b>`__]
