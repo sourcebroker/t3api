@@ -6,6 +6,11 @@
 Changelog
 =====================================
 
+2.0.3
+=====
+- Extend dependency for symfony/cache to prevent t3api from downgrading symfony/cache in TYPO3 11 environments [`commit <https://github.com/sourcebroker/t3api/commit/b053679>`__]
+
+
 2.0.2
 =====
 - PHP 8.1 fix warning about undefined array key "cacheCmd" [`commit <https://github.com/sourcebroker/t3api/commit/1eaf111>`__]
