@@ -70,4 +70,3 @@ class PrepareT3ApiRequest implements MiddlewareInterface
         return $request;
     }
 }
-diff --git a/Configuration/RequestMiddlewares.php b/Configuration/RequestMiddlewares.php
