@@ -35,6 +35,9 @@ class TypolinkHandler extends AbstractHandler implements SerializeHandlerInterfa
         array $type,
         SerializationContext $context
     ) {
+        if (empty($typolinkParameter)) {
+            return '';
+        }
         return UrlService::forceAbsoluteUrl(
             $this->getContentObjectRenderer()->getTypoLink_URL(...(array)$typolinkParameter),
             $context->getAttribute('TYPO3_SITE_URL')
