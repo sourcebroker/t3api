@@ -13,5 +13,14 @@ return [
                 'typo3/cms-frontend/shortcut-and-mountpoint-redirect',
             ],
         ],
+        'sourcebroker/t3api/prepare-api-request' => [
+            'target' => \SourceBroker\T3api\Middleware\PrepareT3ApiRequest::class,
+            'after' => [
+                'typo3/cms-frontend/site'
+            ],
+            'before' => [
+                'typo3/cms-frontend/tsfe'
+            ]
+        ]
     ],
 ];
