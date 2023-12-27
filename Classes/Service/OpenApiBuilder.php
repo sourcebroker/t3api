@@ -229,9 +229,11 @@ class OpenApiBuilder
 
             /** @var Parameter $filterParameter */
             foreach ($filterParameters as $filterParameter) {
-                $parameters[] = $filterParameter->in(Parameter::IN_QUERY);
+                $parameters[$filterParameter->name] = $filterParameter->in(Parameter::IN_QUERY);
             }
         }
+
+        sort($parameters);
 
         return $parameters;
     }
