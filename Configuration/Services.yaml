@@ -1,0 +1,21 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  SourceBroker\T3api\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Domain/{Model,Event,Exception}/*'
+
+  SourceBroker\T3api\EventListener\AddHydraCollectionResponseSerializationGroupEventListener:
+    tags:
+      - name: event.listener
+        identifier: 't3api/GenerateConfiguratorSnapshotUniqueCodeEventListener'
+        event: SourceBroker\T3api\Event\AfterCreateContextForOperationEvent
+
+  SourceBroker\T3api\EventListener\EnrichSerializationContextEventListener:
+    tags:
+      - name: event.listener
+        identifier: 't3api/SetStoragePidForSnapshot'
+        event: SourceBroker\T3api\Event\AfterCreateContextForOperationEvent

@@ -3,24 +3,24 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Security;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\Exception\AspectPropertyNotFoundException;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 class AbstractAccessChecker
 {
     /**
-     * @var ObjectManager
+     * @var EventDispatcherInterface
      */
-    protected $objectManager;
+    protected $eventDispatcher;
 
-    public function injectObjectManager(ObjectManager $objectManager): void
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
-        $this->objectManager = $objectManager;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     protected function getExpressionLanguageResolver(): Resolver

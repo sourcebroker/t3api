@@ -46,11 +46,31 @@ class SerializerService implements SingletonInterface
     protected $objectManager;
 
     /**
+     * @var SerializationContextBuilder
+     */
+    protected $serializationContextBuilder;
+
+    /**
+     * @var DeserializationContextBuilder
+     */
+    protected $deserializationContextBuilder;
+
+    /**
      * @param ObjectManager $objectManager
      */
     public function injectObjectManager(ObjectManager $objectManager): void
     {
         $this->objectManager = $objectManager;
+    }
+
+    public function injectSerializationContextBuilder(SerializationContextBuilder $serializationContextBuilder): void
+    {
+        $this->serializationContextBuilder = $serializationContextBuilder;
+    }
+
+    public function injectDeserializationContextBuilder(DeserializationContextBuilder $deserializationContextBuilder): void
+    {
+        $this->deserializationContextBuilder = $deserializationContextBuilder;
     }
 
     /**
@@ -113,8 +133,8 @@ class SerializerService implements SingletonInterface
     public function serialize($result, SerializationContext $serializationContext = null): string
     {
         return $this->getSerializerBuilder()
-            ->setSerializationContextFactory(static function () use ($serializationContext) {
-                return $serializationContext ?? SerializationContextBuilder::create();
+            ->setSerializationContextFactory(function () use ($serializationContext) {
+                return $serializationContext ?? $this->serializationContextBuilder->create();
             })
             ->build()
             ->serialize($result, 'json');
@@ -129,8 +149,8 @@ class SerializerService implements SingletonInterface
     public function deserialize(string $data, string $type, DeserializationContext $deserializationContext = null)
     {
         return $this->getSerializerBuilder()
-            ->setDeserializationContextFactory(static function () use ($deserializationContext) {
-                return $deserializationContext ?? DeserializationContextBuilder::create();
+            ->setDeserializationContextFactory(function () use ($deserializationContext) {
+                return $deserializationContext ?? $this->deserializationContextBuilder->create();
             })
             ->build()
             ->deserialize($data, $type, 'json');

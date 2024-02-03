@@ -6,8 +6,9 @@
 Changelog
 =====================================
 
-2.1.0
-=====
+3.0.0
+====
+- [!!!] Changes signal slots into PSR-14 events [`issue <https://github.com/sourcebroker/t3api/issues/67>`__]
 - Protect against "&cHash empty" error when ``cacheHash.enforceValidation`` is set to ``true`` [`issue <https://github.com/sourcebroker/t3api/issues/81>`__]
 
 2.0.0

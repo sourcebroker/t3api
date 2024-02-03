@@ -111,19 +111,6 @@ call_user_func(
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['createHashBase']['t3api'] =
             \SourceBroker\T3api\Hook\EnrichHashBase::class . '->init';
 
-        $customizeSerializerContextAttributesSlots = [
-            [\SourceBroker\T3api\Slot\AddHydraCollectionResponseSerializationGroup::class, 'execute'],
-            [\SourceBroker\T3api\Slot\EnrichSerializationContext::class, 'execute'],
-        ];
-
-        foreach ($customizeSerializerContextAttributesSlots as $customizeSerializerContextAttributesSlot) {
-            \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
-                \SourceBroker\T3api\Serializer\ContextBuilder\ContextBuilderInterface::class,
-                \SourceBroker\T3api\Serializer\ContextBuilder\ContextBuilderInterface::SIGNAL_CUSTOMIZE_SERIALIZER_CONTEXT_ATTRIBUTES,
-                $customizeSerializerContextAttributesSlot[0],
-                $customizeSerializerContextAttributesSlot[1]
-            );
-        }
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::ENHANCER_NAME] = \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::class;
 
         // protects against "&cHash empty" error when `cacheHash.enforceValidation` is set to `true`
