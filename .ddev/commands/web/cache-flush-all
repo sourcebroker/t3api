@@ -4,5 +4,5 @@
 ## Usage: cache-flush-all
 ## Example: "ddev cache-flush-all"
 
-/usr/bin/php /var/www/html/.test/v10/vendor/bin/typo3cms cache:flush
 /usr/bin/php /var/www/html/.test/v11/vendor/bin/typo3cms cache:flush
+/usr/bin/php /var/www/html/.test/v12/vendor/bin/typo3cms cache:flush

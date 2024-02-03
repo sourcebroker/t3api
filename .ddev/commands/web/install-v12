@@ -1,14 +1,14 @@
 #!/bin/bash
 
 ## Description: Install TYPO3 11 with t3api linked to it.
-## Usage: install-v11
-## Example: "ddev install-v11"
+## Usage: install-v12
+## Example: "ddev install-v12"
 
 set +x
 
-VERSION=v11
+VERSION=v12
 BASE_PATH=/var/www/html/.test/$VERSION
-TYPO3_BIN=$BASE_PATH/vendor/bin/typo3cms
+TYPO3_BIN=$BASE_PATH/vendor/bin/typo3
 DATABASE=database_$VERSION
 
 [ -L /var/www/html/.test/t3api ] || ln -sr /var/www/html/ /var/www/html/.test/t3api
@@ -22,8 +22,8 @@ composer config extra.typo3/cms.web-dir public --working-dir $BASE_PATH
 composer config repositories.$EXTENSION_KEY path ../$EXTENSION_KEY --working-dir $BASE_PATH
 composer config --no-interaction allow-plugins.typo3/cms-composer-installers true --working-dir $BASE_PATH
 composer config --no-interaction allow-plugins.typo3/class-alias-loader true --working-dir $BASE_PATH
-composer req typo3/minimal:'^11.5' typo3/cms-recycler:'^11.5' typo3/cms-tstemplate:'^11.5' typo3/cms-info:'^11.5' typo3/cms-lowlevel:'^11.5' \
-         helhum/typo3-console:'^7' \
+composer req typo3/minimal:'^12.4' typo3/cms-recycler:'^12.4' typo3/cms-tstemplate:'^12.4' typo3/cms-info:'^12.4' typo3/cms-lowlevel:'^12.4' \
+         helhum/typo3-console:'^8.1' \
          jigal/t3adminer:'^12.0' georgringer/news:'^11.3.0' \
          sourcebroker/t3api:'@dev' sourcebroker/t3apinews:'v12.x-dev' \
          --no-progress --no-interaction --working-dir $BASE_PATH
@@ -39,7 +39,6 @@ $TYPO3_BIN configuration:set 'MAIL/transport' 'smtp'
 $TYPO3_BIN configuration:set 'MAIL/transport_smtp_server' 'localhost:1025'
 $TYPO3_BIN configuration:set 'GFX/processor' 'ImageMagick'
 $TYPO3_BIN configuration:set 'GFX/processor_path' '/usr/bin/'
-$TYPO3_BIN configuration:set 'GFX/processor_path_lzw' '/usr/bin/'
 
 cp -r "$BASE_PATH/../$EXTENSION_KEY/.ddev/data-init/$VERSION/files/"* "$BASE_PATH/"
 mysql -uroot -proot  $DATABASE < "$BASE_PATH/../$EXTENSION_KEY/.ddev/data-init/$VERSION/database.sql"

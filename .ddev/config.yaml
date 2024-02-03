@@ -1,20 +1,20 @@
 name: t3api
 type: php
 docroot: .test
-php_version: "7.4"
+php_version: "8.1"
 webserver_type: apache-fpm
 router_http_port: "80"
 router_https_port: "443"
 xdebug_enabled: false
 additional_hostnames:
-    - v10.t3api
-    - v10-api.t3api
     - v11.t3api
     - v11-api.t3api
+    - v12.t3api
+    - v12-api.t3api
 additional_fqdns: []
 database:
     type: mariadb
-    version: "10.2"
+    version: "10.6"
 hooks:
     post-start:
         - exec: sudo sed -i '1s/^/TERM=xterm-256color\n/' ~/.bashrc
@@ -22,21 +22,22 @@ hooks:
 use_dns_when_possible: true
 composer_version: "2"
 web_environment: []
-nodejs_version: "18"
 
-# Key features of ddev's config.yaml:
+# Key features of DDEV's config.yaml:
 
 # name: <projectname> # Name of the project, automatically provides
 #   http://projectname.ddev.site and https://projectname.ddev.site
 
-# type: <projecttype>  # drupal6/7/8, backdrop, typo3, wordpress, php
+# type: <projecttype>  # backdrop, craftcms, django4, drupal6/7/8/9/10, laravel, magento, magento2, php, python, shopware6, silverstripe, typo3, wordpress
+# See https://ddev.readthedocs.io/en/latest/users/quickstart/ for more
+# information on the different project types
 
 # docroot: <relative_path> # Relative path to the directory containing index.php.
 
-# php_version: "8.1"  # PHP version to use, "5.6", "7.0", "7.1", "7.2", "7.3", "7.4", "8.0", "8.1", "8.2"
+# php_version: "8.1"  # PHP version to use, "5.6", "7.0", "7.1", "7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3"
 
 # You can explicitly specify the webimage but this
-# is not recommended, as the images are often closely tied to ddev's' behavior,
+# is not recommended, as the images are often closely tied to DDEV's' behavior,
 # so this can break upgrades.
 
 # webimage: <docker_image>  # nginx/php docker image.
@@ -44,23 +45,23 @@ nodejs_version: "18"
 # database:
 #   type: <dbtype> # mysql, mariadb, postgres
 #   version: <version> # database version, like "10.4" or "8.0"
-#   mariadb versions can be 5.5-10.8 and 10.11, mysql versions can be 5.5-8.0
-#   postgres versions can be 9-15.
+#   MariaDB versions can be 5.5-10.8 and 10.11, MySQL versions can be 5.5-8.0
+#   PostgreSQL versions can be 9-16.
 
 # router_http_port: <port>  # Port to be used for http (defaults to global configuration, usually 80)
 # router_https_port: <port> # Port for https (defaults to global configuration, usually 443)
 
-# xdebug_enabled: false  # Set to true to enable xdebug and "ddev start" or "ddev restart"
+# xdebug_enabled: false  # Set to true to enable Xdebug and "ddev start" or "ddev restart"
 # Note that for most people the commands
-# "ddev xdebug" to enable xdebug and "ddev xdebug off" to disable it work better,
-# as leaving xdebug enabled all the time is a big performance hit.
+# "ddev xdebug" to enable Xdebug and "ddev xdebug off" to disable it work better,
+# as leaving Xdebug enabled all the time is a big performance hit.
 
-# xhprof_enabled: false  # Set to true to enable xhprof and "ddev start" or "ddev restart"
+# xhprof_enabled: false  # Set to true to enable Xhprof and "ddev start" or "ddev restart"
 # Note that for most people the commands
-# "ddev xhprof" to enable xhprof and "ddev xhprof off" to disable it work better,
-# as leaving xhprof enabled all the time is a big performance hit.
+# "ddev xhprof" to enable Xhprof and "ddev xhprof off" to disable it work better,
+# as leaving Xhprof enabled all the time is a big performance hit.
 
-# webserver_type: nginx-fpm, apache-fpm, or nginx-gunicorn 
+# webserver_type: nginx-fpm, apache-fpm, or nginx-gunicorn
 
 # timezone: Europe/Berlin
 # This is the timezone used in the containers and by PHP;
@@ -69,7 +70,7 @@ nodejs_version: "18"
 # For example Europe/Dublin or MST7MDT
 
 # composer_root: <relative_path>
-# Relative path to the composer root directory from the project root. This is
+# Relative path to the Composer root directory from the project root. This is
 # the directory which contains the composer.json and where all Composer related
 # commands are executed.
 
@@ -85,9 +86,13 @@ nodejs_version: "18"
 # To reinstall Composer after the image was built, run "ddev debug refresh".
 
 # nodejs_version: "18"
-# change from the default system Node.js version to another supported version, like 14, 16, 18, 20.
-# Note that you can use 'ddev nvm' or nvm inside the web container to provide nearly any
-# Node.js version, including v6, etc.
+# change from the default system Node.js version to any other version.
+# Numeric version numbers can be complete (i.e. 18.15.0) or
+# incomplete (18, 17.2, 16). 'lts' and 'latest' can be used as well along with
+# other named releases.
+# see https://www.npmjs.com/package/n#specifying-nodejs-versions
+# Note that you can continue using 'ddev nvm' or nvm inside the web container
+# to change the project's installed node version if you need to.
 
 # additional_hostnames:
 #  - somename
@@ -102,18 +107,25 @@ nodejs_version: "18"
 # Please take care with this because it can cause great confusion.
 
 # upload_dirs: "custom/upload/dir"
-#    
+#
 # upload_dirs:
 #   - custom/upload/dir
 #   - ../private
 #
 # would set the destination paths for ddev import-files to <docroot>/custom/upload/dir
-# When mutagen is enabled this path is bind-mounted so that all the files
-# in the upload_dirs don't have to be synced into mutagen.
+# When Mutagen is enabled this path is bind-mounted so that all the files
+# in the upload_dirs don't have to be synced into Mutagen.
 
 # disable_upload_dirs_warning: false
 # If true, turns off the normal warning that says
 # "You have Mutagen enabled and your 'php' project type doesn't have upload_dirs set"
+
+# ddev_version_constraint: ""
+# Example:
+# ddev_version_constraint: ">= 1.22.4"
+# This will enforce that the running ddev version is within this constraint.
+# See https://github.com/Masterminds/semver#checking-version-constraints for
+# supported constraint formats
 
 # working_dir:
 #   web: /var/www/html
@@ -125,7 +137,7 @@ nodejs_version: "18"
 # omit_containers: [db, ddev-ssh-agent]
 # Currently only these containers are supported. Some containers can also be
 # omitted globally in the ~/.ddev/global_config.yaml. Note that if you omit
-# the "db" container, several standard features of ddev that access the
+# the "db" container, several standard features of DDEV that access the
 # database container will be unusable. In the global configuration it is also
 # possible to omit ddev-router, but not here.
 
@@ -161,12 +173,12 @@ nodejs_version: "18"
 # The host port binding for the ddev-dbserver can be explicitly specified. It is dynamic
 # unless explicitly specified.
 
-# mailhog_port: "8025"
-# mailhog_https_port: "8026"
-# The MailHog ports can be changed from the default 8025 and 8026
+# mailpit_http_port: "8025"
+# mailpit_https_port: "8026"
+# The Mailpit ports can be changed from the default 8025 and 8026
 
-# host_mailhog_port: "8025"
-# The mailhog port is not normally bound on the host at all, instead being routed
+# host_mailpit_port: "8025"
+# The mailpit port is not normally bound on the host at all, instead being routed
 # through ddev-router, but it can be bound directly to localhost if specified here.
 
 # webimage_extra_packages: [php7.4-tidy, php-bcmath]
@@ -192,7 +204,7 @@ nodejs_version: "18"
 # https://ngrok.com/docs/ngrok-agent/config or run "ngrok http -h"
 
 # disable_settings_management: false
-# If true, ddev will not create CMS-specific settings files like
+# If true, DDEV will not create CMS-specific settings files like
 # Drupal's settings.php/settings.ddev.php or TYPO3's AdditionalConfiguration.php
 # In this case the user must provide all such settings.
 
@@ -202,19 +214,19 @@ nodejs_version: "18"
 # - SOMEOTHERENV=someothervalue
 
 # no_project_mount: false
-# (Experimental) If true, ddev will not mount the project into the web container;
+# (Experimental) If true, DDEV will not mount the project into the web container;
 # the user is responsible for mounting it manually or via a script.
 # This is to enable experimentation with alternate file mounting strategies.
 # For advanced users only!
 
 # bind_all_interfaces: false
 # If true, host ports will be bound on all network interfaces,
-# not just the localhost interface. This means that ports
+# not the localhost interface only. This means that ports
 # will be available on the local network if the host firewall
 # allows it.
 
 # default_container_timeout: 120
-# The default time that ddev waits for all containers to become ready can be increased from
+# The default time that DDEV waits for all containers to become ready can be increased from
 # the default 120. This helps in importing huge databases, for example.
 
 #web_extra_exposed_ports:
@@ -251,10 +263,10 @@ nodejs_version: "18"
 # override_config: false
 # By default, config.*.yaml files are *merged* into the configuration
 # But this means that some things can't be overridden
-# For example, if you have 'nfs_mount_enabled: true'' you can't override it with a merge
+# For example, if you have 'use_dns_when_possible: true'' you can't override it with a merge
 # and you can't erase existing hooks or all environment variables.
 # However, with "override_config: true" in a particular config.*.yaml file,
-# 'nfs_mount_enabled: false' can override the existing values, and
+# 'use_dns_when_possible: false' can override the existing values, and
 # hooks:
 #   post-start: []
 # or
@@ -264,8 +276,8 @@ nodejs_version: "18"
 # can have their intended affect. 'override_config' affects only behavior of the
 # config.*.yaml file it exists in.
 
-# Many ddev commands can be extended to run tasks before or after the
-# ddev command is executed, for example "post-start", "post-import-db",
+# Many DDEV commands can be extended to run tasks before or after the
+# DDEV command is executed, for example "post-start", "post-import-db",
 # "pre-composer", "post-composer"
 # See https://ddev.readthedocs.io/en/stable/users/extend/custom-commands/ for more
 # information on the commands that can be extended and the tasks you can define
