@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use SourceBroker\T3api\Dispatcher\Bootstrap;
+use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -26,7 +27,7 @@ class T3apiRequestResolver implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (is_array($request->getQueryParams()) && array_key_exists('t3apiResource', $request->getQueryParams())) {
+        if (is_array($request->getQueryParams()) && array_key_exists(ResourceEnhancer::PARAMETER_NAME, $request->getQueryParams())) {
             return GeneralUtility::makeInstance(ObjectManager::class)
                 ->get(Bootstrap::class)
                 ->process($this->cleanupRequest($request));
@@ -44,7 +45,7 @@ class T3apiRequestResolver implements MiddlewareInterface
     private function cleanupRequest(ServerRequestInterface $request): ServerRequestInterface
     {
         $cleanedQueryParams = $request->getQueryParams();
-        unset($cleanedQueryParams['t3apiResource']);
+        unset($cleanedQueryParams[ResourceEnhancer::PARAMETER_NAME]);
 
         return $request->withQueryParams($cleanedQueryParams);
     }

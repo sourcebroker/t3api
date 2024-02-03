@@ -56,7 +56,7 @@ class CurrentFeUserSubscriber implements EventSubscriberInterface
                 continue;
             }
 
-            $data[$propertyName] = $GLOBALS['TSFE']->fe_user->user['uid'];
+            $data[$propertyName] = $GLOBALS['TSFE']->fe_user->user['uid'] ?? null;
         }
 
         $event->setData($data);

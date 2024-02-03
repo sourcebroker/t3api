@@ -3,6 +3,7 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Hook;
 
+use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use TYPO3\CMS\Core\Http\ServerRequest;
 
 class EnrichHashBase
@@ -20,12 +21,9 @@ class EnrichHashBase
         /** @var ServerRequest $request */
         $request = $GLOBALS['TYPO3_REQUEST'];
         if (
-            defined('IS_T3API_LEGACY_REQUEST')
-            || (
-                $request instanceof ServerRequest
-                && is_array($request->getQueryParams())
-                && array_key_exists('t3apiResource', $request->getQueryParams())
-            )
+            $request instanceof ServerRequest
+            && is_array($request->getQueryParams())
+            && array_key_exists(ResourceEnhancer::PARAMETER_NAME, $request->getQueryParams())
         ) {
             $params['hashParameters']['t3api_hash_base_random'] = microtime();
         }

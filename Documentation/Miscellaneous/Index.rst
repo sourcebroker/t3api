@@ -11,3 +11,4 @@ Miscellaneous
    :hidden:
 
    Changelog/Index
+   CommonIssues/Index

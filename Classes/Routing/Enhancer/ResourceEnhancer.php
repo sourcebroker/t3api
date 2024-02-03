@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Routing\RouteCollection;
 class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterface
 {
     public const ENHANCER_NAME = 'T3apiResourceEnhancer';
+    public const PARAMETER_NAME = 't3apiResource';
 
     /**
      * @var array
@@ -35,8 +36,8 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
     {
         /** @var Route $variant */
         $variant = clone $collection->get('default');
-        $variant->setPath($this->getBasePath() . '/{t3apiResource?}');
-        $variant->setRequirement('t3apiResource', '.*');
+        $variant->setPath($this->getBasePath() . sprintf('/{%s?}', self::PARAMETER_NAME));
+        $variant->setRequirement(self::PARAMETER_NAME, '.*');
         $collection->add('enhancer_' . $this->getBasePath() . spl_object_hash($variant), $variant);
     }
 

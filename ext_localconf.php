@@ -125,5 +125,14 @@ call_user_func(
             );
         }
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::ENHANCER_NAME] = \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::class;
+
+        // protects against "&cHash empty" error when `cacheHash.enforceValidation` is set to `true`
+        if (!isset($GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'])) {
+            $GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'] = [\SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::PARAMETER_NAME];
+        } elseif (is_array($GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'])) {
+            $GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'][] = \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::PARAMETER_NAME;
+        } elseif (is_string($GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'])) {
+            $GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'] .= ',' . \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::PARAMETER_NAME;
+        }
     }
 );
