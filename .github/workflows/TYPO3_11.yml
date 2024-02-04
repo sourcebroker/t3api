@@ -1,4 +1,4 @@
-name: core 11
+name: TYPO3 11
 
 on: [ push, pull_request ]
 
