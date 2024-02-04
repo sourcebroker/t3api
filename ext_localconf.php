@@ -1,10 +1,20 @@
 <?php
 
+use TYPO3\CMS\Core\Imaging\IconRegistry;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 defined('TYPO3') || die('Access denied.');
 
 call_user_func(
     static function () {
+        $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
+        $iconRegistry->registerIcon(
+            'extension-t3api',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:t3api/Resources/Public/Icons/Extension.svg']
+        );
+
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] = '_api';
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader'] = 'X-Locale';
 

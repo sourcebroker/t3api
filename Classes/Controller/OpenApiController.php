@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Controller;
 
+use Psr\Http\Message\ResponseInterface;
 use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
 use ReflectionException;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
@@ -13,6 +14,9 @@ use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
+/**
+ * TODO: finish refactoring for TYPO3 12
+ */
 class OpenApiController extends ActionController
 {
     /**
@@ -20,10 +24,8 @@ class OpenApiController extends ActionController
      */
     protected $apiResourceRepository;
 
-    /** @noinspection PhpUnused */
-    public function injectApiResourceRepository(
-        ApiResourceRepository $apiResourceRepository
-    ): void {
+    public function __construct(ApiResourceRepository $apiResourceRepository)
+    {
         $this->apiResourceRepository = $apiResourceRepository;
     }
 
@@ -31,20 +33,17 @@ class OpenApiController extends ActionController
      * @param string $siteIdentifier
      * @throws SiteNotFoundException
      */
-    public function displayAction(string $siteIdentifier): void
+    public function displayAction(string $siteIdentifier): ResponseInterface
     {
         $this->view->assign(
             'specUrl',
-            $this->uriBuilder->reset()->uriFor(
-                'spec',
-                ['siteIdentifier' => $siteIdentifier]
-            )
+            $this->uriBuilder->reset()->uriFor('spec', ['siteIdentifier' => $siteIdentifier])
         );
         $this->view->assign(
             'site',
-            GeneralUtility::makeInstance(SiteFinder::class)
-                ->getSiteByIdentifier($siteIdentifier)
+            GeneralUtility::makeInstance(SiteFinder::class)->getSiteByIdentifier($siteIdentifier)
         );
+        return $this->htmlResponse();
     }
 
     /**
@@ -54,17 +53,15 @@ class OpenApiController extends ActionController
      * @throws ReflectionException
      * @throws SiteNotFoundException
      */
-    public function specAction(string $siteIdentifier): string
+    public function specAction(string $siteIdentifier): ResponseInterface
     {
         $originalRequest = $GLOBALS['TYPO3_REQUEST'];
-        $site = GeneralUtility::makeInstance(SiteFinder::class)
-            ->getSiteByIdentifier($siteIdentifier);
+        $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByIdentifier($siteIdentifier);
         $imitateSiteRequest = $originalRequest->withAttribute('site', $site);
         $GLOBALS['TYPO3_REQUEST'] = $imitateSiteRequest;
-        $output = OpenApiBuilder::build($this->apiResourceRepository->getAll())
-            ->toJson();
+        $output = OpenApiBuilder::build($this->apiResourceRepository->getAll())->toJson();
         $GLOBALS['TYPO3_REQUEST'] = $originalRequest;
 
-        return $output;
+        return $this->htmlResponse($output);
     }
 }

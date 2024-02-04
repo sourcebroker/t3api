@@ -4,36 +4,60 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Controller;
 
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use SourceBroker\T3api\Service\SiteService;
-use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Template\Components\Menu\MenuItem;
-use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use TYPO3\CMS\Extensionmanager\Controller\AbstractModuleController;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
-class AdministrationController extends AbstractModuleController
+/**
+ * TODO: finish refactoring for TYPO3 12
+ */
+class AdministrationController
 {
     protected const SITE_SELECTOR_MENU_KEY = 'spec_site_selector_menu';
 
-    /**
-     * BackendTemplateView Container
-     * @var string
-     */
-    protected $defaultViewObjectName = BackendTemplateView::class;
+    protected ModuleTemplateFactory $moduleTemplateFactory;
+    protected mixed $extensionConfiguration;
+    protected FlashMessageQueue $flashMessageQueue;
+    private UriBuilder $uriBuilder;
+    private ModuleTemplate $view;
 
-    protected function initializeView(ViewInterface $view)
-    {
-        parent::initializeView($view);
+    public function __construct(
+        FlashMessageService $flashMessageService,
+        ModuleTemplateFactory $moduleTemplateFactory,
+        UriBuilder $uriBuilder
+    ) {
+        $this->moduleTemplateFactory = $moduleTemplateFactory;
+        $this->flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+        $this->uriBuilder = $uriBuilder;
     }
 
-    public function documentationAction(string $siteIdentifier = null): void
+    public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
+        return $this->documentationAction($request);
+    }
+
+    protected function initializeView(ServerRequestInterface $request): ModuleTemplate
+    {
+        $this->module = $request->getAttribute('module');
+        return $this->moduleTemplateFactory->create($request);
+    }
+
+    public function documentationAction($request, string $siteIdentifier = null): ResponseInterface
+    {
+        $this->view = $this->initializeView($request);
         $siteIdentifier = $siteIdentifier ?? $this->getDefaultSiteIdentifier();
         try {
             $site = SiteService::getByIdentifier($siteIdentifier);
@@ -54,49 +78,39 @@ class AdministrationController extends AbstractModuleController
                 AbstractMessage::ERROR,
                 false
             );
-            return;
+
+            return $this->view->renderResponse('Administration/Documentation');
         }
 
         $this->view->assign(
             'displayUrl',
-            $this->uriBuilder->reset()->uriFor(
-                'display',
+            (string)$this->uriBuilder->buildUriFromRoute(
+                $this->module->getIdentifier(),
                 ['siteIdentifier' => $siteIdentifier],
                 'OpenApi'
             )
         );
+
+        return $this->view->renderResponse('Administration/Documentation');
+
     }
 
     protected function getDefaultSiteIdentifier(): string
     {
         $sites = SiteService::getAll();
-        $lastSelectedSiteIdentifier
-            = $this->getUserModuleData('lastSelectedSiteIdentifier');
+        $lastSelectedSiteIdentifier = $this->getUserModuleData('lastSelectedSiteIdentifier');
 
         if ($lastSelectedSiteIdentifier !== null && $sites[$lastSelectedSiteIdentifier] instanceof Site) {
             return $sites[$lastSelectedSiteIdentifier]->getIdentifier();
         }
 
-        return (SiteService::getCurrent() ?? array_shift($sites))
-            ->getIdentifier();
+        return (SiteService::getCurrent() ?? array_shift($sites))->getIdentifier();
     }
 
     protected function generateSiteSelectorMenu(): void
     {
-        if (!$this->view instanceof BackendTemplateView) {
-            throw new RuntimeException(
-                sprintf(
-                    'Menu for backend docheader can be generated only for view of type `%s`',
-                    BackendTemplateView::class
-                ),
-                1603732307610
-            );
-        }
-
-        $siteSelectorMenu = $this->view->getModuleTemplate()
-            ->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
+        $siteSelectorMenu = $this->view->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
         $siteSelectorMenu->setIdentifier(self::SITE_SELECTOR_MENU_KEY);
-
         foreach ($this->getSites() as $site) {
             $siteSelectorMenu->addMenuItem(
                 $this->enrichSiteSelectorMenuItem(
@@ -105,9 +119,7 @@ class AdministrationController extends AbstractModuleController
                 )
             );
         }
-
-        $this->view->getModuleTemplate()->getDocHeaderComponent()
-            ->getMenuRegistry()->addMenu($siteSelectorMenu);
+        $this->view->getDocHeaderComponent()->getMenuRegistry()->addMenu($siteSelectorMenu);
     }
 
     protected function enrichSiteSelectorMenuItem(
@@ -119,8 +131,8 @@ class AdministrationController extends AbstractModuleController
             $site->getIdentifier() . ($host ? ' (' . $host . ')' : '')
         );
         $menuItem->setHref(
-            $this->uriBuilder->reset()->uriFor(
-                'documentation',
+            (string)$this->uriBuilder->buildUriFromRoute(
+                $this->module->getIdentifier(),
                 ['siteIdentifier' => $site->getIdentifier()]
             )
         );
@@ -131,9 +143,9 @@ class AdministrationController extends AbstractModuleController
 
     protected function setSelectedItemInSiteSelectorMenu(Site $site): void
     {
-        $menu = $this->view->getModuleTemplate()->getDocHeaderComponent()
-                    ->getMenuRegistry()
-                    ->getMenus()[self::SITE_SELECTOR_MENU_KEY];
+        $menu = $this->view->getDocHeaderComponent()
+            ->getMenuRegistry()
+            ->getMenus()[self::SITE_SELECTOR_MENU_KEY];
 
         if (!$menu instanceof Menu) {
             throw new RuntimeException(
@@ -147,10 +159,7 @@ class AdministrationController extends AbstractModuleController
 
         /** @var MenuItem $menuItem */
         foreach ($menu->getMenuItems() as $menuItem) {
-            if (
-                $menuItem->getDataAttributes()['siteIdentifier']
-                === $site->getIdentifier()
-            ) {
+            if ($menuItem->getDataAttributes()['siteIdentifier'] === $site->getIdentifier()) {
                 $menuItem->setActive(true);
             }
         }
@@ -167,14 +176,12 @@ class AdministrationController extends AbstractModuleController
     protected function getUserModuleData(string $variable)
     {
         $moduleData = $GLOBALS['BE_USER']->getModuleData('tx_t3api_m1');
-
         return $moduleData[$variable] ?? null;
     }
 
     protected function setUserModuleData(string $variable, $value): void
     {
-        $userModuleData = $GLOBALS['BE_USER']->getModuleData('tx_t3api_m1')
-            ?? [];
+        $userModuleData = $GLOBALS['BE_USER']->getModuleData('tx_t3api_m1') ?? [];
         $userModuleData[$variable] = $value;
         $GLOBALS['BE_USER']->pushModuleData('tx_t3api_m1', $userModuleData);
     }
