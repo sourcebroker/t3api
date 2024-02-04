@@ -21,7 +21,8 @@ hooks:
         - exec: mkdir -p .test && cp /var/www/html/.ddev/data-init/index.html /var/www/html/.test/
 use_dns_when_possible: true
 composer_version: "2"
-web_environment: []
+web_environment:
+  - TYPO3_CONTEXT=Development
 
 # Key features of DDEV's config.yaml:
 
