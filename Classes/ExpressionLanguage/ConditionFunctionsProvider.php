@@ -15,7 +15,7 @@ class ConditionFunctionsProvider extends Typo3ConditionFunctionsProvider
     /**
      * @return ExpressionFunction[] An array of Function instances
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return parent::getFunctions();
     }
