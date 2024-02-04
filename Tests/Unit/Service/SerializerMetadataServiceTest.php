@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Tests\Unit\Service;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use ReflectionClass;
 use ReflectionException;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
