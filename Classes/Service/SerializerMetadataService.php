@@ -275,8 +275,10 @@ class SerializerMetadataService
     protected static function stringifyPropertyType(Type $type): string
     {
         if ($type->isCollection()) {
-            if ($type->getCollectionValueType()) {
-                $subType = self::stringifyPropertyType($type->getCollectionValueType());
+            $collectionValueTypes = $type->getCollectionValueTypes();
+            if (!empty($collectionValueTypes)) {
+                $subTypes = array_map([self::class, 'stringifyPropertyType'], $collectionValueTypes);
+                $subType = implode(', ', $subTypes);
 
                 if ($type->getClassName()) {
                     return sprintf('%s<%s>', $type->getClassName(), $subType);
