@@ -7,6 +7,11 @@ use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Service\CorsService;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Http\Response;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
+use SourceBroker\T3api\Security\OperationAccessChecker;
+use SourceBroker\T3api\Service\SerializerService;
+use SourceBroker\T3api\Service\ValidationService;
 
 class OptionsOperationHandler extends AbstractOperationHandler
 {
@@ -15,8 +20,15 @@ class OptionsOperationHandler extends AbstractOperationHandler
      */
     private $corsService;
 
-    public function injectCorsService(CorsService $corsService): void
-    {
+    public function __construct(
+        SerializerService $serializerService,
+        ValidationService $validationService,
+        OperationAccessChecker $operationAccessChecker,
+        DeserializationContextBuilder $deserializationContextBuilder,
+        EventDispatcherInterface $eventDispatcher,
+        CorsService $corsService
+    ) {
+        parent::__construct($serializerService, $validationService, $operationAccessChecker, $deserializationContextBuilder, $eventDispatcher);
         $this->corsService = $corsService;
     }
 
@@ -32,7 +44,8 @@ class OptionsOperationHandler extends AbstractOperationHandler
      * @param ResponseInterface|null $response
      *
      * @return mixed|void
-     * @noinspection CallableParameterUseCaseInTypeContextInspection*/
+     * @noinspection CallableParameterUseCaseInTypeContextInspection
+     */
     public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response)
     {
         $options = $this->corsService->getOptions();

@@ -9,7 +9,6 @@ use SourceBroker\T3api\Factory\ApiResourceFactory;
 use SourceBroker\T3api\Service\ReflectionService;
 use SourceBroker\T3api\Service\RouteService;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
@@ -30,23 +29,13 @@ class ApiResourceRepository
      */
     protected $apiResourceFactory;
 
-    /**
-     * @param CacheManager $cacheManager
-     *
-     * @throws NoSuchCacheException
-     */
-    public function injectCache(CacheManager $cacheManager): void
-    {
+    public function __construct(
+        CacheManager $cacheManager,
+        ReflectionService $reflectionService,
+        ApiResourceFactory $apiResourceFactory
+    ) {
         $this->cache = $cacheManager->getCache('t3api');
-    }
-
-    public function injectReflectionService(ReflectionService $reflectionService): void
-    {
         $this->reflectionService = $reflectionService;
-    }
-
-    public function injectApiResourceFactory(ApiResourceFactory $apiResourceFactory): void
-    {
         $this->apiResourceFactory = $apiResourceFactory;
     }
 

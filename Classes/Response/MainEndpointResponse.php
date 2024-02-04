@@ -14,12 +14,12 @@ class MainEndpointResponse
     /**
      * @var ApiResourceRepository
      */
-    protected $apiResourceRepository;
+    protected ApiResourceRepository $apiResourceRepository;
 
     /**
      * @param ApiResourceRepository $apiResourceRepository
      */
-    public function injectApiResourceRepository(ApiResourceRepository $apiResourceRepository): void
+    public function __construct(ApiResourceRepository $apiResourceRepository)
     {
         $this->apiResourceRepository = $apiResourceRepository;
     }

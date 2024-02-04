@@ -10,14 +10,19 @@ use Psr\Http\Server\RequestHandlerInterface;
 use SourceBroker\T3api\Dispatcher\Bootstrap;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use Throwable;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class T3apiRequestResolver
  */
 class T3apiRequestResolver implements MiddlewareInterface
 {
+
+    private Bootstrap $bootstrap;
+
+    public function __construct(Bootstrap $bootstrap)
+    {
+        $this->bootstrap = $bootstrap;
+    }
     /**
      * @param ServerRequestInterface $request
      * @param RequestHandlerInterface $handler
@@ -27,10 +32,9 @@ class T3apiRequestResolver implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (is_array($request->getQueryParams()) && array_key_exists(ResourceEnhancer::PARAMETER_NAME, $request->getQueryParams())) {
-            return GeneralUtility::makeInstance(ObjectManager::class)
-                ->get(Bootstrap::class)
-                ->process($this->cleanupRequest($request));
+        if (is_array($request->getQueryParams())
+            && array_key_exists(ResourceEnhancer::PARAMETER_NAME, $request->getQueryParams())) {
+            return $this->bootstrap->process($this->cleanupRequest($request));
         }
 
         return $handler->handle($request);

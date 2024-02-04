@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
@@ -32,7 +31,7 @@ class InlineViewHelper extends AbstractViewHelper
     {
         parent::initialize();
 
-        $this->headlessDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(HeadlessDispatcher::class);
+        $this->headlessDispatcher = GeneralUtility::makeInstance(HeadlessDispatcher::class);
     }
 
     /**

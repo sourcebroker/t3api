@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Serializer\Handler;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
@@ -22,7 +23,6 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Error\Error;
 use TYPO3\CMS\Extbase\Error\Result;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
@@ -44,11 +44,6 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
     protected $resourceFactory;
 
     /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
      * @var PersistenceManager
      */
     protected $persistenceManager;
@@ -63,43 +58,15 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
      */
     private $fileReferenceService;
 
-    /**
-     * @param ResourceFactory $resourceFactory
-     */
-    public function injectResourceFactory(ResourceFactory $resourceFactory): void
-    {
+    public function __construct(
+        ResourceFactory $resourceFactory,
+        PersistenceManager $persistenceManager,
+        SerializerService $serializerService,
+        FileReferenceService $fileReferenceService
+    ) {
         $this->resourceFactory = $resourceFactory;
-    }
-
-    /**
-     * @param ObjectManager $objectManager
-     */
-    public function injectObjectManager(ObjectManager $objectManager): void
-    {
-        $this->objectManager = $objectManager;
-    }
-
-    /**
-     * @param PersistenceManager $persistenceManager
-     */
-    public function injectPersistenceManager(PersistenceManager $persistenceManager): void
-    {
         $this->persistenceManager = $persistenceManager;
-    }
-
-    /**
-     * @param SerializerService $serializerService
-     */
-    public function injectSerializerService(SerializerService $serializerService): void
-    {
         $this->serializerService = $serializerService;
-    }
-
-    /**
-     * @param FileReferenceService $fileReferenceService
-     */
-    public function injectFileReferenceService(FileReferenceService $fileReferenceService): void
-    {
         $this->fileReferenceService = $fileReferenceService;
     }
 
@@ -138,7 +105,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
 
         // TODO: move to some signal/slot
         if (preg_match('#video/.*#', $originalFile->getMimeType())) {
-            $fileRenderer = RendererRegistry::getInstance()->getRenderer($originalFile);
+            $fileRenderer = GeneralUtility::makeInstance(RendererRegistry::class)->getRenderer($originalFile);
             if ($fileRenderer !== null && preg_match(
                 '/src="([^"]+)"/',
                 $fileRenderer->render($originalFile, 1, 1),

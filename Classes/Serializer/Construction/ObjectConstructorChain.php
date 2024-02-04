@@ -8,7 +8,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use RuntimeException;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ObjectConstructorChain
@@ -24,19 +24,6 @@ class ObjectConstructorChain implements ObjectConstructorInterface
      * @var ObjectConstructorInterface[]|null
      */
     protected $constructorsInstances;
-
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @param ObjectManager $objectManager
-     */
-    public function injectObjectManager(ObjectManager $objectManager): void
-    {
-        $this->objectManager = $objectManager;
-    }
 
     /**
      * @param string[] $constructors
@@ -75,7 +62,7 @@ class ObjectConstructorChain implements ObjectConstructorInterface
         if ($this->constructorsInstances === null) {
             $this->constructorsInstances = [];
             foreach ($this->constructors as $constructor) {
-                $this->constructorsInstances[] = $this->objectManager->get($constructor);
+                $this->constructorsInstances[] = GeneralUtility::makeInstance($constructor);
             }
         }
 

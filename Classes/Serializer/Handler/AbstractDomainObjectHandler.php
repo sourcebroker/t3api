@@ -34,13 +34,12 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
      */
     protected $serializerService;
 
-    public function injectPersistenceManager(PersistenceManager $persistenceManager): void
-    {
-        $this->persistenceManager = $persistenceManager;
-    }
 
-    public function injectSerializerService(SerializerService $serializerService): void
-    {
+    public function __construct(
+        PersistenceManager $persistenceManager,
+        SerializerService $serializerService
+    ) {
+        $this->persistenceManager = $persistenceManager;
         $this->serializerService = $serializerService;
     }
 

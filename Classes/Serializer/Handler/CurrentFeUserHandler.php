@@ -22,7 +22,7 @@ class CurrentFeUserHandler extends AbstractHandler implements DeserializeHandler
      */
     protected $persistenceManager;
 
-    public function injectPersistenceManager(PersistenceManager $persistenceManager): void
+    public function __construct(PersistenceManager $persistenceManager)
     {
         $this->persistenceManager = $persistenceManager;
     }

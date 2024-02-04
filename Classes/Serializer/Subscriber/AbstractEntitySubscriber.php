@@ -12,7 +12,6 @@ use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Serializer\Handler\AbstractDomainObjectHandler;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
@@ -25,25 +24,9 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
      */
     protected $apiResourceRepository;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @param ApiResourceRepository $apiResourceRepository
-     */
-    public function injectApiResourceRepository(ApiResourceRepository $apiResourceRepository): void
+    public function __construct(ApiResourceRepository $apiResourceRepository)
     {
         $this->apiResourceRepository = $apiResourceRepository;
-    }
-
-    /**
-     * @param ObjectManager $objectManager
-     */
-    public function injectObjectManager(ObjectManager $objectManager): void
-    {
-        $this->objectManager = $objectManager;
     }
 
     /**

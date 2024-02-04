@@ -7,26 +7,13 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ExtbaseObjectConstructor
  */
 class ExtbaseObjectConstructor implements ObjectConstructorInterface
 {
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @param ObjectManager $objectManager
-     */
-    public function injectObjectManager(ObjectManager $objectManager): void
-    {
-        $this->objectManager = $objectManager;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -37,6 +24,6 @@ class ExtbaseObjectConstructor implements ObjectConstructorInterface
         array $type,
         DeserializationContext $context
     ): ?object {
-        return $this->objectManager->get($metadata->name);
+        return GeneralUtility::makeInstance($metadata->name);
     }
 }

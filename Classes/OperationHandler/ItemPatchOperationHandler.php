@@ -11,6 +11,7 @@ use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Exception\ResourceNotFoundException;
 use SourceBroker\T3api\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -42,7 +43,7 @@ class ItemPatchOperationHandler extends AbstractItemOperationHandler
         $this->deserializeOperation($operation, $request, $object);
         $this->validationService->validateObject($object);
         $repository->update($object);
-        $this->objectManager->get(PersistenceManager::class)->persistAll();
+        GeneralUtility::makeInstance(PersistenceManager::class)->persistAll();
 
         return $object;
     }

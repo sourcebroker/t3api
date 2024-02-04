@@ -11,7 +11,6 @@ use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Serializer\Handler\FileReferenceHandler;
 use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class FileReferenceSubscriber
@@ -24,24 +23,11 @@ class FileReferenceSubscriber implements EventSubscriberInterface
     protected $apiResourceRepository;
 
     /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
      * @param ApiResourceRepository $apiResourceRepository
      */
-    public function injectApiResourceRepository(ApiResourceRepository $apiResourceRepository): void
+    public function __construct(ApiResourceRepository $apiResourceRepository)
     {
         $this->apiResourceRepository = $apiResourceRepository;
-    }
-
-    /**
-     * @param ObjectManager $objectManager
-     */
-    public function injectObjectManager(ObjectManager $objectManager): void
-    {
-        $this->objectManager = $objectManager;
     }
 
     /**

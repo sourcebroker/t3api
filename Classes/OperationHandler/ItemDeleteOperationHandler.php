@@ -10,6 +10,7 @@ use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class ItemDeleteOperationHandler extends AbstractItemOperationHandler
@@ -35,7 +36,7 @@ class ItemDeleteOperationHandler extends AbstractItemOperationHandler
         $repository = $this->getRepositoryForOperation($operation);
         $object = parent::handle($operation, $request, $route, $response);
         $repository->remove($object);
-        $this->objectManager->get(PersistenceManager::class)->persistAll();
+        GeneralUtility::makeInstance(PersistenceManager::class)->persistAll();
         $object = null;
 
         return null;

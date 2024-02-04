@@ -9,6 +9,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
@@ -68,8 +69,7 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
 
         $tableName = $this->getTableName($query);
         $rootAlias = 'o';
-        $queryBuilder = $this->getObjectManager()
-            ->get(ConnectionPool::class)
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($tableName);
 
         if ($this->isPropertyNested($latProperty)) {
@@ -88,7 +88,7 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
             $lngPropertyName = $lngProperty;
         }
 
-        $dataMapper = $this->getObjectManager()->get(DataMapper::class);
+        $dataMapper = GeneralUtility::makeInstance(DataMapper::class);
         $latColumn = $dataMapper->convertPropertyNameToColumnName($latPropertyName, $apiFilter->getFilterClass());
         $lngColumn = $dataMapper->convertPropertyNameToColumnName($lngPropertyName, $apiFilter->getFilterClass());
 

@@ -11,7 +11,6 @@ use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class ImageHandler
@@ -25,10 +24,7 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
      */
     private $fileReferenceService;
 
-    /**
-     * @param FileReferenceService $fileReferenceService
-     */
-    public function injectFileReferenceService(FileReferenceService $fileReferenceService): void
+    public function __construct(FileReferenceService $fileReferenceService)
     {
         $this->fileReferenceService = $fileReferenceService;
     }
@@ -75,8 +71,7 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
     protected function processSingleImage($fileReference, array $type, SerializationContext $context): ?string
     {
         if (is_int($fileReference)) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $fileRepository = $objectManager->get(FileRepository::class);
+            $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
             $fileResource = $fileRepository->findFileReferenceByUid($fileReference);
         } else {
             $fileResource = $fileReference->getOriginalResource();

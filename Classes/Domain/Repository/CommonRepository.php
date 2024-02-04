@@ -12,8 +12,6 @@ use SourceBroker\T3api\Service\StorageService;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
@@ -32,11 +30,6 @@ class CommonRepository
      * @var OperationInterface
      */
     protected $operation;
-
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
 
     /**
      * @var QuerySettingsInterface
@@ -92,40 +85,24 @@ class CommonRepository
      */
     public static function getInstanceForEntity(string $entity): self
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
         /** @var self $repository */
-        $repository = $objectManager->get(self::class);
+        $repository = GeneralUtility::makeInstance(self::class);
         $repository->setObjectType($entity);
 
         return $repository;
     }
 
-    /**
-     * @param PersistenceManagerInterface $persistenceManager
-     */
-    public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager)
-    {
+    public function __construct(
+        PersistenceManagerInterface $persistenceManager,
+        FilterAccessChecker $filterAccessChecker,
+        Typo3QuerySettings $defaultQuerySettings
+    ) {
         $this->persistenceManager = $persistenceManager;
-    }
-
-    public function injectFilterAccessChecker(FilterAccessChecker $filterAccessChecker): void
-    {
         $this->filterAccessChecker = $filterAccessChecker;
+        $this->defaultQuerySettings = $defaultQuerySettings;
     }
 
-    /**
-     * CommonRepository constructor.
-     *
-     * @param ObjectManagerInterface $objectManager
-     */
-    public function __construct(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
-        $this->defaultQuerySettings = $this->objectManager->get(Typo3QuerySettings::class);
-    }
-
-    /**
+        /**
      * @param string $objectType
      *
      * @return self
@@ -167,7 +144,7 @@ class CommonRepository
             $parameterName = $apiFilter->getParameterName();
 
             /** @var FilterInterface $filter */
-            $filter = $this->objectManager->get($apiFilter->getFilterClass());
+            $filter = GeneralUtility::makeInstance($apiFilter->getFilterClass());
             $constraint = $filter->filterProperty(
                 $apiFilter->getProperty(),
                 $queryParams[$parameterName],

@@ -32,7 +32,6 @@ use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Filter\OpenApiSupportingFilterInterface;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -430,9 +429,7 @@ class OpenApiBuilder
         static $metadataFactory;
 
         if (empty($metadataFactory)) {
-            $metadataFactory = GeneralUtility::makeInstance(ObjectManager::class)
-                ->get(SerializerService::class)
-                ->getMetadataFactory();
+            $metadataFactory = GeneralUtility::makeInstance(SerializerService::class)->getMetadataFactory();
         }
 
         return $metadataFactory;

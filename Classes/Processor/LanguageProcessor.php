@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 class LanguageProcessor implements ProcessorInterface
 {
@@ -28,9 +27,7 @@ class LanguageProcessor implements ProcessorInterface
         $languageUid = (int)(!empty($languageHeader) ? array_shift($languageHeader) : 0);
         $language = $request->get('site') ? $request->get('site')->getLanguageById($languageUid) : null;
         if ($language) {
-            /** @var ObjectManager $objectManager */
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $objectManager->get(Context::class)
+            GeneralUtility::makeInstance(Context::class)
                 ->setAspect('language', LanguageAspectFactory::createFromSiteLanguage($language));
             $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute('language', $language);
         }

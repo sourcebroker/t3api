@@ -8,6 +8,121 @@ services:
     resource: '../Classes/*'
     exclude: '../Classes/Domain/{Model,Event,Exception}/*'
 
+  SourceBroker\T3api\Domain\Model\CollectionOperation:
+    factory: ['@SourceBroker\T3api\Domain\Model\CollectionOperationFactory', 'create']
+    arguments:
+      $key: ''
+      $apiResource: ApiResource
+      $params: []
+
+  SourceBroker\T3api\Controller\AdministrationController:
+    public: true
+
+
+  SourceBroker\T3api\Domain\Model\CollectionOperationFactory:
+    public: true
+
+  SourceBroker\T3api\Response\MainEndpointResponse:
+    public: true
+
+  SourceBroker\T3api\OperationHandler\CollectionGetOperationHandler:
+    public: true
+
+  SourceBroker\T3api\Domain\Repository\CommonRepository:
+    public: true
+
+  SourceBroker\T3api\OperationHandler\OptionsOperationHandler:
+    public: true
+
+  SourceBroker\T3api\OperationHandler\FileUploadOperationHandler:
+    public: true
+
+  SourceBroker\T3api\OperationHandler\CollectionPostOperationHandler:
+    public: true
+
+  SourceBroker\T3api\OperationHandler\CollectionMethodNotAllowedOperationHandler:
+    public: true
+
+  SourceBroker\T3api\OperationHandler\ItemGetOperationHandler:
+    public: true
+
+  SourceBroker\T3api\OperationHandler\ItemPutOperationHandler:
+    public: true
+
+  SourceBroker\T3api\OperationHandler\ItemPatchOperationHandler:
+    public: true
+
+  SourceBroker\T3api\OperationHandler\ItemDeleteOperationHandler:
+    public: true
+
+  SourceBroker\T3api\OperationHandler\ItemMethodNotAllowedOperationHandler:
+    public: true
+
+  SourceBroker\T3api\Processor\CorsProcessor:
+    public: true
+
+  SourceBroker\T3api\Processor\LanguageProcessor:
+    public: true
+
+  SourceBroker\T3api\Provider\ApiResourcePath\LoadedExtensionsDomainModelApiResourcePathProvider:
+    public: true
+
+  SourceBroker\T3api\Serializer\Construction\InitializedObjectConstructor:
+    public: true
+
+  SourceBroker\T3api\Serializer\Construction\ExtbaseObjectConstructor:
+    public: true
+
+  SourceBroker\T3api\Serializer\Handler\AbstractDomainObjectHandler:
+    public: true
+
+  SourceBroker\T3api\Serializer\Handler\ObjectStorageHandler:
+    public: true
+
+  SourceBroker\T3api\Serializer\Handler\FileReferenceHandler:
+    public: true
+
+  SourceBroker\T3api\Serializer\Handler\ImageHandler:
+    public: true
+
+  SourceBroker\T3api\Serializer\Handler\RecordUriHandler:
+    public: true
+
+  SourceBroker\T3api\Serializer\Handler\TypolinkHandler:
+    public: true
+
+  SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler:
+    public: true
+
+  SourceBroker\T3api\Serializer\Handler\RteHandler:
+    public: true
+
+  SourceBroker\T3api\Serializer\Handler\PasswordHashHandler:
+    public: true
+
+  SourceBroker\T3api\Serializer\Subscriber\GenerateMetadataSubscriber:
+    public: true
+
+  SourceBroker\T3api\Serializer\Subscriber\FileReferenceSubscriber:
+    public: true
+
+  SourceBroker\T3api\Serializer\Subscriber\AbstractEntitySubscriber:
+    public: true
+
+  SourceBroker\T3api\Serializer\Subscriber\ThrowableSubscriber:
+    public: true
+
+  SourceBroker\T3api\Serializer\Subscriber\CurrentFeUserSubscriber:
+    public: true
+
+  SourceBroker\T3api\Response\HydraCollectionResponse:
+    public: true
+
+  Symfony\Component\HttpFoundation\Request:
+    public: true
+
+  Symfony\Component\EventDispatcher\EventDispatcherInterface: '@Psr\EventDispatcher\EventDispatcherInterface'
+
   SourceBroker\T3api\EventListener\AddHydraCollectionResponseSerializationGroupEventListener:
     tags:
       - name: event.listener

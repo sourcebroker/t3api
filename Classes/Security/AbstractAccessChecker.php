@@ -18,7 +18,7 @@ class AbstractAccessChecker
      */
     protected $eventDispatcher;
 
-    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
     }

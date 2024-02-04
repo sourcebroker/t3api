@@ -15,15 +15,9 @@ use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\ValidationService;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 abstract class AbstractOperationHandler implements OperationHandlerInterface
 {
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
-
     /**
      * @var SerializerService
      */
@@ -49,36 +43,18 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
      */
     protected $eventDispatcher;
 
-    public function injectObjectManager(ObjectManagerInterface $objectManager): void
-    {
-        $this->objectManager = $objectManager;
-    }
-
-    /** @noinspection PhpUnused */
-    public function injectSerializerService(SerializerService $serializerService): void
-    {
+    public function __construct(
+        SerializerService $serializerService,
+        ValidationService $validationService,
+        OperationAccessChecker $operationAccessChecker,
+        DeserializationContextBuilder $deserializationContextBuilder,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->serializerService = $serializerService;
-    }
-
-    /** @noinspection PhpUnused */
-    public function injectValidationService(ValidationService $validationService): void
-    {
         $this->validationService = $validationService;
-    }
-
-    public function injectOperationAccessChecker(OperationAccessChecker $operationAccessChecker): void
-    {
         $this->operationAccessChecker = $operationAccessChecker;
-    }
-
-    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
-
-    public function injectDeserializationContextBuilder(DeserializationContextBuilder $deserializationContextBuilder): void
-    {
         $this->deserializationContextBuilder = $deserializationContextBuilder;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     protected function getRepositoryForOperation(OperationInterface $operation): CommonRepository
@@ -90,8 +66,8 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
      * @param OperationInterface $operation
      * @param Request $request
      * @param AbstractDomainObject|null $targetObject
-     * @throws OperationNotAllowedException
      * @return AbstractDomainObject
+     * @throws OperationNotAllowedException
      */
     protected function deserializeOperation(
         OperationInterface $operation,

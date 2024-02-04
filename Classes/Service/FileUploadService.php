@@ -32,10 +32,7 @@ class FileUploadService implements SingletonInterface
      */
     protected $resourceFactory;
 
-    /**
-     * @param ResourceFactory $resourceFactory
-     */
-    public function injectResourceFactory(ResourceFactory $resourceFactory): void
+    public function __construct(ResourceFactory $resourceFactory)
     {
         $this->resourceFactory = $resourceFactory;
     }

@@ -24,18 +24,12 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException as SymfonyReso
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class AbstractDispatcher
  */
 abstract class AbstractDispatcher
 {
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
     /**
      * @var SerializerService
      */
@@ -51,17 +45,25 @@ abstract class AbstractDispatcher
      */
     protected $eventDispatcher;
 
+    protected SerializationContextBuilder $serializationContextBuilder;
+
+    protected DeserializationContextBuilder $deserializationContextBuilder;
+
     /**
      * Bootstrap constructor.
      */
-    public function __construct()
-    {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->serializerService = $this->objectManager->get(SerializerService::class);
-        $this->apiResourceRepository = $this->objectManager->get(ApiResourceRepository::class);
-        $this->serializationContextBuilder = $this->objectManager->get(SerializationContextBuilder::class);
-        $this->deserializationContextBuilder = $this->objectManager->get(DeserializationContextBuilder::class);
-        $this->eventDispatcher = $this->objectManager->get(EventDispatcherInterface::class);
+    public function __construct(
+        SerializerService $serializerService,
+        ApiResourceRepository $apiResourceRepository,
+        SerializationContextBuilder $serializationContextBuilder,
+        DeserializationContextBuilder $deserializationContextBuilder,
+        EventDispatcherInterface $eventDispatcherInterface
+    ) {
+        $this->serializerService = $serializerService;
+        $this->apiResourceRepository = $apiResourceRepository;
+        $this->serializationContextBuilder = $serializationContextBuilder;
+        $this->deserializationContextBuilder = $deserializationContextBuilder;
+        $this->eventDispatcher = $eventDispatcherInterface;
     }
 
     /**
@@ -125,7 +127,7 @@ abstract class AbstractDispatcher
         }
 
         /** @var OperationHandlerInterface $handler */
-        $handler = $this->objectManager->get(array_shift($handlers));
+        $handler = GeneralUtility::makeInstance(array_shift($handlers));
         $result = $handler->handle($operation, $request, $route ?? [], $response);
 
         $afterProcessOperationEvent = new AfterProcessOperationEvent(
@@ -180,7 +182,7 @@ abstract class AbstractDispatcher
                     );
                 }
                 /** @var ProcessorInterface $processor */
-                $processor = $this->objectManager->get($processorClass);
+                $processor = GeneralUtility::makeInstance($processorClass);
                 $processor->process($request, $response);
             }
         );

@@ -33,18 +33,12 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class SerializerService
  */
 class SerializerService implements SingletonInterface
 {
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
     /**
      * @var SerializationContextBuilder
      */
@@ -55,21 +49,11 @@ class SerializerService implements SingletonInterface
      */
     protected $deserializationContextBuilder;
 
-    /**
-     * @param ObjectManager $objectManager
-     */
-    public function injectObjectManager(ObjectManager $objectManager): void
-    {
-        $this->objectManager = $objectManager;
-    }
-
-    public function injectSerializationContextBuilder(SerializationContextBuilder $serializationContextBuilder): void
-    {
+    public function __construct(
+        SerializationContextBuilder $serializationContextBuilder,
+        DeserializationContextBuilder $deserializationContextBuilder
+    ) {
         $this->serializationContextBuilder = $serializationContextBuilder;
-    }
-
-    public function injectDeserializationContextBuilder(DeserializationContextBuilder $deserializationContextBuilder): void
-    {
         $this->deserializationContextBuilder = $deserializationContextBuilder;
     }
 
@@ -170,25 +154,25 @@ class SerializerService implements SingletonInterface
                 ->configureHandlers(function (HandlerRegistry $registry) {
                     foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] ?? [] as $handlerClass) {
                         /** @var SubscribingHandlerInterface $handler */
-                        $handler = $this->objectManager->get($handlerClass);
+                        $handler = GeneralUtility::makeInstance($handlerClass);
                         $registry->registerSubscribingHandler($handler);
                     }
                 })
                 ->configureListeners(function (EventDispatcher $dispatcher) {
                     foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] ?? [] as $subscriberClass) {
                         /** @var EventSubscriberInterface $subscriber */
-                        $subscriber = $this->objectManager->get($subscriberClass);
+                        $subscriber = GeneralUtility::makeInstance($subscriberClass);
                         $dispatcher->addSubscriber($subscriber);
                     }
                 })
                 ->addDefaultHandlers()
-                ->setAccessorStrategy($this->objectManager->get(AccessorStrategy::class))
+                ->setAccessorStrategy(GeneralUtility::makeInstance(AccessorStrategy::class))
                 ->setPropertyNamingStrategy($this->getPropertyNamingStrategy())
                 ->setAnnotationReader(self::getAnnotationReader())
                 ->setMetadataDriverFactory($this->getDriverFactory())
                 ->setMetadataCache(self::getMetadataCache())
                 ->addMetadataDirs(self::getMetadataDirs())
-                ->setObjectConstructor($this->objectManager->get(
+                ->setObjectConstructor(GeneralUtility::makeInstance(
                     ObjectConstructorChain::class,
                     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors']
                 ))
@@ -242,9 +226,9 @@ class SerializerService implements SingletonInterface
      */
     protected function getPropertyNamingStrategy(): PropertyNamingStrategyInterface
     {
-        return $this->objectManager->get(
+        return GeneralUtility::makeInstance(
             SerializedNameAnnotationStrategy::class,
-            $this->objectManager->get(IdenticalPropertyNamingStrategy::class)
+            GeneralUtility::makeInstance(IdenticalPropertyNamingStrategy::class)
         );
     }
 

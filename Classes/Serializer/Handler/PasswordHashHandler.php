@@ -21,7 +21,7 @@ class PasswordHashHandler extends AbstractHandler implements SerializeHandlerInt
      */
     private $passwordHashFactory;
 
-    public function injectPasswordHashFactory(PasswordHashFactory $passwordHashFactory): void
+    public function __construct(PasswordHashFactory $passwordHashFactory)
     {
         $this->passwordHashFactory = $passwordHashFactory;
     }

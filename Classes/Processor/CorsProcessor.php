@@ -15,7 +15,7 @@ class CorsProcessor implements ProcessorInterface
      */
     private $corsService;
 
-    public function injectCorsService(CorsService $corsService): void
+    public function __construct(CorsService $corsService)
     {
         $this->corsService = $corsService;
     }

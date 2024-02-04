@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\ContextBuilder;
 
 use JMS\Serializer\Context;
@@ -16,7 +17,7 @@ abstract class AbstractContextBuilder implements ContextBuilderInterface
      */
     protected $eventDispatcher;
 
-    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -25,8 +26,7 @@ abstract class AbstractContextBuilder implements ContextBuilderInterface
         OperationInterface $operation,
         Request $request,
         Context $context
-    ): void
-    {
+    ): void {
         $this->eventDispatcher->dispatch(
             new AfterCreateContextForOperationEvent(
                 $operation,

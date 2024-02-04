@@ -3,6 +3,7 @@
 declare(strict_types=1);
 namespace SourceBroker\T3api\Dispatcher;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SourceBroker\T3api\Exception\ExceptionInterface;
@@ -16,6 +17,11 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Throwable;
 use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
+use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
+use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
+use SourceBroker\T3api\Service\SerializerService;
 
 /**
  * Class Bootstrap
@@ -35,18 +41,23 @@ class Bootstrap extends AbstractDispatcher
     /**
      * Bootstrap constructor.
      */
-    public function __construct()
-    {
-        parent::__construct();
+    public function __construct(
+        SerializerService $serializerService,
+        ApiResourceRepository $apiResourceRepository,
+        SerializationContextBuilder $serializationContextBuilder,
+        DeserializationContextBuilder $deserializationContextBuilder,
+        EventDispatcherInterface $eventDispatcherInterface
+    ) {
+        parent::__construct(
+            $serializerService,
+            $apiResourceRepository,
+            $serializationContextBuilder,
+            $deserializationContextBuilder,
+            $eventDispatcherInterface,
+        );
         $this->response = new Response('php://temp', 200, ['Content-Type' => 'application/ld+json']);
-    }
-
-    /**
-     * @param HttpFoundationFactory $httpFoundationFactory
-     */
-    public function injectHttpFoundationFactory(HttpFoundationFactory $httpFoundationFactory)
-    {
-        $this->httpFoundationFactory = $httpFoundationFactory;
+        // TODO TYPO3 12
+        $this->httpFoundationFactory = GeneralUtility::makeInstance(HttpFoundationFactory::class);
     }
 
     /**
@@ -121,7 +132,8 @@ class Bootstrap extends AbstractDispatcher
     protected function processMainEndpoint(): string
     {
         return $this->serializerService->serialize(
-            $this->objectManager->get($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'])
+            // TODO TYPO3 12
+            GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'])
         );
     }
 }

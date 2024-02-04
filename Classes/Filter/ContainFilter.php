@@ -8,6 +8,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
@@ -68,8 +69,7 @@ class ContainFilter extends AbstractFilter implements OpenApiSupportingFilterInt
         $tableName = $this->getTableName($query);
         $conditions = [];
         $rootAlias = 'o';
-        $queryBuilder = $this->getObjectManager()
-            ->get(ConnectionPool::class)
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($tableName);
 
         if ($this->isPropertyNested($property)) {
@@ -85,7 +85,7 @@ class ContainFilter extends AbstractFilter implements OpenApiSupportingFilterInt
                 'FIND_IN_SET(%s, %s) > 0',
                 $queryBuilder->createNamedParameter($value),
                 $queryBuilder->quoteIdentifier(
-                    $tableAlias . '.' . $this->getObjectManager()->get(DataMapper::class)
+                    $tableAlias . '.' . GeneralUtility::makeInstance(DataMapper::class)
                         ->convertPropertyNameToColumnName($propertyName, $apiFilter->getFilterClass())
                 )
             );

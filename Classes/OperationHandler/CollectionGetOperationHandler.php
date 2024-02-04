@@ -11,6 +11,7 @@ use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use Symfony\Component\HttpFoundation\Request;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CollectionGetOperationHandler extends AbstractCollectionOperationHandler
 {
@@ -38,7 +39,7 @@ class CollectionGetOperationHandler extends AbstractCollectionOperationHandler
         }
 
         /** @var AbstractCollectionResponse $responseObject */
-        $responseObject = $this->objectManager->get(
+        $responseObject = GeneralUtility::makeInstance(
             $collectionResponseClass,
             $operation,
             $request,

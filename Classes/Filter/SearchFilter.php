@@ -8,6 +8,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
@@ -92,8 +93,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
         $rootAlias = 'o';
         $queryExpansion = (bool)$apiFilter->getArgument('withQueryExpansion');
 
-        $queryBuilder = $this->getObjectManager()
-            ->get(ConnectionPool::class)
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($tableName);
 
         if ($this->isPropertyNested($property)) {
@@ -109,7 +109,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
             $conditions[] = sprintf(
                 'MATCH(%s) AGAINST (%s IN NATURAL LANGUAGE MODE %s)',
                 $queryBuilder->quoteIdentifier(
-                    $tableAlias . '.' . $this->getObjectManager()->get(DataMapper::class)
+                    $tableAlias . '.' . GeneralUtility::makeInstance(DataMapper::class)
                         ->convertPropertyNameToColumnName($propertyName, $apiFilter->getFilterClass())
                 ),
                 $key,

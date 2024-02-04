@@ -10,6 +10,7 @@ use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
@@ -38,7 +39,7 @@ class CollectionPostOperationHandler extends AbstractCollectionOperationHandler
         $object = $this->deserializeOperation($operation, $request);
         $this->validationService->validateObject($object);
         $repository->add($object);
-        $this->objectManager->get(PersistenceManager::class)->persistAll();
+        GeneralUtility::makeInstance(PersistenceManager::class)->persistAll();
 
         $response = $response ? $response->withStatus(201) : $response;
 

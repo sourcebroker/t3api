@@ -8,7 +8,6 @@ use RuntimeException;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
@@ -27,11 +26,6 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
      * @var array
      */
     public static $defaultArguments = [];
-
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
 
     /**
      * @param string $propertyName
@@ -62,8 +56,8 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
 
         $parentClassName = $query->getType();
 
-        $dataMapFactory = $this->getObjectManager()->get(DataMapFactory::class);
-        $dataMapper = $this->getObjectManager()->get(DataMapper::class, $query);
+        $dataMapFactory = GeneralUtility::makeInstance(DataMapFactory::class);
+        $dataMapper = GeneralUtility::makeInstance(DataMapper::class, $query);
 
         $parentAlias = $rootAlias;
 
@@ -206,17 +200,5 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
         }
 
         return $source->getSelectorName();
-    }
-
-    /**
-     * @return ObjectManager
-     */
-    protected function getObjectManager(): ObjectManager
-    {
-        if (!$this->objectManager instanceof ObjectManager) {
-            $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        }
-
-        return $this->objectManager;
     }
 }
