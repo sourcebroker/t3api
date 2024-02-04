@@ -15,6 +15,9 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 class ApiResourceRepositoryTest extends FunctionalTestCase
 {
     protected array $testExtensionsToLoad = ['typo3conf/ext/t3api'];
+    protected CacheManager $cacheManager;
+    protected ApiResourceFactory $apiResourceFactory;
+    protected ReflectionService $reflectionService;
 
     public function setUp(): void
     {
