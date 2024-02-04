@@ -7,7 +7,7 @@
 	"description": "REST API for your TYPO3 project. Config with annotations, build in filtering, pagination, typolinks, image processing, serialization contexts, responses in Hydra/JSON-LD format.",
 	"authors": [
 		{
-			"name": "SourceBroker Team",
+			"name": "Inscript Team",
 			"role": "Developer"
 		}
 	],
@@ -16,25 +16,30 @@
 		"ext-json": "*",
 		"ext-tokenizer": "*",
 		"ext-pdo": "*",
-		"typo3/cms-core": "^10.4 || ^11.5",
-		"typo3/cms-extbase": "^10.4 || ^11.5",
-		"typo3/cms-frontend": "^10.4 || ^11.5",
+		"typo3/cms-core": "^11.5 || ^12.4",
+		"typo3/cms-extbase": "^11.5 || ^12.4",
+		"typo3/cms-frontend": "^11.5 || ^12.4",
 		"jms/serializer": "^3.1",
-		"symfony/routing": "^4.1 || ^5.0",
-		"symfony/expression-language": "^4.1 || ^5.0",
-		"symfony/http-foundation": "^4.2.9 || ^5.0",
+		"symfony/routing": "^5.0 || ^6.0",
+		"symfony/expression-language": "^5.0 || ^6.0",
+		"symfony/http-foundation": "^5.0 || ^6.0",
 		"symfony/psr-http-message-bridge": "^2.1",
-		"symfony/property-info": "^4.4 || ^5.0",
-		"symfony/mime": "^4.4 || ^5.0",
-		"symfony/cache": "^4.4 || ^5.0 || ^6.0",
+		"symfony/property-info": "^5.0 || ^6.0",
+		"symfony/mime": "^5.0 || ^6.0",
+		"symfony/cache": "^5.0 || ^6.0",
 		"goldspecdigital/oooas": "^2.4",
 		"phpdocumentor/reflection-docblock": "^5.1",
-		"doctrine/annotations": "^1.0"
+		"doctrine/annotations": "^1.0 || ^2.0"
 	},
 	"require-dev": {
-		"friendsofphp/php-cs-fixer": "^3.0",
-		"nimut/testing-framework": "^6.0",
-		"typo3/coding-standards": "^0.5.2"
+		"typo3/cms-composer-installers": "^3.1.3 || 4.0.0-RC1 || ^5.0",
+		"typo3/cms-install": "^11.5.24 || ^12.4.2",
+		"typo3/cms-seo": "^11.5.24 || ^12.4.2",
+		"typo3/testing-framework": "^7.0.4",
+		"phpunit/phpunit": "^9.6.15",
+		"typo3/coding-standards": "^0.5.5",
+		"friendsofphp/php-cs-fixer": "^3.47.1",
+		"webmozart/assert": "^1.11.0"
 	},
 	"autoload": {
 		"psr-4": {
@@ -58,18 +63,8 @@
 		}
 	},
 	"scripts": {
-		"test-unit-v10": "TYPO3_PATH_ROOT=.test/v10/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/",
-		"test-functional-v10": "TYPO3_PATH_ROOT=.test/v10/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional/",
-		"test-unit-v11": "TYPO3_PATH_ROOT=.test/v11/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/",
-		"test-functional-v11": "TYPO3_PATH_ROOT=.test/v11/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional/",
-		"test": [
-			"composer run test-unit-v10",
-			"composer run test-functional-v10",
-			"composer run test-unit-v11",
-			"composer run test-functional-v11"
-		],
-		"cs": "./.Build/bin/php-cs-fixer fix --dry-run --diff -vvv",
-		"csfix": "./.Build/bin/php-cs-fixer fix -vvv",
+		"cs": "php ./.Build/bin/php-cs-fixer fix  --dry-run -v --config ./Build/php-cs-fixer/php-cs-fixer.php ./",
+		"csfix": "php ./.Build/bin/php-cs-fixer fix  -v --config ./Build/php-cs-fixer/php-cs-fixer.php ./",
 		"t3doc": "rm -rf ./Documentation-GENERATED-temp && docker-compose run --rm t3docmake && open \"Documentation-GENERATED-temp/Result/project/0.0.0/Index.html\"",
 		"next-patch": "./Resources/Private/Php/nextVersion.php",
 		"next-minor": "./Resources/Private/Php/nextVersion.php --version-type=minor",
@@ -78,7 +73,7 @@
 	"extra": {
 		"typo3/cms": {
 			"extension-key": "t3api",
-			"web-dir": ".Build/public"
+			"web-dir": ".Build/Web"
 		}
 	}
 }
