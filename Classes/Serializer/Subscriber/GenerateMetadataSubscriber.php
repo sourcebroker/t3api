@@ -9,26 +9,12 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use ReflectionException;
 use SourceBroker\T3api\Service\SerializerMetadataService;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class GenerateMetadataSubscriber
  */
 class GenerateMetadataSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @param ObjectManager $objectManager
-     */
-    public function injectObjectManager(ObjectManager $objectManager): void
-    {
-        $this->objectManager = $objectManager;
-    }
-
     /**
      * @return array
      */
