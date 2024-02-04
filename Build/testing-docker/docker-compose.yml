@@ -345,7 +345,6 @@ services:
       COMPOSER_CACHE_DIR: ".cache/composer"
     command: >
       /bin/sh -c "
-        echo "111 debug ${PHP_XDEBUG_ON}"
         if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
           set -x
         fi
