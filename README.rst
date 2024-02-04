@@ -4,20 +4,14 @@ TYPO3 Extension t3api
 .. image:: https://poser.pugx.org/sourcebroker/t3api/v/stable
    :target: https://extensions.typo3.org/extension/t3api/
 
-.. image:: https://img.shields.io/badge/TYPO3-11-orange.svg
-   :target: https://get.typo3.org/version/11
-
-.. image:: https://img.shields.io/badge/TYPO3-10-orange.svg
-   :target: https://get.typo3.org/version/10
-
 .. image:: https://scrutinizer-ci.com/g/sourcebroker/t3api/badges/quality-score.png?b=master
    :target: https://scrutinizer-ci.com/g/sourcebroker/t3api/?branch=master
 
-.. image:: https://github.com/sourcebroker/t3api/actions/workflows/ci.yml/badge.svg
-   :target: https://github.com/sourcebroker/t3api/actions/workflows/ci.yml
+.. image:: https://github.com/sourcebroker/t3api/actions/workflows/TYPO3_11.yml/badge.svg
+   :target: https://github.com/sourcebroker/t3api/actions/workflows/TYPO3_11.yml
 
-.. image:: https://poser.pugx.org/sourcebroker/t3api/license
-   :target: https://packagist.org/packages/sourcebroker/t3api
+.. image:: https://github.com/sourcebroker/t3api/actions/workflows/TYPO3_12.yml/badge.svg
+   :target: https://github.com/sourcebroker/t3api/actions/workflows/TYPO3_12.yml
 
 Features
 --------
