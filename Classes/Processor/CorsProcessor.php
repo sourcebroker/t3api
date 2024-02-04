@@ -20,10 +20,8 @@ class CorsProcessor implements ProcessorInterface
         $this->corsService = $corsService;
     }
 
-    public function process(
-        Request $request,
-        ResponseInterface &$response
-    ): void {
+    public function process(Request $request, ResponseInterface $response): void
+    {
         if (
             !$this->isCorsRequest($request)
             || $this->isPreflightRequest($request)

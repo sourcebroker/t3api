@@ -14,7 +14,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LanguageProcessor implements ProcessorInterface
 {
-    public function process(Request $request, ResponseInterface &$response): void
+    public function process(Request $request, ResponseInterface $response): void
     {
         if (!$GLOBALS['TYPO3_REQUEST'] instanceof ServerRequestInterface) {
             throw new RuntimeException(
