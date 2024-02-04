@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\Accessor;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
@@ -39,7 +40,7 @@ class AccessorStrategy implements AccessorStrategyInterface
             return $this->evaluator->evaluate((string)($metadata->expression), $variables);
         }
 
-        if (null === $metadata->getter) {
+        if ($metadata->getter === null) {
             return ObjectAccess::getProperty($object, $metadata->name, false);
         }
 
@@ -51,11 +52,11 @@ class AccessorStrategy implements AccessorStrategyInterface
      */
     public function setValue(object $object, $value, PropertyMetadata $metadata, DeserializationContext $context): void
     {
-        if (true === $metadata->readOnly) {
+        if ($metadata->readOnly === true) {
             throw new LogicException(sprintf('Property `%s` on `%s` is read only.', $metadata->name, $metadata->class));
         }
 
-        if (null === $metadata->setter) {
+        if ($metadata->setter === null) {
             ObjectAccess::setProperty($object, $metadata->name, $value);
 
             return;

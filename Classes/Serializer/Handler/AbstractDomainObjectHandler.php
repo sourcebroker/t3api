@@ -34,7 +34,6 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
      */
     protected $serializerService;
 
-
     public function __construct(
         PersistenceManager $persistenceManager,
         SerializerService $serializerService

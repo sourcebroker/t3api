@@ -8,15 +8,15 @@ use Psr\Http\Message\ResponseInterface;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
+use SourceBroker\T3api\Security\OperationAccessChecker;
+use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Service\FileUploadService;
+use SourceBroker\T3api\Service\SerializerService;
+use SourceBroker\T3api\Service\ValidationService;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Resource\Exception;
 use TYPO3\CMS\Extbase\Domain\Model\File;
-use SourceBroker\T3api\Service\SerializerService;
-use SourceBroker\T3api\Service\ValidationService;
-use SourceBroker\T3api\Security\OperationAccessChecker;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 
 class FileUploadOperationHandler extends AbstractCollectionOperationHandler
 {

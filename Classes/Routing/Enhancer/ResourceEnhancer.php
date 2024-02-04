@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Routing\Enhancer;
 
 use SourceBroker\T3api\Service\RouteService;
@@ -45,9 +46,7 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
      * {@inheritdoc}
      * // @todo Think if it ever could be needed
      */
-    public function enhanceForGeneration(RouteCollection $collection, array $parameters): void
-    {
-    }
+    public function enhanceForGeneration(RouteCollection $collection, array $parameters): void {}
 
     protected function getBasePath(): string
     {

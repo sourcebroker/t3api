@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Controller;
 
-use Psr\Http\Message\ResponseInterface;
 use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
+use Psr\Http\Message\ResponseInterface;
 use ReflectionException;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Service\OpenApiBuilder;

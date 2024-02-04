@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\Construction;
 
 use JMS\Serializer\Construction\ObjectConstructorInterface;
@@ -26,7 +27,7 @@ class InitializedObjectConstructor implements ObjectConstructorInterface
         array $type,
         DeserializationContext $context
     ): ?object {
-        if ($context->hasAttribute('target') && 1 === $context->getDepth()) {
+        if ($context->hasAttribute('target') && $context->getDepth() === 1) {
             return $context->getAttribute('target');
         }
 

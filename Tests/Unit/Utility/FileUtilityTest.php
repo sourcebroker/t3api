@@ -1,11 +1,12 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Tests\Utility;
 
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use RuntimeException;
 use SourceBroker\T3api\Utility\FileUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class FileUtilityTest

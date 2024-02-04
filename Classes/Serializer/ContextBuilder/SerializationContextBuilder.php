@@ -16,7 +16,7 @@ class SerializationContextBuilder extends AbstractContextBuilder
      */
     public function create(): Context
     {
-        return (SerializationContext::create())
+        return SerializationContext::create()
             ->enableMaxDepthChecks()
             ->setSerializeNull(true);
     }

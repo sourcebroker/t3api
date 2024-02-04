@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
@@ -16,7 +17,6 @@ use Throwable;
  */
 class T3apiRequestResolver implements MiddlewareInterface
 {
-
     private Bootstrap $bootstrap;
 
     public function __construct(Bootstrap $bootstrap)

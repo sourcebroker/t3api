@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\ContextBuilder;
 
 use JMS\Serializer\Context;
@@ -15,7 +16,7 @@ class DeserializationContextBuilder extends AbstractContextBuilder
      */
     public function create(): Context
     {
-        return (DeserializationContext::create())
+        return DeserializationContext::create()
             ->enableMaxDepthChecks();
     }
 

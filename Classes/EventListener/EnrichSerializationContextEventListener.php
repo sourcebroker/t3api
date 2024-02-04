@@ -9,7 +9,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class EnrichSerializationContextEventListener
 {
-    public function __invoke(AfterCreateContextForOperationEvent $createContextForOperationEvent): void {
+    public function __invoke(AfterCreateContextForOperationEvent $createContextForOperationEvent): void
+    {
         $attributes = [
             'TYPO3_HOST_ONLY' => GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY'),
             'TYPO3_PORT' => GeneralUtility::getIndpEnv('TYPO3_PORT'),

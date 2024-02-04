@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Functional\Domain\Repository;
 
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use ReflectionClass;
 use ReflectionException;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use SourceBroker\T3api\Service\ReflectionService;
 use SourceBroker\T3api\Factory\ApiResourceFactory;
+use SourceBroker\T3api\Service\ReflectionService;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class ApiResourceRepositoryTest extends FunctionalTestCase
 {
-
     protected array $testExtensionsToLoad = ['typo3conf/ext/t3api'];
 
     public function setUp(): void
@@ -32,8 +31,11 @@ class ApiResourceRepositoryTest extends FunctionalTestCase
      */
     public function getAllDomainModelsReturnsAllClasses(): void
     {
-        $apiResourceRepository = new ApiResourceRepository($this->cacheManager, $this->reflectionService,
-            $this->apiResourceFactory);
+        $apiResourceRepository = new ApiResourceRepository(
+            $this->cacheManager,
+            $this->reflectionService,
+            $this->apiResourceFactory
+        );
 
         // iterator_to_arrays converts the Generator object to an array because Generator can not be serialized
         self::assertEquals(

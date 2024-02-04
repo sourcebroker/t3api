@@ -24,8 +24,7 @@ class T3apiCoreFunctionsProvider implements ExpressionFunctionProviderInterface
     {
         return new ExpressionFunction(
             'force_absolute_url',
-            static function () {
-            },
+            static function () {},
             static function ($existingVariables, string $url, string $fallbackHost): string {
                 return UrlService::forceAbsoluteUrl($url, $fallbackHost);
             }

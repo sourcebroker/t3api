@@ -2,16 +2,16 @@
 
 namespace SourceBroker\T3api\OperationHandler;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
-use SourceBroker\T3api\Service\CorsService;
-use Symfony\Component\HttpFoundation\Request;
-use TYPO3\CMS\Core\Http\Response;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Security\OperationAccessChecker;
+use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
+use SourceBroker\T3api\Service\CorsService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\ValidationService;
+use Symfony\Component\HttpFoundation\Request;
+use TYPO3\CMS\Core\Http\Response;
 
 class OptionsOperationHandler extends AbstractOperationHandler
 {

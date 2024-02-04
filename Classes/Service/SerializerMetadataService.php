@@ -161,7 +161,7 @@ class SerializerMetadataService
         do {
             $classes[] = $reflectionClass;
             $reflectionClass = $reflectionClass->getParentClass();
-        } while (false !== $reflectionClass);
+        } while ($reflectionClass !== false);
 
         return array_reverse($classes, false);
     }

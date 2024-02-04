@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Tests\Unit\Service;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use ReflectionClass;
 use ReflectionException;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
@@ -19,6 +18,7 @@ use SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Group;
 use SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Person;
 use SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Tag;
 use Symfony\Component\PropertyInfo\Type;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class SerializerMetadataServiceTest

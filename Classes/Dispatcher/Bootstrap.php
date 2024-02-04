@@ -1,13 +1,18 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Dispatcher;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Exception\ExceptionInterface;
+use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
+use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Service\RouteService;
+use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -18,10 +23,6 @@ use Symfony\Component\Routing\RouteCollection;
 use Throwable;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
-use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
-use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
-use SourceBroker\T3api\Service\SerializerService;
 
 /**
  * Class Bootstrap

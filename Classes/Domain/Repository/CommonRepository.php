@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Domain\Repository;
 
 use RuntimeException;
@@ -102,7 +103,7 @@ class CommonRepository
         $this->defaultQuerySettings = $defaultQuerySettings;
     }
 
-        /**
+    /**
      * @param string $objectType
      *
      * @return self

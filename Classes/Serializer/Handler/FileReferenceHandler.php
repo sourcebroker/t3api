@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Serializer\Handler;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
@@ -18,6 +17,7 @@ use SourceBroker\T3api\Service\UrlService;
 use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
 use TYPO3\CMS\Core\Resource\Rendering\RendererRegistry;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;

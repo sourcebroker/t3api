@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Hook;
 
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;

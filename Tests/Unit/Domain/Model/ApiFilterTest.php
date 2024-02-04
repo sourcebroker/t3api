@@ -1,10 +1,11 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Tests\Unit\Domain\Model;
 
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test case.

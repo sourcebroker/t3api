@@ -1,11 +1,12 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Tests\Unit\Domain\Model;
 
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use SourceBroker\T3api\Domain\Model\Pagination;
 use Symfony\Component\HttpFoundation\Request;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class PaginationTest
@@ -15,7 +16,7 @@ class PaginationTest extends UnitTestCase
     /**
      * $GLOBALS['TYPO3_CONF_VARS'] is not available in test environment, so we need to copy default pagination settings
      */
-    const DEFAULT_API_RESOURCE_PAGINATION_ATTRIBUTES = [
+    public const DEFAULT_API_RESOURCE_PAGINATION_ATTRIBUTES = [
         'pagination_enabled' => true,
         'pagination_client_enabled' => false,
         'pagination_items_per_page' => 30,

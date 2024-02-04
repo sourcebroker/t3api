@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Controller;
 
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
-use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use SourceBroker\T3api\Service\SiteService;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Template\Components\Menu\MenuItem;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
@@ -19,7 +20,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 /**
  * TODO: finish refactoring for TYPO3 12
@@ -92,7 +92,6 @@ class AdministrationController
         );
 
         return $this->view->renderResponse('Administration/Documentation');
-
     }
 
     protected function getDefaultSiteIdentifier(): string
