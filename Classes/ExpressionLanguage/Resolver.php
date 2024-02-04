@@ -15,11 +15,22 @@ use TYPO3\CMS\Core\ExpressionLanguage\Resolver as BaseResolver;
 class Resolver extends BaseResolver
 {
     /**
-     * @internal
      * @return ExpressionLanguage
+     * @internal
      */
     public function getExpressionLanguage(): ExpressionLanguage
     {
-        return $this->expressionLanguage;
+        $reflection = new \ReflectionClass(BaseResolver::class);
+        $property = $reflection->getProperty('expressionLanguage');
+        $property->setAccessible(true);
+        return $property->getValue($this);
+    }
+
+    public function getExpressionLanguageVariables(): array
+    {
+        $reflection = new \ReflectionClass(BaseResolver::class);
+        $property = $reflection->getProperty('expressionLanguageVariables');
+        $property->setAccessible(true);
+        return $property->getValue($this);
     }
 }
