@@ -11,7 +11,7 @@ Changelog
 - [!!!] Changes signal slots into PSR-14 events [`issue <https://github.com/sourcebroker/t3api/issues/67>`__]
 - Protect against "&cHash empty" error when ``cacheHash.enforceValidation`` is set to ``true`` [`issue <https://github.com/sourcebroker/t3api/issues/81>`__]
 - Add testing instance for TYPO3 12, remove testing instance for TYPO3 10. Change PHP to 8.1 for testing instances.
-- [!!!] Drop TYPO3 10 on dependencies. Update dependencies to use TYPO3 11, TYPO3 12.
+- [!!!] Drop TYPO3 10, TYPO3 11 on dependencies. Update dependencies to TYPO3 12.
 
 2.0.3
 =====
