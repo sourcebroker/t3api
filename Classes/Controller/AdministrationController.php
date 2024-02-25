@@ -31,8 +31,7 @@ class AdministrationController
         protected readonly SiteFinder $siteFinder,
         protected readonly FlashMessageService $flashMessageService,
         protected readonly PageRenderer $pageRenderer
-    ) {
-    }
+    ) {}
 
     /**
      * @throws RouteNotFoundException

@@ -1,14 +1,10 @@
 <?php
 
-use TYPO3\CMS\Core\Imaging\IconRegistry;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 defined('TYPO3') || die('Access denied.');
 
 call_user_func(
     static function () {
-
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] = '_api';
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader'] = 'X-Locale';
 
