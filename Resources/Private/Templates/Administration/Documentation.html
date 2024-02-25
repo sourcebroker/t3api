@@ -1,11 +1,11 @@
 {namespace core=TYPO3\CMS\Core\ViewHelpers}
 
-<h1>Not upgraded yet fully to TYPO3 12</h1>
+<f:layout name="Module"/>
 
-<f:comment>
-    <f:flashMessages/>
-</f:comment>
+<f:section name="Content">
 
-<f:if condition="{displayUrl}">
-    <iframe src="{displayUrl}" style="width: 100%; height: 80vh; border: 0;"></iframe>
-</f:if>
+    <f:if condition="{resourcesUrl}">
+        <div id="t3api-swagger-ui" data-spec-url="{resourcesUrl}"></div>
+    </f:if>
+
+</f:section>

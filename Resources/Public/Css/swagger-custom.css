@@ -1,0 +1,4 @@
+/* Hides server selection as it is useless for now - we display always only one server */
+#t3api-swagger-ui .scheme-container {
+    display: none;
+}

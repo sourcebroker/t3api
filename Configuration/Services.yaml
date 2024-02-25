@@ -15,10 +15,6 @@ services:
       $apiResource: ApiResource
       $params: []
 
-  SourceBroker\T3api\Controller\AdministrationController:
-    public: true
-
-
   SourceBroker\T3api\Domain\Model\CollectionOperationFactory:
     public: true
 
