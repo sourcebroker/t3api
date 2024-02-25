@@ -5,7 +5,7 @@ return [
         'parent' => 'tools',
         'position' => ['before' => '*'],
         'access' => 'group,user',
-        'iconIdentifier' => 'extension-t3api',
+        'iconIdentifier' => 'ext-t3api',
         'labels' => 'LLL:EXT:t3api/Resources/Private/Language/locallang_modadministration.xlf:mlang_tabs_tab',
         'inheritNavigationComponentFromMainModule' => false,
         'path' => '/module/t3api',
