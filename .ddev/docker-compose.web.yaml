@@ -17,4 +17,3 @@ services:
             - TYPO3_INSTALL_SITE_NAME=EXT:t3api
             - TYPO3_INSTALL_SITE_SETUP_TYPE=site
             - TYPO3_INSTALL_WEB_SERVER_CONFIG=apache
-

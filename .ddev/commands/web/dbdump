@@ -1,10 +1,10 @@
 #!/bin/bash
 
-## Description: Dump v11/v12 database to data-init folder.
+## Description: Dump database to data-init folder.
 ## Usage: dbdump v11|v12
-## Example: "ddev dbdump v11"
+## Example: "ddev dbdump v12"
 
-if [[ ${@} = "" ]]; then echo "Set either v11 or v12 as argument." && exit 1; fi
+if [[ ${@} = "" ]]; then echo "Set v12 as argument." && exit 1; fi
 
 VERSION=$@
 DATABASE=database_$VERSION

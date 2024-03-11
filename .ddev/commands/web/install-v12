@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Description: Install TYPO3 11 with t3api linked to it.
+## Description: Install TYPO3 12 with t3api linked to it.
 ## Usage: install-v12
 ## Example: "ddev install-v12"
 

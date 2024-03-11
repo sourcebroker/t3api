@@ -7,8 +7,6 @@ router_http_port: "80"
 router_https_port: "443"
 xdebug_enabled: false
 additional_hostnames:
-    - v11.t3api
-    - v11-api.t3api
     - v12.t3api
     - v12-api.t3api
 additional_fqdns: []
