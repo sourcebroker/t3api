@@ -87,7 +87,7 @@ class OpenApiBuilder
      */
     protected static function getTags(array $apiResources): array
     {
-        return array_map('self::getTag', $apiResources);
+        return array_map(self::getTag(...), $apiResources);
     }
 
     /**

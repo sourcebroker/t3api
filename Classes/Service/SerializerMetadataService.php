@@ -374,7 +374,7 @@ class SerializerMetadataService
             return '';
         }
 
-        $encodedParams = array_map('static::encodeToSingleHandlerParam', $params);
+        $encodedParams = array_map(static::encodeToSingleHandlerParam(...), $params);
 
         return '\'' . implode('\',\'', $encodedParams) . '\'';
     }

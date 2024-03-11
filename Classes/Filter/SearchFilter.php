@@ -51,7 +51,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
         switch ($apiFilter->getStrategy()->getName()) {
             case 'partial':
                 return $query->logicalOr(
-                    array_map(
+                    ...array_map(
                         static function ($value) use ($query, $property) {
                             return $query->like($property, '%' . $value . '%');
                         },
