@@ -95,8 +95,8 @@ class ContainFilter extends AbstractFilter implements OpenApiSupportingFilterInt
         return $queryBuilder
             ->select($rootAlias . '.uid')
             ->from($tableName, $rootAlias)
-            ->andWhere($queryBuilder->expr()->orX(...$conditions))
-            ->execute()
-            ->fetchAll(FetchMode::COLUMN);
+            ->andWhere($queryBuilder->expr()->or(...$conditions))
+            ->executeQuery()
+            ->fetchFirstColumn();
     }
 }

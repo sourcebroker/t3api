@@ -107,7 +107,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
         $alias = $this->getUniqueAlias();
 
         switch ($columnMap->getTypeOfRelation()) {
-            case ColumnMap::RELATION_HAS_ONE:
+            case ColumnMap\Relation::HAS_ONE:
                 if ($columnMap->getParentKeyFieldName()) {
                     $joinConditionExpression = $queryBuilder->expr()->eq(
                         $parentAlias . '.uid',
@@ -120,7 +120,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
                     );
                 }
                 break;
-            case ColumnMap::RELATION_HAS_MANY:
+            case ColumnMap\Relation::HAS_MANY:
                 if ($columnMap->getParentKeyFieldName()) {
                     $joinConditionExpression = $queryBuilder->expr()->eq(
                         $parentAlias . '.uid',
@@ -134,7 +134,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
                     );
                 }
                 break;
-            case ColumnMap::RELATION_HAS_AND_BELONGS_TO_MANY:
+            case ColumnMap\Relation::HAS_AND_BELONGS_TO_MANY:
                 $relationalAlias = $this->getUniqueAlias('_mm');
                 $queryBuilder->leftJoin(
                     $parentAlias,
@@ -153,7 +153,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
                     $queryBuilder->quoteIdentifier($alias . '.uid')
                 );
                 break;
-            case ColumnMap::RELATION_BELONGS_TO_MANY:
+            case ColumnMap\Relation::BELONGS_TO_MANY:
             default:
                 throw new InvalidArgumentException('Could not determine relation', 1562191351170);
         }

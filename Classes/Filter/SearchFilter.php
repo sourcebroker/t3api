@@ -124,7 +124,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
             ->from($tableName, $rootAlias)
             ->andWhere($queryBuilder->expr()->orX(...$conditions))
             ->setParameters($binds)
-            ->execute()
-            ->fetchAll(FetchMode::COLUMN);
+            ->executeQuery()
+            ->fetchFirstColumn();
     }
 }

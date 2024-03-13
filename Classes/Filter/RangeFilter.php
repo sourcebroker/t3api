@@ -101,7 +101,7 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
             case self::PARAMETER_BETWEEN:
                 [$valueMin, $valueMax] = explode('..', $value);
 
-                return $query->logicalAnd([
+                return $query->logicalAnd(...[
                     $query->greaterThanOrEqual($property, $this->getValue($valueMin, $apiFilter)),
                     $query->lessThanOrEqual($property, $this->getValue($valueMax, $apiFilter)),
                 ]);
