@@ -20,7 +20,7 @@ class EnrichHashBase
     public function init(array &$params): void
     {
         /** @var ServerRequest $request */
-        $request = $GLOBALS['TYPO3_REQUEST'];
+        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
         if (
             $request instanceof ServerRequest
             && is_array($request->getQueryParams())
