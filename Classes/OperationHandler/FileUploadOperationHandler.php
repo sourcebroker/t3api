@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\OperationHandler;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
@@ -13,7 +14,6 @@ use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Service\FileUploadService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\ValidationService;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Resource\Exception;
 use TYPO3\CMS\Extbase\Domain\Model\File;
