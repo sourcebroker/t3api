@@ -76,9 +76,9 @@ class OpenApiBuilder
         $siteConfig = SiteService::getCurrent()->getConfiguration();
         $info = new Info();
         return $info
-            ->title($siteConfig['routeEnhancers']['T3api']['title'] ?? '')
-            ->description($siteConfig['routeEnhancers']['T3api']['description'] ?? '')
-            ->version($siteConfig['routeEnhancers']['T3api']['version'] ?? '');
+            ->title($siteConfig['routeEnhancers']['T3api']['title'] ?? null)
+            ->description($siteConfig['routeEnhancers']['T3api']['description'] ?? null)
+            ->version($siteConfig['routeEnhancers']['T3api']['version'] ?? null);
     }
 
     /**
