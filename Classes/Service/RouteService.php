@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
+use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 class RouteService implements SingletonInterface
 {
@@ -24,13 +27,20 @@ class RouteService implements SingletonInterface
      */
     public static function getFullApiBasePath(): string
     {
-        return trim(self::getDefaultLanguageBasePath() . self::getApiBasePath(), '/');
+        return trim(self::getLanguageBasePath() . self::getApiBasePath(), '/');
     }
 
     public static function getFullApiBaseUrl(): string
     {
         return rtrim((string)SiteService::getCurrent()->getBase(), '/')
             . '/' . ltrim(self::getFullApiBasePath(), '/');
+    }
+
+    public static function routeHasT3ApiResourceEnhancerQueryParam(ServerRequestInterface $request = null): bool
+    {
+        $request = $request ?? self::getRequest();
+        return $request instanceof ServerRequest && is_array($request->getQueryParams())
+            && array_key_exists(ResourceEnhancer::PARAMETER_NAME, $request->getQueryParams());
     }
 
     protected static function getApiRouteEnhancer(): array
@@ -57,8 +67,29 @@ class RouteService implements SingletonInterface
         );
     }
 
-    protected static function getDefaultLanguageBasePath(): string
+    /**
+     * We support for two cases:language set in X-Locale header
+     * 1) when request has X-Locale header with language (t3apiHeaderLanguageRequest))
+     * 2) when request has no X-Locale header and url itself stores language information
+     */
+    protected static function getLanguageBasePath(): string
     {
-        return SiteService::getCurrent()->getDefaultLanguage()->getBase()->getPath();
+        $request = self::getRequest();
+        /** @var SiteLanguage $requestLanguage */
+        $requestLanguage = $request->getAttribute('language');
+        $languagePrefix = $requestLanguage && $request->getAttribute('t3apiHeaderLanguageRequest') !== true ?
+            $requestLanguage->getBase()->getPath() :
+            SiteService::getCurrent()->getDefaultLanguage()->getBase()->getPath();
+
+        if (str_starts_with((string)$request?->getUri()->getPath(), $languagePrefix)) {
+            return $languagePrefix;
+        }
+
+        return '';
+    }
+
+    protected static function getRequest(): ServerRequestInterface
+    {
+        return $GLOBALS['TYPO3_REQUEST'];
     }
 }

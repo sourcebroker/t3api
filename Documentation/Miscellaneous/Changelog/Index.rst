@@ -12,6 +12,7 @@ Changelog
 - Protect against "&cHash empty" error when ``cacheHash.enforceValidation`` is set to ``true`` [`issue <https://github.com/sourcebroker/t3api/issues/81>`__]
 - Add testing instance for TYPO3 12, remove testing instance for TYPO3 10. Change PHP to 8.1 for testing instances.
 - [!!!] Drop TYPO3 10, TYPO3 11 on dependencies. Update dependencies to TYPO3 12.
+- Move changing language request set in header X-Locale to earlier stage, before "typo3/cms-frontend/tsfe". Add support for setting language of api request by standard language prefix instead of header X-Locale.
 
 2.0.3
 =====

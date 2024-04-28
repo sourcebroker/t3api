@@ -10,6 +10,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use SourceBroker\T3api\Dispatcher\Bootstrap;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
+use SourceBroker\T3api\Service\RouteService;
 use Throwable;
 
 /**
@@ -29,8 +30,7 @@ class T3apiRequestResolver implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (is_array($request->getQueryParams())
-            && array_key_exists(ResourceEnhancer::PARAMETER_NAME, $request->getQueryParams())) {
+        if (RouteService::routeHasT3ApiResourceEnhancerQueryParam($request)) {
             return $this->bootstrap->process($this->cleanupRequest($request));
         }
 

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Hook;
 
-use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
-use TYPO3\CMS\Core\Http\ServerRequest;
+use SourceBroker\T3api\Service\RouteService;
 
 class EnrichHashBase
 {
@@ -17,13 +16,7 @@ class EnrichHashBase
      */
     public function init(array &$params): void
     {
-        /** @var ServerRequest $request */
-        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
-        if (
-            $request instanceof ServerRequest
-            && is_array($request->getQueryParams())
-            && array_key_exists(ResourceEnhancer::PARAMETER_NAME, $request->getQueryParams())
-        ) {
+        if (RouteService::routeHasT3ApiResourceEnhancerQueryParam()) {
             $params['hashParameters']['t3api_hash_base_random'] = microtime();
         }
     }
