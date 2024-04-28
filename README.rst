@@ -7,9 +7,6 @@ TYPO3 Extension t3api
 .. image:: https://scrutinizer-ci.com/g/sourcebroker/t3api/badges/quality-score.png?b=master
    :target: https://scrutinizer-ci.com/g/sourcebroker/t3api/?branch=master
 
-.. image:: https://github.com/sourcebroker/t3api/actions/workflows/TYPO3_11.yml/badge.svg
-   :target: https://github.com/sourcebroker/t3api/actions/workflows/TYPO3_11.yml
-
 .. image:: https://github.com/sourcebroker/t3api/actions/workflows/TYPO3_12.yml/badge.svg
    :target: https://github.com/sourcebroker/t3api/actions/workflows/TYPO3_12.yml
 

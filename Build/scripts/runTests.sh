@@ -135,19 +135,16 @@ Options:
             - 13
             - 14
 
-    -p <7.4|8.0|8.1|8.2|8.3>
+    -p <8.1|8.2|8.3>
         Specifies the PHP minor version to be used
-            - 7.4 (default): use PHP 7.4
-            - 8.0: use PHP 8.0
-            - 8.1: use PHP 8.1
+            - 8.1 (default): use PHP 8.1
             - 8.2: use PHP 8.2
             - 8.3: use PHP 8.3
 
-    -t <11|12>
+    -t <12>
         Only with -s composerUpdate
         Specifies the TYPO3 core major version to be used
-            - 11 (default): use TYPO3 core v11
-            - 12: use TYPO3 core v12
+            - 12 (default): use TYPO3 core v12
 
     -e "<composer, phpunit or codeception options>"
         Only with -s functional|unit|composer
@@ -214,16 +211,16 @@ else
 fi
 TEST_SUITE=""
 DBMS="mariadb"
-PHP_VERSION="7.4"
-TYPO3_VERSION="11"
+PHP_VERSION="8.1"
+TYPO3_VERSION="12"
 PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9003
 EXTRA_TEST_OPTIONS=""
 SCRIPT_VERBOSE=0
 CGLCHECK_DRY_RUN=""
 DATABASE_DRIVER=""
-MARIADB_VERSION="10.2"
-MYSQL_VERSION="5.5"
+MARIADB_VERSION="10.3"
+MYSQL_VERSION="8.0"
 POSTGRES_VERSION="10"
 USED_XDEBUG_MODES="debug,develop"
 #@todo the $$ would add the current process id to the name, keeping as plan b
@@ -252,13 +249,13 @@ while getopts ":s:a:d:i:j:k:p:t:e:xy:z:nhuv" OPT; do
             ;;
         i)
             MARIADB_VERSION=${OPTARG}
-            if ! [[ ${MARIADB_VERSION} =~ ^(10.2|10.3|10.4|10.5|10.6|10.7)$ ]]; then
+            if ! [[ ${MARIADB_VERSION} =~ ^(10.3|10.4|10.5|10.6|10.7)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
         j)
             MYSQL_VERSION=${OPTARG}
-            if ! [[ ${MYSQL_VERSION} =~ ^(5.5|5.6|5.7|8.0)$ ]]; then
+            if ! [[ ${MYSQL_VERSION} =~ ^(8.0)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
@@ -270,13 +267,13 @@ while getopts ":s:a:d:i:j:k:p:t:e:xy:z:nhuv" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1|8.2|8.3)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.1|8.2|8.3)$ ]]; then
                 INVALID_OPTIONS+=("p ${OPTARG}")
             fi
             ;;
         t)
             TYPO3_VERSION=${OPTARG}
-            if ! [[ ${TYPO3_VERSION} =~ ^(11|12)$ ]]; then
+            if ! [[ ${TYPO3_VERSION} =~ ^(12)$ ]]; then
                 INVALID_OPTIONS+=("p ${OPTARG}")
             fi
             ;;
