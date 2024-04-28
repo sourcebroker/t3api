@@ -14,8 +14,6 @@ class EnrichHashBase
      * production environment:
      * 1. Extbase framework configuration is not loaded thus tables mapping is unknown and queries to not existing database tables may be done.
      * 2. Links generated using link handler are not build correctly.
-     *
-     * @param array $params
      */
     public function init(array &$params): void
     {

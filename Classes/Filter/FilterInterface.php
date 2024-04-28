@@ -11,10 +11,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 interface FilterInterface
 {
     /**
-     * @param string $property
      * @param mixed $values
-     * @param QueryInterface $query
-     * @param ApiFilter $apiFilter
      *
      * @return mixed
      */

@@ -13,10 +13,7 @@ use SourceBroker\T3api\Domain\Model\ApiResource;
 
 class ApiResourceFactory
 {
-    /**
-     * @var AnnotationReader
-     */
-    protected $annotationReader;
+    protected AnnotationReader $annotationReader;
 
     public function __construct()
     {
@@ -46,7 +43,7 @@ class ApiResourceFactory
     {
         $filterAnnotations = array_filter(
             $this->annotationReader->getClassAnnotations(new ReflectionClass($apiResource->getEntity())),
-            static function ($annotation) {
+            static function ($annotation): bool {
                 return $annotation instanceof ApiFilterAnnotation;
             }
         );

@@ -30,20 +30,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractDispatcher
 {
-    /**
-     * @var SerializerService
-     */
-    protected $serializerService;
+    protected SerializerService $serializerService;
 
-    /**
-     * @var ApiResourceRepository
-     */
-    protected $apiResourceRepository;
+    protected ApiResourceRepository $apiResourceRepository;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     protected SerializationContextBuilder $serializationContextBuilder;
 
@@ -67,13 +58,8 @@ abstract class AbstractDispatcher
     }
 
     /**
-     * @param RequestContext $requestContext
-     * @param Request $request
-     * @param ResponseInterface $response
-     *
-     * @throws Exception
      * @throws RouteNotFoundException
-     * @return string
+     * @throws Exception
      */
     public function processOperationByRequest(
         RequestContext $requestContext,
@@ -116,7 +102,7 @@ abstract class AbstractDispatcher
     ): string {
         $handlers = $this->getHandlersSupportingOperation($operation, $request);
 
-        if (empty($handlers)) {
+        if ($handlers === []) {
             throw new RuntimeException(
                 sprintf(
                     'Could not handle operation. Operation `%s` is unknown',
@@ -166,11 +152,11 @@ abstract class AbstractDispatcher
         );
     }
 
-    protected function callProcessors(Request $request, &$response): void
+    protected function callProcessors(Request $request, ResponseInterface $response): void
     {
         array_filter(
             Configuration::getProcessors(),
-            function (string $processorClass) use ($request, &$response) {
+            static function (string $processorClass) use ($request, &$response) {
                 if (!is_subclass_of($processorClass, ProcessorInterface::class, true)) {
                     throw new RuntimeException(
                         sprintf(
@@ -181,6 +167,7 @@ abstract class AbstractDispatcher
                         1603705384
                     );
                 }
+
                 /** @var ProcessorInterface $processor */
                 $processor = GeneralUtility::makeInstance($processorClass);
                 $processor->process($request, $response);

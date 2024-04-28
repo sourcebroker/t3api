@@ -10,8 +10,6 @@ use SourceBroker\T3api\Domain\Model\ApiFilter;
 interface OpenApiSupportingFilterInterface
 {
     /**
-     * @param ApiFilter $apiFilter
-     *
      * @return Parameter[]
      */
     public static function getOpenApiParameters(ApiFilter $apiFilter): array;

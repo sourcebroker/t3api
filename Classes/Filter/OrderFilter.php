@@ -24,8 +24,6 @@ class OrderFilter extends AbstractFilter implements OpenApiSupportingFilterInter
     ];
 
     /**
-     * @param ApiFilter $apiFilter
-     *
      * @return Parameter[]
      */
     public static function getOpenApiParameters(ApiFilter $apiFilter): array
@@ -54,7 +52,7 @@ class OrderFilter extends AbstractFilter implements OpenApiSupportingFilterInter
         $defaultDirection = $apiFilter->getStrategy()->getName();
         $direction = strtoupper($values[$property] ?: $defaultDirection);
 
-        if (empty($direction)) {
+        if ($direction === '') {
             return null;
         }
 

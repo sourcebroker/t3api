@@ -22,16 +22,37 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
+    /**
+     * @var string
+     */
     protected const PARAMETER_LATITUDE = 'lat';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_LONGITUDE = 'lng';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_RADIUS = 'radius';
+
+    /**
+     * @var int
+     */
     protected const MILES_MULTIPLIER = 3959;
+
+    /**
+     * @var int
+     */
     protected const KILOMETERS_MULTIPLIER = 6371;
+
+    /**
+     * @var int
+     */
     protected const DEFAULT_RADIUS = 100;
 
     /**
-     * @param ApiFilter $apiFilter
-     *
      * @return Parameter[]
      */
     public static function getOpenApiParameters(ApiFilter $apiFilter): array
@@ -70,20 +91,27 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
 
         $tableName = $this->getTableName($query);
         $rootAlias = 'o';
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($tableName);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($tableName);
 
         if ($this->isPropertyNested($latProperty)) {
-            $joinedProperty = $this->addJoinsForNestedProperty($latProperty, $rootAlias, $query, $queryBuilder);
-            [$latTableAlias, $latPropertyName] = $joinedProperty;
+            [$latTableAlias, $latPropertyName] = $this->addJoinsForNestedProperty(
+                $latProperty,
+                $rootAlias,
+                $query,
+                $queryBuilder
+            );
         } else {
             $latTableAlias = $rootAlias;
             $latPropertyName = $latProperty;
         }
 
         if ($this->isPropertyNested($lngProperty)) {
-            $joinedProperty = $this->addJoinsForNestedProperty($lngProperty, $rootAlias, $query, $queryBuilder);
-            [$lngTableAlias, $lngPropertyName] = $joinedProperty;
+            [$lngTableAlias, $lngPropertyName] = $this->addJoinsForNestedProperty(
+                $lngProperty,
+                $rootAlias,
+                $query,
+                $queryBuilder
+            );
         } else {
             $lngTableAlias = $rootAlias;
             $lngPropertyName = $lngProperty;
@@ -119,11 +147,8 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
     }
 
     /**
-     * @param array $values
-     * @param ApiFilter $apiFilter
-     *
-     * @throws InvalidArgumentException
      * @return array array with two elements - lat and lang
+     * @throws InvalidArgumentException
      */
     protected function getLatLangParameterValues(array $values, ApiFilter $apiFilter): array
     {
@@ -142,12 +167,6 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
         return [(float)$values[self::PARAMETER_LATITUDE], (float)$values[self::PARAMETER_LONGITUDE]];
     }
 
-    /**
-     * @param array $values
-     * @param ApiFilter $apiFilter
-     *
-     * @return float
-     */
     protected function getRadiusParameterValue(array $values, ApiFilter $apiFilter): float
     {
         if (

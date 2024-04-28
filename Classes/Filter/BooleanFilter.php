@@ -17,8 +17,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 class BooleanFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     /**
-     * @param ApiFilter $apiFilter
-     *
      * @return Parameter[]
      */
     public static function getOpenApiParameters(ApiFilter $apiFilter): array
@@ -33,8 +31,12 @@ class BooleanFilter extends AbstractFilter implements OpenApiSupportingFilterInt
     /**
      * @inheritDoc
      */
-    public function filterProperty(string $property, $values, QueryInterface $query, ApiFilter $apiFilter): ?ConstraintInterface
-    {
+    public function filterProperty(
+        string $property,
+        $values,
+        QueryInterface $query,
+        ApiFilter $apiFilter
+    ): ?ConstraintInterface {
         return $query->equals($property, ParameterUtility::toBoolean(((array)$values)[0]));
     }
 }

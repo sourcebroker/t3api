@@ -35,7 +35,7 @@ class Configuration
     {
         $items = $items ?: [];
         $items = array_map(
-            static function ($class, $priority) {
+            static function ($class, $priority): array {
                 return [
                     'className' => $class,
                     'priority' => is_numeric($priority) ? $priority : 50,
@@ -47,7 +47,7 @@ class Configuration
 
         usort(
             $items,
-            static function (array $itemA, array $itemB) {
+            static function (array $itemA, array $itemB): int {
                 return $itemB['priority'] <=> $itemA['priority'];
             }
         );

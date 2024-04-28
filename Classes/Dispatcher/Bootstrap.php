@@ -24,20 +24,11 @@ use Throwable;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class Bootstrap
- */
 class Bootstrap extends AbstractDispatcher
 {
-    /**
-     * @var ResponseInterface
-     */
-    protected $response;
+    protected ResponseInterface $response;
 
-    /**
-     * @var HttpFoundationFactory
-     */
-    protected $httpFoundationFactory;
+    protected HttpFoundationFactory $httpFoundationFactory;
 
     /**
      * Bootstrap constructor.
@@ -57,15 +48,12 @@ class Bootstrap extends AbstractDispatcher
             $eventDispatcherInterface,
         );
         $this->response = new Response('php://temp', 200, ['Content-Type' => 'application/ld+json']);
-        // TODO TYPO3 12
         $this->httpFoundationFactory = GeneralUtility::makeInstance(HttpFoundationFactory::class);
     }
 
     /**
-     * @param ServerRequestInterface $inputRequest
-     *
-     * @throws Throwable
      * @return Response
+     * @throws Throwable
      */
     public function process(ServerRequestInterface $inputRequest): ResponseInterface
     {
@@ -133,7 +121,6 @@ class Bootstrap extends AbstractDispatcher
     protected function processMainEndpoint(): string
     {
         return $this->serializerService->serialize(
-            // TODO TYPO3 12
             GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'])
         );
     }

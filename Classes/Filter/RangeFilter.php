@@ -19,15 +19,32 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
+    /**
+     * @var string
+     */
     protected const PARAMETER_BETWEEN = 'between';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_GREATER_THAN = 'gt';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_GREATER_THAN_OR_EQUAL = 'gte';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_LESS_THAN = 'lt';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_LESS_THAN_OR_EQUAL = 'lte';
 
     /**
-     * @param ApiFilter $apiFilter
-     *
      * @return Parameter[]
      */
     public static function getOpenApiParameters(ApiFilter $apiFilter): array
@@ -67,12 +84,12 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
         foreach ((array)$values as $operator => $value) {
             $constraint = $this->getConstraintForSingleItem($property, $operator, $value, $query, $apiFilter);
 
-            if ($constraint) {
+            if ($constraint instanceof ConstraintInterface) {
                 $constraints[] = $constraint;
             }
         }
 
-        if (empty($constraints)) {
+        if ($constraints === []) {
             return null;
         }
 
@@ -80,15 +97,10 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
     }
 
     /**
-     * @param string $property
-     * @param string $operator
      * @param mixed $value
-     * @param QueryInterface $query
      *
-     * @param ApiFilter $apiFilter
      * @throws InvalidQueryException
      * @throws Exception
-     * @return ConstraintInterface|null
      */
     protected function getConstraintForSingleItem(
         string $property,
@@ -123,9 +135,8 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
 
     /**
      * @param $value
-     * @param ApiFilter $apiFilter
-     * @throws Exception
      * @return DateTime|int
+     * @throws Exception
      */
     protected function getValue($value, ApiFilter $apiFilter)
     {

@@ -17,8 +17,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 class NumericFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     /**
-     * @param ApiFilter $apiFilter
-     *
      * @return Parameter[]
      */
     public static function getOpenApiParameters(ApiFilter $apiFilter): array

@@ -28,24 +28,13 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
      */
     public static $defaultArguments = [];
 
-    /**
-     * @param string $propertyName
-     *
-     * @return bool
-     */
     protected function isPropertyNested(string $propertyName): bool
     {
         return strpos($propertyName, '.') !== false;
     }
 
     /**
-     * @param string $property
-     * @param string $rootAlias
-     * @param QueryInterface $query
-     * @param QueryBuilder $queryBuilder
-     *
      * @throws UnexpectedTypeException
-     * @return array
      */
     protected function addJoinsForNestedProperty(
         string $property,
@@ -81,9 +70,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
     }
 
     /**
-     * @param string $property
-     *
-     * @return array
+     * @return array{associations: string[], field: string}
      */
     protected function splitPropertyParts(string $property): array
     {
@@ -95,13 +82,6 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
         ];
     }
 
-    /**
-     * @param string $parentAlias
-     * @param ColumnMap $columnMap
-     * @param QueryBuilder $queryBuilder
-     *
-     * @return string
-     */
     protected function addJoin(string $parentAlias, ColumnMap $columnMap, QueryBuilder $queryBuilder): string
     {
         $alias = $this->getUniqueAlias();
@@ -119,6 +99,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
                         $queryBuilder->quoteIdentifier($alias . '.uid')
                     );
                 }
+
                 break;
             case ColumnMap\Relation::HAS_MANY:
                 if ($columnMap->getParentKeyFieldName()) {
@@ -133,6 +114,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
                         true
                     );
                 }
+
                 break;
             case ColumnMap\Relation::HAS_AND_BELONGS_TO_MANY:
                 $relationalAlias = $this->getUniqueAlias('_mm');
@@ -168,21 +150,13 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
         return $alias;
     }
 
-    /**
-     * @param string $suffix
-     *
-     * @return string
-     */
     protected function getUniqueAlias(string $suffix = ''): string
     {
         return uniqid('alias_', false) . $suffix;
     }
 
     /**
-     * @param QueryInterface $query
      * @throws RuntimeException
-     *
-     * @return string
      */
     protected function getTableName(QueryInterface $query): string
     {
