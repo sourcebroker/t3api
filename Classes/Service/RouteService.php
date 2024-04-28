@@ -6,6 +6,7 @@ namespace SourceBroker\T3api\Service;
 use RuntimeException;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 class RouteService implements SingletonInterface
 {
@@ -23,7 +24,7 @@ class RouteService implements SingletonInterface
      */
     public static function getFullApiBasePath(): string
     {
-        return trim(self::getDefaultLanguageBasePath() . self::getApiBasePath(), '/');
+        return trim(self::getLanguageBasePath() . self::getApiBasePath(), '/');
     }
 
     public static function getFullApiBaseUrl(): string
@@ -56,8 +57,21 @@ class RouteService implements SingletonInterface
         );
     }
 
-    protected static function getDefaultLanguageBasePath(): string
+    protected static function getLanguageBasePath(): string
     {
-        return SiteService::getCurrent()->getDefaultLanguage()->getBase()->getPath();
+        // Backward compatibility for languageBasePaths
+        $uriPath = $GLOBALS['TYPO3_REQUEST'] ? (string)$GLOBALS['TYPO3_REQUEST']->getUri()->getPath() : '';
+        /** @var SiteLanguage $requestLanguage */
+        $requestLanguage = $GLOBALS['TYPO3_REQUEST']->getAttribute('language');
+        $t3apiHeaderLanguage = $GLOBALS['TYPO3_REQUEST']->getAttribute('t3apiLanguageUid');
+        $languagePrefix = $requestLanguage && $t3apiHeaderLanguage === null ?
+            $requestLanguage->getBase()->getPath() :
+            SiteService::getCurrent()->getDefaultLanguage()->getBase()->getPath();
+
+        if (strpos($uriPath, $languagePrefix) === 0) {
+            return $languagePrefix;
+        }
+
+        return '';
     }
 }

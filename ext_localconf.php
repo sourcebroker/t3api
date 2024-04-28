@@ -22,8 +22,8 @@ call_user_func(
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['processors'] = [
-            \SourceBroker\T3api\Processor\CorsProcessor::class => 100,
-            \SourceBroker\T3api\Processor\LanguageProcessor::class => 200,
+            \SourceBroker\T3api\Processor\CorsProcessor::class => 100
+            #\SourceBroker\T3api\Processor\LanguageProcessor::class => 200,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['apiResourcePathProviders'] = [
