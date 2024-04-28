@@ -7,11 +7,11 @@ return [
         'sourcebroker/t3api/prepare-api-request' => [
             'target' => \SourceBroker\T3api\Middleware\T3apiRequestLanguageResolver::class,
             'after' => [
-                'typo3/cms-frontend/site'
+                'typo3/cms-frontend/site',
             ],
             'before' => [
-                'typo3/cms-frontend/tsfe'
-            ]
+                'typo3/cms-frontend/tsfe',
+            ],
         ],
         'sourcebroker/t3api/process-api-request' => [
             'target' => \SourceBroker\T3api\Middleware\T3apiRequestResolver::class,

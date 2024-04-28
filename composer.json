@@ -65,7 +65,8 @@
 	"scripts": {
 		"cs": "php ./.Build/bin/php-cs-fixer fix  --dry-run -v --config ./Build/php-cs-fixer/php-cs-fixer.php ./",
 		"csfix": "php ./.Build/bin/php-cs-fixer fix  -v --config ./Build/php-cs-fixer/php-cs-fixer.php ./",
-		"t3doc": "rm -rf ./Documentation-GENERATED-temp && docker-compose run --rm t3docmake && open \"Documentation-GENERATED-temp/Result/project/0.0.0/Index.html\"",
+		"docs": "ddev docs",
+		"docs-watch": "ddev docs watch",
 		"next-patch": "./Resources/Private/Php/nextVersion.php",
 		"next-minor": "./Resources/Private/Php/nextVersion.php --version-type=minor",
 		"next-major": "./Resources/Private/Php/nextVersion.php --version-type=major"

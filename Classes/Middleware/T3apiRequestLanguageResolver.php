@@ -43,6 +43,6 @@ class T3apiRequestLanguageResolver implements MiddlewareInterface
     protected function getT3apiLanguageUid(ServerRequestInterface $request): ?int
     {
         $languageHeader = $request->getHeader($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']);
-        return (!empty($languageHeader) ? (int)array_shift($languageHeader) : null);
+        return !empty($languageHeader) ? (int)array_shift($languageHeader) : null;
     }
 }
