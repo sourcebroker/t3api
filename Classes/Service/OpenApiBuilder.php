@@ -8,6 +8,7 @@ use DateTime;
 use Exception;
 use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Components;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\Info;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Operation;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
@@ -63,10 +64,21 @@ class OpenApiBuilder
 
         return OpenApi::create()
             ->openapi(OpenApi::OPENAPI_3_0_2)
+            ->info(self::getInfo())
             ->servers(...self::getServers())
             ->tags(...self::getTags($apiResources))
             ->paths(...self::getPaths($apiResources))
             ->components(self::$components);
+    }
+
+    private static function getInfo(): Info
+    {
+        $siteConfig = SiteService::getCurrent()->getConfiguration();
+        $info = new Info();
+        return $info
+            ->title($siteConfig['routeEnhancers']['T3api']['title'] ?? '')
+            ->description($siteConfig['routeEnhancers']['T3api']['description'] ?? '')
+            ->version($siteConfig['routeEnhancers']['T3api']['version'] ?? '');
     }
 
     /**
@@ -229,9 +241,11 @@ class OpenApiBuilder
 
             /** @var Parameter $filterParameter */
             foreach ($filterParameters as $filterParameter) {
-                $parameters[] = $filterParameter->in(Parameter::IN_QUERY);
+                $parameters[$filterParameter->name] = $filterParameter->in(Parameter::IN_QUERY);
             }
         }
+
+        sort($parameters);
 
         return $parameters;
     }
