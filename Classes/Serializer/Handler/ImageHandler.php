@@ -78,14 +78,22 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
             $fileResource = $fileReference->getOriginalResource();
         }
 
+        if ($fileResource->hasProperty('crop') && $fileResource->getProperty('crop')) {
+            $cropString = $fileResource->getProperty('crop');
+        }
+        $cropVariantCollection = CropVariantCollection::create((string)$cropString);
+        $cropVariant = $type['params'][4] ?: 'default';
+        $cropArea = $cropVariantCollection->getCropArea($cropVariant);
+
         $file = $fileResource->getOriginalFile();
         $processedFile = $file->process(ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, [
             'width' => $type['params'][0] ?? '',
             'height' => $type['params'][1] ?? '',
             'maxWidth' => $type['params'][2] ?? '',
             'maxHeight' => $type['params'][3] ?? '',
+            'crop' => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($fileResource),
         ]);
-
+        
         return $this->fileReferenceService->getUrlFromResource($processedFile, $context);
     }
 }
