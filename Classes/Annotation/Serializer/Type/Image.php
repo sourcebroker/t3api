@@ -31,7 +31,7 @@ class Image implements TypeInterface
      * @var mixed
      */
     public $maxHeight;
-    
+
     /**
      * @var string
      */
