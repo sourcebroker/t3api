@@ -8,9 +8,11 @@ use InvalidArgumentException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use SourceBroker\T3api\Service\UrlService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\LinkHandling\LinkService;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Typolink\LinkFactory;
+use TYPO3\CMS\Frontend\Typolink\UnableToLinkException;
 
 /**
  * Class RecordUriHandler
@@ -23,6 +25,12 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
      * @var string[]
      */
     protected static $supportedTypes = [self::TYPE];
+
+    public function __construct(
+        public readonly LinkFactory $linkFactory,
+        public readonly LinkService $linkService,
+        public readonly ContentObjectRenderer $contentObjectRenderer
+    ) {}
 
     /**
      * @param SerializationVisitorInterface $visitor
@@ -48,27 +56,25 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
             );
         }
 
-        return UrlService::forceAbsoluteUrl(
-            $this->getContentObjectRenderer()->getTypoLink_URL(sprintf(
-                't3://record?identifier=%s&uid=%s',
-                $type['params'][0],
-                $entity->getUid()
-            )),
-            $context->getAttribute('TYPO3_SITE_URL')
-        );
-    }
-
-    /**
-     * @return ContentObjectRenderer
-     */
-    protected function getContentObjectRenderer(): ContentObjectRenderer
-    {
-        static $contentObjectRenderer;
-
-        if (!$contentObjectRenderer instanceof ContentObjectRenderer) {
-            $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+        try {
+            $url = $this->linkFactory->createUri(
+                sprintf('t3://record?identifier=%s&uid=%s', $type['params'][0], $entity->getUid()),
+                $this->contentObjectRenderer
+            )->getUrl();
+        } catch (UnableToLinkException $e) {
+            trigger_error(
+                $e->getMessage(),
+                E_USER_WARNING
+            );
         }
 
-        return $contentObjectRenderer;
+        if (empty($url)) {
+            return '';
+        }
+
+        return UrlService::forceAbsoluteUrl(
+            $url,
+            $context->getAttribute('TYPO3_SITE_URL')
+        );
     }
 }

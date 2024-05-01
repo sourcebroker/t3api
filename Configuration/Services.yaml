@@ -82,9 +82,17 @@ services:
     public: true
 
   SourceBroker\T3api\Serializer\Handler\RecordUriHandler:
+    arguments:
+      $linkFactory: '@TYPO3\CMS\Frontend\Typolink\LinkFactory'
+      $linkService: '@TYPO3\CMS\Core\LinkHandling\LinkService'
+      $contentObjectRenderer: '@TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer'
     public: true
 
   SourceBroker\T3api\Serializer\Handler\TypolinkHandler:
+    arguments:
+      $linkFactory: '@TYPO3\CMS\Frontend\Typolink\LinkFactory'
+      $linkService: '@TYPO3\CMS\Core\LinkHandling\LinkService'
+      $contentObjectRenderer: '@TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer'
     public: true
 
   SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler:

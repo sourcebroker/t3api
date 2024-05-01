@@ -111,7 +111,14 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                 $fileRenderer->render($originalFile, 1, 1),
                 $match
             )) {
-                $out['urlEmbed'] = UrlService::forceAbsoluteUrl($match[1], $context->getAttribute('TYPO3_SITE_URL'));
+                if ($match[1] === '') {
+                    $out['urlEmbed'] = '';
+                } else {
+                    $out['urlEmbed'] = UrlService::forceAbsoluteUrl(
+                        $match[1],
+                        $context->getAttribute('TYPO3_SITE_URL')
+                    );
+                }
             }
         }
 
