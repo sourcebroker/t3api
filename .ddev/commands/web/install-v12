@@ -23,7 +23,7 @@ composer config repositories.$EXTENSION_KEY path ../$EXTENSION_KEY --working-dir
 composer config --no-interaction allow-plugins.typo3/cms-composer-installers true --working-dir $BASE_PATH
 composer config --no-interaction allow-plugins.typo3/class-alias-loader true --working-dir $BASE_PATH
 composer req typo3/minimal:'^12.4' typo3/cms-recycler:'^12.4' typo3/cms-tstemplate:'^12.4' typo3/cms-info:'^12.4' typo3/cms-lowlevel:'^12.4' \
-         helhum/typo3-console:'^8.1' \
+         helhum/typo3-console:'^8.1' typo3/cms-rte-ckeditor:'^12.4' \
          jigal/t3adminer:'^12.0' georgringer/news:'^11.3.0' \
          sourcebroker/t3api:'@dev' sourcebroker/t3apinews:'v12.x-dev' \
          --no-progress --no-interaction --working-dir $BASE_PATH
