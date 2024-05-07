@@ -14,6 +14,7 @@ use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Service\FileReferenceService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\UrlService;
+use TYPO3\CMS\Core\LinkHandling\LinkService;
 use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
 use TYPO3\CMS\Core\Resource\Rendering\RendererRegistry;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -25,6 +26,8 @@ use TYPO3\CMS\Extbase\Error\Error;
 use TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Typolink\LinkFactory;
 
 /**
  * Class FileReferenceHandler
@@ -38,37 +41,15 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
      */
     protected static $supportedTypes = [self::TYPE];
 
-    /**
-     * @var ResourceFactory
-     */
-    protected $resourceFactory;
-
-    /**
-     * @var PersistenceManager
-     */
-    protected $persistenceManager;
-
-    /**
-     * @var SerializerService
-     */
-    protected $serializerService;
-
-    /**
-     * @var FileReferenceService
-     */
-    private $fileReferenceService;
-
     public function __construct(
-        ResourceFactory $resourceFactory,
-        PersistenceManager $persistenceManager,
-        SerializerService $serializerService,
-        FileReferenceService $fileReferenceService
-    ) {
-        $this->resourceFactory = $resourceFactory;
-        $this->persistenceManager = $persistenceManager;
-        $this->serializerService = $serializerService;
-        $this->fileReferenceService = $fileReferenceService;
-    }
+        public readonly ResourceFactory $resourceFactory,
+        public readonly PersistenceManager $persistenceManager,
+        public readonly SerializerService $serializerService,
+        public readonly FileReferenceService $fileReferenceService,
+        public readonly LinkFactory $linkFactory,
+        public readonly LinkService $linkService,
+        public readonly ContentObjectRenderer $contentObjectRenderer
+    ) {}
 
     /**
      * @param SerializationVisitorInterface $visitor
@@ -85,43 +66,46 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         $fileReference,
         array $type,
         SerializationContext $context
-    ): array {
-        /** @var Typo3FileReference $originalResource */
-        $originalResource = $fileReference instanceof ExtbaseFileReference
-            ? $fileReference->getOriginalResource()
-            : $fileReference;
-        $originalFile = $originalResource->getOriginalFile();
+    ): ?array {
+        $out = null;
+        try {
+            /** @var Typo3FileReference $originalResource */
+            $originalResource = $fileReference instanceof ExtbaseFileReference
+                ? $fileReference->getOriginalResource()
+                : $fileReference;
+            $out['url'] = $this->fileReferenceService->getUrlFromResource($originalResource, $context);
+            $out['uid'] = $originalResource->getUid();
 
-        $out = [
-            'uid' => $fileReference->getUid(),
-            'url' => $this->fileReferenceService->getUrlFromResource($originalResource, $context),
-            'file' => [
-                'uid' => $originalFile->getUid(),
-                'name' => $originalFile->getName(),
-                'mimeType' => $originalFile->getMimeType(),
-                'size' => $originalFile->getSize(),
-            ],
-        ];
+            $originalFile = $originalResource->getOriginalFile();
+            $out['file']['uid'] = $originalFile->getUid();
+            $out['file']['name'] = $originalFile->getName();
+            $out['file']['mimeType'] = $originalFile->getMimeType();
+            $out['file']['size'] = $originalFile->getSize();
 
-        // TODO: move to some signal/slot
-        if (preg_match('#video/.*#', $originalFile->getMimeType())) {
-            $fileRenderer = GeneralUtility::makeInstance(RendererRegistry::class)->getRenderer($originalFile);
-            if ($fileRenderer !== null && preg_match(
-                '/src="([^"]+)"/',
-                $fileRenderer->render($originalFile, 1, 1),
-                $match
-            )) {
-                if ($match[1] === '') {
-                    $out['urlEmbed'] = '';
-                } else {
-                    $out['urlEmbed'] = UrlService::forceAbsoluteUrl(
-                        $match[1],
-                        $context->getAttribute('TYPO3_SITE_URL')
-                    );
+            if (preg_match('#video/.*#', $originalFile->getMimeType())) {
+                $fileRenderer = GeneralUtility::makeInstance(RendererRegistry::class)->getRenderer($originalFile);
+                if ($fileRenderer !== null && preg_match(
+                    '/src="([^"]+)"/',
+                    $fileRenderer->render($originalFile, 1, 1),
+                    $match
+                )) {
+                    if ($match[1] === '') {
+                        $out['urlEmbed'] = '';
+                    } else {
+                        $out['urlEmbed'] = UrlService::forceAbsoluteUrl(
+                            $match[1],
+                            $context->getAttribute('TYPO3_SITE_URL')
+                        );
+                    }
                 }
             }
-        }
 
+        } catch (\Throwable $e) {
+            trigger_error(
+                $e->getMessage(),
+                E_USER_WARNING
+            );
+        }
         return $out;
     }
 
@@ -130,8 +114,8 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
      * @param mixed $data
      * @param array $type
      * @param DeserializationContext $context
-     * @throws ValidationException
      * @return mixed|void
+     * @throws ValidationException
      */
     public function deserialize(
         DeserializationVisitorInterface $visitor,
@@ -181,8 +165,8 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
      * @param array $data
      * @param string $type
      * @param DeserializationContext $context
-     * @throws ValidationException
      * @return ExtbaseFileReference
+     * @throws ValidationException
      */
     protected function createSysFileReference(
         array $data,

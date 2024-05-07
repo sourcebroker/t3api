@@ -70,31 +70,38 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
         array $type,
         SerializationContext $context
     ): ?string {
-        if (is_int($fileReference)) {
-            $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
-            $fileResource = $fileRepository->findFileReferenceByUid($fileReference);
-        } else {
-            $fileResource = $fileReference->getOriginalResource();
+        $processedFileUrl = null;
+        try {
+            if (is_int($fileReference)) {
+                $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
+                $fileResource = $fileRepository->findFileReferenceByUid($fileReference);
+            } else {
+                $fileResource = $fileReference->getOriginalResource();
+            }
+
+            $file = $fileResource->getOriginalFile();
+            $processedFile = $file->process(ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, [
+                'width' => $type['params'][0] ?? '',
+                'height' => $type['params'][1] ?? '',
+                'maxWidth' => $type['params'][2] ?? '',
+                'maxHeight' => $type['params'][3] ?? '',
+                'crop' => $this->getCropArea($fileResource, $type['params'][4] ?? 'default'),
+            ]);
+            $processedFileUrl = $this->fileReferenceService->getUrlFromResource($processedFile, $context);
+        } catch (\Throwable $e) {
+            trigger_error(
+                $e->getMessage(),
+                E_USER_WARNING
+            );
         }
-
-        $file = $fileResource->getOriginalFile();
-        $processedFile = $file->process(ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, [
-            'width' => $type['params'][0] ?? '',
-            'height' => $type['params'][1] ?? '',
-            'maxWidth' => $type['params'][2] ?? '',
-            'maxHeight' => $type['params'][3] ?? '',
-            'crop' => $this->getCropArea($fileResource, $type),
-        ]);
-
-        return $this->fileReferenceService->getUrlFromResource($processedFile, $context);
+        return $processedFileUrl;
     }
 
-    protected function getCropArea($fileResource, array $type): ?Area
+    protected function getCropArea($fileResource, string $cropVariant): ?Area
     {
         if ($fileResource->hasProperty('crop') && $fileResource->getProperty('crop')) {
             $cropString = $fileResource->getProperty('crop');
             $cropVariantCollection = CropVariantCollection::create((string)$cropString);
-            $cropVariant = $type['params'][4] ?? 'default';
             $cropArea = $cropVariantCollection->getCropArea($cropVariant);
             return $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($fileResource);
         }
