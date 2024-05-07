@@ -13,6 +13,7 @@ Changelog
 - Add testing instance for TYPO3 12, remove testing instance for TYPO3 10. Change PHP to 8.1 for testing instances.
 - [!!!] Drop TYPO3 10, TYPO3 11 on dependencies. Update dependencies to TYPO3 12.
 - Move changing language request set in header X-Locale to earlier stage, before "typo3/cms-frontend/tsfe". Add support for setting language of api request by standard language prefix instead of header X-Locale. [`commit <https://github.com/sourcebroker/t3api/commit/c36be252>`__]
+- Prevent FileReferenceHandler and ImageHandler from throwing error on problems with processing, missing file etc. [`commit <https://github.com/sourcebroker/t3api/commit/b2f4c63a>`__]
 
 2.0.3
 =====
