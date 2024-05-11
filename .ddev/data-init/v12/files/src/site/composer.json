@@ -1,0 +1,25 @@
+{
+  "name": "v/site",
+  "description": "T3api testing",
+  "license": "GPL-2.0-or-later",
+  "type": "typo3-cms-extension",
+  "authors": [
+    {
+      "name": "",
+      "email": "no-email@given.com"
+    }
+  ],
+  "suggest": {},
+  "conflict": {},
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "site"
+    }
+  },
+  "version": "1.0.0",
+  "autoload": {
+    "psr-4": {
+      "V\\Site\\": "Classes/"
+    }
+  }
+}
