@@ -13,12 +13,16 @@ DATABASE=database_$VERSION
 
 rm -rf $BASE_PATH
 
-mkdir -p $BASE_PATH/src/$EXTENSION_KEY
+exclusions=(".*" "Documentation" "Documentation-GENERATED-temp" "var")
+mkdir -p "$BASE_PATH/src/$EXTENSION_KEY"
 for item in /var/www/html/*; do
     base_name=$(basename "$item")
-    if [[ $base_name != .* ]]; then
-        ln -sr "$item" "$BASE_PATH/src/$EXTENSION_KEY/$base_name"
-    fi
+    for exclusion in "${exclusions[@]}"; do
+        if [[ $base_name == "$exclusion" ]]; then
+            continue 2
+        fi
+    done
+    ln -sr "$item" "$BASE_PATH/src/$EXTENSION_KEY/$base_name"
 done
 
 mysql -uroot -proot -e "DROP DATABASE IF EXISTS $DATABASE"
