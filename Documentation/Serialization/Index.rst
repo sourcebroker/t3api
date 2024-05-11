@@ -17,3 +17,4 @@ Serialization
    Subscribers/Index
    YamlMetadata/Index
    Customization/Index
+   Exceptions/Index

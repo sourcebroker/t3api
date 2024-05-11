@@ -34,17 +34,35 @@ class AccessorStrategy implements AccessorStrategyInterface
      */
     public function getValue(object $object, PropertyMetadata $metadata, SerializationContext $context)
     {
-        if ($metadata instanceof ExpressionPropertyMetadata) {
-            $variables = ['object' => $object, 'context' => $context, 'property_metadata' => $metadata];
+        try {
+            if ($metadata instanceof ExpressionPropertyMetadata) {
+                $variables = ['object' => $object, 'context' => $context, 'property_metadata' => $metadata];
+                return $this->evaluator->evaluate((string)($metadata->expression), $variables);
+            }
 
-            return $this->evaluator->evaluate((string)($metadata->expression), $variables);
+            if ($metadata->getter === null) {
+                return ObjectAccess::getProperty($object, $metadata->name);
+            }
+            return $object->{$metadata->getter}();
+
+        } catch (\Exception $exception) {
+            $exclusionForExceptions = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializer']['exclusionForExceptionsInAccessorStrategyGetValue'];
+            foreach ($exclusionForExceptions as $objectClass => $exceptionClasses) {
+                if ($object instanceof $objectClass) {
+                    if (in_array('*', $exceptionClasses, true)) {
+                        trigger_error($exception->getMessage(), E_USER_WARNING);
+                        return null;
+                    }
+                    foreach ($exceptionClasses as $exceptionClass) {
+                        if ($exception instanceof $exceptionClass) {
+                            trigger_error($exception->getMessage(), E_USER_WARNING);
+                            return null;
+                        }
+                    }
+                }
+            }
+            throw $exception;
         }
-
-        if ($metadata->getter === null) {
-            return ObjectAccess::getProperty($object, $metadata->name, false);
-        }
-
-        return $object->{$metadata->getter}();
     }
 
     /**

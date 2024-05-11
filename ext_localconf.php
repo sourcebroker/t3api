@@ -104,6 +104,17 @@ call_user_func(
             ];
         }
 
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializer']['exclusionForExceptionsInAccessorStrategyGetValue'] = [
+            TYPO3\CMS\Core\Resource\FileReference::class => [
+                \TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException::class,
+                \UnexpectedValueException::class,
+            ],
+            TYPO3\CMS\Extbase\Domain\Model\FileReference::class => [
+                \TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException::class,
+                \UnexpectedValueException::class,
+            ],
+        ];
+
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['t3api_clearcache'] =
             \SourceBroker\T3api\Service\SerializerService::class . '->clearCache';
 
