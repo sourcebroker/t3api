@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Annotation;
 
-use InvalidArgumentException;
 use SourceBroker\T3api\Filter\FilterInterface;
 
 /**
@@ -40,7 +39,7 @@ class ApiFilter
     public function __construct($options = [])
     {
         if (!is_string($options['value'] ?? null)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf('`%s` Annotation needs a value representing the filter class.', self::class),
                 1581881033567
             );
@@ -49,7 +48,7 @@ class ApiFilter
         $filterClass = $options['value'];
 
         if (!is_a($filterClass, FilterInterface::class, true)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'The filter class `%s` does not extends `%s`.%s',
                     $options['value'],

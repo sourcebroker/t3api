@@ -9,7 +9,6 @@ use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
-use RuntimeException;
 use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Service\FileReferenceService;
 use SourceBroker\T3api\Service\SerializerService;
@@ -100,7 +99,6 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                     }
                 }
             }
-
         } catch (\Exception $e) {
             trigger_error(
                 $e->getMessage(),
@@ -125,15 +123,15 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         DeserializationContext $context
     ) {
         if ($type['name'] !== self::TYPE) {
-            throw new RuntimeException(sprintf('`%s` is unknown type.', $type['name']), 1577534783745);
+            throw new \RuntimeException(sprintf('`%s` is unknown type.', $type['name']), 1577534783745);
         }
 
         if (empty($type['params']['targetType'])) {
-            throw new RuntimeException('`targetType` is required parameter.', 1577534803669);
+            throw new \RuntimeException('`targetType` is required parameter.', 1577534803669);
         }
 
         if (!is_subclass_of($type['params']['targetType'], AbstractFileFolder::class)) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 sprintf('Has to be an instance of `%s` to be processed', AbstractFileFolder::class),
                 1577534838461
             );

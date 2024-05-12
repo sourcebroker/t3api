@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
 use Psr\Http\Message\ServerRequestInterface;
-use RuntimeException;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -56,7 +55,7 @@ class RouteService implements SingletonInterface
             return $routeEnhancer;
         }
 
-        throw new RuntimeException(
+        throw new \RuntimeException(
             sprintf(
                 'Route enhancer `%s` is not defined. You need to add it to your site configuration first. See example configuration in PHP doc of %s.',
                 ResourceEnhancer::ENHANCER_NAME,

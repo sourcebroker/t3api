@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
-use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Model\UploadSettings;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -55,12 +54,12 @@ class FileUploadService implements SingletonInterface
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     protected function verifyFileExtension(UploadSettings $uploadSettings, UploadedFile $uploadedFile): void
     {
         if (!GeneralUtility::makeInstance(FileNameValidator::class)->isValid($uploadedFile->getClientOriginalName())) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 'Uploading files with PHP file extensions is not allowed!',
                 1576999829435
             );
@@ -73,7 +72,7 @@ class FileUploadService implements SingletonInterface
                 $uploadSettings->getAllowedFileExtensions(),
                 true
             )) {
-                throw new InvalidArgumentException(
+                throw new \InvalidArgumentException(
                     sprintf(
                         'File extension `%s` is not allowed. Allowed file extensions are: `%s`',
                         strtolower($filePathInfo['extension']),
@@ -107,7 +106,7 @@ class FileUploadService implements SingletonInterface
             );
 
             if (!$resource instanceof ResourceStorage) {
-                throw new InvalidArgumentException(
+                throw new \InvalidArgumentException(
                     sprintf('Invalid upload path (`%s`). Storage does not exist?', $uploadSettings->getFolder()),
                     1577262016243
                 );
@@ -132,7 +131,7 @@ class FileUploadService implements SingletonInterface
         }
 
         if (!$uploadFolder instanceof Folder) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Can not upload - `%s` is not a folder and could not create it.',
                     $uploadSettings->getFolder()
@@ -152,14 +151,14 @@ class FileUploadService implements SingletonInterface
         $replacements['extension'] = $fileExtension ?? '';
         $replacements['extensionWithDot'] = $fileExtension ? '.' . $fileExtension : '';
 
-        if (strpos($uploadSettings->getFilenameMask(), '[contentHash]') !== false) {
+        if (str_contains($uploadSettings->getFilenameMask(), '[contentHash]')) {
             $replacements['contentHash'] = hash_file(
                 $uploadSettings->getContentHashAlgorithm(),
                 $uploadedFile->getPathname()
             );
         }
 
-        if (strpos($uploadSettings->getFilenameMask(), '[filenameHash]') !== false) {
+        if (str_contains($uploadSettings->getFilenameMask(), '[filenameHash]')) {
             $replacements['filenameHash'] = hash(
                 $uploadSettings->getFilenameHashAlgorithm(),
                 $uploadedFile->getClientOriginalName()

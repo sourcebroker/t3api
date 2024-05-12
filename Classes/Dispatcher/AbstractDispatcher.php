@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Dispatcher;
 
-use Exception;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
@@ -59,7 +57,7 @@ abstract class AbstractDispatcher
 
     /**
      * @throws RouteNotFoundException
-     * @throws Exception
+     * @throws \Exception
      */
     public function processOperationByRequest(
         RequestContext $requestContext,
@@ -103,7 +101,7 @@ abstract class AbstractDispatcher
         $handlers = $this->getHandlersSupportingOperation($operation, $request);
 
         if ($handlers === []) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 sprintf(
                     'Could not handle operation. Operation `%s` is unknown',
                     get_class($operation)
@@ -137,7 +135,7 @@ abstract class AbstractDispatcher
             Configuration::getOperationHandlers(),
             static function (string $operationHandlerClass) use ($operation, $request) {
                 if (!is_subclass_of($operationHandlerClass, OperationHandlerInterface::class, true)) {
-                    throw new RuntimeException(
+                    throw new \RuntimeException(
                         sprintf(
                             'Operation handler `%s` needs to be an instance of `%s`',
                             $operationHandlerClass,
@@ -158,7 +156,7 @@ abstract class AbstractDispatcher
             Configuration::getProcessors(),
             static function (string $processorClass) use ($request, &$response) {
                 if (!is_subclass_of($processorClass, ProcessorInterface::class, true)) {
-                    throw new RuntimeException(
+                    throw new \RuntimeException(
                         sprintf(
                             'Process `%s` needs to be an instance of `%s`',
                             $processorClass,

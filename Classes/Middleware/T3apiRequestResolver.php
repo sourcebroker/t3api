@@ -11,7 +11,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 use SourceBroker\T3api\Dispatcher\Bootstrap;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use SourceBroker\T3api\Service\RouteService;
-use Throwable;
 
 /**
  * Class T3apiRequestResolver
@@ -26,7 +25,7 @@ class T3apiRequestResolver implements MiddlewareInterface
     }
 
     /**
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

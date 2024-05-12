@@ -7,7 +7,6 @@ namespace SourceBroker\T3api\Filter;
 use Doctrine\DBAL\FetchMode;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
-use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -148,12 +147,12 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
 
     /**
      * @return array array with two elements - lat and lang
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     protected function getLatLangParameterValues(array $values, ApiFilter $apiFilter): array
     {
         if (!isset($values[self::PARAMETER_LATITUDE], $values[self::PARAMETER_LONGITUDE])) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Parameters `%s[%s]` and %s[%s] are required to use distance filter',
                     $apiFilter->getParameterName(),

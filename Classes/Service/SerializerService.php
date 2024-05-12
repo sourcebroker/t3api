@@ -24,7 +24,6 @@ use JMS\Serializer\Type\Parser;
 use Metadata\Cache\FileCache;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
-use RuntimeException;
 use SourceBroker\T3api\Serializer\Accessor\AccessorStrategy;
 use SourceBroker\T3api\Serializer\Construction\ObjectConstructorChain;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
@@ -167,7 +166,7 @@ class SerializerService implements SingletonInterface
     }
 
     /**
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected static function getAnnotationReader(): Reader
     {

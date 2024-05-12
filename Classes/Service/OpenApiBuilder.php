@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
-use DateTime;
 use Exception;
 use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException as OasInvalidArgumentException;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Components;
@@ -22,7 +21,6 @@ use GoldSpecDigital\ObjectOrientedOAS\OpenApi;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MetadataFactoryInterface;
-use RuntimeException;
 use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
@@ -186,7 +184,7 @@ class OpenApiBuilder
      */
     protected static function getPathParametersForOperation(OperationInterface $operation): array
     {
-        if (!$operation instanceof ItemOperation || strpos($operation->getPath(), '{id}') === false) {
+        if (!$operation instanceof ItemOperation || !str_contains($operation->getPath(), '{id}')) {
             return [];
         }
 
@@ -344,7 +342,7 @@ class OpenApiBuilder
     }
 
     /**
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected static function setComponentsSchema(string $name, string $class, string $mode): void
     {
@@ -367,13 +365,13 @@ class OpenApiBuilder
             $metadata = self::getMetadataFactory()->getMetadataForClass($class);
 
             if ($metadata === null) {
-                throw new RuntimeException(
+                throw new \RuntimeException(
                     sprintf('Could not generate metadata for class `%s`', $class),
                     1577637116148
                 );
             }
-        } catch (Exception $exception) {
-            throw new RuntimeException(
+        } catch (\Exception $exception) {
+            throw new \RuntimeException(
                 sprintf('An error occurred while generating metadata for class `%s`', $class),
                 1577637267693,
                 $exception
@@ -436,10 +434,10 @@ class OpenApiBuilder
     {
         if (is_a($type, ObjectStorage::class, true) && !empty($params[0]['name'])) {
             $schema = Schema::array()->items(self::getPropertySchemaFromPropertyType($params[0]['name'], $mode));
-        } elseif (is_a($type, DateTime::class, true)) {
+        } elseif (is_a($type, \DateTime::class, true)) {
             try {
-                $schema = Schema::string()->example((new DateTime())->format(PHP_VERSION_ID >= 70300 ? DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP'));
-            } catch (Exception $e) {
+                $schema = Schema::string()->example((new \DateTime())->format(PHP_VERSION_ID >= 70300 ? \DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP'));
+            } catch (\Exception $e) {
                 // no chance exception will occur - catch it only to avoid IDE's complaints
             }
         } elseif (class_exists($type)) {

@@ -44,7 +44,6 @@ class AccessorStrategy implements AccessorStrategyInterface
                 return ObjectAccess::getProperty($object, $metadata->name);
             }
             return $object->{$metadata->getter}();
-
         } catch (\Exception $exception) {
             $exclusionForExceptions = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializer']['exclusionForExceptionsInAccessorStrategyGetValue'];
             foreach ($exclusionForExceptions as $objectClass => $exceptionClasses) {

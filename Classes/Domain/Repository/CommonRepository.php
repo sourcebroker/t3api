@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Domain\Repository;
 
-use RuntimeException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Filter\FilterInterface;
@@ -222,7 +221,7 @@ class CommonRepository
             && $this->defaultQuerySettings->getRespectStoragePage()
             && !in_array($object->getPid(), $this->defaultQuerySettings->getStoragePageIds(), true)
         ) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 sprintf(
                     '`%d` is not allowed storage pid for %s API resource',
                     $object->getPid(),

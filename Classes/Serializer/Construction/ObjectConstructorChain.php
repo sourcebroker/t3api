@@ -8,7 +8,6 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
-use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -52,7 +51,7 @@ class ObjectConstructorChain implements ObjectConstructorInterface
             }
         }
 
-        throw new RuntimeException(sprintf('Could not construct object `%s`', $metadata->name), 1577822761813);
+        throw new \RuntimeException(sprintf('Could not construct object `%s`', $metadata->name), 1577822761813);
     }
 
     /**

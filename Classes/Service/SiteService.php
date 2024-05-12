@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
-use RuntimeException;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
@@ -27,7 +26,7 @@ class SiteService
         }
 
         if (!$site instanceof Site) {
-            throw new RuntimeException('Could not determine current site', 1604259480589);
+            throw new \RuntimeException('Could not determine current site', 1604259480589);
         }
 
         return $site;

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Serializer\Handler;
 
-use InvalidArgumentException;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
@@ -69,7 +68,7 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
         }
 
         if (!is_array($data)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Data of type `%s` can not be converted to %s in path `%s`',
                     gettype($data),

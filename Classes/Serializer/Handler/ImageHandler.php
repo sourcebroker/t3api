@@ -7,7 +7,6 @@ namespace SourceBroker\T3api\Serializer\Handler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use SourceBroker\T3api\Service\FileReferenceService;
-use Traversable;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\FileRepository;
@@ -57,7 +56,7 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
                     function ($fileReference) use ($type, $context) {
                         return $this->processSingleImage($fileReference, $type, $context);
                     },
-                    $fileReference instanceof Traversable ? iterator_to_array($fileReference) : $fileReference
+                    $fileReference instanceof \Traversable ? iterator_to_array($fileReference) : $fileReference
                 )
             );
         }

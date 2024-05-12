@@ -8,7 +8,6 @@ use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
-use ReflectionException;
 use SourceBroker\T3api\Service\SerializerMetadataService;
 
 /**
@@ -36,7 +35,7 @@ class GenerateMetadataSubscriber implements EventSubscriberInterface
     /**
      * @param ObjectEvent $event
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function onPreSerialize(ObjectEvent $event): void
     {
@@ -48,7 +47,7 @@ class GenerateMetadataSubscriber implements EventSubscriberInterface
     /**
      * @param PreDeserializeEvent $event
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function onPreDeserialize(PreDeserializeEvent $event): void
     {

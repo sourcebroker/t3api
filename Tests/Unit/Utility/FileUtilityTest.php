@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Utility;
 
-use RuntimeException;
 use SourceBroker\T3api\Utility\FileUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -29,7 +28,7 @@ class FileUtilityTest extends UnitTestCase
      */
     public function createWritableDirectoryThrowsExceptionIfCanNotCreate()
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
         $this->expectExceptionCode(1570250836643);
 
         FileUtility::createWritableDirectory($this->getPathToNotExistingDirectory('/root'));
@@ -40,7 +39,7 @@ class FileUtilityTest extends UnitTestCase
      */
     public function createWritableDirectoryThrowsExceptionIfNotWritable()
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
         $this->expectExceptionCode(1570250839604);
 
         FileUtility::createWritableDirectory($this->getPathToNotWritableDirectory());

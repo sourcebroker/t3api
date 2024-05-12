@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Response;
 
-use ReflectionException;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 
@@ -16,7 +15,7 @@ class MainEndpointResponse
     public function __construct(protected readonly ApiResourceRepository $apiResourceRepository) {}
 
     /**
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function getResources(): array
     {

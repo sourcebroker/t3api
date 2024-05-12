@@ -20,7 +20,6 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
-use Throwable;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -53,7 +52,7 @@ class Bootstrap extends AbstractDispatcher
 
     /**
      * @return Response
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function process(ServerRequestInterface $inputRequest): ResponseInterface
     {
@@ -69,14 +68,14 @@ class Bootstrap extends AbstractDispatcher
         } catch (ExceptionInterface $exception) {
             $output = $this->serializerService->serialize($exception);
             $this->response = $this->response->withStatus($exception->getStatusCode(), $exception->getTitle());
-        } catch (Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             try {
                 $output = $this->serializerService->serialize($throwable);
                 $this->response = $this->response->withStatus(
                     SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR,
                     SymfonyResponse::$statusTexts[SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR]
                 );
-            } catch (Throwable $throwableSerializationException) {
+            } catch (\Throwable $throwableSerializationException) {
                 throw $throwable;
             }
         }

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Filter;
 
-use InvalidArgumentException;
-use RuntimeException;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,7 +28,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
 
     protected function isPropertyNested(string $propertyName): bool
     {
-        return strpos($propertyName, '.') !== false;
+        return str_contains($propertyName, '.');
     }
 
     /**
@@ -61,7 +59,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
         }
 
         if (!isset($alias)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf('Cannot add joins for property "%s" - property is not nested.', $property)
             );
         }
@@ -137,7 +135,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
                 break;
             case ColumnMap\Relation::BELONGS_TO_MANY:
             default:
-                throw new InvalidArgumentException('Could not determine relation', 1562191351170);
+                throw new \InvalidArgumentException('Could not determine relation', 1562191351170);
         }
 
         $queryBuilder->leftJoin(
@@ -156,12 +154,12 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
     }
 
     /**
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected function getTableName(QueryInterface $query): string
     {
         if (!$query instanceof Query) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 sprintf('Query needs to be instance of %s to read source', Query::class),
                 1575123607933
             );
@@ -171,7 +169,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
         $source = $query->getSource();
 
         if (!$query->getSource() instanceof SelectorInterface) {
-            throw new RuntimeException('Query source does not implement SelectorInterface.', 1575123611889);
+            throw new \RuntimeException('Query source does not implement SelectorInterface.', 1575123611889);
         }
 
         return $source->getSelectorName();

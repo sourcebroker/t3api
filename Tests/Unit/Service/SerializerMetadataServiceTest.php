@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Tests\Unit\Service;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use ReflectionClass;
-use ReflectionException;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
 use SourceBroker\T3api\Annotation\Serializer\Type\Image;
 use SourceBroker\T3api\Annotation\Serializer\Type\RecordUri;
@@ -103,7 +101,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
      * @dataProvider getPropertyMetadataFromAnnotationsReturnsCorrectValueDataProvider
      * @test
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function getPropertyMetadataFromAnnotationsReturnsCorrectValue(
         callable $annotations,
@@ -188,7 +186,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
      * @dataProvider stringifyPropertyTypeReturnsCorrectValueDataProvider
      * @test
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function stringifyPropertyTypeReturnsCorrectValue(Type $type, string $expectedType): void
     {
@@ -329,7 +327,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
     /**
      * @param string $className
      * @param $expectedType
-     * @throws ReflectionException
+     * @throws \ReflectionException
      * @dataProvider getPropertiesReturnsCorrectValueDataProvider
      * @test
      */
@@ -340,7 +338,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
             self::callProtectedMethod(
                 'getProperties',
                 [
-                    new ReflectionClass($className),
+                    new \ReflectionClass($className),
                     new AnnotationReader(),
                 ]
             )
@@ -438,7 +436,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
     /**
      * @param string $className
      * @param $expectedType
-     * @throws ReflectionException
+     * @throws \ReflectionException
      * @dataProvider getVirtualPropertiesReturnsCorrectValueDataProvider
      * @test
      */
@@ -449,7 +447,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
             self::callProtectedMethod(
                 'getVirtualProperties',
                 [
-                    new ReflectionClass($className),
+                    new \ReflectionClass($className),
                     new AnnotationReader(),
                 ]
             )
@@ -461,12 +459,12 @@ class SerializerMetadataServiceTest extends UnitTestCase
      * @param array $arguments
      * @param object|null $object
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      * @return mixed
      */
     protected static function callProtectedMethod($methodName, array $arguments = [], object $object = null)
     {
-        $serializerMetadataServiceReflection = new ReflectionClass(SerializerMetadataService::class);
+        $serializerMetadataServiceReflection = new \ReflectionClass(SerializerMetadataService::class);
         $method = $serializerMetadataServiceReflection->getMethod($methodName);
         $method->setAccessible(true);
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\OperationHandler;
 
-use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
@@ -29,7 +28,7 @@ class CollectionGetOperationHandler extends AbstractCollectionOperationHandler
         $repository = $this->getRepositoryForOperation($operation);
 
         if (!is_subclass_of($collectionResponseClass, AbstractCollectionResponse::class)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Collection response class (`%s`) has to be an instance of `%s`',
                     $collectionResponseClass,

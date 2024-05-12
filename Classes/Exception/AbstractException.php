@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Exception;
 
-use Exception;
 use GoldSpecDigital\ObjectOrientedOAS\Contracts\SchemaContract;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response as OpenApiResponse;
@@ -14,7 +13,7 @@ use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 use Symfony\Component\HttpFoundation\Response;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-abstract class AbstractException extends Exception implements ExceptionInterface
+abstract class AbstractException extends \Exception implements ExceptionInterface
 {
     /**
      * @var string

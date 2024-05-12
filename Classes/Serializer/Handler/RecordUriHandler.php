@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Serializer\Handler;
 
-use InvalidArgumentException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use SourceBroker\T3api\Service\UrlService;
@@ -50,7 +49,7 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
         $entity = $context->getObject();
 
         if (!$entity instanceof AbstractDomainObject) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf('Object has to extend %s to build URI', AbstractDomainObject::class),
                 1562229270419
             );

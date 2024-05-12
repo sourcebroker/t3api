@@ -22,7 +22,6 @@ class T3apiRequestLanguageResolver implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-
         /** @var SiteLanguage $language */
         $language = $request->getAttribute('language');
         $t3apiHeaderLanguageUid = $this->getT3apiLanguageUid($request);

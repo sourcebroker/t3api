@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Configuration;
 
-use Generator;
-use InvalidArgumentException;
 use SourceBroker\T3api\Provider\ApiResourcePath\ApiResourcePathProvider;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -56,9 +54,9 @@ class Configuration
     }
 
     /**
-     * @return Generator|ApiResourcePathProvider[]
+     * @return \Generator|ApiResourcePathProvider[]
      */
-    public static function getApiResourcePathProviders(): Generator
+    public static function getApiResourcePathProviders(): \Generator
     {
         $apiResourcePathProvidersClasses = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['apiResourcePathProviders'];
 
@@ -66,7 +64,7 @@ class Configuration
             $apiResourcePathProvider = GeneralUtility::makeInstance($apiResourcePathProviderClass);
 
             if (!$apiResourcePathProvider instanceof ApiResourcePathProvider) {
-                throw new InvalidArgumentException(
+                throw new \InvalidArgumentException(
                     sprintf(
                         'API resource path provider `%s` has to be an instance of `%s`',
                         $apiResourcePathProviderClass,

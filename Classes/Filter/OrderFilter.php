@@ -6,7 +6,6 @@ namespace SourceBroker\T3api\Filter;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
-use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -57,7 +56,7 @@ class OrderFilter extends AbstractFilter implements OpenApiSupportingFilterInter
         }
 
         if (!in_array($direction, [QueryInterface::ORDER_ASCENDING, QueryInterface::ORDER_DESCENDING], true)) {
-            throw new InvalidArgumentException(sprintf('Unknown order direction `%s`', $direction), 1560890654236);
+            throw new \InvalidArgumentException(sprintf('Unknown order direction `%s`', $direction), 1560890654236);
         }
 
         $query->setOrderings(array_merge($query->getOrderings(), [$property => $direction]));

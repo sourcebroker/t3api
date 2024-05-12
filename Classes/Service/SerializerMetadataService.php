@@ -4,13 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
-use DateTime;
-use DateTimeImmutable;
 use Doctrine\Common\Annotations\AnnotationReader;
-use InvalidArgumentException;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
 use SourceBroker\T3api\Annotation\Serializer\Exclude;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
 use SourceBroker\T3api\Annotation\Serializer\MaxDepth;
@@ -32,7 +26,7 @@ class SerializerMetadataService
     protected static $runtimeGeneratedCache = [];
 
     /**
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public static function generateAutoloadForClass(string $class): void
     {
@@ -108,7 +102,7 @@ class SerializerMetadataService
     /**
      * @return array{properties: mixed[], virtual_properties: mixed[]}
      */
-    protected static function getForClass(ReflectionClass $reflectionClass): array
+    protected static function getForClass(\ReflectionClass $reflectionClass): array
     {
         $annotationReader = new AnnotationReader();
 
@@ -119,13 +113,13 @@ class SerializerMetadataService
     }
 
     /**
-     * @return ReflectionClass[]
-     * @throws ReflectionException
+     * @return \ReflectionClass[]
+     * @throws \ReflectionException
      */
     protected static function getClassHierarchy(string $class): array
     {
         $classes = [];
-        $reflectionClass = new ReflectionClass($class);
+        $reflectionClass = new \ReflectionClass($class);
 
         do {
             $classes[] = $reflectionClass;
@@ -135,7 +129,7 @@ class SerializerMetadataService
         return array_reverse($classes, false);
     }
 
-    protected static function getProperties(ReflectionClass $reflectionClass, AnnotationReader $annotationReader): array
+    protected static function getProperties(\ReflectionClass $reflectionClass, AnnotationReader $annotationReader): array
     {
         $properties = [];
 
@@ -156,12 +150,12 @@ class SerializerMetadataService
     }
 
     protected static function getVirtualProperties(
-        ReflectionClass $reflectionClass,
+        \ReflectionClass $reflectionClass,
         AnnotationReader $annotationReader
     ): array {
         $virtualProperties = [];
 
-        foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             /** @var VirtualProperty $virtualProperty */
             $virtualProperty = $annotationReader->getMethodAnnotation($reflectionMethod, VirtualProperty::class);
 
@@ -169,11 +163,11 @@ class SerializerMetadataService
                 continue;
             }
 
-            if (strpos($reflectionMethod->getName(), 'is') === 0) {
+            if (str_starts_with($reflectionMethod->getName(), 'is')) {
                 $accessorName = lcfirst(substr($reflectionMethod->getName(), 2));
-            } elseif (strpos($reflectionMethod->getName(), 'get') === 0) {
+            } elseif (str_starts_with($reflectionMethod->getName(), 'get')) {
                 $accessorName = lcfirst(substr($reflectionMethod->getName(), 3));
-            } elseif (strpos($reflectionMethod->getName(), 'has') === 0) {
+            } elseif (str_starts_with($reflectionMethod->getName(), 'has')) {
                 $accessorName = lcfirst(substr($reflectionMethod->getName(), 3));
             } else {
                 $accessorName = $reflectionMethod->getName();
@@ -236,17 +230,17 @@ class SerializerMetadataService
         }
 
         if ($type->getClassName()) {
-            if (is_a($type->getClassName(), DateTime::class, true)) {
+            if (is_a($type->getClassName(), \DateTime::class, true)) {
                 return sprintf(
                     'DateTime<\'%s\'>',
-                    PHP_VERSION_ID >= 70300 ? DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP'
+                    PHP_VERSION_ID >= 70300 ? \DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP'
                 );
             }
 
-            if (is_a($type->getClassName(), DateTimeImmutable::class, true)) {
+            if (is_a($type->getClassName(), \DateTimeImmutable::class, true)) {
                 return sprintf(
                     'DateTimeImmutable<\'%s\'>',
-                    PHP_VERSION_ID >= 70300 ? DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP'
+                    PHP_VERSION_ID >= 70300 ? \DateTime::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP'
                 );
             }
 
@@ -340,7 +334,7 @@ class SerializerMetadataService
                     JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_HEX_TAG | JSON_THROW_ON_ERROR
                 );
             } catch (JsonException $e) {
-                throw new InvalidArgumentException(
+                throw new \InvalidArgumentException(
                     sprintf(
                         'Could not encode array parameter to json inside %s::%s',
                         static::class,
@@ -352,7 +346,7 @@ class SerializerMetadataService
             }
         }
 
-        throw new InvalidArgumentException(
+        throw new \InvalidArgumentException(
             sprintf('Unsupported handler parameter type'),
             1600582783504
         );

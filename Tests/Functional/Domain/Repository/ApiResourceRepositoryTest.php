@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Functional\Domain\Repository;
 
-use ReflectionClass;
-use ReflectionException;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Factory\ApiResourceFactory;
 use SourceBroker\T3api\Service\ReflectionService;
@@ -30,7 +28,7 @@ class ApiResourceRepositoryTest extends FunctionalTestCase
     /**
      * @test
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function getAllDomainModelsReturnsAllClasses(): void
     {
@@ -53,11 +51,11 @@ class ApiResourceRepositoryTest extends FunctionalTestCase
      * @param object|null $object
      *
      * @return mixed
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     protected static function callProtectedMethod($methodName, array $arguments = [], object $object = null)
     {
-        $serializerMetadataServiceReflection = new ReflectionClass(ApiResourceRepository::class);
+        $serializerMetadataServiceReflection = new \ReflectionClass(ApiResourceRepository::class);
         $method = $serializerMetadataServiceReflection->getMethod($methodName);
         $method->setAccessible(true);
 

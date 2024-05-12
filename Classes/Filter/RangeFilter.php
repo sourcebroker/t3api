@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Filter;
 
-use DateTime;
-use Exception;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
-use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
@@ -72,7 +69,7 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
     /**
      * @inheritDoc
      * @throws InvalidQueryException
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function filterProperty(
         string $property,
@@ -100,7 +97,7 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
      * @param mixed $value
      *
      * @throws InvalidQueryException
-     * @throws Exception
+     * @throws \Exception
      */
     protected function getConstraintForSingleItem(
         string $property,
@@ -126,7 +123,7 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
             case self::PARAMETER_LESS_THAN_OR_EQUAL:
                 return $query->lessThanOrEqual($property, $this->getValue($value, $apiFilter));
             default:
-                throw new InvalidArgumentException(
+                throw new \InvalidArgumentException(
                     sprintf('Unknown operator of range filter `%s`', $operator),
                     1560929019063
                 );
@@ -135,14 +132,14 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
 
     /**
      * @param $value
-     * @return DateTime|int
-     * @throws Exception
+     * @return \DateTime|int
+     * @throws \Exception
      */
     protected function getValue($value, ApiFilter $apiFilter)
     {
         switch (strtolower($apiFilter->getStrategy()->getName())) {
             case 'datetime':
-                return new DateTime($value);
+                return new \DateTime($value);
             case 'int':
             case 'integer':
             case 'number':
