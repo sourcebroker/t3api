@@ -19,6 +19,7 @@ Changelog
 - Do not convert empty string to absolute url [`commit <https://github.com/sourcebroker/t3api/commit/0518d3d4>`__]
 - Refactor link generation. Replace getTypoLink_URL with linkFactory. [`commit <https://github.com/sourcebroker/t3api/commit/47f9bbfa>`__]
 - Add support for graceful exception handling for serialization process in TYPO3 [`commit <https://github.com/sourcebroker/t3api/commit/ea6bae2c>`__]
+- Add optional @type attribute for resource. As this is rarely used, and can influence size of response, it must be activated by adding a subscriber to serializerSubscribers array. [`commit <https://github.com/sourcebroker/t3api/commit/32b73726>`__]
 
 2.0.3
 =====
