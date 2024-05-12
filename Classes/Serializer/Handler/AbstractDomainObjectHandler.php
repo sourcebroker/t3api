@@ -148,6 +148,9 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
         );
     }
 
+    /**
+     * @throws \JsonException
+     */
     private function processCascadeUpdate(
         int $uid,
         string $targetObjectType,
@@ -181,7 +184,11 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
 
         $deserializationContext = $this->cloneDeserializationContext($context, ['target' => $object]);
 
-        return $this->serializerService->deserialize(json_encode($data, JSON_THROW_ON_ERROR), $targetObjectType, $deserializationContext);
+        return $this->serializerService->deserialize(
+            json_encode($data, JSON_THROW_ON_ERROR),
+            $targetObjectType,
+            $deserializationContext
+        );
     }
 
     private function isObjectInContextScope(

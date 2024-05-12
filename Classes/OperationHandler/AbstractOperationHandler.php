@@ -18,44 +18,13 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
 abstract class AbstractOperationHandler implements OperationHandlerInterface
 {
-    /**
-     * @var SerializerService
-     */
-    protected $serializerService;
-
-    /**
-     * @var ValidationService
-     */
-    protected $validationService;
-
-    /**
-     * @var OperationAccessChecker
-     */
-    protected $operationAccessChecker;
-
-    /**
-     * @var DeserializationContextBuilder
-     */
-    protected $deserializationContextBuilder;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
     public function __construct(
-        SerializerService $serializerService,
-        ValidationService $validationService,
-        OperationAccessChecker $operationAccessChecker,
-        DeserializationContextBuilder $deserializationContextBuilder,
-        EventDispatcherInterface $eventDispatcher
-    ) {
-        $this->serializerService = $serializerService;
-        $this->validationService = $validationService;
-        $this->operationAccessChecker = $operationAccessChecker;
-        $this->deserializationContextBuilder = $deserializationContextBuilder;
-        $this->eventDispatcher = $eventDispatcher;
-    }
+        protected readonly SerializerService $serializerService,
+        protected readonly ValidationService $validationService,
+        protected readonly OperationAccessChecker $operationAccessChecker,
+        protected readonly DeserializationContextBuilder $deserializationContextBuilder,
+        protected readonly EventDispatcherInterface $dispatcher
+    ) {}
 
     protected function getRepositoryForOperation(OperationInterface $operation): CommonRepository
     {
@@ -63,10 +32,6 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param AbstractDomainObject|null $targetObject
-     * @return AbstractDomainObject
      * @throws OperationNotAllowedException
      */
     protected function deserializeOperation(

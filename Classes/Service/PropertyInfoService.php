@@ -13,9 +13,6 @@ use SourceBroker\T3api\Annotation\ORM\Cascade;
 class PropertyInfoService
 {
     /**
-     * @param string $className
-     * @param string $propertyName
-     * @return bool
      * @throws RuntimeException
      */
     public static function allowsCascadePersistence(string $className, string $propertyName): bool
@@ -27,7 +24,7 @@ class PropertyInfoService
             $annotations = $annotationReader->getPropertyAnnotations($propertyReflection);
             $cascadeAnnotations = array_filter(
                 $annotations,
-                static function ($annotation) {
+                static function ($annotation): bool {
                     return $annotation instanceof Cascade;
                 }
             );
@@ -39,7 +36,11 @@ class PropertyInfoService
                 }
             }
         } catch (Exception $exception) {
-            throw new RuntimeException('It was not possible to check if property allows cascade persistence due to exception', 1584949881062, $exception);
+            throw new RuntimeException(
+                'It was not possible to check if property allows cascade persistence due to exception',
+                1584949881062,
+                $exception
+            );
         }
 
         return false;

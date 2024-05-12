@@ -73,6 +73,9 @@ abstract class AbstractHandler implements SubscribingHandlerInterface
 
     protected function getDecodedParams(array $params): array
     {
-        return array_map('\SourceBroker\T3api\Service\SerializerMetadataService::decodeFromSingleHandlerParam', $params);
+        return array_map(
+            '\SourceBroker\T3api\Service\SerializerMetadataService::decodeFromSingleHandlerParam',
+            $params
+        );
     }
 }

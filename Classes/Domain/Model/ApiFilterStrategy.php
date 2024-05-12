@@ -6,15 +6,9 @@ namespace SourceBroker\T3api\Domain\Model;
 
 class ApiFilterStrategy
 {
-    /**
-     * @var string
-     */
-    protected $name;
+    protected string $name;
 
-    /**
-     * @var string
-     */
-    protected $condition;
+    protected ?string $condition = null;
 
     /**
      * ApiFilterStrategy constructor.
@@ -29,11 +23,14 @@ class ApiFilterStrategy
             $this->name = $strategy['name'] ?? '';
             $this->condition = $strategy['condition'] ?? '';
         } else {
-            throw new \InvalidArgumentException(sprintf('%s::$strategy has to be either string or array', self::class), 1587649745);
+            throw new \InvalidArgumentException(
+                sprintf('%s::$strategy has to be either string or array', self::class),
+                1587649745
+            );
         }
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }

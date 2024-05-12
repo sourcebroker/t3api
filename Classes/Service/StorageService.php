@@ -28,9 +28,12 @@ class StorageService implements SingletonInterface
         $recursiveStoragePids = $storagePids;
 
         foreach ($storagePids as $startPid) {
-            $pids = GeneralUtility::makeInstance(ContentObjectRenderer::class)->getTreeList($startPid, $recursionDepth, 0);
+            $pids = GeneralUtility::makeInstance(ContentObjectRenderer::class)->getTreeList(
+                $startPid,
+                $recursionDepth,
+            );
 
-            if (!empty($pids)) {
+            if ($pids !== '') {
                 $recursiveStoragePids = array_merge(
                     $recursiveStoragePids,
                     GeneralUtility::intExplode(',', $pids)

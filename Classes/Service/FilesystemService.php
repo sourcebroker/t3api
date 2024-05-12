@@ -25,9 +25,11 @@ class FilesystemService
                 if ($flushOpcodeCache) {
                     GeneralUtility::makeInstance(OpcodeCacheService::class)->clearAllActive($directory);
                 }
+
                 if ($keepOriginalDirectory) {
                     GeneralUtility::mkdir($directory);
                 }
+
                 clearstatcache();
                 $result = GeneralUtility::rmdir($temporaryDirectory, true);
             }

@@ -9,13 +9,7 @@ namespace SourceBroker\T3api\Annotation\Serializer\Type;
  */
 interface TypeInterface
 {
-    /**
-     * @return array
-     */
     public function getParams(): array;
 
-    /**
-     * @return string
-     */
     public function getName(): string;
 }

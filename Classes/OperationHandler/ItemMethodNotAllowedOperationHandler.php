@@ -12,16 +12,16 @@ use Symfony\Component\HttpFoundation\Request;
 class ItemMethodNotAllowedOperationHandler extends AbstractItemOperationHandler
 {
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param array $route
-     * @param ResponseInterface|null $response
-     * @throws MethodNotAllowedException
      * @return mixed|void
      * @noinspection ReferencingObjectsInspection
+     * @throws MethodNotAllowedException
      */
-    public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response)
-    {
+    public function handle(
+        OperationInterface $operation,
+        Request $request,
+        array $route,
+        ?ResponseInterface &$response
+    ): never {
         throw new MethodNotAllowedException($operation, 1581494567091);
     }
 }

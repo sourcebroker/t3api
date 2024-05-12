@@ -12,12 +12,9 @@ class CollectionOperation extends AbstractOperation
     /**
      * @var ApiFilter[]
      */
-    protected $filters = [];
+    protected array $filters = [];
 
-    /**
-     * @var Pagination
-     */
-    protected $pagination;
+    protected Pagination $pagination;
 
     public function __construct(string $key, ApiResource $apiResource, array $params)
     {

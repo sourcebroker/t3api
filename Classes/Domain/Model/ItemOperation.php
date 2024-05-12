@@ -9,5 +9,5 @@ namespace SourceBroker\T3api\Domain\Model;
  */
 class ItemOperation extends AbstractOperation
 {
-    protected $path = '/{id}';
+    protected string $path = '/{id}';
 }

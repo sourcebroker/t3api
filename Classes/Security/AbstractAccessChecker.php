@@ -14,15 +14,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class AbstractAccessChecker
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
+    public function __construct(
+        protected readonly EventDispatcherInterface $eventDispatcher
+    ) {}
 
     protected function getExpressionLanguageResolver(): Resolver
     {

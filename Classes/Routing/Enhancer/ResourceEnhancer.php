@@ -19,11 +19,7 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
 {
     public const ENHANCER_NAME = 'T3apiResourceEnhancer';
     public const PARAMETER_NAME = 't3apiResource';
-
-    /**
-     * @var array
-     */
-    protected $configuration;
+    protected array $configuration;
 
     public function __construct(array $configuration)
     {

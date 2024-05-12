@@ -110,7 +110,11 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         $apiResource = $this->apiResourceRepository->getByEntity($entity);
         if ($apiResource && $apiResource->getMainItemOperation()) {
             // @todo should be generated with symfony router
-            $iri = str_replace('{id}', (string)$entity->getUid(), $apiResource->getMainItemOperation()->getRoute()->getPath());
+            $iri = str_replace(
+                '{id}',
+                (string)$entity->getUid(),
+                $apiResource->getMainItemOperation()->getRoute()->getPath()
+            );
             $visitor->visitProperty(
                 new StaticPropertyMetadata(AbstractDomainObject::class, '@id', $iri),
                 $iri

@@ -15,9 +15,6 @@ class Cascade
      */
     public $values = [];
 
-    /**
-     * @param array $values
-     */
     public function __construct(array $values)
     {
         if (isset($values['value'])) {

@@ -59,8 +59,6 @@ class SiteService
     }
 
     /**
-     * @param string $identifier
-     * @return Site
      * @throws SiteNotFoundException
      */
     public static function getByIdentifier(string $identifier): Site
@@ -74,6 +72,7 @@ class SiteService
         if (!class_exists(SiteMatcher::class)) {
             return null;
         }
+
         $routeResult = GeneralUtility::makeInstance(SiteMatcher::class)
             ->matchRequest(ServerRequestFactory::fromGlobals());
 

@@ -37,17 +37,11 @@ class Image implements TypeInterface
      */
     public $cropVariant;
 
-    /**
-     * @return array
-     */
     public function getParams(): array
     {
         return [$this->width, $this->height, $this->maxWidth, $this->maxHeight, $this->cropVariant];
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return ImageHandler::TYPE;

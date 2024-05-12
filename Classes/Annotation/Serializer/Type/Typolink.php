@@ -12,17 +12,11 @@ use SourceBroker\T3api\Serializer\Handler\TypolinkHandler;
  */
 class Typolink implements TypeInterface
 {
-    /**
-     * @return array
-     */
     public function getParams(): array
     {
         return [];
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return TypolinkHandler::TYPE;

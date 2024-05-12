@@ -23,7 +23,6 @@ class RouteService implements SingletonInterface
 
     /**
      * Returns base path including language prefix
-     * @return string
      */
     public static function getFullApiBasePath(): string
     {

@@ -22,8 +22,6 @@ class PersistenceSettings extends AbstractOperationResourceSettings
     protected $recursionLevel = 0;
 
     /**
-     * @param array $attributes
-     * @param self $persistenceSettings
      * @return self
      */
     public static function create(
@@ -47,17 +45,11 @@ class PersistenceSettings extends AbstractOperationResourceSettings
         return $this->storagePids;
     }
 
-    /**
-     * @return int
-     */
     public function getRecursionLevel(): int
     {
         return $this->recursionLevel;
     }
 
-    /**
-     * @return int|null
-     */
     public function getMainStoragePid(): int
     {
         if (empty($this->storagePids)) {

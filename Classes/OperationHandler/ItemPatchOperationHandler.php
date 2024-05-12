@@ -24,19 +24,19 @@ class ItemPatchOperationHandler extends AbstractItemOperationHandler
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param array $route
-     * @param ResponseInterface|null $response
-     * @throws ResourceNotFoundException
+     * @return mixed|void
+     * @noinspection ReferencingObjectsInspection
      * @throws UnknownObjectException
      * @throws OperationNotAllowedException
      * @throws ValidationException
-     * @return mixed|void
-     * @noinspection ReferencingObjectsInspection
+     * @throws ResourceNotFoundException
      */
-    public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response): AbstractDomainObject
-    {
+    public function handle(
+        OperationInterface $operation,
+        Request $request,
+        array $route,
+        ?ResponseInterface &$response
+    ): AbstractDomainObject {
         /** @var ItemOperation $operation */
         $repository = $this->getRepositoryForOperation($operation);
         $object = parent::handle($operation, $request, $route, $response);

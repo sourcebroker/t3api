@@ -12,50 +12,31 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class ApiResource
 {
-    /**
-     * @var string
-     */
-    protected $entity;
+    protected string $entity;
 
     /**
      * @var ItemOperation[]
      */
-    protected $itemOperations = [];
+    protected array $itemOperations = [];
 
     /**
      * @var CollectionOperation[]
      */
-    protected $collectionOperations = [];
+    protected array $collectionOperations = [];
 
-    /**
-     * @var RouteCollection
-     */
-    protected $routes;
+    protected RouteCollection $routes;
 
     /**
      * @var OperationInterface[]
      */
-    protected $routeNameToOperation;
+    protected array $routeNameToOperation = [];
 
-    /**
-     * @var Pagination
-     */
-    protected $pagination;
+    protected Pagination $pagination;
 
-    /**
-     * @var PersistenceSettings
-     */
-    protected $persistenceSettings;
+    protected PersistenceSettings $persistenceSettings;
 
-    /**
-     * @var UploadSettings
-     */
-    protected $uploadSettings;
+    protected UploadSettings $uploadSettings;
 
-    /**
-     * @param string $entity
-     * @param ApiResourceAnnotation $apiResourceAnnotation
-     */
     public function __construct(string $entity, ApiResourceAnnotation $apiResourceAnnotation)
     {
         $this->entity = $entity;
@@ -81,9 +62,6 @@ class ApiResource
         }
     }
 
-    /**
-     * @return string
-     */
     public function getEntity(): string
     {
         return $this->entity;
@@ -106,13 +84,11 @@ class ApiResource
     }
 
     /**
-     * @return ItemOperation|null
-     *
      * @todo for now first item operation is treated as main, maybe in future it should be configurable
      */
     public function getMainItemOperation(): ?ItemOperation
     {
-        if (!empty($this->getItemOperations())) {
+        if ($this->getItemOperations() !== []) {
             $itemOperations = $this->getItemOperations();
 
             return array_shift($itemOperations);
@@ -130,13 +106,11 @@ class ApiResource
     }
 
     /**
-     * @return CollectionOperation|null
-     *
      * @todo for now first collection operation is treated as main, maybe in future it should be configurable
      */
     public function getMainCollectionOperation(): ?CollectionOperation
     {
-        if (!empty($this->getCollectionOperations())) {
+        if ($this->getCollectionOperations() !== []) {
             $collectionOperations = $this->getCollectionOperations();
 
             return array_shift($collectionOperations);
@@ -145,9 +119,6 @@ class ApiResource
         return null;
     }
 
-    /**
-     * @return RouteCollection
-     */
     public function getRoutes(): RouteCollection
     {
         return $this->routes;
@@ -162,35 +133,23 @@ class ApiResource
         return $this->routeNameToOperation[$routeName];
     }
 
-    /**
-     * @param ApiFilter $apiFilter
-     */
-    public function addFilter(ApiFilter $apiFilter)
+    public function addFilter(ApiFilter $apiFilter): void
     {
         foreach ($this->getCollectionOperations() as $collectionOperation) {
             $collectionOperation->addFilter($apiFilter);
         }
     }
 
-    /**
-     * @return Pagination
-     */
     public function getPagination(): Pagination
     {
         return $this->pagination;
     }
 
-    /**
-     * @return PersistenceSettings
-     */
     public function getPersistenceSettings(): PersistenceSettings
     {
         return $this->persistenceSettings;
     }
 
-    /**
-     * @return UploadSettings
-     */
     public function getUploadSettings(): UploadSettings
     {
         return $this->uploadSettings;

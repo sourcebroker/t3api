@@ -13,10 +13,7 @@ use SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler;
  */
 class CurrentFeUser implements TypeInterface
 {
-    /**
-     * @var string
-     */
-    protected $feUserClass;
+    protected string $feUserClass;
 
     public function __construct($options = [])
     {

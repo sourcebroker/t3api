@@ -14,45 +14,18 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 abstract class AbstractCollectionResponse
 {
-    /**
-     * @var CollectionOperation
-     */
-    protected $operation;
+    protected CollectionOperation $operation;
 
-    /**
-     * @var QueryInterface
-     */
-    protected $query;
+    protected QueryInterface $query;
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
 
-    /**
-     * @var array|null
-     */
-    protected $membersCache;
+    protected ?array $membersCache = null;
 
-    /**
-     * @var int|null
-     */
-    protected $totalItemsCache;
+    protected ?int $totalItemsCache = null;
 
-    /**
-     * @param string $membersReference
-     *
-     * @return Schema
-     */
     abstract public static function getOpenApiSchema(string $membersReference): Schema;
 
-    /**
-     * CollectionResponse constructor.
-     *
-     * @param CollectionOperation $operation
-     * @param Request $request
-     * @param QueryInterface $query
-     */
     public function __construct(CollectionOperation $operation, Request $request, QueryInterface $query)
     {
         $this->operation = $operation;
@@ -60,9 +33,6 @@ abstract class AbstractCollectionResponse
         $this->query = $query;
     }
 
-    /**
-     * @return array
-     */
     public function getMembers(): array
     {
         if ($this->membersCache === null) {
@@ -72,9 +42,6 @@ abstract class AbstractCollectionResponse
         return $this->membersCache;
     }
 
-    /**
-     * @return int
-     */
     public function getTotalItems(): int
     {
         if ($this->totalItemsCache === null) {
@@ -84,9 +51,6 @@ abstract class AbstractCollectionResponse
         return $this->totalItemsCache;
     }
 
-    /**
-     * @return QueryInterface
-     */
     protected function applyPagination(): QueryInterface
     {
         $pagination = $this->operation->getPagination()->setParametersFromRequest($this->request);

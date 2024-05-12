@@ -15,10 +15,7 @@ use TYPO3\CMS\Core\Http\Response;
 
 class OptionsOperationHandler extends AbstractOperationHandler
 {
-    /**
-     * @var CorsService
-     */
-    private $corsService;
+    private ?CorsService $corsService;
 
     public function __construct(
         SerializerService $serializerService,
@@ -28,7 +25,13 @@ class OptionsOperationHandler extends AbstractOperationHandler
         EventDispatcherInterface $eventDispatcher,
         CorsService $corsService
     ) {
-        parent::__construct($serializerService, $validationService, $operationAccessChecker, $deserializationContextBuilder, $eventDispatcher);
+        parent::__construct(
+            $serializerService,
+            $validationService,
+            $operationAccessChecker,
+            $deserializationContextBuilder,
+            $eventDispatcher
+        );
         $this->corsService = $corsService;
     }
 
@@ -38,11 +41,6 @@ class OptionsOperationHandler extends AbstractOperationHandler
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param array $route
-     * @param ResponseInterface|null $response
-     *
      * @return mixed|void
      * @noinspection CallableParameterUseCaseInTypeContextInspection
      */
@@ -69,7 +67,7 @@ class OptionsOperationHandler extends AbstractOperationHandler
             }
         }
 
-        if ($options->maxAge) {
+        if ($options->maxAge !== null) {
             $response = $response->withHeader('Access-Control-Max-Age', (string)$options->maxAge);
         }
 
@@ -81,7 +79,11 @@ class OptionsOperationHandler extends AbstractOperationHandler
 
         $response = $response->withHeader('Access-Control-Allow-Origin', $request->headers->get('Origin'));
 
-        if (!in_array(strtoupper($request->headers->get('Access-Control-Request-Method')), $options->allowMethods, true)) {
+        if (!in_array(
+            strtoupper($request->headers->get('Access-Control-Request-Method')),
+            $options->allowMethods,
+            true
+        )) {
             $response = $response->withStatus(405);
 
             return;
@@ -89,7 +91,10 @@ class OptionsOperationHandler extends AbstractOperationHandler
 
         // Allow header in case-set received from client as some browsers may send it differently
         if (!in_array($request->headers->get('Access-Control-Request-Method'), $options->allowMethods, true)) {
-            $allowMethods = array_merge($options->allowMethods, [$request->headers->get('Access-Control-Request-Method')]);
+            $allowMethods = array_merge(
+                $options->allowMethods,
+                [$request->headers->get('Access-Control-Request-Method')]
+            );
             $response = $response->withHeader('Access-Control-Allow-Methods', implode(', ', $allowMethods));
         }
 

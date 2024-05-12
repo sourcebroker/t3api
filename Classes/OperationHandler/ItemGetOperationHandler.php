@@ -20,17 +20,17 @@ class ItemGetOperationHandler extends AbstractItemOperationHandler
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param array $route
-     * @param ResponseInterface|null $response
-     * @throws ResourceNotFoundException
-     * @throws OperationNotAllowedException
      * @return mixed|void
      * @noinspection ReferencingObjectsInspection
+     * @throws OperationNotAllowedException
+     * @throws ResourceNotFoundException
      */
-    public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response): AbstractDomainObject
-    {
+    public function handle(
+        OperationInterface $operation,
+        Request $request,
+        array $route,
+        ?ResponseInterface &$response
+    ): AbstractDomainObject {
         /** @var ItemOperation $operation */
         return parent::handle($operation, $request, $route, $response);
     }

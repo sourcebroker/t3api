@@ -28,21 +28,10 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  */
 class FileUploadService implements SingletonInterface
 {
-    /**
-     * @var ResourceFactory
-     */
-    protected $resourceFactory;
-
-    public function __construct(ResourceFactory $resourceFactory)
-    {
-        $this->resourceFactory = $resourceFactory;
-    }
+    public function __construct(protected readonly ResourceFactory $resourceFactory) {}
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
      * @throws Exception
-     * @return File
      */
     public function process(OperationInterface $operation, Request $request): File
     {
@@ -66,8 +55,6 @@ class FileUploadService implements SingletonInterface
     }
 
     /**
-     * @param UploadSettings $uploadSettings
-     * @param UploadedFile $uploadedFile
      * @throws InvalidArgumentException
      */
     protected function verifyFileExtension(UploadSettings $uploadSettings, UploadedFile $uploadedFile): void
@@ -79,7 +66,7 @@ class FileUploadService implements SingletonInterface
             );
         }
 
-        if (!empty($uploadSettings->getAllowedFileExtensions())) {
+        if ($uploadSettings->getAllowedFileExtensions() !== []) {
             $filePathInfo = PathUtility::pathinfo($uploadedFile->getClientOriginalName());
             if (!in_array(
                 strtolower($filePathInfo['extension']),
@@ -101,12 +88,10 @@ class FileUploadService implements SingletonInterface
     /**
      * Creates upload folder if it not exists yet and returns it
      *
-     * @param UploadSettings $uploadSettings
      *
      * @throws ExistingTargetFolderException
      * @throws InsufficientFolderAccessPermissionsException
      * @throws InsufficientFolderWritePermissionsException
-     * @return Folder
      */
     protected function getUploadFolder(UploadSettings $uploadSettings): Folder
     {
@@ -116,7 +101,7 @@ class FileUploadService implements SingletonInterface
             $uploadFolder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier(
                 $uploadSettings->getFolder()
             );
-        } catch (ResourceDoesNotExistException $exception) {
+        } catch (ResourceDoesNotExistException $resourceDoesNotExistException) {
             $resource = $this->resourceFactory->getStorageObjectFromCombinedIdentifier(
                 $uploadSettings->getFolder()
             );
@@ -136,7 +121,7 @@ class FileUploadService implements SingletonInterface
             do {
                 $directoryName = array_shift($path);
 
-                if ($uploadFolder && $resource->hasFolderInFolder($directoryName, $uploadFolder)) {
+                if ($uploadFolder instanceof Folder && $resource->hasFolderInFolder($directoryName, $uploadFolder)) {
                     $uploadFolder = $resource->getFolderInFolder($directoryName, $uploadFolder);
                 } elseif (!$uploadFolder && $resource->hasFolder($directoryName)) {
                     $uploadFolder = $resource->getFolder($directoryName);
@@ -159,11 +144,6 @@ class FileUploadService implements SingletonInterface
         return $uploadFolder;
     }
 
-    /**
-     * @param UploadSettings $uploadSettings
-     * @param UploadedFile $uploadedFile
-     * @return string
-     */
     public function getFilename(UploadSettings $uploadSettings, UploadedFile $uploadedFile): string
     {
         $replacements['filename'] = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -178,15 +158,17 @@ class FileUploadService implements SingletonInterface
                 $uploadedFile->getPathname()
             );
         }
+
         if (strpos($uploadSettings->getFilenameMask(), '[filenameHash]') !== false) {
             $replacements['filenameHash'] = hash(
                 $uploadSettings->getFilenameHashAlgorithm(),
                 $uploadedFile->getClientOriginalName()
             );
         }
+
         return preg_replace_callback(
             '/\\[([A-Za-z0-9_:]+)\\]/',
-            static function ($match) use ($replacements) {
+            static function ($match) use ($replacements): string|bool {
                 return $replacements[$match[1]];
             },
             $uploadSettings->getFilenameMask()

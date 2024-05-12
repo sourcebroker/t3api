@@ -84,11 +84,12 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
 
             if (preg_match('#video/.*#', $originalFile->getMimeType())) {
                 $fileRenderer = GeneralUtility::makeInstance(RendererRegistry::class)->getRenderer($originalFile);
-                if ($fileRenderer !== null && preg_match(
-                    '/src="([^"]+)"/',
-                    $fileRenderer->render($originalFile, 1, 1),
-                    $match
-                )) {
+                if ($fileRenderer !== null
+                    && preg_match(
+                        '/src="([^"]+)"/',
+                        $fileRenderer->render($originalFile, 1, 1),
+                        $match
+                    )) {
                     if ($match[1] === '') {
                         $out['urlEmbed'] = '';
                     } else {

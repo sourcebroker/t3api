@@ -20,10 +20,7 @@ class ApiFilter
      */
     protected $strategy = '';
 
-    /**
-     * @var string
-     */
-    protected $filterClass;
+    protected string $filterClass;
 
     /**
      * @var array
@@ -69,9 +66,6 @@ class ApiFilter
         $this->arguments = $options['arguments'] ?? $this->arguments;
     }
 
-    /**
-     * @return array
-     */
     public function getProperties(): array
     {
         $properties = [];
@@ -88,17 +82,11 @@ class ApiFilter
         return $properties;
     }
 
-    /**
-     * @return string
-     */
     public function getFilterClass(): string
     {
         return $this->filterClass;
     }
 
-    /**
-     * @return array
-     */
     public function getArguments(): array
     {
         return $this->arguments;

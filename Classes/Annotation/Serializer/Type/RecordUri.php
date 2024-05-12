@@ -18,17 +18,11 @@ class RecordUri implements TypeInterface
      */
     public $identifier;
 
-    /**
-     * @return array
-     */
     public function getParams(): array
     {
         return [$this->identifier];
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return RecordUriHandler::TYPE;

@@ -20,24 +20,12 @@ class ApiResourceRepository
      */
     protected $cache;
 
-    /**
-     * @var ReflectionService
-     */
-    protected $reflectionService;
-
-    /**
-     * @var ApiResourceFactory
-     */
-    protected $apiResourceFactory;
-
     public function __construct(
-        CacheManager $cacheManager,
-        ReflectionService $reflectionService,
-        ApiResourceFactory $apiResourceFactory
+        protected readonly CacheManager $cacheManager,
+        protected readonly ReflectionService $reflectionService,
+        protected readonly ApiResourceFactory $apiResourceFactory
     ) {
         $this->cache = $cacheManager->getCache('t3api');
-        $this->reflectionService = $reflectionService;
-        $this->apiResourceFactory = $apiResourceFactory;
     }
 
     /**
@@ -68,8 +56,6 @@ class ApiResourceRepository
 
     /**
      * @param string|object $entity Class name or object
-     *
-     * @return ApiResource|null
      */
     public function getByEntity($entity): ?ApiResource
     {

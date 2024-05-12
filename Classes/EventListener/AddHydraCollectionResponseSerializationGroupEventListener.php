@@ -13,15 +13,18 @@ class AddHydraCollectionResponseSerializationGroupEventListener
 {
     public function __invoke(AfterCreateContextForOperationEvent $createContextForOperationEvent): void
     {
-        $operation =  $createContextForOperationEvent->getOperation();
+        $operation = $createContextForOperationEvent->getOperation();
         $context = $createContextForOperationEvent->getContext();
 
         $collectionResponseClass = Configuration::getCollectionResponseClass();
         if (
-            $createContextForOperationEvent->getOperation() instanceof CollectionOperation
+            (
+                $collectionResponseClass === HydraCollectionResponse::class
+                || is_subclass_of($collectionResponseClass, HydraCollectionResponse::class)
+            )
+            && $createContextForOperationEvent->getOperation() instanceof CollectionOperation
             && $context->hasAttribute('groups')
             && $operation->isMethodGet()
-            && ($collectionResponseClass === HydraCollectionResponse::class || is_subclass_of($collectionResponseClass, HydraCollectionResponse::class))
         ) {
             $context->setGroups(array_merge(
                 $context->getAttribute('groups'),

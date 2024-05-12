@@ -47,8 +47,8 @@ class InlineViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @throws RouteNotFoundException
      * @return string
+     * @throws RouteNotFoundException
      */
     public function render(): string
     {

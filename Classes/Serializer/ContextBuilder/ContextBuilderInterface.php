@@ -11,5 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 interface ContextBuilderInterface
 {
     public function create(): Context;
+
     public function createFromOperation(OperationInterface $operation, Request $request): Context;
 }

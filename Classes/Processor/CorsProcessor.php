@@ -10,15 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CorsProcessor implements ProcessorInterface
 {
-    /**
-     * @var CorsService
-     */
-    private $corsService;
-
-    public function __construct(CorsService $corsService)
-    {
-        $this->corsService = $corsService;
-    }
+    public function __construct(private readonly ?CorsService $corsService) {}
 
     public function process(Request $request, ResponseInterface $response): void
     {
@@ -50,7 +42,10 @@ class CorsProcessor implements ProcessorInterface
 
         if ($options->exposeHeaders) {
             /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-            $response = $response->withHeader('Access-Control-Expose-Headers', strtolower(implode(', ', $options->exposeHeaders)));
+            $response = $response->withHeader(
+                'Access-Control-Expose-Headers',
+                strtolower(implode(', ', $options->exposeHeaders))
+            );
         }
     }
 

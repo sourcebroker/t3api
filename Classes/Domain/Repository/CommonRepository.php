@@ -27,42 +27,22 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class CommonRepository
 {
-    /**
-     * @var OperationInterface
-     */
-    protected $operation;
+    protected OperationInterface $operation;
 
-    /**
-     * @var QuerySettingsInterface
-     */
-    protected $defaultQuerySettings;
+    protected string $objectType;
 
-    /**
-     * @var PersistenceManagerInterface
-     */
-    protected $persistenceManager;
+    public function __construct(
+        protected readonly PersistenceManagerInterface $persistenceManager,
+        protected readonly FilterAccessChecker $filterAccessChecker,
+        protected readonly Typo3QuerySettings $defaultQuerySettings
+    ) {}
 
-    /**
-     * @var string
-     */
-    protected $objectType;
-
-    /**
-     * @var FilterAccessChecker
-     */
-    protected $filterAccessChecker;
-
-    /**
-     * @param OperationInterface $operation
-     *
-     * @return CommonRepository
-     */
     public static function getInstanceForOperation(OperationInterface $operation): self
     {
         $repository = self::getInstanceForEntity($operation->getApiResource()->getEntity());
         $repository->operation = $operation;
 
-        if (!empty($operation->getPersistenceSettings()->getStoragePids())) {
+        if ($operation->getPersistenceSettings()->getStoragePids() !== []) {
             $repository->defaultQuerySettings->setRespectStoragePage(true);
             $repository->defaultQuerySettings->setStoragePageIds(
                 StorageService::getRecursiveStoragePids(
@@ -80,8 +60,6 @@ class CommonRepository
     }
 
     /**
-     * @param string $entity
-     *
      * @return static
      */
     public static function getInstanceForEntity(string $entity): self
@@ -93,21 +71,6 @@ class CommonRepository
         return $repository;
     }
 
-    public function __construct(
-        PersistenceManagerInterface $persistenceManager,
-        FilterAccessChecker $filterAccessChecker,
-        Typo3QuerySettings $defaultQuerySettings
-    ) {
-        $this->persistenceManager = $persistenceManager;
-        $this->filterAccessChecker = $filterAccessChecker;
-        $this->defaultQuerySettings = $defaultQuerySettings;
-    }
-
-    /**
-     * @param string $objectType
-     *
-     * @return self
-     */
     public function setObjectType(string $objectType): self
     {
         $this->objectType = $objectType;
@@ -127,9 +90,6 @@ class CommonRepository
 
     /**
      * @param ApiFilter[] $apiFilters
-     * @param Request $request
-     *
-     * @return QueryInterface
      */
     public function findFiltered(array $apiFilters, Request $request): QueryInterface
     {
@@ -168,7 +128,7 @@ class CommonRepository
             }
         }
 
-        if (!empty($constraints)) {
+        if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
         }
 
@@ -183,7 +143,7 @@ class CommonRepository
     {
         return array_filter(
             $apiFilters,
-            function (ApiFilter $apiFilter) {
+            function (ApiFilter $apiFilter): bool {
                 return $this->filterAccessChecker->isGranted($apiFilter);
             }
         );
@@ -194,7 +154,6 @@ class CommonRepository
      * This method ensures that filters are applied in the order which they was requested in $queryParams.
      *
      * @param ApiFilter[] $apiFilters
-     * @param array $queryParams
      *
      * @return ApiFilter[]
      */
@@ -202,28 +161,30 @@ class CommonRepository
     {
         $apiFilters = array_filter(
             $apiFilters,
-            static function (ApiFilter $apiFilter) use ($queryParams) {
+            static function (ApiFilter $apiFilter) use ($queryParams): bool {
                 return isset($queryParams[$apiFilter->getParameterName()]);
             }
         );
 
         usort(
             $apiFilters,
-            static function (ApiFilter $apiFilterA, ApiFilter $apiFilterB) use ($queryParams) {
+            static function (ApiFilter $apiFilterA, ApiFilter $apiFilterB) use ($queryParams): int {
                 if (
                     is_array($queryParams[$apiFilterA->getParameterName()])
                     && $apiFilterA->getParameterName() === $apiFilterB->getParameterName()
                     && $apiFilterA->getProperty() !== $apiFilterB->getProperty()
                 ) {
-                    return array_search(
+                    $a = array_search(
                         $apiFilterA->getProperty(),
                         array_keys($queryParams[$apiFilterA->getParameterName()]),
                         true
-                    ) - array_search(
+                    );
+                    $b = array_search(
                         $apiFilterB->getProperty(),
                         array_keys($queryParams[$apiFilterA->getParameterName()]),
                         true
                     );
+                    return $a - $b;
                 }
 
                 return array_search($apiFilterA->getParameterName(), array_keys($queryParams), true)
@@ -240,7 +201,7 @@ class CommonRepository
     protected function createQuery()
     {
         $query = $this->persistenceManager->createQueryForType($this->objectType);
-        if ($this->defaultQuerySettings !== null) {
+        if ($this->defaultQuerySettings instanceof QuerySettingsInterface) {
             $query->setQuerySettings(clone $this->defaultQuerySettings);
         }
 
@@ -287,7 +248,7 @@ class CommonRepository
      *
      * @throws UnknownObjectException
      */
-    public function update($modifiedObject)
+    public function update($modifiedObject): void
     {
         $this->persistenceManager->update($modifiedObject);
     }

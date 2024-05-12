@@ -10,60 +10,27 @@ use Symfony\Component\Routing\Route;
 
 abstract class AbstractOperation implements OperationInterface
 {
-    /**
-     * @var string
-     */
-    protected $key;
+    protected string $key;
 
-    /**
-     * @var ApiResource
-     */
-    protected $apiResource;
+    protected ApiResource $apiResource;
 
-    /**
-     * @var string
-     */
-    protected $method = 'GET';
+    protected string $method = 'GET';
 
-    /**
-     * @var string
-     */
-    protected $path = '/';
+    protected string $path = '/';
 
-    /**
-     * @var Route
-     */
-    protected $route;
+    protected Route $route;
 
-    /**
-     * @var array|null
-     */
-    protected $normalizationContext;
+    protected ?array $normalizationContext = null;
 
-    /**
-     * @var array|null
-     */
-    protected $denormalizationContext;
+    protected ?array $denormalizationContext = null;
 
-    /**
-     * @var string
-     */
-    protected $security = '';
+    protected string $security = '';
 
-    /**
-     * @var string
-     */
-    protected $securityPostDenormalize = '';
+    protected string $securityPostDenormalize = '';
 
-    /**
-     * @var PersistenceSettings
-     */
-    protected $persistenceSettings;
+    protected PersistenceSettings $persistenceSettings;
 
-    /**
-     * @var UploadSettings
-     */
-    protected $uploadSettings;
+    protected UploadSettings $uploadSettings;
 
     public function __construct(string $key, ApiResource $apiResource, array $params)
     {

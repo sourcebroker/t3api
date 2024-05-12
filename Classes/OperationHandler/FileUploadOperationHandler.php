@@ -51,10 +51,6 @@ class FileUploadOperationHandler extends AbstractCollectionOperationHandler
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param array $route
-     * @param ResponseInterface|null $response
      * @return mixed|\TYPO3\CMS\Core\Resource\File|void
      * @throws Exception
      * @throws OperationNotAllowedException

@@ -13,11 +13,18 @@ class FileReferenceService
     {
         if (!$originalResource->getPublicUrl()) {
             trigger_error(
-                sprintf('Could not get public URL for file UID:%d. It is probably missing in filesystem.', $originalResource->getUid()),
+                sprintf(
+                    'Could not get public URL for file UID:%d. It is probably missing in filesystem.',
+                    $originalResource->getUid()
+                ),
                 E_USER_WARNING
             );
             return null;
         }
-        return UrlService::forceAbsoluteUrl($originalResource->getPublicUrl(), $context->getAttribute('TYPO3_SITE_URL'));
+
+        return UrlService::forceAbsoluteUrl(
+            $originalResource->getPublicUrl(),
+            $context->getAttribute('TYPO3_SITE_URL')
+        );
     }
 }

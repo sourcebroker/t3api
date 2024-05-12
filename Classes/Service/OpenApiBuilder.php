@@ -41,21 +41,17 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class OpenApiBuilder
 {
-    /**
-     * @var Components
-     */
-    protected static $components;
+    protected static Components $components;
 
     /**
      * @var ApiResource[]
      */
-    protected static $apiResources = [];
+    protected static array $apiResources = [];
 
     /**
      * @param ApiResource[] $apiResources
      *
      * @throws OasInvalidArgumentException
-     * @return OpenApi
      */
     public static function build(array $apiResources): OpenApi
     {
@@ -94,19 +90,12 @@ class OpenApiBuilder
 
     /**
      * @param ApiResource[] $apiResources
-     *
-     * @return array
      */
     protected static function getTags(array $apiResources): array
     {
         return array_map(self::getTag(...), $apiResources);
     }
 
-    /**
-     * @param ApiResource $apiResource
-     *
-     * @return Tag
-     */
     protected static function getTag(ApiResource $apiResource): Tag
     {
         // @todo caching because it is used in few places
@@ -118,8 +107,8 @@ class OpenApiBuilder
     /**
      * @param ApiResource[] $apiResources
      *
-     * @throws OasInvalidArgumentException
      * @return PathItem[]
+     * @throws OasInvalidArgumentException
      */
     protected static function getPaths(array $apiResources): array
     {
@@ -140,10 +129,9 @@ class OpenApiBuilder
 
         return array_values(
             array_map(
-                function (array $pathElement) {
+                static function (array $pathElement): PathItem {
                     /** @var PathItem $pathItem */
                     $pathItem = $pathElement['path'];
-
                     return $pathItem->operations(...$pathElement['operations']);
                 },
                 $paths
@@ -152,10 +140,7 @@ class OpenApiBuilder
     }
 
     /**
-     * @param OperationInterface $apiOperation
-     *
      * @throws OasInvalidArgumentException
-     * @return Operation
      */
     protected static function getOperation(OperationInterface $apiOperation): Operation
     {
@@ -184,10 +169,8 @@ class OpenApiBuilder
     }
 
     /**
-     * @param OperationInterface $operation
-     *
-     * @throws OasInvalidArgumentException
      * @return Parameter[]
+     * @throws OasInvalidArgumentException
      */
     protected static function getOperationParameters(OperationInterface $operation): array
     {
@@ -199,8 +182,6 @@ class OpenApiBuilder
     }
 
     /**
-     * @param OperationInterface $operation
-     *
      * @return Parameter[]
      */
     protected static function getPathParametersForOperation(OperationInterface $operation): array
@@ -220,8 +201,6 @@ class OpenApiBuilder
     }
 
     /**
-     * @param OperationInterface $operation
-     *
      * @return Parameter[]
      */
     protected static function getFilterParametersForOperation(OperationInterface $operation): array
@@ -251,10 +230,8 @@ class OpenApiBuilder
     }
 
     /**
-     * @param OperationInterface $operation
-     *
-     * @throws OasInvalidArgumentException
      * @return Parameter[]
+     * @throws OasInvalidArgumentException
      */
     protected static function getPaginationParametersForOperation(OperationInterface $operation): array
     {
@@ -305,8 +282,6 @@ class OpenApiBuilder
     }
 
     /**
-     * @param OperationInterface $operation
-     *
      * @return Response[]
      */
     protected static function getOperationResponses(OperationInterface $operation): array
@@ -349,19 +324,13 @@ class OpenApiBuilder
         return Schema::ref(self::getComponentsSchemaReference($operation->getApiResource()->getEntity()));
     }
 
-    /**
-     * @param string $class
-     * @param string $mode `READ` or `WRITE`
-     *
-     * @return string
-     */
     protected static function getComponentsSchemaReference(string $class, string $mode = 'READ'): string
     {
         $schemaIdentifier = str_replace('\\', '.', $class) . '__' . $mode;
         $referencePath = '#/components/schemas/' . $schemaIdentifier;
 
         $definedSchemas = array_map(
-            function (Schema $schema) {
+            static function (Schema $schema): ?string {
                 return $schema->objectId;
             },
             self::$components->schemas ?? []
@@ -375,9 +344,6 @@ class OpenApiBuilder
     }
 
     /**
-     * @param string $name
-     * @param string $class
-     * @param string $mode `READ` or `WRITE`
      * @throws RuntimeException
      */
     protected static function setComponentsSchema(string $name, string $class, string $mode): void
@@ -406,11 +372,11 @@ class OpenApiBuilder
                     1577637116148
                 );
             }
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             throw new RuntimeException(
                 sprintf('An error occurred while generating metadata for class `%s`', $class),
                 1577637267693,
-                $e
+                $exception
             );
         }
 
@@ -431,14 +397,11 @@ class OpenApiBuilder
         $schemas[] = Schema::object($name)
             ->properties(...$properties);
 
-        unset($currentlyProcessedClasses[array_search($class, $currentlyProcessedClasses)]);
+        unset($currentlyProcessedClasses[array_search($class, $currentlyProcessedClasses, true)]);
 
         self::$components = self::$components->schemas(...$schemas);
     }
 
-    /**
-     * @return MetadataFactoryInterface
-     */
     protected static function getMetadataFactory(): MetadataFactoryInterface
     {
         static $metadataFactory;
@@ -451,10 +414,7 @@ class OpenApiBuilder
     }
 
     /**
-     * @param PropertyMetadata $propertyMetadata
      * @param string $mode `READ` or `WRITE`
-     *
-     * @return Schema
      */
     protected static function getPropertySchemaFromPropertyMetadata(
         PropertyMetadata $propertyMetadata,
@@ -470,11 +430,7 @@ class OpenApiBuilder
     }
 
     /**
-     * @param string $type
      * @param string $mode `READ` or `WRITE`
-     * @param array $params
-     *
-     * @return Schema
      */
     protected static function getPropertySchemaFromPropertyType(string $type, string $mode, array $params = []): Schema
     {
@@ -496,7 +452,7 @@ class OpenApiBuilder
             }
         } elseif (in_array($type, ['int', 'integer'])) {
             $schema = Schema::integer();
-        } elseif (in_array($type, ['string'])) {
+        } elseif ($type === 'string') {
             $schema = Schema::string();
         } elseif (in_array($type, ['double', 'float'])) {
             $schema = Schema::number();
@@ -507,11 +463,6 @@ class OpenApiBuilder
         return $schema ?? Schema::string();
     }
 
-    /**
-     * @param string $className
-     *
-     * @return bool
-     */
     protected static function isApiResourceClass(string $className): bool
     {
         foreach (self::$apiResources as $apiResource) {

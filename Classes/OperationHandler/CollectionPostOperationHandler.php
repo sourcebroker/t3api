@@ -22,13 +22,9 @@ class CollectionPostOperationHandler extends AbstractCollectionOperationHandler
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param array $route
-     * @param ResponseInterface|null $response
-     * @throws OperationNotAllowedException
-     * @throws ValidationException
      * @return mixed|AbstractDomainObject|void
+     * @throws ValidationException
+     * @throws OperationNotAllowedException
      */
     public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response)
     {
