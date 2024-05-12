@@ -88,7 +88,7 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
                 'crop' => $this->getCropArea($fileResource, $type['params'][4] ?? 'default'),
             ]);
             $processedFileUrl = $this->fileReferenceService->getUrlFromResource($processedFile, $context);
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             trigger_error(
                 $e->getMessage(),
                 E_USER_WARNING

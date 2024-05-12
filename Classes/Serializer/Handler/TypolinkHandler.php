@@ -17,9 +17,9 @@ class TypolinkHandler extends AbstractHandler implements SerializeHandlerInterfa
     public const TYPE = 'Typolink';
 
     public function __construct(
-        public readonly LinkFactory $linkFactory,
-        public readonly LinkService $linkService,
-        public readonly ContentObjectRenderer $contentObjectRenderer
+        protected readonly LinkFactory $linkFactory,
+        protected readonly LinkService $linkService,
+        protected readonly ContentObjectRenderer $contentObjectRenderer
     ) {}
 
     /**

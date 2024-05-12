@@ -42,13 +42,13 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
     protected static $supportedTypes = [self::TYPE];
 
     public function __construct(
-        public readonly ResourceFactory $resourceFactory,
-        public readonly PersistenceManager $persistenceManager,
-        public readonly SerializerService $serializerService,
-        public readonly FileReferenceService $fileReferenceService,
-        public readonly LinkFactory $linkFactory,
-        public readonly LinkService $linkService,
-        public readonly ContentObjectRenderer $contentObjectRenderer
+        protected readonly ResourceFactory $resourceFactory,
+        protected readonly PersistenceManager $persistenceManager,
+        protected readonly SerializerService $serializerService,
+        protected readonly FileReferenceService $fileReferenceService,
+        protected readonly LinkFactory $linkFactory,
+        protected readonly LinkService $linkService,
+        protected readonly ContentObjectRenderer $contentObjectRenderer
     ) {}
 
     /**
@@ -101,7 +101,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                 }
             }
 
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             trigger_error(
                 $e->getMessage(),
                 E_USER_WARNING

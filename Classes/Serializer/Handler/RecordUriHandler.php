@@ -27,9 +27,9 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
     protected static $supportedTypes = [self::TYPE];
 
     public function __construct(
-        public readonly LinkFactory $linkFactory,
-        public readonly LinkService $linkService,
-        public readonly ContentObjectRenderer $contentObjectRenderer
+        protected readonly LinkFactory $linkFactory,
+        protected readonly LinkService $linkService,
+        protected readonly ContentObjectRenderer $contentObjectRenderer
     ) {}
 
     /**
