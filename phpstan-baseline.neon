@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		- '#Construct empty\(\)#'
+		- '#Unsafe usage of new static\(\)#'
+	typo3:
+		requestGetAttributeMapping:
+			t3apiHeaderLanguageRequest: bool

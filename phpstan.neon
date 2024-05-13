@@ -1,0 +1,14 @@
+includes:
+  - phpstan-baseline.neon
+
+parameters:
+  parallel:
+    maximumNumberOfProcesses: 5
+
+  level: 1
+
+  paths:
+    - Classes
+    - Configuration
+    - Tests
+
