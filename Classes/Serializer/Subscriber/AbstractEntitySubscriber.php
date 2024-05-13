@@ -20,20 +20,12 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
  */
 class AbstractEntitySubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ApiResourceRepository
-     */
-    protected $apiResourceRepository;
-
-    public function __construct(ApiResourceRepository $apiResourceRepository)
-    {
-        $this->apiResourceRepository = $apiResourceRepository;
-    }
+    public function __construct(protected readonly ApiResourceRepository $apiResourceRepository) {}
 
     /**
      * @return array
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             [
@@ -47,9 +39,6 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param ObjectEvent $event
-     */
     public function onPostSerialize(ObjectEvent $event): void
     {
         if (!$event->getObject() instanceof AbstractDomainObject) {
@@ -66,9 +55,6 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         $this->addIri($entity, $visitor);
     }
 
-    /**
-     * @param PreDeserializeEvent $event
-     */
     public function onPreDeserialize(PreDeserializeEvent $event): void
     {
         // Changes type to the custom one to make it possible to handle data with serializer handler
@@ -86,10 +72,6 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param AbstractDomainObject $entity
-     * @param JsonSerializationVisitor $visitor
-     */
     protected function addForceEntityProperties(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
     {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['forceEntityProperties'] as $property) {
@@ -101,14 +83,10 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param AbstractDomainObject $entity
-     * @param JsonSerializationVisitor $visitor
-     */
     protected function addIri(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
     {
         $apiResource = $this->apiResourceRepository->getByEntity($entity);
-        if ($apiResource && $apiResource->getMainItemOperation()) {
+        if ($apiResource instanceof ApiResource && $apiResource->getMainItemOperation() instanceof ItemOperation) {
             // @todo should be generated with symfony router
             $iri = str_replace(
                 '{id}',

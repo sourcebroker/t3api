@@ -129,8 +129,10 @@ class SerializerMetadataService
         return array_reverse($classes, false);
     }
 
-    protected static function getProperties(\ReflectionClass $reflectionClass, AnnotationReader $annotationReader): array
-    {
+    protected static function getProperties(
+        \ReflectionClass $reflectionClass,
+        AnnotationReader $annotationReader
+    ): array {
         $properties = [];
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {

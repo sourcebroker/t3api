@@ -11,6 +11,9 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class RteHandler extends AbstractHandler implements SerializeHandlerInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE = 'Rte';
 
     protected static $supportedTypes = [self::TYPE];

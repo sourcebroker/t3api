@@ -30,7 +30,6 @@ class InitializedObjectConstructor implements ObjectConstructorInterface
         if ($context->hasAttribute('target') && $context->getDepth() === 1) {
             return $context->getAttribute('target');
         }
-
         return null;
     }
 }

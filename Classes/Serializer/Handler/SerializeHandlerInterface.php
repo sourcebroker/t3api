@@ -13,10 +13,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 interface SerializeHandlerInterface
 {
     /**
-     * @param SerializationVisitorInterface $visitor
      * @param mixed $object
-     * @param array $type
-     * @param SerializationContext $context
      *
      * @return mixed
      */

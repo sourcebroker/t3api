@@ -20,25 +20,15 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
  */
 class AbstractDomainObjectHandler extends AbstractHandler implements DeserializeHandlerInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE = 'AbstractDomainObjectTransport';
 
-    /**
-     * @var PersistenceManager
-     */
-    protected $persistenceManager;
-
-    /**
-     * @var SerializerService
-     */
-    protected $serializerService;
-
     public function __construct(
-        PersistenceManager $persistenceManager,
-        SerializerService $serializerService
-    ) {
-        $this->persistenceManager = $persistenceManager;
-        $this->serializerService = $serializerService;
-    }
+        protected readonly PersistenceManager $persistenceManager,
+        protected readonly SerializerService $serializerService
+    ) {}
 
     /**
      * @var string[]
@@ -46,10 +36,7 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
     protected static $supportedTypes = [self::TYPE];
 
     /**
-     * @param DeserializationVisitorInterface $visitor
      * @param mixed $data
-     * @param array $type
-     * @param DeserializationContext $context
      * @return mixed|object
      */
     public function deserialize(
@@ -87,9 +74,6 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
     }
 
     /**
-     * @param array $data
-     * @param string $targetObjectType
-     * @param DeserializationContext $context
      * @return mixed
      */
     protected function processCascadePersistence(

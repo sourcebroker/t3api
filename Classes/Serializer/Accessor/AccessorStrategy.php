@@ -19,10 +19,7 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
  */
 class AccessorStrategy implements AccessorStrategyInterface
 {
-    /**
-     * @var ExpressionEvaluator
-     */
-    protected $evaluator;
+    protected ExpressionEvaluator $evaluator;
 
     public function __construct()
     {
@@ -37,12 +34,14 @@ class AccessorStrategy implements AccessorStrategyInterface
         try {
             if ($metadata instanceof ExpressionPropertyMetadata) {
                 $variables = ['object' => $object, 'context' => $context, 'property_metadata' => $metadata];
+
                 return $this->evaluator->evaluate((string)($metadata->expression), $variables);
             }
 
             if ($metadata->getter === null) {
                 return ObjectAccess::getProperty($object, $metadata->name);
             }
+
             return $object->{$metadata->getter}();
         } catch (\Exception $exception) {
             $exclusionForExceptions = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializer']['exclusionForExceptionsInAccessorStrategyGetValue'];

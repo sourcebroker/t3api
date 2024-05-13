@@ -19,17 +19,12 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
  */
 class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE = 'Image';
 
-    /**
-     * @var FileReferenceService
-     */
-    private $fileReferenceService;
-
-    public function __construct(FileReferenceService $fileReferenceService)
-    {
-        $this->fileReferenceService = $fileReferenceService;
-    }
+    public function __construct(private readonly ?FileReferenceService $fileReferenceService) {}
 
     /**
      * @var string[]
@@ -37,10 +32,7 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
     protected static $supportedTypes = [self::TYPE];
 
     /**
-     * @param SerializationVisitorInterface $visitor
      * @param FileReference|FileReference[]|int|int[] $fileReference
-     * @param array $type
-     * @param SerializationContext $context
      *
      * @return string|string[]|null[]|null
      */
@@ -49,11 +41,11 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
         $fileReference,
         array $type,
         SerializationContext $context
-    ) {
+    ): array|string|null {
         if (is_iterable($fileReference)) {
             return array_values(
                 array_map(
-                    function ($fileReference) use ($type, $context) {
+                    function ($fileReference) use ($type, $context): ?string {
                         return $this->processSingleImage($fileReference, $type, $context);
                     },
                     $fileReference instanceof \Traversable ? iterator_to_array($fileReference) : $fileReference

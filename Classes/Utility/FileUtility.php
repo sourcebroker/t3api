@@ -6,23 +6,19 @@ namespace SourceBroker\T3api\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class FileUtility
- */
 class FileUtility
 {
-    /**
-     * @param string $path
-     *
-     * @return string
-     */
     public static function createWritableDirectory(string $path): string
     {
         if (!is_dir($path)) {
             try {
                 GeneralUtility::mkdir_deep($path);
             } catch (\RuntimeException $e) {
-                throw new \RuntimeException(sprintf('The directory `%s` can not be created.', $path), 1570250836643, $e);
+                throw new \RuntimeException(
+                    sprintf('The directory `%s` can not be created.', $path),
+                    1570250836643,
+                    $e
+                );
             }
         }
 

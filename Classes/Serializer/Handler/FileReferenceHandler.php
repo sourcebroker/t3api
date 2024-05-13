@@ -33,6 +33,9 @@ use TYPO3\CMS\Frontend\Typolink\LinkFactory;
  */
 class FileReferenceHandler extends AbstractHandler implements SerializeHandlerInterface, DeserializeHandlerInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE = 'FileReferenceTransport';
 
     /**
@@ -51,12 +54,9 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
     ) {}
 
     /**
-     * @param SerializationVisitorInterface $visitor
      * @param ExtbaseFileReference|Typo3FileReference $fileReference
-     * @param array $type
-     * @param SerializationContext $context
      *
-     * @return array
+     * @return array{uid: int|null, url: string|null, file: array{uid: int, name: string, mimeType: string, size: int|null}, urlEmbed?: mixed}
      *
      * @todo Try to implement it with default JMS serialization functionality instead of using this handler
      */
@@ -74,7 +74,6 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                 : $fileReference;
             $out['url'] = $this->fileReferenceService->getUrlFromResource($originalResource, $context);
             $out['uid'] = $originalResource->getUid();
-
             $originalFile = $originalResource->getOriginalFile();
             $out['file']['uid'] = $originalFile->getUid();
             $out['file']['name'] = $originalFile->getName();
@@ -99,6 +98,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                     }
                 }
             }
+
         } catch (\Exception $e) {
             trigger_error(
                 $e->getMessage(),
@@ -109,10 +109,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
     }
 
     /**
-     * @param DeserializationVisitorInterface $visitor
      * @param mixed $data
-     * @param array $type
-     * @param DeserializationContext $context
      * @return mixed|void
      * @throws ValidationException
      */
@@ -161,10 +158,6 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
     }
 
     /**
-     * @param array $data
-     * @param string $type
-     * @param DeserializationContext $context
-     * @return ExtbaseFileReference
      * @throws ValidationException
      */
     protected function createSysFileReference(
@@ -214,8 +207,6 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
 
     /**
      * Removes already existing file reference if property is not a collection but relation to single file
-     *
-     * @param DeserializationContext $context
      */
     protected function removeExistingFileReference(DeserializationContext $context): void
     {

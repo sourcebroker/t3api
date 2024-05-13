@@ -12,15 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractContextBuilder implements ContextBuilderInterface
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
+    public function __construct(protected readonly EventDispatcherInterface $eventDispatcher) {}
 
     protected function dispatchAfterCreateContextForOperationEvent(
         OperationInterface $operation,

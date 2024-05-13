@@ -21,8 +21,6 @@ class DeserializationContextBuilder extends AbstractContextBuilder
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
      * @param null $targetObject
      * @return DeserializationContext
      */
@@ -34,7 +32,7 @@ class DeserializationContextBuilder extends AbstractContextBuilder
         // `denormalizationContext` did not exist and same attributes were used for both contexts
         $attributes = $operation->getDenormalizationContext() ?? $operation->getNormalizationContext() ?? [];
 
-        if (!empty($targetObject)) {
+        if ($targetObject !== null) {
             $attributes['target'] = $targetObject;
         }
 
@@ -47,7 +45,6 @@ class DeserializationContextBuilder extends AbstractContextBuilder
             $request,
             $context
         );
-
         return $context;
     }
 }

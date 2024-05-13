@@ -14,6 +14,9 @@ use TYPO3\CMS\Frontend\Typolink\UnableToLinkException;
 
 class TypolinkHandler extends AbstractHandler implements SerializeHandlerInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE = 'Typolink';
 
     public function __construct(

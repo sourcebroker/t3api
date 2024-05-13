@@ -44,7 +44,6 @@ class SerializationContextBuilder extends AbstractContextBuilder
             $request,
             $context
         );
-
         return $context;
     }
 }

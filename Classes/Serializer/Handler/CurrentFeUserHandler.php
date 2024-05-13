@@ -11,6 +11,9 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class CurrentFeUserHandler extends AbstractHandler implements DeserializeHandlerInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE = 'CurrentFeUser';
 
     /**
@@ -18,15 +21,7 @@ class CurrentFeUserHandler extends AbstractHandler implements DeserializeHandler
      */
     protected static $supportedTypes = [self::TYPE];
 
-    /**
-     * @var PersistenceManager
-     */
-    protected $persistenceManager;
-
-    public function __construct(PersistenceManager $persistenceManager)
-    {
-        $this->persistenceManager = $persistenceManager;
-    }
+    public function __construct(protected readonly PersistenceManager $persistenceManager) {}
 
     /** @noinspection PhpIncompatibleReturnTypeInspection */
     public function deserialize(

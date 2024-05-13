@@ -25,12 +25,7 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
     ];
 
     /**
-     * @param SerializationVisitorInterface $visitor
      * @param ObjectStorage $objectStorage
-     * @param array $type
-     * @param SerializationContext $context
-     *
-     * @return array
      */
     public function serialize(
         SerializationVisitorInterface $visitor,
@@ -48,12 +43,7 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
     }
 
     /**
-     * @param DeserializationVisitorInterface $visitor
      * @param mixed $data
-     * @param array $type
-     * @param DeserializationContext $context
-     *
-     * @return ObjectStorage
      */
     public function deserialize(
         DeserializationVisitorInterface $visitor,

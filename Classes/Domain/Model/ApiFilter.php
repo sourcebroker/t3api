@@ -8,9 +8,6 @@ use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
 use SourceBroker\T3api\Filter\FilterInterface;
 use SourceBroker\T3api\Filter\OrderFilter;
 
-/**
- * Class ApiFilter
- */
 class ApiFilter
 {
     protected string $filterClass;

@@ -13,23 +13,9 @@ use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Serializer\Handler\FileReferenceHandler;
 use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
 
-/**
- * Class FileReferenceSubscriber
- */
 class FileReferenceSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ApiResourceRepository
-     */
-    protected $apiResourceRepository;
-
-    /**
-     * @param ApiResourceRepository $apiResourceRepository
-     */
-    public function __construct(ApiResourceRepository $apiResourceRepository)
-    {
-        $this->apiResourceRepository = $apiResourceRepository;
-    }
+    public function __construct(protected readonly ApiResourceRepository $apiResourceRepository) {}
 
     /**
      * @return array
@@ -50,8 +36,6 @@ class FileReferenceSubscriber implements EventSubscriberInterface
 
     /**
      * Changes type to the custom one to make it possible to handle data with serializer handler
-     *
-     * @param PreSerializeEvent $event
      */
     public function onPreSerialize(PreSerializeEvent $event): void
     {
@@ -60,17 +44,12 @@ class FileReferenceSubscriber implements EventSubscriberInterface
 
     /**
      * Changes type to the custom one to make it possible to handle data with serializer handler
-     *
-     * @param PreDeserializeEvent $event
      */
     public function onPreDeserialize(PreDeserializeEvent $event): void
     {
         $this->changeTypeToHandleAllFileReferenceExtendingClasses($event);
     }
 
-    /**
-     * @param Event $event
-     */
     protected function changeTypeToHandleAllFileReferenceExtendingClasses(Event $event): void
     {
         if (

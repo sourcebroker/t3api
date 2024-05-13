@@ -8,6 +8,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use SourceBroker\T3api\Service\SerializerMetadataService;
 
 abstract class AbstractHandler implements SubscribingHandlerInterface
 {
@@ -23,7 +24,7 @@ abstract class AbstractHandler implements SubscribingHandlerInterface
     {
         return array_merge(
             ...array_map(
-                static function ($supportedType) {
+                static function ($supportedType): array {
                     $methods = [];
 
                     if (is_subclass_of(static::class, SerializeHandlerInterface::class)) {
@@ -73,9 +74,6 @@ abstract class AbstractHandler implements SubscribingHandlerInterface
 
     protected function getDecodedParams(array $params): array
     {
-        return array_map(
-            '\SourceBroker\T3api\Service\SerializerMetadataService::decodeFromSingleHandlerParam',
-            $params
-        );
+        return array_map(SerializerMetadataService::class . '::decodeFromSingleHandlerParam', $params);
     }
 }

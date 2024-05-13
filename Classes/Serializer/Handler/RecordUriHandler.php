@@ -13,11 +13,11 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Typolink\LinkFactory;
 use TYPO3\CMS\Frontend\Typolink\UnableToLinkException;
 
-/**
- * Class RecordUriHandler
- */
 class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE = 'RecordUri';
 
     /**
@@ -32,19 +32,14 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
     ) {}
 
     /**
-     * @param SerializationVisitorInterface $visitor
      * @param $value
-     * @param array $type
-     * @param SerializationContext $context
-     *
-     * @return string
      */
     public function serialize(
         SerializationVisitorInterface $visitor,
         $value,
         array $type,
         SerializationContext $context
-    ) {
+    ): string {
         /** @var AbstractDomainObject $entity */
         $entity = $context->getObject();
 
@@ -70,10 +65,10 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
         if (empty($url)) {
             return '';
         }
-
         return UrlService::forceAbsoluteUrl(
             $url,
             $context->getAttribute('TYPO3_SITE_URL')
         );
     }
+
 }
