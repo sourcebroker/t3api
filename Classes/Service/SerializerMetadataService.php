@@ -175,7 +175,7 @@ class SerializerMetadataService
                 $accessorName = $reflectionMethod->getName();
             }
 
-            $propertyName = $virtualProperty->name !== '' ? $virtualProperty->name : $accessorName;
+            $propertyName = !empty($virtualProperty->name) ? $virtualProperty->name : $accessorName;
 
             $virtualProperties[$reflectionMethod->getName()] = array_merge(
                 [
