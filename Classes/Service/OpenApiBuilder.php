@@ -334,7 +334,7 @@ class OpenApiBuilder
             self::$components->schemas ?? []
         );
 
-        if (!in_array($schemaIdentifier, $definedSchemas)) {
+        if (!in_array($schemaIdentifier, $definedSchemas, true)) {
             self::setComponentsSchema($schemaIdentifier, $class, $mode);
         }
 
@@ -352,7 +352,7 @@ class OpenApiBuilder
             $currentlyProcessedClasses = [];
         }
 
-        if (in_array($class, $currentlyProcessedClasses)) {
+        if (in_array($class, $currentlyProcessedClasses, true)) {
             return;
         }
 
@@ -448,13 +448,13 @@ class OpenApiBuilder
                 // will not be displayed correctly
                 $schema = Schema::ref(self::getComponentsSchemaReference($type, $mode));
             }
-        } elseif (in_array($type, ['int', 'integer'])) {
+        } elseif (in_array($type, ['int', 'integer'], true)) {
             $schema = Schema::integer();
         } elseif ($type === 'string') {
             $schema = Schema::string();
-        } elseif (in_array($type, ['double', 'float'])) {
+        } elseif (in_array($type, ['double', 'float'], true)) {
             $schema = Schema::number();
-        } elseif (in_array($type, ['boolean', 'bool'])) {
+        } elseif (in_array($type, ['boolean', 'bool'], true)) {
             $schema = Schema::boolean();
         }
 

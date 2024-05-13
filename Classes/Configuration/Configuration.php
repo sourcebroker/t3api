@@ -31,7 +31,7 @@ class Configuration
 
     protected static function getClassNamesSortedByPriority(?array $items): array
     {
-        $items = $items ?: [];
+        $items = $items ?? [];
         $items = array_map(
             static function ($class, $priority): array {
                 return [

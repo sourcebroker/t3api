@@ -27,5 +27,6 @@ abstract class AbstractCollectionOperationHandler extends AbstractOperationHandl
         if (!$this->operationAccessChecker->isGranted($operation)) {
             throw new OperationNotAllowedException($operation, 1574416639472);
         }
+        return null;
     }
 }

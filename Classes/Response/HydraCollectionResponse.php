@@ -101,7 +101,7 @@ class HydraCollectionResponse extends AbstractCollectionResponse
                 $variable = $filter->getParameterName();
             }
 
-            if (!in_array($variable, $variables)) {
+            if (!in_array($variable, $variables, true)) {
                 $searchData['hydra:mapping'][] = [
                     'variable' => $variable,
                     'property' => $filter->getProperty(),

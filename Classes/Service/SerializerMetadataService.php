@@ -64,7 +64,7 @@ class SerializerMetadataService
     {
         try {
             return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
+        } catch (\JsonException $e) {
             return $value;
         }
     }
@@ -175,7 +175,7 @@ class SerializerMetadataService
                 $accessorName = $reflectionMethod->getName();
             }
 
-            $propertyName = $virtualProperty->name ?: $accessorName;
+            $propertyName = $virtualProperty->name !== '' ? $virtualProperty->name : $accessorName;
 
             $virtualProperties[$reflectionMethod->getName()] = array_merge(
                 [
@@ -269,7 +269,7 @@ class SerializerMetadataService
                     $metadata['type'] .= sprintf('<%s>', static::encodeToHandlerParams($annotation->getParams()));
                 }
             } elseif ($annotation instanceof ReadOnlyProperty) {
-                $metadata['read_only'] = (bool)$annotation->readOnly;
+                $metadata['read_only'] = $annotation->readOnly;
             } elseif ($annotation instanceof Exclude) {
                 if ($annotation->if !== '') {
                     $metadata['exclude_if'] = $annotation->if;
@@ -335,7 +335,7 @@ class SerializerMetadataService
                     $value,
                     JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_HEX_TAG | JSON_THROW_ON_ERROR
                 );
-            } catch (JsonException $e) {
+            } catch (\JsonException $e) {
                 throw new \InvalidArgumentException(
                     sprintf(
                         'Could not encode array parameter to json inside %s::%s',

@@ -23,7 +23,7 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
         protected readonly ValidationService $validationService,
         protected readonly OperationAccessChecker $operationAccessChecker,
         protected readonly DeserializationContextBuilder $deserializationContextBuilder,
-        protected readonly EventDispatcherInterface $dispatcher
+        protected readonly EventDispatcherInterface $eventDispatcher
     ) {}
 
     protected function getRepositoryForOperation(OperationInterface $operation): CommonRepository

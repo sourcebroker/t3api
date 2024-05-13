@@ -112,7 +112,7 @@ abstract class AbstractDispatcher
 
         /** @var OperationHandlerInterface $handler */
         $handler = GeneralUtility::makeInstance(array_shift($handlers));
-        $result = $handler->handle($operation, $request, $route ?? [], $response);
+        $result = $handler->handle($operation, $request, $route, $response);
 
         $afterProcessOperationEvent = new AfterProcessOperationEvent(
             $operation,

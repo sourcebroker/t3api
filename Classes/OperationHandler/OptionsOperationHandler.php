@@ -109,5 +109,6 @@ class OptionsOperationHandler extends AbstractOperationHandler
                 }
             }
         }
+        return null;
     }
 }

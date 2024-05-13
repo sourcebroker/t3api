@@ -142,7 +142,7 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
     ) {
         $object = $this->persistenceManager->getObjectByIdentifier($uid, $targetObjectType, false);
 
-        if (empty($object)) {
+        if ($object === null) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'Path `%s`: Entity of type `%s` with UID `%s` could not be found',
@@ -180,7 +180,7 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
     ): bool {
         $parentObject = $context->getAttribute('target');
 
-        if (!$parentObject) {
+        if (empty($parentObject)) {
             throw new \RuntimeException(
                 'It is not possible to check if object is in context scope without parent object. This message should never be thrown',
                 1589811502043

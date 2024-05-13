@@ -122,9 +122,7 @@ class CommonRepository
 
         $constraints = [];
         foreach ($constraintGroups as $constraintGroup) {
-            if (!empty($constraintGroup)) {
-                $constraints[] = $query->logicalOr(...$constraintGroup);
-            }
+            $constraints[] = $query->logicalOr(...$constraintGroup);
         }
 
         if ($constraints !== []) {

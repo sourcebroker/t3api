@@ -79,7 +79,7 @@ class RouteService implements SingletonInterface
             $requestLanguage->getBase()->getPath() :
             SiteService::getCurrent()->getDefaultLanguage()->getBase()->getPath();
 
-        if (str_starts_with((string)$request?->getUri()->getPath(), $languagePrefix)) {
+        if (str_starts_with($request?->getUri()->getPath(), $languagePrefix)) {
             return $languagePrefix;
         }
 

@@ -155,8 +155,8 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                 false
             );
         }
+        return null;
     }
-
     /**
      * @throws ValidationException
      */

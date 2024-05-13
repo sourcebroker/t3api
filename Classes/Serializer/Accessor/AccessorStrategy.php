@@ -42,7 +42,10 @@ class AccessorStrategy implements AccessorStrategyInterface
                 return ObjectAccess::getProperty($object, $metadata->name);
             }
 
-            return $object->{$metadata->getter}();
+            $callback = [$object, $metadata->getter];
+            if (is_callable($callback)) {
+                return $callback();
+            }
         } catch (\Exception $exception) {
             $exclusionForExceptions = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializer']['exclusionForExceptionsInAccessorStrategyGetValue'];
             foreach ($exclusionForExceptions as $objectClass => $exceptionClasses) {
@@ -61,6 +64,8 @@ class AccessorStrategy implements AccessorStrategyInterface
             }
             throw $exception;
         }
+
+        return null;
     }
 
     /**
@@ -78,6 +83,9 @@ class AccessorStrategy implements AccessorStrategyInterface
             return;
         }
 
-        $object->{$metadata->setter}($value);
+        $callback = [$object, $metadata->setter];
+        if (is_callable($callback)) {
+            $callback($value);
+        }
     }
 }
