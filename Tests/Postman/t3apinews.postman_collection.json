@@ -1,0 +1,833 @@
+{
+	"info": {
+		"_postman_id": "a8d86f46-cf85-47b1-bd9f-aed3c9723ec1",
+		"name": "t3api news",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get endpoint list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bdfe5eb-5b52-4f81-95d0-121d63daa550",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							"",
+							"pm.environment.set('categoryEndpointPath', response.resources['SourceBroker\\\\T3apinews\\\\Domain\\\\Model\\\\Category']);",
+							"pm.environment.set('newsEndpointPath', response.resources['SourceBroker\\\\T3apinews\\\\Domain\\\\Model\\\\News']);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/_api/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"_api",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create news category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c950794-3451-417d-94d3-e489c4f8b616",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 201',",
+							"    function () {",
+							"        pm.response.to.have.status(201);",
+							"    }",
+							");",
+							"",
+							"pm.environment.set('categoryUid', response.uid);",
+							"pm.environment.set('singleCategoryEndpoint', response['@id']);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"title\": \"hello world\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{categoryEndpointPath}}",
+					"host": [
+						"{{baseUrl}}{{categoryEndpointPath}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3ce94dbd-7661-4e0b-ac71-a50ed52f8b4d",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Title of the new category is correct',",
+							"    function() {",
+							"        pm.expect(response['title']).to.eql('hello world')",
+							"    }",
+							");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{singleCategoryEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleCategoryEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create news",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7cdf6990-c444-4b88-bd80-12a614d47ed7",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 201',",
+							"    function () {",
+							"        pm.response.to.have.status(201);",
+							"    }",
+							");",
+							"",
+							"pm.environment.set('newsUid', response.uid);",
+							"pm.environment.set('singleNewsEndpoint', response['@id']);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\": \"This is an example news\",\n\t\"alternativeTitle\": \"Alt title\",\n\t\"pid\": 3,\n\t\"pathSegment\":\"this_is_an_example_news\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"bodytext\": \"Here is the body\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{newsEndpointPath}}",
+					"host": [
+						"{{baseUrl}}{{newsEndpointPath}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check news",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cc83e60a-85f3-4fcf-8b9e-38082b598fd9",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Title of the new news is correct',",
+							"    function() {",
+							"        pm.expect(response.title).to.eql('This is an example news')",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Alternative title of the new news is correct',",
+							"    function() {",
+							"        pm.expect(response.alternativeTitle).to.eql('Alt title')",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Category is assigned correctly',",
+							"    function() {",
+							"        pm.expect(response.categories[0].uid).to.eql(pm.environment.get('categoryUid'));",
+							"    }",
+							");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit news",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bfc74a34-226f-477b-880c-dd475c59ece0",
+						"exec": [
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\": \"This is my new title\",\n\t\"categories\": []\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check news after update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "15300703-f088-4000-8813-f6a9bb91451a",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Title of the new news is correct',",
+							"    function() {",
+							"        pm.expect(response.title).to.eql('This is my new title')",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Alternative title is not changed',",
+							"    function() {",
+							"        pm.expect(response.alternativeTitle).to.eql('Alt title')",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Category is not assigned anymore',",
+							"    function() {",
+							"        pm.expect(response.categories).to.eql([]);",
+							"    }",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Replace news",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3553ddec-61ad-4358-a47a-d95526d69f89",
+						"exec": [
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\": \"This is even new title\",\n\t\"pid\": 3,\n\t\"pathSegment\":\"this_is_an_example_news\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"related\": [],\n\t\"relatedFrom\": []\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check news after replace",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9cb798ce-62c7-494f-a005-747a54caa09c",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Title of the new news is correct',",
+							"    function() {",
+							"        pm.expect(response.title).to.eql('This is even new title')",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Alternative title is cleaned',",
+							"    function() {",
+							"        pm.expect(response.alternativeTitle).to.eql('')",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Category is assigned again',",
+							"    function() {",
+							"        pm.expect(response.categories[0].uid).to.eql(pm.environment.get('categoryUid'));",
+							"    }",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload news image",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "16889241-38f3-4e7a-9590-9a031adafa09",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 201',",
+							"    function () {",
+							"        pm.response.to.have.status(201);",
+							"    }",
+							");",
+							"",
+							"pm.environment.set('uploadedFieldUid', response.properties.uid);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "originalResource",
+							"type": "file",
+							"src": "/var/www/html/Tests/Postman/fixtures/test1.jpg"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{filesEndpointPath}}",
+					"host": [
+						"{{baseUrl}}{{filesEndpointPath}}"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add media to news",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4da809e-0dc1-49d1-8e6a-9fa2d49eb12e",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Number of media elements is correct',",
+							"    function() {",
+							"        pm.expect(response.falMedia.length).to.eql(2)",
+							"    }",
+							");",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Locale",
+						"value": "0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\": \"This is title of the news with new image\",\n\t\"falMedia\": [\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 1\n\t\t},\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 0\n\t\t}\n\t]\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete news",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4de54e1e-64cb-4e41-a7fb-91b37d66a481",
+						"exec": [
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check news after remove",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "37f85fba-b0aa-40d6-95a6-54f03b6b396f",
+						"exec": [
+							"pm.test(",
+							"    'Status code is 404',",
+							"    function () {",
+							"        pm.response.to.have.status(404);",
+							"    }",
+							");",
+							"",
+							"pm.environment.set('newsUid', 0);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "72128192-7cf1-4db5-9b4c-dab064bb2a8d",
+						"exec": [
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{singleCategoryEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleCategoryEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check category after remove",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e9f52ff3-3d4e-4d82-90e3-d479ab1720eb",
+						"exec": [
+							"pm.test(",
+							"    'Status code is 404',",
+							"    function () {",
+							"        pm.response.to.have.status(404);",
+							"    }",
+							");",
+							"",
+							"pm.environment.set('categoryUid', 0);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{singleCategoryEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleCategoryEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "c2b34960-2a81-4c21-9785-d85900e2cc5f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2e82b4b6-9399-4ad3-9eb3-af6376c782d5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "859dd730-2cf0-4c0d-9517-a1e901964f4e",
+			"key": "newsUid",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "8feb2d12-5e3a-446f-b8ca-e800ef303dfa",
+			"key": "baseUrl",
+			"value": "https://v12.t3api.ddev.site",
+			"type": "string"
+		},
+		{
+			"id": "dc96d707-e720-4ad1-81d1-f034653cd58f",
+			"key": "categoryEndpointPath",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "be99ffa0-4d4d-4df0-b75b-920c10a00aec",
+			"key": "singleCategoryEndpoint",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "1d54d8d0-c8bb-4bad-a55f-e06a67b5c57b",
+			"key": "newsEndpointPath",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "cf2e3532-d301-4854-932c-eb4fda029572",
+			"key": "singleNewsEndpoint",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "90e68098-d401-4ee0-a148-90785826354c",
+			"key": "filesEndpointPath",
+			"value": "/_api/news/files",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
