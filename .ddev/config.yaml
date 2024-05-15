@@ -19,6 +19,7 @@ hooks:
         - exec: mkdir -p .test && cp /var/www/html/.ddev/data-init/index.html /var/www/html/.test/
 use_dns_when_possible: true
 composer_version: "2"
+webimage_extra_packages: [parallel]
 web_environment:
   - TYPO3_CONTEXT=Development
 

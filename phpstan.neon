@@ -12,3 +12,5 @@ parameters:
     - Configuration
     - Tests
 
+  excludePaths:
+    - 'Tests/Postman/*'
