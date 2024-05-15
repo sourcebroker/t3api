@@ -313,7 +313,11 @@ class SerializerMetadataService
             return '';
         }
 
-        $encodedParams = array_map(static::encodeToSingleHandlerParam(...), $params);
+        $encodeToSingleHandlerParam = static function ($param) {
+            return static::encodeToSingleHandlerParam($param);
+        };
+
+        $encodedParams = array_map($encodeToSingleHandlerParam, $params);
 
         return '\'' . implode('\',\'', $encodedParams) . '\'';
     }
