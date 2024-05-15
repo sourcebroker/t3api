@@ -3,6 +3,15 @@ name: TYPO3 12
 on: [ push, pull_request ]
 
 jobs:
+  test-ddev:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup DDEV
+        uses: ddev/github-action-setup-ddev@v1
+      - run: ddev install-v12
+      - run: ddev composer ci
+
   tests:
     name: v12
     runs-on: ubuntu-20.04
