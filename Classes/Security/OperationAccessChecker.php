@@ -23,14 +23,9 @@ class OperationAccessChecker extends AbstractAccessChecker
             return true;
         }
 
-        $resolver = $this->getExpressionLanguageResolver();
-        $resolver->expressionLanguageVariables['t3apiOperation'] = $operation;
-        $resolver->expressionLanguageVariables = array_merge(
-            $resolver->expressionLanguageVariables,
-            $expressionLanguageVariables
-        );
+        $variables = array_merge($expressionLanguageVariables, ['t3apiOperation' => $operation]);
 
-        return $resolver->evaluate($operation->getSecurity());
+        return $this->getExpressionLanguageResolver($variables)->evaluate($operation->getSecurity());
     }
 
     public function isGrantedPostDenormalize(
@@ -48,13 +43,8 @@ class OperationAccessChecker extends AbstractAccessChecker
             return true;
         }
 
-        $resolver = $this->getExpressionLanguageResolver();
-        $resolver->expressionLanguageVariables['t3apiOperation'] = $operation;
-        $resolver->expressionLanguageVariables = array_merge(
-            $resolver->expressionLanguageVariables,
-            $expressionLanguageVariables
-        );
+        $variables = array_merge($expressionLanguageVariables, ['t3apiOperation' => $operation]);
 
-        return $resolver->evaluate($operation->getSecurityPostDenormalize());
+        return $this->getExpressionLanguageResolver($variables)->evaluate($operation->getSecurityPostDenormalize());
     }
 }

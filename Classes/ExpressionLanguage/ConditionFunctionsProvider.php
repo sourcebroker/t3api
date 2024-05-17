@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\ExpressionLanguage;
 
-use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use TYPO3\CMS\Core\ExpressionLanguage\FunctionsProvider\Typo3ConditionFunctionsProvider;
 
 /**
@@ -12,11 +11,5 @@ use TYPO3\CMS\Core\ExpressionLanguage\FunctionsProvider\Typo3ConditionFunctionsP
  */
 class ConditionFunctionsProvider extends Typo3ConditionFunctionsProvider
 {
-    /**
-     * @return ExpressionFunction[] An array of Function instances
-     */
-    public function getFunctions(): array
-    {
-        return parent::getFunctions();
-    }
+    // @TODO This comment is here just for reformatting compatibility of csfixes and phpstorm.
 }
