@@ -8,15 +8,9 @@ use SourceBroker\T3api\Domain\Model\OperationInterface;
 
 class BeforeOperationAccessGrantedEvent
 {
-    /**
-     * @var OperationInterface
-     */
-    private $operation;
+    private OperationInterface $operation;
 
-    /**
-     * @var array
-     */
-    private $expressionLanguageVariables;
+    private array $expressionLanguageVariables;
 
     public function __construct(
         OperationInterface $operation,

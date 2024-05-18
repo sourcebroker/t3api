@@ -109,7 +109,7 @@ class AdministrationController
             $menuItem = $siteSelectorMenu->makeMenuItem();
             $host = $site->getBase()->getHost();
             $menuItem->setTitle(
-                $site->getIdentifier() . ($host ? ' (' . $host . ')' : '')
+                $site->getIdentifier() . ($host !== '' ? ' (' . $host . ')' : '')
             );
             $menuItem->setHref(
                 (string)$this->uriBuilder->buildUriFromRoute(

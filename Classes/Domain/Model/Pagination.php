@@ -8,9 +8,6 @@ use SourceBroker\T3api\Utility\ParameterUtility;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Http\ServerRequest as Typo3Request;
 
-/**
- * Class Pagination
- */
 class Pagination extends AbstractOperationResourceSettings
 {
     protected bool $serverEnabled;
@@ -29,15 +26,8 @@ class Pagination extends AbstractOperationResourceSettings
 
     protected string $pageParameterName;
 
-    /**
-     * @var array
-     */
-    protected $parameters = [];
+    protected array $parameters = [];
 
-    /**
-     * @param Pagination|null $pagination
-     * @return Pagination
-     */
     public static function create(
         array $attributes = [],
         ?AbstractOperationResourceSettings $pagination = null
@@ -64,10 +54,7 @@ class Pagination extends AbstractOperationResourceSettings
         return $pagination;
     }
 
-    /**
-     * @param Request|Typo3Request $request
-     */
-    public function setParametersFromRequest($request): self
+    public function setParametersFromRequest(Request|Typo3Request $request): self
     {
         if ($request instanceof Request) {
             parse_str($request->getQueryString() ?? '', $this->parameters);

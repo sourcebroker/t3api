@@ -23,11 +23,10 @@ class ItemPutOperationHandler extends AbstractItemOperationHandler
     }
 
     /**
-     * @return mixed|void
      * @noinspection ReferencingObjectsInspection
      * @throws OperationNotAllowedException
-     * @throws ValidationException
      * @throws ResourceNotFoundException
+     * @throws ValidationException
      */
     public function handle(
         OperationInterface $operation,

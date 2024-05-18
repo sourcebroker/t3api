@@ -20,8 +20,6 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
- * Class CommonRepository
- *
  * We do not extend \TYPO3\CMS\Extbase\Persistence\Repository because we don't want to use singleton interface
  */
 class CommonRepository
@@ -63,7 +61,7 @@ class CommonRepository
      */
     public static function getInstanceForEntity(string $entity): self
     {
-        /** @var self $repository */
+        /** @var static $repository */
         $repository = GeneralUtility::makeInstance(self::class);
         $repository->setObjectType($entity);
 
@@ -77,12 +75,7 @@ class CommonRepository
         return $this;
     }
 
-    /**
-     * @param int $uid The identifier of the object to find
-     *
-     * @return object The matching object if found, otherwise NULL
-     */
-    public function findByUid($uid)
+    public function findByUid(int $uid): ?object
     {
         return $this->persistenceManager->getObjectByIdentifier($uid, $this->objectType);
     }
@@ -192,10 +185,7 @@ class CommonRepository
         return $apiFilters;
     }
 
-    /**
-     * @return QueryInterface
-     */
-    protected function createQuery()
+    protected function createQuery(): QueryInterface
     {
         $query = $this->persistenceManager->createQueryForType($this->objectType);
         if ($this->defaultQuerySettings instanceof QuerySettingsInterface) {
@@ -205,17 +195,12 @@ class CommonRepository
         return $query;
     }
 
-    /**
-     * @param AbstractDomainObject $object
-     *
-     * @throws @todo 591
-     */
-    public function add($object)
+    public function add(AbstractDomainObject $object): void
     {
-        if ($object->getPid() === null && $this->operation->getPersistenceSettings()->getMainStoragePid()) {
+        if ($object->getPid() === null && $this->operation->getPersistenceSettings()->getMainStoragePid() > 0) {
             $object->setPid($this->operation->getPersistenceSettings()->getMainStoragePid());
         } elseif (
-            (bool)$object->getPid()
+            $object->getPid() > 0
             && $this->defaultQuerySettings->getRespectStoragePage()
             && !in_array($object->getPid(), $this->defaultQuerySettings->getStoragePageIds(), true)
         ) {
@@ -232,20 +217,15 @@ class CommonRepository
         $this->persistenceManager->add($object);
     }
 
-    /**
-     * @param object $object The object to remove
-     */
-    public function remove($object): void
+    public function remove(object $object): void
     {
         $this->persistenceManager->remove($object);
     }
 
     /**
-     * @param object $modifiedObject
-     *
      * @throws UnknownObjectException
      */
-    public function update($modifiedObject): void
+    public function update(object $modifiedObject): void
     {
         $this->persistenceManager->update($modifiedObject);
     }

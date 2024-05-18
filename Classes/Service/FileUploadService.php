@@ -22,9 +22,6 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
-/**
- * Class FileUploadService
- */
 class FileUploadService implements SingletonInterface
 {
     public function __construct(protected readonly ResourceFactory $resourceFactory) {}
@@ -86,8 +83,6 @@ class FileUploadService implements SingletonInterface
 
     /**
      * Creates upload folder if it not exists yet and returns it
-     *
-     *
      * @throws ExistingTargetFolderException
      * @throws InsufficientFolderAccessPermissionsException
      * @throws InsufficientFolderWritePermissionsException
@@ -122,7 +117,7 @@ class FileUploadService implements SingletonInterface
 
                 if ($uploadFolder instanceof Folder && $resource->hasFolderInFolder($directoryName, $uploadFolder)) {
                     $uploadFolder = $resource->getFolderInFolder($directoryName, $uploadFolder);
-                } elseif (!$uploadFolder && $resource->hasFolder($directoryName)) {
+                } elseif (!$uploadFolder instanceof Folder && $resource->hasFolder($directoryName)) {
                     $uploadFolder = $resource->getFolder($directoryName);
                 } else {
                     $uploadFolder = $resource->createFolder($directoryName, $uploadFolder);

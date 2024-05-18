@@ -22,9 +22,6 @@ class SerializationContextBuilder extends AbstractContextBuilder
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     *
      * @return SerializationContext
      */
     public function createFromOperation(

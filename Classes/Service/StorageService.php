@@ -8,18 +8,13 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-/**
- * Class StorageService
- */
 class StorageService implements SingletonInterface
 {
     /**
      * @param int[] $storagePids
-     * @param int $recursionDepth
-     *
      * @return int[]
      */
-    public static function getRecursiveStoragePids(array $storagePids, $recursionDepth = 0): array
+    public static function getRecursiveStoragePids(array $storagePids, int $recursionDepth = 0): array
     {
         if ($recursionDepth <= 0) {
             return $storagePids;

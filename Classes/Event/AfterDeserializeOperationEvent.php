@@ -9,15 +9,9 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
 final class AfterDeserializeOperationEvent
 {
-    /**
-     * @var OperationInterface
-     */
-    private $operation;
+    private OperationInterface $operation;
 
-    /**
-     * @var object
-     */
-    private $object;
+    private object $object;
 
     public function __construct(OperationInterface $operation, AbstractDomainObject $object)
     {

@@ -53,16 +53,16 @@ class OptionsOperationHandler extends AbstractOperationHandler
             $response = $response->withHeader('Access-Control-Allow-Credentials', 'true');
         }
 
-        if ($options->allowMethods) {
+        if ($options->allowMethods !== []) {
             $response = $response->withHeader('Access-Control-Allow-Methods', implode(', ', $options->allowMethods));
         }
 
-        if ($options->allowHeaders) {
+        if ($options->allowHeaders !== []) {
             $allowHeaders = $this->corsService->isWildcard($options->allowHeaders)
                 ? $request->headers->get('Access-Control-Request-Headers')
                 : implode(', ', $options->allowHeaders);
 
-            if ($allowHeaders) {
+            if ($allowHeaders !== null && $allowHeaders !== '') {
                 $response = $response->withHeader('Access-Control-Allow-Headers', $allowHeaders);
             }
         }
@@ -99,13 +99,15 @@ class OptionsOperationHandler extends AbstractOperationHandler
         }
 
         $headers = $request->headers->get('Access-Control-Request-Headers');
-        if ($headers && !$this->corsService->isWildcard($options->allowHeaders)) {
+        if ($headers !== null) {
             $headers = strtolower(trim($headers));
-            foreach (preg_split('{, *}', $headers) as $header) {
-                if (!in_array($header, $options->allowHeaders, true)) {
-                    $response = $response->withStatus(405);
+            if ($headers !== '' && !$this->corsService->isWildcard($options->allowHeaders)) {
+                foreach (preg_split('{, *}', $headers) as $header) {
+                    if (!in_array($header, $options->allowHeaders, true)) {
+                        $response = $response->withStatus(405);
 
-                    return 'Unauthorized header ' . $header;
+                        return 'Unauthorized header ' . $header;
+                    }
                 }
             }
         }

@@ -161,7 +161,7 @@ class SerializerMetadataService
             /** @var VirtualProperty $virtualProperty */
             $virtualProperty = $annotationReader->getMethodAnnotation($reflectionMethod, VirtualProperty::class);
 
-            if (!$virtualProperty) {
+            if (!$virtualProperty instanceof VirtualProperty) {
                 continue;
             }
 
@@ -221,7 +221,7 @@ class SerializerMetadataService
                 $subTypes = array_map([self::class, 'stringifyPropertyType'], $collectionValueTypes);
                 $subType = implode(', ', $subTypes);
 
-                if ($type->getClassName()) {
+                if ($type->getClassName() !== null && $type->getClassName() !== '') {
                     return sprintf('%s<%s>', $type->getClassName(), $subType);
                 }
 
@@ -231,7 +231,7 @@ class SerializerMetadataService
             return 'array';
         }
 
-        if ($type->getClassName()) {
+        if ($type->getClassName() !== null && $type->getClassName() !== '') {
             if (is_a($type->getClassName(), \DateTime::class, true)) {
                 return sprintf(
                     'DateTime<\'%s\'>',
@@ -324,7 +324,6 @@ class SerializerMetadataService
 
     /**
      * This method should invert encoding done in static::decodeFromSingleHandlerParam
-     * @param $value
      * @see \SourceBroker\T3api\Service\SerializerMetadataService::decodeFromSingleHandlerParam()
      */
     protected static function encodeToSingleHandlerParam($value): string

@@ -11,9 +11,6 @@ use SourceBroker\T3api\Utility\ParameterUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/**
- * Class BooleanFilter
- */
 class BooleanFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     /**

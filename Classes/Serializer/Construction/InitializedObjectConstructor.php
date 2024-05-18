@@ -10,8 +10,6 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 /**
- * Class InitializedObjectConstructor
- *
  * Object constructor that allows deserialization into already constructed
  * objects passed through the deserialization context
  */

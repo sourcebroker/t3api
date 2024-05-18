@@ -11,11 +11,6 @@ use TYPO3\CMS\Core\ExpressionLanguage\ProviderConfigurationLoader;
 use TYPO3\CMS\Core\ExpressionLanguage\ProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Extends TYPO3's `TYPO3\CMS\Core\ExpressionLanguage\Resolver` to build expression language context in the same way as
- * in TYPO3 core but allow to get it from outside by public getter. This class should be removed if in future TYPO3 versions
- * getting expression language will be part of core API.
- */
 class Resolver
 {
     private ExpressionLanguage $expressionLanguage;
@@ -25,7 +20,6 @@ class Resolver
     {
         $functionProviderInstances = [];
         $providers = GeneralUtility::makeInstance(ProviderConfigurationLoader::class)->getExpressionLanguageProviders()[$context] ?? [];
-        // Always add default provider
         array_unshift($providers, DefaultProvider::class);
         $providers = array_unique($providers);
         $functionProviders = [];

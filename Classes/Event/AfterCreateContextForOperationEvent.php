@@ -10,20 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AfterCreateContextForOperationEvent
 {
-    /**
-     * @var OperationInterface
-     */
-    protected $operation;
+    protected OperationInterface $operation;
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
     public function __construct(
         OperationInterface $operation,

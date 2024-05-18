@@ -16,9 +16,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/**
- * Class AbstractFilter
- */
 abstract class AbstractFilter implements SingletonInterface, FilterInterface
 {
     /**
@@ -86,7 +83,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
 
         switch ($columnMap->getTypeOfRelation()) {
             case ColumnMap\Relation::HAS_ONE:
-                if ($columnMap->getParentKeyFieldName()) {
+                if ($columnMap->getParentKeyFieldName() !== null && $columnMap->getParentKeyFieldName() !== '') {
                     $joinConditionExpression = $queryBuilder->expr()->eq(
                         $parentAlias . '.uid',
                         $queryBuilder->quoteIdentifier($alias . '.' . $columnMap->getParentKeyFieldName())
@@ -100,7 +97,7 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
 
                 break;
             case ColumnMap\Relation::HAS_MANY:
-                if ($columnMap->getParentKeyFieldName()) {
+                if ($columnMap->getParentKeyFieldName() !== null && $columnMap->getParentKeyFieldName() !== '') {
                     $joinConditionExpression = $queryBuilder->expr()->eq(
                         $parentAlias . '.uid',
                         $queryBuilder->quoteIdentifier($alias . '.' . $columnMap->getParentKeyFieldName())

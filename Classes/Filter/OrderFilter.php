@@ -10,9 +10,6 @@ use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/**
- * Class OrderFilter
- */
 class OrderFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     /**

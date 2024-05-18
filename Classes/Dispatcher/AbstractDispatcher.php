@@ -23,9 +23,6 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class AbstractDispatcher
- */
 abstract class AbstractDispatcher
 {
     protected SerializerService $serializerService;
@@ -38,9 +35,6 @@ abstract class AbstractDispatcher
 
     protected DeserializationContextBuilder $deserializationContextBuilder;
 
-    /**
-     * Bootstrap constructor.
-     */
     public function __construct(
         SerializerService $serializerService,
         ApiResourceRepository $apiResourceRepository,

@@ -7,9 +7,6 @@ namespace SourceBroker\T3api\Response;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 
-/**
- * Class MainEndpointResponse
- */
 class MainEndpointResponse
 {
     public function __construct(protected readonly ApiResourceRepository $apiResourceRepository) {}

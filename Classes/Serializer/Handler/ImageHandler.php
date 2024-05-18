@@ -14,9 +14,6 @@ use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 
-/**
- * Class ImageHandler
- */
 class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
 {
     /**

@@ -10,10 +10,7 @@ namespace SourceBroker\T3api\Annotation\ORM;
  */
 class Cascade
 {
-    /**
-     * @var array
-     */
-    public $values = [];
+    public array $values = [];
 
     public function __construct(array $values)
     {

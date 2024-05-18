@@ -16,9 +16,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/**
- * Class DistanceFilter
- */
 class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     /**
@@ -146,7 +143,6 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
     }
 
     /**
-     * @return array array with two elements - lat and lang
      * @throws \InvalidArgumentException
      */
     protected function getLatLangParameterValues(array $values, ApiFilter $apiFilter): array

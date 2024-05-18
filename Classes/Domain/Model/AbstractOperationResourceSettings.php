@@ -12,6 +12,6 @@ abstract class AbstractOperationResourceSettings
      */
     public static function create(array $attributes = [], ?self $base = null): self
     {
-        return $base ? clone $base : new static();
+        return $base !== null ? clone $base : new static();
     }
 }

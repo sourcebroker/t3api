@@ -15,10 +15,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
 class ApiResourceRepository
 {
-    /**
-     * @var FrontendInterface
-     */
-    protected $cache;
+    protected ?FrontendInterface $cache;
 
     public function __construct(
         protected readonly CacheManager $cacheManager,
@@ -54,10 +51,7 @@ class ApiResourceRepository
         return $apiResources;
     }
 
-    /**
-     * @param string|object $entity Class name or object
-     */
-    public function getByEntity($entity): ?ApiResource
+    public function getByEntity(string|object $entity): ?ApiResource
     {
         $className = is_string($entity) ? $entity : get_class($entity);
 
@@ -90,7 +84,7 @@ class ApiResourceRepository
         foreach (Configuration::getApiResourcePathProviders() as $apiResourcePathProvider) {
             foreach ($apiResourcePathProvider->getAll() as $domainModelClassFile) {
                 $className = $this->reflectionService->getClassNameFromFile($domainModelClassFile);
-                if ($className) {
+                if ($className !== null && $className !== '') {
                     yield $className;
                 }
             }

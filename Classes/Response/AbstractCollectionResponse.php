@@ -9,9 +9,6 @@ use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/**
- * Class AbstractCollectionResponse
- */
 abstract class AbstractCollectionResponse
 {
     protected CollectionOperation $operation;

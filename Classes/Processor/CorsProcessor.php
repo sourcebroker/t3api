@@ -25,23 +25,19 @@ class CorsProcessor implements ProcessorInterface
         $requestOrigin = $request->headers->get('Origin');
 
         if (!$this->corsService->isAllowedOrigin($requestOrigin, $options)) {
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $response = $response->withoutHeader('Access-Control-Allow-Origin');
         }
 
-        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $response = $response->withHeader(
             'Access-Control-Allow-Origin',
             $requestOrigin
         );
 
         if ($options->allowCredentials) {
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $response = $response->withHeader('Access-Control-Allow-Credentials', 'true');
         }
 
-        if ($options->exposeHeaders) {
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+        if ($options->exposeHeaders !== []) {
             $response = $response->withHeader(
                 'Access-Control-Expose-Headers',
                 strtolower(implode(', ', $options->exposeHeaders))

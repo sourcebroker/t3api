@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Domain\Model;
 
-/**
- * Class CollectionOperation
- */
 class CollectionOperation extends AbstractOperation
 {
     /**

@@ -10,12 +10,7 @@ class ApiFilterStrategy
 
     protected ?string $condition = null;
 
-    /**
-     * ApiFilterStrategy constructor.
-     *
-     * @param string|array $strategy
-     */
-    public function __construct($strategy)
+    public function __construct(string|array $strategy)
     {
         if (is_string($strategy)) {
             $this->name = !empty($strategy) ? $strategy : '';

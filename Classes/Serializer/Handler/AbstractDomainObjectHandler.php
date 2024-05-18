@@ -15,9 +15,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
-/**
- * Class AbstractDomainObjectHandler
- */
 class AbstractDomainObjectHandler extends AbstractHandler implements DeserializeHandlerInterface
 {
     /**

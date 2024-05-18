@@ -19,7 +19,7 @@ class OperationAccessChecker extends AbstractAccessChecker
         $this->eventDispatcher->dispatch($event);
         $expressionLanguageVariables = $event->getExpressionLanguageVariables();
 
-        if (!$operation->getSecurity()) {
+        if ($operation->getSecurity() === '') {
             return true;
         }
 
@@ -39,7 +39,7 @@ class OperationAccessChecker extends AbstractAccessChecker
         $this->eventDispatcher->dispatch($event);
         $expressionLanguageVariables = $event->getExpressionLanguageVariables();
 
-        if (!$operation->getSecurityPostDenormalize()) {
+        if ($operation->getSecurityPostDenormalize() === '') {
             return true;
         }
 

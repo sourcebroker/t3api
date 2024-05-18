@@ -20,7 +20,6 @@ class ItemGetOperationHandler extends AbstractItemOperationHandler
     }
 
     /**
-     * @return mixed|void
      * @noinspection ReferencingObjectsInspection
      * @throws OperationNotAllowedException
      * @throws ResourceNotFoundException

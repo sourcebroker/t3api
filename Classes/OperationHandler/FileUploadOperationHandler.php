@@ -20,10 +20,7 @@ use TYPO3\CMS\Extbase\Domain\Model\File;
 
 class FileUploadOperationHandler extends AbstractCollectionOperationHandler
 {
-    /**
-     * @var FileUploadService
-     */
-    protected $fileUploadService;
+    protected FileUploadService $fileUploadService;
 
     public static function supports(OperationInterface $operation, Request $request): bool
     {

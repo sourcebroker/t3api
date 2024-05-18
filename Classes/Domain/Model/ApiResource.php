@@ -7,9 +7,6 @@ namespace SourceBroker\T3api\Domain\Model;
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
 use Symfony\Component\Routing\RouteCollection;
 
-/**
- * Class ApiResource
- */
 class ApiResource
 {
     protected string $entity;

@@ -7,36 +7,20 @@ namespace SourceBroker\T3api\Annotation;
 use SourceBroker\T3api\Filter\FilterInterface;
 
 /**
- * ApiResource annotation.
- *
  * @Annotation
  * @Target({"CLASS"})
  */
 class ApiFilter
 {
-    /**
-     * @var string
-     */
-    protected $strategy = '';
+    protected string $strategy = '';
 
     protected string $filterClass;
 
-    /**
-     * @var array
-     */
-    protected $properties = [];
+    protected array $properties = [];
 
-    /**
-     * @var array
-     */
-    protected $arguments = [];
+    protected array $arguments = [];
 
-    /**
-     * ApiFilter constructor.
-     *
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (!is_string($options['value'] ?? null)) {
             throw new \InvalidArgumentException(

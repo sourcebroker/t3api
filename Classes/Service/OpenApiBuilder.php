@@ -18,7 +18,6 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Server;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Tag;
 use GoldSpecDigital\ObjectOrientedOAS\OpenApi;
-use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MetadataFactoryInterface;
 use SourceBroker\T3api\Configuration\Configuration;
@@ -34,9 +33,6 @@ use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-/**
- * Class OpenApiBuilder
- */
 class OpenApiBuilder
 {
     protected static Components $components;
@@ -301,7 +297,7 @@ class OpenApiBuilder
             $responses[] = ValidationException::getOpenApiResponse();
         }
 
-        if ($operation->getSecurity() || $operation->getSecurityPostDenormalize()) {
+        if ($operation->getSecurity() !== '' || $operation->getSecurityPostDenormalize() !== '') {
             $responses[] = OperationNotAllowedException::getOpenApiResponse();
         }
 
@@ -359,7 +355,6 @@ class OpenApiBuilder
         $currentlyProcessedClasses[] = $class;
         $properties = [];
 
-        /** @var ClassMetadata $metadata */
         try {
             SerializerMetadataService::generateAutoloadForClass($class);
             $metadata = self::getMetadataFactory()->getMetadataForClass($class);

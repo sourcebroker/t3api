@@ -6,9 +6,6 @@ namespace SourceBroker\T3api\ExpressionLanguage;
 
 use TYPO3\CMS\Core\ExpressionLanguage\TypoScriptConditionProvider;
 
-/**
- * Class ConditionProvider
- */
 class ConditionProvider extends TypoScriptConditionProvider
 {
     public function __construct()

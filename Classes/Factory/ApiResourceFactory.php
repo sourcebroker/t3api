@@ -27,7 +27,7 @@ class ApiResourceFactory
             ApiResourceAnnotation::class
         );
 
-        if (!$apiResourceAnnotation) {
+        if (!$apiResourceAnnotation instanceof ApiResourceAnnotation) {
             return null;
         }
 

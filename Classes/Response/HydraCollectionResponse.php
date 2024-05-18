@@ -7,9 +7,6 @@ namespace SourceBroker\T3api\Response;
 use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
-/**
- * Class CollectionResponse
- */
 class HydraCollectionResponse extends AbstractCollectionResponse
 {
     /**

@@ -29,9 +29,6 @@ class Bootstrap extends AbstractDispatcher
 
     protected HttpFoundationFactory $httpFoundationFactory;
 
-    /**
-     * Bootstrap constructor.
-     */
     public function __construct(
         SerializerService $serializerService,
         ApiResourceRepository $apiResourceRepository,
@@ -51,7 +48,6 @@ class Bootstrap extends AbstractDispatcher
     }
 
     /**
-     * @return Response
      * @throws \Throwable
      */
     public function process(ServerRequestInterface $inputRequest): ResponseInterface
@@ -85,19 +81,11 @@ class Bootstrap extends AbstractDispatcher
         return $this->response;
     }
 
-    /**
-     * @return bool
-     */
     protected function isMainEndpointResponseClassDefined(): bool
     {
         return !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass']);
     }
 
-    /**
-     * @param RequestContext $context
-     *
-     * @return bool
-     */
     protected function isContextMatchingMainEndpointRoute(RequestContext $context): bool
     {
         $routes = (new RouteCollection());
@@ -114,9 +102,6 @@ class Bootstrap extends AbstractDispatcher
         return false;
     }
 
-    /**
-     * @return string
-     */
     protected function processMainEndpoint(): string
     {
         return $this->serializerService->serialize(

@@ -10,9 +10,6 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class ObjectConstructorChain
- */
 class ObjectConstructorChain implements ObjectConstructorInterface
 {
     /**

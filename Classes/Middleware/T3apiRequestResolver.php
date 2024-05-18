@@ -12,9 +12,6 @@ use SourceBroker\T3api\Dispatcher\Bootstrap;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use SourceBroker\T3api\Service\RouteService;
 
-/**
- * Class T3apiRequestResolver
- */
 class T3apiRequestResolver implements MiddlewareInterface
 {
     protected Bootstrap $bootstrap;

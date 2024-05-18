@@ -17,10 +17,7 @@ class FileReferenceSubscriber implements EventSubscriberInterface
 {
     public function __construct(protected readonly ApiResourceRepository $apiResourceRepository) {}
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             [
@@ -56,6 +53,7 @@ class FileReferenceSubscriber implements EventSubscriberInterface
             is_subclass_of($event->getType()['name'], AbstractFileFolder::class)
             && $event->getContext()->getDepth() > 1
         ) {
+            /** @var PreDeserializeEvent|PreSerializeEvent $event */
             $event->setType(
                 FileReferenceHandler::TYPE,
                 [

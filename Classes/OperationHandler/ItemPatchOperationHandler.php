@@ -24,7 +24,6 @@ class ItemPatchOperationHandler extends AbstractItemOperationHandler
     }
 
     /**
-     * @return mixed|void
      * @noinspection ReferencingObjectsInspection
      * @throws UnknownObjectException
      * @throws OperationNotAllowedException

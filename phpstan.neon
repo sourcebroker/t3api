@@ -5,7 +5,7 @@ parameters:
   parallel:
     maximumNumberOfProcesses: 5
 
-  level: 1
+  level: 2
 
   paths:
     - Classes

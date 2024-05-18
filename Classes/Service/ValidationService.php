@@ -9,19 +9,14 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
 
-/**
- * Class ValidationService
- */
 class ValidationService
 {
     public function __construct(protected readonly ValidatorResolver $validatorResolver) {}
 
     /**
-     * @param AbstractDomainObject $obj
-     *
      * @throws ValidationException
      */
-    public function validateObject($obj): Result
+    public function validateObject(AbstractDomainObject $obj): Result
     {
         $validator = $this->validatorResolver->getBaseValidatorConjunction(get_class($obj));
         $validationResults = $validator->validate($obj);

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Model;
 
 use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
-use SourceBroker\T3api\Filter\FilterInterface;
 use SourceBroker\T3api\Filter\OrderFilter;
 
 class ApiFilter
@@ -31,7 +30,6 @@ class ApiFilter
      */
     public static function createFromAnnotations(ApiFilterAnnotation $apiFilterAnnotation): array
     {
-        /** @var string|FilterInterface $filterClass */
         $filterClass = $apiFilterAnnotation->getFilterClass();
 
         $arguments = $apiFilterAnnotation->getArguments();

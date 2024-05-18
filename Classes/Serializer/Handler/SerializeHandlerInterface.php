@@ -7,9 +7,6 @@ namespace SourceBroker\T3api\Serializer\Handler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
-/**
- * Interface SerializeHandlerInterface
- */
 interface SerializeHandlerInterface
 {
     /**

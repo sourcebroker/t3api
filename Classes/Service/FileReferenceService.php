@@ -11,11 +11,11 @@ class FileReferenceService
 {
     public function getUrlFromResource(FileInterface $originalResource, SerializationContext $context): ?string
     {
-        if (!$originalResource->getPublicUrl()) {
+        if ($originalResource->getPublicUrl() === null || $originalResource->getPublicUrl() === '') {
             trigger_error(
                 sprintf(
                     'Could not get public URL for file UID:%d. It is probably missing in filesystem.',
-                    $originalResource->getUid()
+                    $originalResource->getProperty('uid')
                 ),
                 E_USER_WARNING
             );

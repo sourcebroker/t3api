@@ -11,9 +11,6 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-/**
- * Class ObjectStorageHandler
- */
 class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerInterface, DeserializeHandlerInterface
 {
     /**

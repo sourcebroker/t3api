@@ -10,11 +10,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 interface FilterInterface
 {
-    /**
-     * @param mixed $values
-     *
-     * @return mixed
-     */
     public function filterProperty(
         string $property,
         $values,

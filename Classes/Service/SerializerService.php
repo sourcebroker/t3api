@@ -34,9 +34,6 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class SerializerService
- */
 class SerializerService implements SingletonInterface
 {
     public function __construct(
@@ -80,9 +77,8 @@ class SerializerService implements SingletonInterface
 
     /**
      * @param mixed $result
-     * @param SerializationContext|null $serializationContext
      */
-    public function serialize($result, SerializationContext $serializationContext = null): string
+    public function serialize($result, SerializationContext|null $serializationContext = null): string
     {
         return $this->getSerializerBuilder()
             ->setSerializationContextFactory(function () use ($serializationContext): SerializationContext {
@@ -93,10 +89,9 @@ class SerializerService implements SingletonInterface
     }
 
     /**
-     * @param DeserializationContext|null $deserializationContext
      * @return mixed
      */
-    public function deserialize(string $data, string $type, DeserializationContext $deserializationContext = null)
+    public function deserialize(string $data, string $type, DeserializationContext|null $deserializationContext = null)
     {
         return $this->getSerializerBuilder()
             ->setDeserializationContextFactory(function () use ($deserializationContext): DeserializationContext {

@@ -14,9 +14,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/**
- * Class ContainFilter
- */
 class ContainFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     /**

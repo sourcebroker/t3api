@@ -6,24 +6,15 @@ namespace SourceBroker\T3api\Domain\Model;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class Persistence
- */
 class PersistenceSettings extends AbstractOperationResourceSettings
 {
     /**
      * @var int[]
      */
-    protected $storagePids = [];
+    protected array $storagePids = [];
 
-    /**
-     * @var int
-     */
-    protected $recursionLevel = 0;
+    protected int $recursionLevel = 0;
 
-    /**
-     * @return self
-     */
     public static function create(
         array $attributes = [],
         ?AbstractOperationResourceSettings $persistenceSettings = null

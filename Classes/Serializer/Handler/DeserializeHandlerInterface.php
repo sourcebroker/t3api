@@ -7,14 +7,10 @@ namespace SourceBroker\T3api\Serializer\Handler;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
-/**
- * Interface DeserializeHandlerInterface
- */
 interface DeserializeHandlerInterface
 {
     /**
      * @param mixed $data
-     *
      * @return mixed
      */
     public function deserialize(

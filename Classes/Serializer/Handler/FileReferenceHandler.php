@@ -28,9 +28,6 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Typolink\LinkFactory;
 
-/**
- * Class FileReferenceHandler
- */
 class FileReferenceHandler extends AbstractHandler implements SerializeHandlerInterface, DeserializeHandlerInterface
 {
     /**
@@ -148,7 +145,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
 
         $uid = (int)(is_numeric($data) ? $data : $data['uid']);
 
-        if ($uid) {
+        if ($uid > 0) {
             return $this->persistenceManager->getObjectByIdentifier(
                 $uid,
                 ExtbaseFileReference::class,
@@ -157,6 +154,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         }
         return null;
     }
+
     /**
      * @throws ValidationException
      */

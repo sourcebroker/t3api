@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 class CollectionMethodNotAllowedOperationHandler extends AbstractItemOperationHandler
 {
     /**
-     * @return mixed|void
      * @throws MethodNotAllowedException
      * @noinspection ReferencingObjectsInspection
      */

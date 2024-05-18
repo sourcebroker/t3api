@@ -13,32 +13,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
-/**
- * Class InlineViewHelper
- */
 class InlineViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * @var HeadlessDispatcher
-     */
-    protected $headlessDispatcher;
+    protected HeadlessDispatcher $headlessDispatcher;
 
-    /**
-     * @inheritDoc
-     */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
         $this->headlessDispatcher = GeneralUtility::makeInstance(HeadlessDispatcher::class);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('route', 'string', 'API endpoint route', true);
         $this->registerArgument('params', 'array', 'Request parameters', false, []);
@@ -47,8 +35,7 @@ class InlineViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @return string
-     * @throws RouteNotFoundException
+     * @throws RouteNotFoundException|\SourceBroker\T3api\Exception\RouteNotFoundException
      */
     public function render(): string
     {
@@ -58,9 +45,6 @@ class InlineViewHelper extends AbstractViewHelper
         return $this->headlessDispatcher->processOperationByRequest($requestContext, $request);
     }
 
-    /**
-     * @return string
-     */
     protected function getRequestUri(): string
     {
         return implode(
@@ -73,9 +57,6 @@ class InlineViewHelper extends AbstractViewHelper
         );
     }
 
-    /**
-     * @return array
-     */
     protected function getRequestParameters(): array
     {
         $params = $this->arguments['params'];

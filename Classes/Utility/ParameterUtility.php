@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Utility;
 
-/**
- * Class ParameterUtility
- */
 class ParameterUtility
 {
     public static function toBoolean(mixed $variable): bool

@@ -11,13 +11,6 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 class T3apiRequestLanguageResolver implements MiddlewareInterface
 {
-    /**
-     * Prepare Language switch for t3api
-     *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
-     */
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
@@ -28,7 +21,7 @@ class T3apiRequestLanguageResolver implements MiddlewareInterface
 
         if ($t3apiHeaderLanguageUid !== null
             && RouteService::routeHasT3ApiResourceEnhancerQueryParam($request)
-            && ($language && $language->getLanguageId() !== $t3apiHeaderLanguageUid)
+            && ($language instanceof SiteLanguage && $language->getLanguageId() !== $t3apiHeaderLanguageUid)
         ) {
             $request->withAttribute('t3apiHeaderLanguageRequest', true);
             $request = $request->withAttribute(

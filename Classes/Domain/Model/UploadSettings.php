@@ -7,9 +7,6 @@ namespace SourceBroker\T3api\Domain\Model;
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class UploadSettings
- */
 class UploadSettings extends AbstractOperationResourceSettings
 {
     protected string $folder = '1:/user_upload/';

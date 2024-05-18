@@ -8,6 +8,7 @@ use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
 class ResourceTypeSubscriber implements EventSubscriberInterface
@@ -29,6 +30,7 @@ class ResourceTypeSubscriber implements EventSubscriberInterface
         }
 
         $entity = $event->getObject();
+        /** @var SerializationVisitorInterface $visitor */
         $visitor = $event->getVisitor();
 
         $type = get_class($entity);

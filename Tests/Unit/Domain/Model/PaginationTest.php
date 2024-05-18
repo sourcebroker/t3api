@@ -194,7 +194,7 @@ class PaginationTest extends UnitTestCase
             array_merge(self::DEFAULT_API_RESOURCE_PAGINATION_ATTRIBUTES, $attributes)
         );
 
-        if ($request) {
+        if ($request !== null) {
             $pagination->setParametersFromRequest($request);
         }
 

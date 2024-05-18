@@ -15,10 +15,9 @@ use TYPO3\CMS\Extbase\Error\Result;
 class ValidationException extends AbstractException implements OpenApiSupportingExceptionInterface
 {
     /**
-     * @var Result
      * @Exclude
      */
-    protected $validationResult;
+    protected Result $validationResult;
 
     public static function getOpenApiResponse(): OpenApiResponse
     {

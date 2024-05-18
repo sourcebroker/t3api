@@ -11,9 +11,6 @@ use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/**
- * Class RangeFilter
- */
 class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     /**

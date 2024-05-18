@@ -8,10 +8,7 @@ use SourceBroker\T3api\Domain\Model\OperationInterface;
 
 final class AfterProcessOperationEvent
 {
-    /**
-     * @var OperationInterface
-     */
-    private $operation;
+    private OperationInterface $operation;
 
     /**
      * @var mixed

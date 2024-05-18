@@ -8,14 +8,8 @@ use SourceBroker\T3api\Domain\Model\ApiFilter;
 
 class BeforeFilterAccessGrantedEvent
 {
-    /**
-     * @var ApiFilter
-     */
-    private $filter;
+    private ApiFilter $filter;
 
-    /**
-     * @var array
-     */
     private $expressionLanguageVariables;
 
     public function __construct(

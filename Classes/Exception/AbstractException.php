@@ -16,10 +16,9 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 abstract class AbstractException extends \Exception implements ExceptionInterface
 {
     /**
-     * @var string
      * @Exclude
      */
-    protected $title;
+    protected string $title;
 
     protected static function translate(string $key, array $arguments = null): ?string
     {

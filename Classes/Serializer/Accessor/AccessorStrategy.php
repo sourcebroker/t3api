@@ -14,9 +14,6 @@ use JMS\Serializer\SerializationContext;
 use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
-/**
- * Class AccessorStrategy
- */
 class AccessorStrategy implements AccessorStrategyInterface
 {
     protected ExpressionEvaluator $evaluator;

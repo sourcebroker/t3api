@@ -17,16 +17,10 @@ use SourceBroker\T3api\Serializer\Handler\AbstractDomainObjectHandler;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
-/**
- * Class AbstractEntitySubscriber
- */
 class AbstractEntitySubscriber implements EventSubscriberInterface
 {
     public function __construct(protected readonly ApiResourceRepository $apiResourceRepository) {}
 
-    /**
-     * @return array
-     */
     public static function getSubscribedEvents(): array
     {
         return [

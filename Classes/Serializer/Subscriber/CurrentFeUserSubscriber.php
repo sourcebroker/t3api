@@ -8,7 +8,9 @@ use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use Metadata\ClassHierarchyMetadata;
 use Metadata\ClassMetadata;
+use Metadata\MergeableClassMetadata;
 use SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler;
 
 class CurrentFeUserSubscriber implements EventSubscriberInterface
@@ -44,6 +46,7 @@ class CurrentFeUserSubscriber implements EventSubscriberInterface
             return;
         }
 
+        /** @var ClassHierarchyMetadata|MergeableClassMetadata|null $metadata */
         $metadata = $event->getContext()->getMetadataFactory()->getMetadataForClass($event->getType()['name']);
 
         if (!$metadata instanceof ClassMetadata) {
