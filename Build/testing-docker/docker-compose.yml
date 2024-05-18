@@ -347,7 +347,7 @@ services:
         fi
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          php -dxdebug.mode=off .Build/bin/php-cs-fixer fix -v ${CGLCHECK_DRY_RUN} --config=Build/php-cs-fixer/php-cs-fixer.php --using-cache=no .
+          php -dxdebug.mode=off .Build/bin/php-cs-fixer fix -v ${CGLCHECK_DRY_RUN} --config=.php-cs-fixer.php --using-cache=no
         else
           XDEBUG_MODE=\"debug,develop\" \
           XDEBUG_TRIGGER=\"foo\" \
@@ -357,7 +357,7 @@ services:
             -v \
             ${CGLCHECK_DRY_RUN} \
             --config=Build/php-cs-fixer/php-cs-fixer.php \
-            --using-cache=no .
+            --using-cache=no
         fi
       "
 

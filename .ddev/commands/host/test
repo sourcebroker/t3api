@@ -1,5 +1,3 @@
 #!/bin/bash
 
-bash Build/local.sh
-
-
+bash Build/scripts/runTestsLocal.sh "$@"
