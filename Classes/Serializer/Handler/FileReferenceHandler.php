@@ -13,7 +13,6 @@ use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Service\FileReferenceService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\UrlService;
-use TYPO3\CMS\Core\LinkHandling\LinkService;
 use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
 use TYPO3\CMS\Core\Resource\Rendering\RendererRegistry;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -26,7 +25,6 @@ use TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Typolink\LinkFactory;
 
 class FileReferenceHandler extends AbstractHandler implements SerializeHandlerInterface, DeserializeHandlerInterface
 {
@@ -45,8 +43,6 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         protected readonly PersistenceManager $persistenceManager,
         protected readonly SerializerService $serializerService,
         protected readonly FileReferenceService $fileReferenceService,
-        protected readonly LinkFactory $linkFactory,
-        protected readonly LinkService $linkService,
         protected readonly ContentObjectRenderer $contentObjectRenderer
     ) {}
 

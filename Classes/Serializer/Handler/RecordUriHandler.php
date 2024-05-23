@@ -7,11 +7,8 @@ namespace SourceBroker\T3api\Serializer\Handler;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use SourceBroker\T3api\Service\UrlService;
-use TYPO3\CMS\Core\LinkHandling\LinkService;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Typolink\LinkFactory;
-use TYPO3\CMS\Frontend\Typolink\UnableToLinkException;
 
 class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterface
 {
@@ -26,8 +23,6 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
     protected static $supportedTypes = [self::TYPE];
 
     public function __construct(
-        protected readonly LinkFactory $linkFactory,
-        protected readonly LinkService $linkService,
         protected readonly ContentObjectRenderer $contentObjectRenderer
     ) {}
 
@@ -50,21 +45,9 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
             );
         }
 
-        try {
-            $url = $this->linkFactory->createUri(
-                sprintf('t3://record?identifier=%s&uid=%s', $type['params'][0], $entity->getUid()),
-                $this->contentObjectRenderer
-            )->getUrl();
-        } catch (UnableToLinkException $e) {
-            trigger_error(
-                $e->getMessage(),
-                E_USER_WARNING
-            );
-        }
-
-        if (empty($url)) {
-            return '';
-        }
+        $url = $this->contentObjectRenderer->typoLink_URL([
+            'parameter' => sprintf('t3://record?identifier=%s&uid=%s', $type['params'][0], $entity->getUid()),
+        ]);
         return UrlService::forceAbsoluteUrl(
             $url,
             $context->getAttribute('TYPO3_SITE_URL')
