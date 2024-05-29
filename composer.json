@@ -67,9 +67,6 @@
 			"typo3/cms-composer-installers": true
 		},
 		"bin-dir": ".Build/bin",
-		"platform": {
-			"php": "8.3"
-		},
 		"vendor-dir": ".Build/vendor"
 	},
 	"extra": {

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+PHP_VERSIONS=("8.3" "8.2" "8.1")
+COMPOSER_INSTALLS=("lowest" "highest")
+TYPO3_VERSIONS=("12")
+
+for PHP in "${PHP_VERSIONS[@]}"; do
+    for COMPOSER in "${COMPOSER_INSTALLS[@]}"; do
+        for TYPO3 in "${TYPO3_VERSIONS[@]}"; do
+            ddev test $TYPO3 $PHP $COMPOSER
+        done
+    done
+done

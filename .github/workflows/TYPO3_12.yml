@@ -3,57 +3,59 @@ name: TYPO3 12
 on: [ push, pull_request ]
 
 jobs:
-  test-ddev:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v1
-      - name: Setup DDEV
-        uses: ddev/github-action-setup-ddev@v1
-      - run: ddev composer i
-      - run: ddev install-v12
-      - run: ddev composer ci
-
-  tests:
-    name: v12
+  test:
     runs-on: ubuntu-20.04
     strategy:
-      # This prevents cancellation of matrix job runs, if one/two already failed and let the
-      # rest matrix jobs be executed anyway.
-      fail-fast: false
       matrix:
-        php: [ '8.1', '8.2', '8.3' ]
-        composerInstall: [ 'composerInstallLowest', 'composerInstallHighest' ]
+        php: ["8.1", "8.2", "8.3"]
+        composer: ["lowest", "highest"]
+        typo3: ["12"]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: ddev test ${{ matrix.typo3 }} ${{ matrix.php }} ${{ matrix.composer }}
 
-      - name: Install testing system
-        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }}  -s ${{ matrix.composerInstall }}
-
-      - name: Lint PHP
-        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -s lint
-
-      - name: Validate code against CGL
-        run: PHP_CS_FIXER_IGNORE_ENV=1 Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -s cgl -n
-
-      - name: Unit Tests
-        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -s unit
-
-      - name: Functional Tests with mariadb and mysqli
-        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d mariadb -a mysqli -s functional
-
-      - name: Functional Tests with mariadb and pdo_mysql
-        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d mariadb -a pdo_mysql -s functional
-
-      - name: Functional Tests with mysql and mysqli
-        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d mysql -a mysqli -s functional
-
-      - name: Functional Tests with mysql and pdo_mysql
-        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d mysql -a pdo_mysql -s functional
-
-      - name: Functional Tests with postgres
-        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d postgres -s functional
-
-      # @todo disabled, due cross dbmns issues in code. Should be fixed first
-      # - name: Functional Tests with sqlite
-      #   run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d sqlite -s functional
+#  tests:
+#    name: v12
+#    runs-on: ubuntu-20.04
+#    strategy:
+#      # This prevents cancellation of matrix job runs, if one/two already failed and let the
+#      # rest matrix jobs be executed anyway.
+#      fail-fast: false
+#      matrix:
+#        php: [ '8.1', '8.2', '8.3' ]
+#        composerInstall: [ 'composerInstallLowest', 'composerInstallHighest' ]
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Install testing system
+#        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }}  -s ${{ matrix.composerInstall }}
+#
+#      - name: Lint PHP
+#        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -s lint
+#
+#      - name: Validate code against CGL
+#        run: PHP_CS_FIXER_IGNORE_ENV=1 Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -s cgl -n
+#
+#      - name: Unit Tests
+#        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -s unit
+#
+#      - name: Functional Tests with mariadb and mysqli
+#        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d mariadb -a mysqli -s functional
+#
+#      - name: Functional Tests with mariadb and pdo_mysql
+#        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d mariadb -a pdo_mysql -s functional
+#
+#      - name: Functional Tests with mysql and mysqli
+#        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d mysql -a mysqli -s functional
+#
+#      - name: Functional Tests with mysql and pdo_mysql
+#        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d mysql -a pdo_mysql -s functional
+#
+#      - name: Functional Tests with postgres
+#        run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d postgres -s functional
+#
+#      # @todo disabled, due cross dbmns issues in code. Should be fixed first
+#      # - name: Functional Tests with sqlite
+#      #   run: Build/scripts/runTests.sh -t 12 -p ${{ matrix.php }} -d sqlite -s functional

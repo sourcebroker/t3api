@@ -1,3 +1,28 @@
 #!/bin/bash
 
-bash Build/scripts/runTestsLocal.sh "$@"
+function echo_magenta() {
+    echo -e "\033[35m$1\033[0m"
+}
+
+TYPO3=$1
+PHP=$2
+COMPOSER=$3
+
+echo_magenta "-------------------------------------------------------------------------"
+echo_magenta "| PHP Version\t| Composer Install\t\t\t| TYPO3 Version\t|"
+echo_magenta "-------------------------------------------------------------------------"
+echo_magenta "| $PHP\t\t| $COMPOSER\t\t\t\t| $TYPO3\t\t|"
+echo_magenta "-------------------------------------------------------------------------"
+echo_magenta ""
+
+ddev config --php-version=$PHP
+ddev restart
+ddev exec composer config platform.php "$PHP"
+if [ "$COMPOSER" == "lowest" ]; then
+    ddev exec composer update --prefer-lowest --prefer-stable
+else
+    ddev exec composer update
+fi
+ddev composer normalize
+ddev install-v$TYPO3
+ddev composer ci
