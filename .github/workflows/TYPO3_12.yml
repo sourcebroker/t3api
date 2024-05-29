@@ -13,7 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
-        run: ddev test ${{ matrix.typo3 }} ${{ matrix.php }} ${{ matrix.composer }}
+        uses: ddev/github-action-setup-ddev@v1
+      - run: ddev test ${{ matrix.typo3 }} ${{ matrix.php }} ${{ matrix.composer }}
 
 #  tests:
 #    name: v12
