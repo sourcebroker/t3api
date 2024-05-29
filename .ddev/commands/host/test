@@ -4,9 +4,28 @@ function echo_magenta() {
     echo -e "\033[35m$1\033[0m"
 }
 
-TYPO3=$1
-PHP=$2
-COMPOSER=$3
+function echo_red() {
+    echo -e "\033[41m$1\033[0m"
+}
+
+TYPO3=${1:-12}
+PHP=${2:-8.1}
+COMPOSER=${3:-highest}
+
+if [[ "$TYPO3" != "12" ]]; then
+    echo_red "Invalid first argument. TYPO3 version can only be 12."
+    exit 1
+fi
+
+if [[ "$PHP" != "8.1" && "$PHP" != "8.2" && "$PHP" != "8.3" ]]; then
+    echo_red "Invalid second argument. PHP version can only be 8.1, 8.2, or 8.3."
+    exit 1
+fi
+
+if [[ "$COMPOSER" != "lowest" && "$COMPOSER" != "highest" ]]; then
+    echo_red "Invalid third argument. COMPOSER value can only be 'lowest' or 'highest'."
+    exit 1
+fi
 
 echo_magenta "-------------------------------------------------------------------------"
 echo_magenta "| PHP Version\t| Composer Install\t\t\t| TYPO3 Version\t|"
@@ -26,3 +45,4 @@ fi
 ddev composer normalize
 ddev install-v$TYPO3
 ddev composer ci
+ddev exec "jq --indent 4 'del(.config.platform)' ./composer.json | unexpand --first-only --tabs=4 > ./composer.json.tmp && mv ./composer.json.tmp ./composer.json"
