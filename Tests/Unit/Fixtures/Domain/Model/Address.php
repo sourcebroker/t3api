@@ -6,28 +6,13 @@ namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
 
 class Address
 {
-    /**
-     * @var string
-     */
-    protected $street;
+    protected string $street;
 
-    /**
-     * @var string
-     */
-    protected $zip;
+    protected string $zip;
 
-    /**
-     * @var string
-     */
-    protected $city;
+    protected string $city;
 
-    /**
-     * @var \DateTimeImmutable
-     */
-    protected $created;
+    protected \DateTimeImmutable $created;
 
-    /**
-     * @var \DateTime
-     */
-    protected $modified;
+    protected \DateTime $modified;
 }

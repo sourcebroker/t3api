@@ -46,14 +46,10 @@ class ApiResourceRepositoryTest extends FunctionalTestCase
     }
 
     /**
-     * @param $methodName
-     * @param array $arguments
-     * @param object|null $object
-     *
      * @return mixed
      * @throws \ReflectionException
      */
-    protected static function callProtectedMethod($methodName, array $arguments = [], object $object = null)
+    protected static function callProtectedMethod(string $methodName, array $arguments = [], object $object = null)
     {
         $serializerMetadataServiceReflection = new \ReflectionClass(ApiResourceRepository::class);
         $method = $serializerMetadataServiceReflection->getMethod($methodName);

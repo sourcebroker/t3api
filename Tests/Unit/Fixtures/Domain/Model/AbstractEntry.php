@@ -14,24 +14,20 @@ abstract class AbstractEntry implements TaggableInterface, IdentifiableInterface
 
     /**
      * @ReadOnlyProperty
-     * @var int
      */
-    protected $id;
+    protected int $id;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Group>
      */
-    protected $groups;
+    protected ObjectStorage $groups;
 
-    /**
-     * @var bool
-     */
-    protected $hidden;
+    protected bool $hidden;
 
     /**
      * @var ObjectStorage<Category>
      */
-    protected $categories;
+    protected ObjectStorage $categories;
 
     public function getId(): int
     {
@@ -42,7 +38,7 @@ abstract class AbstractEntry implements TaggableInterface, IdentifiableInterface
      * @VirtualProperty
      * @return int[]
      */
-    public function getTagIds()
+    public function getTagIds(): array
     {
         return [122, 83, 110];
     }
@@ -51,7 +47,7 @@ abstract class AbstractEntry implements TaggableInterface, IdentifiableInterface
      * @VirtualProperty("groupIds")
      * @return array<int>
      */
-    public function getIdsOfAssignedGroups()
+    public function getIdsOfAssignedGroups(): array
     {
         return [10, 27, 35];
     }

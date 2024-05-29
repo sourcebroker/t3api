@@ -8,10 +8,7 @@ use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 
 class Group implements IdentifiableInterface
 {
-    /**
-     * @var string
-     */
-    protected $title;
+    protected string $title;
 
     public function getId(): int
     {
@@ -20,7 +17,6 @@ class Group implements IdentifiableInterface
 
     /**
      * @VirtualProperty
-     * @return int
      */
     public function getNumberOfAssignedEntries(): int
     {

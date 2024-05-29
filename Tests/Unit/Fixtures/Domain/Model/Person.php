@@ -10,35 +10,21 @@ use SourceBroker\T3api\Tests\Unit\Fixtures\Annotation\Serializer\Type\ExampleTyp
 
 class Person extends AbstractEntry
 {
-    /**
-     * @var string
-     */
-    protected $firstName;
+    protected string $firstName;
 
-    /**
-     * @var string
-     */
-    protected $lastName;
+    protected string $lastName;
 
     /**
      * @SerializedName("familyName")
-     * @var string
      */
-    protected $maidenName;
+    protected string $maidenName;
 
-    /**
-     * @var \DateTime|null
-     */
-    protected $dateOfBirth;
+    protected \DateTime|null $dateOfBirth;
 
-    /**
-     * @var \DateTimeImmutable
-     */
-    protected $created;
+    protected \DateTimeImmutable $created;
 
     /**
      * @VirtualProperty
-     * @return string
      */
     public function getFullName(): string
     {

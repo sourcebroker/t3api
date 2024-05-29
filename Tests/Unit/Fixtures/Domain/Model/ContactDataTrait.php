@@ -9,22 +9,17 @@ use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 
 trait ContactDataTrait
 {
-    /**
-     * @var \SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Address|null
-     */
-    protected $address;
+    protected Address|null $address;
 
     /**
-     * @var string
      * @Groups({
      *     "accountancy",
      * })
      */
-    protected $bankAccountNumber;
+    protected string $bankAccountNumber;
 
     /**
      * @VirtualProperty()
-     * @return string
      */
     public function getBankAccountIban(): string
     {

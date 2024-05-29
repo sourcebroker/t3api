@@ -6,10 +6,7 @@ namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
 
 class Tag implements IdentifiableInterface
 {
-    /**
-     * @var string
-     */
-    public $title;
+    public string $title;
 
     public function getId(): int
     {

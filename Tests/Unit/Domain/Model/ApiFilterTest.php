@@ -7,15 +7,9 @@ namespace SourceBroker\T3api\Tests\Unit\Domain\Model;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Test case.
- */
 class ApiFilterTest extends UnitTestCase
 {
-    /**
-     * @var \SourceBroker\T3api\Domain\Model\ApiFilter
-     */
-    protected $subject;
+    protected ApiFilter $subject;
 
     protected function setUp(): void
     {

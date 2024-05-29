@@ -7,9 +7,6 @@ namespace SourceBroker\T3api\Tests\Utility;
 use SourceBroker\T3api\Utility\FileUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class FileUtilityTest
- */
 class FileUtilityTest extends UnitTestCase
 {
     /**
@@ -45,11 +42,6 @@ class FileUtilityTest extends UnitTestCase
         FileUtility::createWritableDirectory($this->getPathToNotWritableDirectory());
     }
 
-    /**
-     * @param string $rootPath
-     *
-     * @return string
-     */
     protected function getPathToNotExistingDirectory(string $rootPath = ''): string
     {
         do {
@@ -61,10 +53,6 @@ class FileUtilityTest extends UnitTestCase
 
     /**
      * Returns path to random not writable directory
-     *
-     * @param string $rootPath
-     *
-     * @return string
      */
     protected function getPathToNotWritableDirectory(string $rootPath = '/'): string
     {

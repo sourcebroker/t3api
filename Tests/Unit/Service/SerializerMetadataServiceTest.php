@@ -18,12 +18,9 @@ use SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Tag;
 use Symfony\Component\PropertyInfo\Type;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class SerializerMetadataServiceTest
- */
 class SerializerMetadataServiceTest extends UnitTestCase
 {
-    public function getPropertyMetadataFromAnnotationsReturnsCorrectValueDataProvider(): array
+    public static function getPropertyMetadataFromAnnotationsReturnsCorrectValueDataProvider(): array
     {
         return [
             'Groups' => [
@@ -95,15 +92,12 @@ class SerializerMetadataServiceTest extends UnitTestCase
     }
 
     /**
-     * @param callable $annotations
-     * @param array $expectedResult
-     *
      * @dataProvider getPropertyMetadataFromAnnotationsReturnsCorrectValueDataProvider
      * @test
      *
      * @throws \ReflectionException
      */
-    public function getPropertyMetadataFromAnnotationsReturnsCorrectValue(
+    public static function getPropertyMetadataFromAnnotationsReturnsCorrectValue(
         callable $annotations,
         array $expectedResult
     ): void {
@@ -113,7 +107,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
         );
     }
 
-    public function stringifyPropertyTypeReturnsCorrectValueDataProvider(): array
+    public static function stringifyPropertyTypeReturnsCorrectValueDataProvider(): array
     {
         $dateTimeFormat = PHP_VERSION_ID >= 70300 ? \DateTimeInterface::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP';
 
@@ -180,15 +174,12 @@ class SerializerMetadataServiceTest extends UnitTestCase
     }
 
     /**
-     * @param Type $type
-     * @param string $expectedType
-     *
      * @dataProvider stringifyPropertyTypeReturnsCorrectValueDataProvider
      * @test
      *
      * @throws \ReflectionException
      */
-    public function stringifyPropertyTypeReturnsCorrectValue(Type $type, string $expectedType): void
+    public static function stringifyPropertyTypeReturnsCorrectValue(Type $type, string $expectedType): void
     {
         self::assertEquals(
             $expectedType,
@@ -196,7 +187,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
         );
     }
 
-    public function getPropertiesReturnsCorrectValueDataProvider(): array
+    public static function getPropertiesReturnsCorrectValueDataProvider(): array
     {
         $dateTimeFormat = PHP_VERSION_ID >= 70300 ? \DateTimeInterface::RFC3339_EXTENDED : 'Y-m-d\TH:i:s.uP';
 
@@ -325,13 +316,11 @@ class SerializerMetadataServiceTest extends UnitTestCase
     }
 
     /**
-     * @param string $className
-     * @param $expectedType
      * @throws \ReflectionException
      * @dataProvider getPropertiesReturnsCorrectValueDataProvider
      * @test
      */
-    public function getPropertiesReturnsCorrectValue($className, $expectedType): void
+    public static function getPropertiesReturnsCorrectValue(string $className, mixed $expectedType): void
     {
         self::assertEquals(
             $expectedType,
@@ -345,7 +334,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
         );
     }
 
-    public function getVirtualPropertiesReturnsCorrectValueDataProvider(): array
+    public static function getVirtualPropertiesReturnsCorrectValueDataProvider(): array
     {
         return [
             Person::class => [
@@ -434,13 +423,11 @@ class SerializerMetadataServiceTest extends UnitTestCase
     }
 
     /**
-     * @param string $className
-     * @param $expectedType
      * @throws \ReflectionException
      * @dataProvider getVirtualPropertiesReturnsCorrectValueDataProvider
      * @test
      */
-    public function getVirtualPropertiesReturnsCorrectValue(string $className, $expectedType): void
+    public static function getVirtualPropertiesReturnsCorrectValue(string $className, mixed $expectedType): void
     {
         self::assertEquals(
             $expectedType,
@@ -455,15 +442,13 @@ class SerializerMetadataServiceTest extends UnitTestCase
     }
 
     /**
-     * @param $methodName
-     * @param array $arguments
-     * @param object|null $object
-     *
      * @throws \ReflectionException
-     * @return mixed
      */
-    protected static function callProtectedMethod($methodName, array $arguments = [], object $object = null)
-    {
+    protected static function callProtectedMethod(
+        string $methodName,
+        array $arguments = [],
+        object|null $object = null
+    ): mixed {
         $serializerMetadataServiceReflection = new \ReflectionClass(SerializerMetadataService::class);
         $method = $serializerMetadataServiceReflection->getMethod($methodName);
         $method->setAccessible(true);
