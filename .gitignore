@@ -24,4 +24,4 @@
 /var/
 /.php_cs.cache
 /.php-cs-fixer.cache
-/.ddev/data-init/v12/files/public/fileadmin/user_upload/news-media/
+/.ddev/test/*/files/public/fileadmin/user_upload/news-media/

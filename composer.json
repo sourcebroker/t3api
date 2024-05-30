@@ -72,7 +72,7 @@
 	"extra": {
 		"typo3/cms": {
 			"extension-key": "t3api",
-			"web-dir": ".Build/Web"
+			"web-dir": ".Build/public"
 		}
 	},
 	"scripts": {

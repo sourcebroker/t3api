@@ -1,25 +1,32 @@
 #!/bin/bash
 
-function echo_magenta() {
-    echo -e "\033[35m$1\033[0m"
-}
+## Description: Single test. Without additional parameters it takes lowest TYPO3 with lowest supported PHP.
+## Usage: "test"
+## Example: "ddev test 12 8.3 lowest"
 
-function echo_red() {
-    echo -e "\033[41m$1\033[0m"
-}
+set -e
 
-TYPO3=${1:-12}
-PHP=${2:-8.1}
+source .ddev/test/utils.sh
+export_ddev_env_vars
+
+TYPO3=${1}
+PHP=${2}
 COMPOSER=${3:-highest}
 
-if [[ "$TYPO3" != "12" ]]; then
-    echo_red "Invalid first argument. TYPO3 version can only be 12."
-    exit 1
+if [ -z "$TYPO3" ]; then
+    TYPO3=$(get_lowest_supported_typo3_versions)
+else
+    if ! check_typo3_version "$TYPO3"; then
+        exit 1
+    fi
 fi
 
-if [[ "$PHP" != "8.1" && "$PHP" != "8.2" && "$PHP" != "8.3" ]]; then
-    echo_red "Invalid second argument. PHP version can only be 8.1, 8.2, or 8.3."
-    exit 1
+if [ -z "$PHP" ]; then
+    PHP=$(get_lowest_supported_php_versions_for_typo3 "$TYPO3")
+else
+   if ! check_php_version_for_typo3 "$TYPO3" "$PHP"; then
+       exit 1
+   fi
 fi
 
 if [[ "$COMPOSER" != "lowest" && "$COMPOSER" != "highest" ]]; then
@@ -27,22 +34,20 @@ if [[ "$COMPOSER" != "lowest" && "$COMPOSER" != "highest" ]]; then
     exit 1
 fi
 
-echo_magenta "-------------------------------------------------------------------------"
-echo_magenta "| PHP Version\t| Composer Install\t\t\t| TYPO3 Version\t|"
-echo_magenta "-------------------------------------------------------------------------"
-echo_magenta "| $PHP\t\t| $COMPOSER\t\t\t\t| $TYPO3\t\t|"
-echo_magenta "-------------------------------------------------------------------------"
+echo_magenta "-------------------------------------------------"
+echo_magenta "| TYPO3 \t| PHP\t\t| Composer\t|"
+echo_magenta "-------------------------------------------------"
+echo_magenta "| $TYPO3\t\t| $PHP\t\t| $COMPOSER\t|"
+echo_magenta "-------------------------------------------------"
 echo_magenta ""
 
-ddev config --php-version=$PHP
+ddev config --php-version="$PHP"
 ddev restart
-ddev exec composer config platform.php "$PHP"
 if [ "$COMPOSER" == "lowest" ]; then
     ddev exec composer update --prefer-lowest --prefer-stable
 else
     ddev exec composer update
 fi
 ddev composer normalize
-ddev install-v$TYPO3
+ddev "install-$TYPO3"
 ddev composer ci
-ddev exec "jq --indent 4 'del(.config.platform)' ./composer.json | unexpand --first-only --tabs=4 > ./composer.json.tmp && mv ./composer.json.tmp ./composer.json"

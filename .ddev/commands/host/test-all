@@ -1,15 +1,29 @@
 #!/bin/bash
 
+## Description: Run matrix tests from TYPO3_VERSIONS, TYPO3_VERSIONS_[x]_PHP, composer "lowest/highest".
+## Usage: "test-all"
+## Example: "ddev test-all"
+
 set -e
 
-PHP_VERSIONS=("8.3" "8.2" "8.1")
-COMPOSER_INSTALLS=("lowest" "highest")
-TYPO3_VERSIONS=("12")
+source .ddev/test/utils.sh
+export_ddev_env_vars
 
-for PHP in "${PHP_VERSIONS[@]}"; do
-    for COMPOSER in "${COMPOSER_INSTALLS[@]}"; do
-        for TYPO3 in "${TYPO3_VERSIONS[@]}"; do
-            ddev test $TYPO3 $PHP $COMPOSER
+COMPOSER_INSTALLS=("lowest" "highest")
+
+TYPO3_VERSIONS_ARRAY=()
+while IFS= read -r line; do
+    TYPO3_VERSIONS_ARRAY+=("$line")
+done < <(get_supported_typo3_versions)
+
+for TYPO3 in "${TYPO3_VERSIONS_ARRAY[@]}"; do
+    PHP_VERSIONS=()
+    while IFS= read -r line; do
+        PHP_VERSIONS+=("$line")
+    done < <(get_supported_php_versions_for_typo3 "$TYPO3")
+    for PHP in "${PHP_VERSIONS[@]}"; do
+        for COMPOSER in "${COMPOSER_INSTALLS[@]}"; do
+            ddev test "$TYPO3" "$PHP" "$COMPOSER"
         done
     done
 done

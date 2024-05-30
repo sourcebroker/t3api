@@ -1,9 +1,14 @@
 #!/bin/bash
 
-## Description: Install all defined TYPO3 testing instances for t3api.
+## Description: Install all defined TYPO3 testing instances.
 ## Usage: install-all
 ## Example: "ddev install-all"
 
-ABSOLUTE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}/.")"
+source .ddev/test/utils.sh
 
-$ABSOLUTE_PATH/install-v12
+mapfile -t versions < <(get_supported_typo3_versions)
+
+for version in "${versions[@]}"; do
+    echo_green "Installing TYPO3 v${version}..."
+    .ddev/commands/web/install-$version
+done

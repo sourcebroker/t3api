@@ -1,0 +1,13 @@
+#!/bin/bash
+
+## Description: Flush cache for all available TYPO3.
+## Usage: cache-flush
+## Example: "ddev cache-flush"
+
+source .ddev/test/utils.sh
+
+mapfile -t versions < <(get_supported_typo3_versions)
+for version in "${versions[@]}"; do
+    echo_green "Cache flush TYPO3 v${version}..."
+    /usr/bin/php /var/www/html/.test/${version}/vendor/bin/typo3 cache:flush
+done

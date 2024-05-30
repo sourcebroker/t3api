@@ -1,0 +1,23 @@
+#!/bin/bash
+
+## Description: Dump database to test folder.
+## Usage: dump 12
+## Example: "ddev dump 12"
+
+source .ddev/test/utils.sh
+
+TYPO3=$1
+if ! check_typo3_version "$TYPO3"; then
+    exit 1
+fi
+
+OUTPUT_FILE="/var/www/html/.ddev/test/${TYPO3}/database.sql"
+DATABASE=database_$TYPO3
+
+echo 'TRUNCATE sys_history; TRUNCATE sys_log; TRUNCATE be_sessions; TRUNCATE fe_sessions; TRUNCATE fe_sessions; TRUNCATE sys_file_processedfile; TRUNCATE sys_lockedrecords; TRUNCATE tx_extensionmanager_domain_model_extension;' | mysql -uroot -proot "$DATABASE"
+echo "SELECT concat('TRUNCATE TABLE ', TABLE_NAME, ';') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$DATABASE' AND TABLE_NAME LIKE 'cache%'" | mysql -uroot -proot "$DATABASE" | sed 1d > tmp.sql
+mysql -uroot -proot "$DATABASE" < tmp.sql
+rm tmp.sql
+
+mysqldump --skip-triggers --extended-insert --single-transaction --skip-add-locks --skip-disable-keys --quick --skip-comments -uroot -proot -hdb "$DATABASE" > $OUTPUT_FILE
+echo_green "Dump finished and saved at $OUTPUT_FILE"

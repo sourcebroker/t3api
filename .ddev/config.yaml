@@ -7,8 +7,8 @@ router_http_port: "80"
 router_https_port: "443"
 xdebug_enabled: false
 additional_hostnames:
-    - v12.t3api
-    - v12-api.t3api
+    - '*.t3api'
+    - '*.api.t3api'
 additional_fqdns: []
 database:
     type: mariadb
@@ -16,7 +16,7 @@ database:
 hooks:
     post-start:
         - exec: sudo sed -i '1s/^/TERM=xterm-256color\n/' ~/.bashrc
-        - exec: mkdir -p .test && cp /var/www/html/.ddev/data-init/index.html /var/www/html/.test/
+        - exec: mkdir -p .test && cp /var/www/html/.ddev/test/index.php /var/www/html/.test/
 webimage_extra_packages: [parallel]
 use_dns_when_possible: true
 composer_version: "2"
