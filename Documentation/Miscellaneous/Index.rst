@@ -8,7 +8,7 @@ Miscellaneous
 
 .. toctree::
    :maxdepth: 3
-   :hidden:
 
    Changelog/Index
    CommonIssues/Index
+   Development/Index

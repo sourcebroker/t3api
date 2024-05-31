@@ -49,5 +49,5 @@ else
     ddev exec composer update
 fi
 ddev composer normalize
-ddev "install-$TYPO3"
+ddev install "$TYPO3"
 ddev composer ci

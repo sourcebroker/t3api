@@ -1,0 +1,20 @@
+#!/bin/bash
+
+## Description: Install defined TYPO3 testing instance.
+## Usage: install
+## Example: "ddev install 12"
+
+source .ddev/test/utils.sh
+
+TYPO3=${1}
+
+if [ -z "$TYPO3" ]; then
+    TYPO3=$(get_lowest_supported_typo3_versions)
+else
+    if ! check_typo3_version "$TYPO3"; then
+        exit 1
+    fi
+fi
+
+echo_green "Installing TYPO3 v$TYPO3..."
+".ddev/commands/web/.install-$TYPO3"

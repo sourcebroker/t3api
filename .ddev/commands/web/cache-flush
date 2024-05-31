@@ -8,6 +8,11 @@ source .ddev/test/utils.sh
 
 mapfile -t versions < <(get_supported_typo3_versions)
 for version in "${versions[@]}"; do
-    echo_green "Cache flush TYPO3 v${version}..."
-    /usr/bin/php /var/www/html/.test/${version}/vendor/bin/typo3 cache:flush
+    TYPO3_PATH="/var/www/html/.test/${version}/vendor/bin/typo3"
+    if [ -f "$TYPO3_PATH" ]; then
+        echo_green "Cache flush TYPO3 v${version}..."
+        /usr/bin/php $TYPO3_PATH cache:flush
+    else
+        echo_red "TYPO3 binary not found for version ${version}"
+    fi
 done

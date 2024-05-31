@@ -85,23 +85,21 @@
 			"@ci:php:stan",
 			"@ci:tests:unit",
 			"@ci:tests:functional",
-			"@ci:postman"
+			"@ci:tests:postman"
 		],
 		"ci:composer:normalize": "@composer normalize --dry-run",
 		"ci:json:lint": "find ./composer.json ./Resources ./Configuration -name '*.json' | xargs -r php .Build/bin/jsonlint -q",
 		"ci:php:cs-fixer": ".Build/bin/php-cs-fixer fix --config .php-cs-fixer.php -v --dry-run --using-cache no --diff",
 		"ci:php:lint": "find . -name '*.php' -not -path './.Build/*' -not -path './.cache/*' -not -path './.ddev/*' -not -path './.test/*' -not -path './.Documentation/*'  -not -path './.Documentation-GENERATED-temp/*' -print0 | xargs -0 -n 1 -P 4 php -l > /dev/null",
 		"ci:php:stan": ".Build/bin/phpstan --no-progress",
-		"ci:postman": "bash ./Tests/Postman/run.sh",
 		"ci:tests:create-directories": "mkdir -p .Build/public/typo3temp/var/tests",
 		"ci:tests:functional": [
 			"@ci:tests:create-directories",
 			"typo3DatabaseHost=db typo3DatabaseUsername=root typo3DatabasePassword=root typo3DatabaseName=db .Build/bin/phpunit -c ./Build/phpunit/FunctionalTests.xml"
 		],
+		"ci:tests:postman": "bash ./Tests/Postman/run.sh",
 		"ci:tests:unit": ".Build/bin/phpunit -c ./Build/phpunit/UnitTests.xml",
 		"ci:yaml:lint": "find ./Resources ./Configuration -regextype egrep -regex '.*.ya?ml$' | xargs -r php .Build/bin/yaml-lint",
-		"docs": "ddev docs",
-		"docs-watch": "ddev docs-watch",
 		"fix": [
 			"@fix:php:cs-fixer",
 			"@fix:composer:normalize"
