@@ -1,0 +1,22 @@
+#!/bin/bash
+
+## Description: T3api - import/export data/files with ext:impexp.
+## Usage: data
+## Example: "ddev data import 12, ddev data export 12"
+
+source .ddev/test/utils.sh
+
+TYPE=${1}
+TYPO3=${2}
+if ! check_typo3_version "$TYPO3"; then
+    exit 1
+fi
+
+if [ "$TYPE" == "export" ]; then
+    source .ddev/commands/web/.data-export "$TYPO3"
+elif [ "$TYPE" == "import" ]; then
+    source .ddev/commands/web/.data-import "$TYPO3"
+else
+    echo "Invalid type. Please use 'export' or 'import' as first argument."
+    exit 1
+fi

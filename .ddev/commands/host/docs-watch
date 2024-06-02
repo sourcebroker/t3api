@@ -1,8 +1,0 @@
-#!/bin/bash
-
-## Description: Open docs editing in watch mode.
-## Usage: "docs-watch"
-## Example: "ddev test docs-watch"
-
-
-open http://localhost:5174/Documentation-GENERATED-temp/Index.html && docker run --rm -it --pull always -v ./Documentation:/project/Documentation -v ./Documentation-GENERATED-temp:/project/Documentation-GENERATED-temp -p 5174:5173 ghcr.io/garvinhicking/typo3-documentation-browsersync:latest

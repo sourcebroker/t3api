@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ## Description: Install TYPO3 12 instance.
-## Usage: install-12
-## Example: "ddev install-12"
+## Usage: install
+## Example: "ddev install 12"
 
 set +x
 set -e
@@ -62,7 +62,7 @@ $TYPO3_BIN configuration:set 'GFX/processor_path' '/usr/bin/'
 
 ln -srf ".ddev/test/files/config/sites/main/config.yaml" $BASE_PATH/config/sites/main/config.yaml
 
-.ddev/commands/web/import "$VERSION"
+.ddev/commands/web/data import "$VERSION"
 
 $TYPO3_BIN database:updateschema
 $TYPO3_BIN cache:flush

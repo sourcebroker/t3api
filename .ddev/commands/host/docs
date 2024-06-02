@@ -1,7 +1,16 @@
 #!/bin/bash
 
-## Description: Build docs.
-## Usage: "docs"
-## Example: "ddev docs"
+## Description: Build docs or open docs editing in watch mode. Mode "watch" is default.
+## Usage: "docs [watch|build]"
+## Example: "ddev docs" "ddev docs watch" "ddev docs build"
 
-docker run --rm --pull always -v ./:/project/ ghcr.io/typo3-documentation/render-guides:latest --no-progress --config Documentation Documentation
+MODE=${1:-watch}
+
+if [ "$MODE" == "build" ]; then
+    docker run --rm --pull always -v ./:/project/ ghcr.io/typo3-documentation/render-guides:latest --no-progress --config Documentation Documentation
+elif [ "$MODE" == "watch" ]; then
+    open http://localhost:5174/Documentation-GENERATED-temp/Index.html && docker run --rm -it --pull always -v ./Documentation:/project/Documentation -v ./Documentation-GENERATED-temp:/project/Documentation-GENERATED-temp -p 5174:5173 ghcr.io/garvinhicking/typo3-documentation-browsersync:latest
+else
+    echo "Invalid mode. Please use 'build' or 'watch'."
+    exit 1
+fi
