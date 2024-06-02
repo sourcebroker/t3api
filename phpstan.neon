@@ -11,6 +11,3 @@ parameters:
     - Classes
     - Configuration
     - Tests
-
-  excludePaths:
-    - 'Tests/Postman/*'

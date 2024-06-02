@@ -97,7 +97,7 @@
 			"@ci:tests:create-directories",
 			"typo3DatabaseHost=db typo3DatabaseUsername=root typo3DatabasePassword=root typo3DatabaseName=db .Build/bin/phpunit -c ./Build/phpunit/FunctionalTests.xml"
 		],
-		"ci:tests:postman": "bash ./Tests/Postman/run.sh",
+		"ci:tests:postman": "bash ./Build/postman/run.sh",
 		"ci:tests:unit": ".Build/bin/phpunit -c ./Build/phpunit/UnitTests.xml",
 		"ci:yaml:lint": "find ./Resources ./Configuration -regextype egrep -regex '.*.ya?ml$' | xargs -r php .Build/bin/yaml-lint",
 		"fix": [

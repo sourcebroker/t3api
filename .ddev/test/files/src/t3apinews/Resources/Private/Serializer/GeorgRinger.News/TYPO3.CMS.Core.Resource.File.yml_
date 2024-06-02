@@ -1,0 +1,38 @@
+TYPO3\CMS\Core\Resource\File:
+  properties:
+    metaDataLoaded:
+      exclude: true
+    metaDataProperties:
+      exclude: true
+    metaDataAspect:
+      exclude: true
+    indexingInProgress:
+      exclude: true
+  virtual_properties:
+    uid:
+      exp: object.getUid()
+      type: integer
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'
+    getName:
+      type: string
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'
+    getMimeType:
+      type: string
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'
+    getSize:
+      type: integer
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'
+    absolutePublicUrl:
+      type: string
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'
+      exp: force_absolute_url(object.getPublicUrl(), context.getAttribute('TYPO3_SITE_URL'))

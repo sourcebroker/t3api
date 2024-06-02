@@ -9,7 +9,6 @@ $config
     ->setFinder((new PhpCsFixer\Finder())
         ->in(realpath(__DIR__))
         ->ignoreVCSIgnored(true)
-        ->notPath('/^Tests\/Postman\//')
         ->notPath('/^Build\/phpunit\/(UnitTestsBootstrap|FunctionalTestsBootstrap).php/')
         ->notPath('/^Configuration\//')
         ->notPath('/^Documentation\//')

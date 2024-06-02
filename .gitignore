@@ -17,11 +17,6 @@
 /composer.lock
 /.Build
 /.test
-/Build/testing-docker/.env
-/composer.json.testing
-/composer.json.orig
-/composer.lock
 /var/
 /.php_cs.cache
 /.php-cs-fixer.cache
-/.ddev/test/*/files/public/fileadmin/user_upload/news-media/

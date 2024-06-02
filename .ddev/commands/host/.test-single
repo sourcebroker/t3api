@@ -1,0 +1,60 @@
+#!/bin/bash
+
+## Description: Single test. Without additional parameters it takes lowest TYPO3, with lowest supported PHP and highest composer dependencies.
+## Usage: "test"
+## Example: "ddev test 12 8.3 lowest - it will test TYPO3 v12 with PHP 8.3 and lowest composer dependencies."
+
+set -e
+
+source .ddev/test/utils.sh
+export_ddev_env_vars
+
+TYPO3=${1}
+
+if [ "$TYPO3" == "all" ]; then
+    echo_green "Running tests for all TYPO3 versions..."
+    .ddev/commands/host/.test-all
+    exit 0
+fi
+
+PHP=${2}
+COMPOSER=${3:-highest}
+
+if [ -z "$TYPO3" ]; then
+    TYPO3=$(get_lowest_supported_typo3_versions)
+else
+    if ! check_typo3_version "$TYPO3"; then
+        exit 1
+    fi
+fi
+
+if [ -z "$PHP" ]; then
+    PHP=$(get_lowest_supported_php_versions_for_typo3 "$TYPO3")
+else
+   if ! check_php_version_for_typo3 "$TYPO3" "$PHP"; then
+       exit 1
+   fi
+fi
+
+if [[ "$COMPOSER" != "lowest" && "$COMPOSER" != "highest" ]]; then
+    echo_red "Invalid third argument. COMPOSER value can only be 'lowest' or 'highest'."
+    exit 1
+fi
+
+echo_magenta "-------------------------------------------------"
+echo_magenta "| TYPO3 \t| PHP\t\t| Composer\t|"
+echo_magenta "-------------------------------------------------"
+echo_magenta "| $TYPO3\t\t| $PHP\t\t| $COMPOSER\t|"
+echo_magenta "-------------------------------------------------"
+echo_magenta ""
+
+ddev config --php-version="$PHP"
+ddev restart
+if [ "$COMPOSER" == "lowest" ]; then
+    ddev exec composer update --prefer-lowest --prefer-stable
+else
+    ddev exec composer update
+fi
+ddev composer normalize
+ddev install "$TYPO3"
+ddev composer ci

@@ -1,0 +1,48 @@
+TYPO3\CMS\Core\Resource\FileReference:
+  properties:
+    propertiesOfFileReference:
+      exclude: true
+    uidOfFileReference:
+      exclude: true
+    driver:
+      exclude: true
+    mergedProperties:
+      exclude: true
+    title:
+      type: string
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'
+    description:
+      type: string
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'
+    alternative:
+      type: string
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'
+    link:
+      type: Typolink
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'
+    showinpreview:
+      type: int
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'
+  virtual_properties:
+    link:
+      type: Typolink
+      exp: object.getLink()
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'
+    originalFile:
+      type: TYPO3\CMS\Core\Resource\File
+      exp: object.getOriginalFile()
+      groups:
+        - 'api_get_collection_t3apinews_news'
+        - 'api_get_item_t3apinews_news'

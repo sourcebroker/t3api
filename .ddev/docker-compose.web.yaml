@@ -6,7 +6,7 @@ services:
 
       - TYPO3_VERSIONS=12
       - TYPO3_VERSIONS_12_PHP=8.1 8.2 8.3
-      - TYPO3_VERSIONS_13_PHP=8.1 8.2 8.3
+      - TYPO3_VERSIONS_13_PHP=8.2 8.3
 
       - TYPO3_INSTALL_DB_DRIVER=mysqli
       - TYPO3_INSTALL_DB_USER=root

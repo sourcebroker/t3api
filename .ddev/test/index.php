@@ -11,7 +11,7 @@ $supportedVersions = explode(' ', getenv('TYPO3_VERSIONS'));
     <title><?php echo($extensionKey); ?></title>
 </head>
 <body>
-<p>Run <b>'ddev install-all'</b> to install testing instances below.</p>
+<p>Run <b>'ddev install-all'</b> to install all testing instances below.</p>
 <ul>
     <?php
     foreach ($supportedVersions as $version) {

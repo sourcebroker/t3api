@@ -1,0 +1,11 @@
+--- Classes/ImportExport.php.orig	2024-06-01 18:06:29.331590962 +0000
++++ Classes/ImportExport.php	2024-06-01 18:07:47.435376487 +0000
+@@ -489,7 +489,7 @@
+             $this->addError('Updating sys_file records is not supported! They will be imported as new records!');
+         }
+         if ($this->forceAllUids && $table === 'sys_file') {
+-            $this->addError('Forcing uids of sys_file records is not supported! They will be imported as new records!');
++#            $this->addError('Forcing uids of sys_file records is not supported! They will be imported as new records!');
+         }
+     }
+

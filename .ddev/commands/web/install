@@ -1,20 +1,31 @@
 #!/bin/bash
 
-## Description: Install defined TYPO3 testing instance.
+## Description: Install defined TYPO3 testing instance. If no param it fallback to first supported TYPO3. If "all" it installs all supported TYPO3.
 ## Usage: install
-## Example: "ddev install 12"
+## Example: "ddev install, ddev install 12, ddev install all"
 
 source .ddev/test/utils.sh
 
 TYPO3=${1}
 
-if [ -z "$TYPO3" ]; then
-    TYPO3=$(get_lowest_supported_typo3_versions)
+if [ "$TYPO3" == "all" ]; then
+    mapfile -t versions < <(get_supported_typo3_versions)
+    for version in "${versions[@]}"; do
+        echo_green "Installing TYPO3 v${version}..."
+        .ddev/commands/web/.install-$version
+    done
 else
-    if ! check_typo3_version "$TYPO3"; then
-        exit 1
+    if [ -z "$TYPO3" ]; then
+        TYPO3=$(get_lowest_supported_typo3_versions)
+    else
+        if ! check_typo3_version "$TYPO3"; then
+            exit 1
+        fi
     fi
+    ".ddev/commands/web/.install-$TYPO3"
 fi
 
-echo_green "Installing TYPO3 v$TYPO3..."
-".ddev/commands/web/.install-$TYPO3"
+
+
+
+

@@ -2,16 +2,11 @@
 
 source .ddev/test/utils.sh
 
-POSTMAN_TEST_PATH=/var/www/html/./Tests/Postman/
-
-if [[ ! -e "${POSTMAN_TEST_PATH}" ]]; then
-    echo_red "No POSTMAN_TEST_PATH folder: ${POSTMAN_TEST_PATH}" && exit 1
-fi
-
-cd ${POSTMAN_TEST_PATH} || exit
+POSTMAN_BUILD_PATH=/var/www/html/Build/postman/
+cd ${POSTMAN_BUILD_PATH} || exit
 
 if [[ ! -e ".nvmrc" ]]; then
-    echo_red "No file .nvmrc with node version in folder: ${POSTMAN_TEST_PATH}" && exit 1
+    echo_red "No file .nvmrc with node version in folder: ${POSTMAN_BUILD_PATH}" && exit 1
 fi
 
 if [[ ! -d "node_modules" ]]; then
@@ -32,7 +27,7 @@ if [[ ! -d "/var/www/html/.test/$TYPO3" ]]; then
     else
         DOMAINS=("https://$TYPO3.t3api.ddev.site")
         for DOMAIN in "${DOMAINS[@]}"; do
-            for TEST_FILE in tests/*.json; do
+            for TEST_FILE in ../../Tests/Postman/*.json; do
                 ./node_modules/.bin/newman run "$TEST_FILE" --env-var "baseUrl=$DOMAIN"
             done
         done
