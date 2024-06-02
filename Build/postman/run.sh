@@ -23,7 +23,7 @@ if ! check_typo3_version "$TYPO3"; then
 fi
 
 if [[ ! -d "/var/www/html/.test/$TYPO3" ]]; then
-        echo_red "Can not test. Install first TYPO3 $TYPO3 with command 'ddev install-$TYPO3'"
+        echo_red "Can not test. Install first TYPO3 $TYPO3 with command 'ddev install $TYPO3'"
     else
         DOMAINS=("https://$TYPO3.t3api.ddev.site")
         for DOMAIN in "${DOMAINS[@]}"; do
