@@ -14,4 +14,4 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run tests
         uses: ddev/github-action-setup-ddev@v1
-      - run: ddev test ${{ matrix.typo3 }} ${{ matrix.php }} ${{ matrix.composer }}
+      - run: ddev ci ${{ matrix.typo3 }} ${{ matrix.php }} ${{ matrix.composer }}
