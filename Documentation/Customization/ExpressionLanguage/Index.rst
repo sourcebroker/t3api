@@ -1,5 +1,3 @@
-.. include:: ../../Includes.txt
-
 .. _customization_expression-language:
 
 Expression Language

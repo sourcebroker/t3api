@@ -1,62 +1,71 @@
-.. include:: ../Includes.txt
-
 .. _development_commands_list:
 
 =================
 Commands list
 =================
 
-Below is a list of commands that you can use in development process.
+Below is a list of commands that you can use in the development process of ext:t3api.
 
 ..  contents::
     :local:
     :depth: 2
 
 
-.. _development_commands_list_composer_fix:
-:bash:`ddev composer fix`
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-This commands will clean make cs-fixer changes and composer normalisation.
-
-.. _development_commands_list_composer_ci:
-:bash:`ddev composer ci`
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-This commands will run multiple composer commands for testing and linting:
-
-* ci:composer:normalize
-* ci:yaml:lint
-* ci:json:lint
-* ci:php:lint
-* ci:php:cs-fixer
-* ci:php:stan
-* ci:tests:unit
-* ci:tests:functional
-* ci:tests:postman
-
-Tests will be run on currently active TYPO3/PHP.
-You can change the TYPO3/PHP by running :bash:`ddev test [TYPO3_VERSION] [PHP_VERSION]`.
-
-
 .. _development_commands_list_ddev_cache_flush:
 :bash:`ddev cache-flush`
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-This commands will run :bash:`typo3 flush:cache` for all active TYPO3 instances.
+This command will run :bash:`typo3 flush:cache` for all active TYPO3
+integration testing instances.
 
 
-.. _development_commands_list_ddev_docs:
-:bash:`ddev docs [watch|build]`
-++++++++++++++++++++++++++++++++++++
-This commands will build or watch documentation. Documentation "build" mode is
-only as check if there are any difference between build/watch. The same "build"
-is in theory run on TYPO3 Documentation side.
+.. _development_commands_list_ddev_ci:
+:bash:`ddev ci [T3_VERSION|all] [PHP_VERSION] [lowest]`
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+If called without any arguments, this command will run multiple commands
+for testing and linting.
+
+* :bash:`ddev composer ci` which will run:
+
+  * :bash:`ci:composer:normalize`
+  * :bash:`ci:yaml:lint`
+  * :bash:`ci:json:lint`
+  * :bash:`ci:php:lint`
+  * :bash:`ci:php:cs-fixer`
+  * :bash:`ci:php:stan`
+  * :bash:`ci:tests:unit`
+  * :bash:`ci:tests:functional`
+  * :bash:`ci:tests:postman`
+
+* :bash:`ddev docs ci` which will check if docs can be rendered without problems.
+
+If called with arguments like :bash:`ddev ci [T3_VERSION] [PHP_VERSION] [lowest]`
+this command will restart ddev, set required PHP, install required version of TYPO3
+with optional composer option :bash:`--prefer-lowest` and then run :bash:`ddev ci` on it.
+
+When the argument is only :bash:`all`, then this command will run matrix tests for
+all supported TYPO3, PHP, COMPOSER. The same command is run for each TYPO3, PHP, COMPOSER
+combination in matrix tests on github actions.
+
+Examples:
+
+.. code-block:: bash
+    ddev ci
+    ddev ci 12 8.3 lowest
+    ddev ci all
+
+
+.. tip::
+   You can use this command to fast switch with development to whatever TYPO3/PHP
+   version you like because after ci tests it does not return to previous TYPO3/PHP.
 
 
 .. _development_commands_list_ddev_data:
-:bash:`ddev data [export|import] [TYPO3_VERSION]`
+:bash:`ddev data [export|import] [T3_VERSION]`
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-This commands will export or import database/files of specific testing instance into
+This command will export or import database/files of specific testing instance into
 folder :folder:`.ddev/test/impexp/`. It uses the TYPO3 core extension impexp.
-This exported files are later used by command :bash:`ddev install [TYPO3_VERSION]`.
+These exported files are later used by command :bash:`ddev install [T3_VERSION]`.
 When you do new features or write postman tests this is very likely that you will
 need to do changes to database/files and commit this state to git.
 This command is just for that reason.
@@ -68,43 +77,60 @@ This command is just for that reason.
     testing instance you actually modified.
 
 
-.. _development_commands_list_ddev_install:
-:bash:`ddev install [TYPO3_VERSION|all]`
+.. _development_commands_list_ddev_docs:
+:bash:`ddev docs [watch|build|ci]`
 ++++++++++++++++++++++++++++++++++++
-This command will install specific (or all) testing version of TYPO3 in :file:`.test` folder. List
-of supported TYPO3 versions is defined in file :file:`.ddev/docker-compose.web.yaml`
-in variable :text:`TYPO3_VERSIONS`. Testing instance is available under url
-:uri:`https://[TYPO3_VERSION].t3api.ddev.site`. You can also open :uri:`https://t3api.ddev.site`
-to see list of all supported testing instances.
+build
+    will build docs into the folder :folder:`Documentation-GENERATED-temp`
+    You can browse it for example on PHPStorm "open in browser" option.
 
-Example:
+watch
+    this command will run hot reload for documentation.
 
-* :bash:`ddev install`
-* :bash:`ddev install 12`
-* :bash:`ddev install all`
+ci
+    this command will test if docs are able to  render correctly.
+    Used in :ref:`_development_commands_list_ddev_ci` command.
 
 
-.. _development_commands_list_ddev_test:
-:bash:`ddev test [TYPO3_VERSION|all] [PHP_VERSION] [lowest]`
+
+.. _development_commands_list_ddev_fix:
+:bash:`ddev fix`
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-This commands will install specific version of TYPO3, with specific version of
-PHP and with optional composer option `--prefer-lowest` and run tests on it.
-Running this command will restart ddev with specific PHP version, run
-:bash:`ddev install [TYPO3_VERSION]` and run the tests with :bash:`ddev composer ci`.
-This command is useful when you want to fast switch with development to some specific
-TYPO3/PHP because after test it do not return to previous TYPO3/PHP.
-When first argument is :bash:`all` then this command will run matrix tests for
-all supported TYPO3/PHP/COMPOSER.
+This command will run all possible automate fixes. For now it makes
+PHP CS Fixer changes and composer normalisation.
 
-.. note::
-    For regular fast testing during development it is better to run
-    just :bash:`ddev composer ci`. Use :bash:`ddev test [TYPO3_VERSION]`
-    and :bash:`ddev test all` only for final testing. They are slow because they
-    are restarting ddev and installing TYPO3 but are more accurate because
-    the env is fresh from zero.
+
+.. _development_commands_list_ddev_install:
+:bash:`ddev install [T3_VERSION|all]`
+++++++++++++++++++++++++++++++++++++
+This command will install specific (or all) integration testing instances
+of TYPO3 in folder :folder:`/.test/`. List of supported TYPO3 versions is defined
+in file :file:`.ddev/docker-compose.web.yaml` in variable :text:`TYPO3_VERSIONS`.
+Integration testing instances are available under url :uri:`https://[T3_VERSION].t3api.ddev.site`.
+You can also open https://t3api.ddev.site to see list of all supported testing
+instances for given t3api version.
 
 Example:
 
-* :bash:`ddev test 12 8.3 lowest`
-* :bash:`ddev test all`
+.. code-block:: bash
+    ddev install
+    ddev install 12
+    ddev install all
 
+
+.. _development_commands_list_ddev_next:
+:bash:`ddev next [major|minor|patch]`
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+This command will prepare t3api for next release.
+
+For now, the following files are changed with info about next version:
+
+* :file:`/ext_emconf.php`
+* :file:`/Documentation/guides.xml`
+
+Additionally it outputs a command you need to run to push changes and tag to git.
+
+Example output:
+
+.. code-block:: bash
+    git add Documentation/guides.xml ext_emconf.php && git commit -m 'Tag new version' && git tag -a '2.0.4' -m '2.0.4' && git push origin master --tags

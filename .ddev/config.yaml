@@ -16,7 +16,10 @@ database:
 hooks:
     post-start:
         - exec: sudo sed -i '1s/^/TERM=xterm-256color\n/' ~/.bashrc
+        - exec-host: "[ -d '.test' ] && ddev composer install"
+        - exec-host: "[ -d '.test' ] && ddev install all"
         - exec: mkdir -p .test && cp /var/www/html/.ddev/test/index.php /var/www/html/.test/
+
 webimage_extra_packages: [parallel]
 use_dns_when_possible: true
 composer_version: "2"

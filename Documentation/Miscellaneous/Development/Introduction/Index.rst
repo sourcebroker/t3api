@@ -1,41 +1,27 @@
-.. include:: ../Includes.txt
-
 .. _development_introduction:
 
 =============
 Introduction
 =============
 
-During development of t3api, we are dealing with two different TYPO3 installations,
+During development of t3api, you will be dealing with two different TYPO3 installations,
 which serve different purposes.
 
-1. **Unit and functional testing installation in the `.Build/public` directory**:
-   This installation is created based on the configuration in the :file:`composer.json` file,
-   in the `extra` section. It is a minimal TYPO3 installation, which is mainly used for
-   running unit and functional tests. It does not have a full database or full TYPO3
-   configuration, which makes it fast and lightweight. It is an ideal environment
-   for quickly running tests and checking if the basic functions and classes
-   are working correctly.
+Unit and functional testing installation
+++++++++++++++++++++++++++++++++++++++++
 
-   .. code-block:: json
-        "extra": {
-         "typo3/cms": {
-          "extension-key": "t3api",
-          "web-dir": ".Build/public"
-         }
-        }
+* It is a minimal TYPO3 installation, which is used for running unit and functional tests.
+* Files are under directory :directory:`.Build`
+* You can install it manually with :bash:`ddev composer i`
+* It is installed automatically while using command :ref:`_development_commands_list_ddev_ci`
+* There can be only one TYPO3 version installed at one time.
 
+Integration and manual testing installation
++++++++++++++++++++++++++++++++++++++++++++
 
-2. **Integration and manual testing installation in the `/.test/[TYPO3_VERSION]` directory**:
-
-   This installation is a full, standard TYPO3 installation, which is
-   created using ddev infrastructure. It is accessible under :uri:`https://[TYPO3_VERSION].t3api.ddev.site`
-   It is an environment that most closely resembles a real production environment.
-   It is used for testing the backend module and REST API endpoints, both manually
-   and using Postman tests.
-
-In summary, both installations serve different purposes and are necessary
-at different stages of the development process. The unit and functional testing
-installation in :file:`.Build/public` is used for quick unit and functional tests,
-while the integration and manual testing installation in :file:`/.test/[TYPO3_VERSION]`
-is used for more detailed tests and simulation of a real production environment.
+* This installation is a full TYPO3 accessible under :uri:`https://[TYPO3_VERSION].t3api.ddev.site`
+  and it is used for testing REST API endpoints using Postman tests. It is also used for manual testing.
+* Files are under directory :directory:`/.test/[TYPO3_VERSION]`
+* You can install it manually using command :ref:`_development_commands_list_ddev_install`
+* It is installed automatically while using command :ref:`_development_commands_list_ddev_ci`
+* There can be multiple TYPO3 versions integrations installations at one time each under different url.

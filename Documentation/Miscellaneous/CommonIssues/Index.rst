@@ -1,5 +1,3 @@
-.. include:: ../Includes.txt
-
 .. _common_issues:
 
 =====================================

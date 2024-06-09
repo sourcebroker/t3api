@@ -1,6 +1,3 @@
-.. include:: ../Includes.txt
-
-
 .. _serialization_subscribers:
 
 ===========

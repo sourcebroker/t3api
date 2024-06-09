@@ -1,0 +1,7 @@
+#!/bin/bash
+
+## Description: Run all possible automate fixes.
+## Usage: fix
+## Example: "ddev fix"
+
+composer fix
