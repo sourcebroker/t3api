@@ -14,21 +14,18 @@ Bugs Fixing
 
    Clone your forked repo locally.
 
-3. Run ddev
+3. Install and make init test
 
-   :bash:`ddev restart`
+   Go inside cloned repo and run: :bash:`ddev ci 12`
 
-4. Test CI locally
+   This will install project locally (for TYPO3 12) and make tests to check if your
+   installed version is working well before you start to modify it.
 
-   Check if project is working correctly before adding your changes.
-
-   Run: :bash:`ddev ci`
-
-5. Branch
+4. Branch
 
    Create branch in your repo.
 
-6. Fix bug
+5. Fix bug
 
    You can use existing integration testing instances under url:
    :uri:`https://[T3_VERSION].t3api.ddev.site` to make some fast manual testing
@@ -48,8 +45,7 @@ Bugs Fixing
       * https://12.t3api.ddev.site/_api/news/news/1
       * https://12.t3api.ddev.site/_api/news/categories
 
-
-7. Automated fixes and tests
+6. Automated fixes and tests
 
    If you think you are ready with your bug then:
 
@@ -60,6 +56,6 @@ Bugs Fixing
 
    * :bash:`ddev ci all`
 
-8. Commit and make PR
+7. Commit and make PR
 
    * :bash:`git commit -m "BUGFIX: Fixing bug"`

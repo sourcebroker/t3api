@@ -42,7 +42,7 @@
 		"saschaegerer/phpstan-typo3": "^1.10.0",
 		"seld/jsonlint": "^1.10.2",
 		"symfony/yaml": "^5.4 || ^6.1",
-		"typo3/coding-standards": "dev-update-rules",
+		"typo3/coding-standards": "^0.8",
 		"typo3/testing-framework": "^7.0.4",
 		"webmozart/assert": "^1.11.0"
 	},

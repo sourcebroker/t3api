@@ -16,10 +16,7 @@ database:
 hooks:
     post-start:
         - exec: sudo sed -i '1s/^/TERM=xterm-256color\n/' ~/.bashrc
-        - exec-host: "[ -d '.test' ] && ddev composer install"
-        - exec-host: "[ -d '.test' ] && ddev install all"
         - exec: mkdir -p .test && cp /var/www/html/.ddev/test/index.php /var/www/html/.test/
-
 webimage_extra_packages: [parallel]
 use_dns_when_possible: true
 composer_version: "2"
@@ -213,7 +210,7 @@ corepack_enable: false
 
 # disable_settings_management: false
 # If true, DDEV will not create CMS-specific settings files like
-# Drupal's settings.php/settings.ddev.php or TYPO3's AdditionalConfiguration.php
+# Drupal's settings.php/settings.ddev.php or TYPO3's additional.php
 # In this case the user must provide all such settings.
 
 # You can inject environment variables into the web container with:

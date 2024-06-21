@@ -55,9 +55,8 @@ Examples:
     ddev ci all
 
 
-.. tip::
-   You can use this command to fast switch with development to whatever TYPO3/PHP
-   version you like because after ci tests it does not return to previous TYPO3/PHP.
+You can use this command to fast switch with development to whatever TYPO3/PHP
+version you like because after ci tests it does not return to previous TYPO3/PHP.
 
 
 .. _development_commands_list_ddev_data:
@@ -70,11 +69,10 @@ When you do new features or write postman tests this is very likely that you wil
 need to do changes to database/files and commit this state to git.
 This command is just for that reason.
 
-.. note::
-    All TYPO3 testing instances are using the same exported files. This means that
-    there is no much difference if you make :bash:`ddev data export 13` or
-    :bash:`ddev data export 12`. Important is only that you do export from the
-    testing instance you actually modified.
+All TYPO3 testing instances are using the same exported files. This means that
+there is no much difference if you make :bash:`ddev data export 13` or
+:bash:`ddev data export 12`. Important is only that you do export from the
+testing instance you actually modified.
 
 
 .. _development_commands_list_ddev_docs:
