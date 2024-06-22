@@ -7,10 +7,8 @@
 source .ddev/test/utils.sh
 
 function import_data {
-    OUTPUT_FILE="/var/www/html/.test/${TYPO3}/public/fileadmin/user_upload/_temp_/importexport/"
-    rm -rf $OUTPUT_FILE*
-
-    cp -r /var/www/html/.ddev/test/impexp/* $OUTPUT_FILE/
+    rm -rf $OUTPUT_FOLDER/*
+    cp -r /var/www/html/.ddev/test/impexp/* $OUTPUT_FOLDER/
 
     mysql -uroot -proot -Nse 'SHOW TABLES' "$DATABASE" | while read table; do
       if [ "$table" != "be_users" ] && [ "$table" != "be_sessions" ]; then
@@ -64,13 +62,25 @@ function export_data {
                                                     --save-files-outside-export-file \
                                                     t3api
 
-    OUTPUT_FILE="/var/www/html/.test/${TYPO3}/public/fileadmin/user_upload/_temp_/importexport/"
+    echo "DELETE sys_file_metadata FROM sys_file_metadata LEFT JOIN sys_file ON sys_file_metadata.file = sys_file.uid WHERE sys_file.uid IS NULL;" | mysql -uroot -proot "$DATABASE"
+    echo "DELETE sys_file_metadata FROM sys_file_metadata INNER JOIN sys_file ON sys_file_metadata.file = sys_file.uid WHERE sys_file.identifier LIKE '/user_upload/_temp_/%' OR sys_file.identifier LIKE '%index.html' OR identifier LIKE '/user_upload/news-media/%';" | mysql -uroot -proot "$DATABASE"
+    echo "DELETE FROM sys_file WHERE identifier LIKE '/user_upload/_temp_/%' OR identifier LIKE '%index.html' OR identifier LIKE '/user_upload/news-media/%';" | mysql -uroot -proot "$DATABASE"
+
+
+    sed -i 's|<field index="tstamp" type="integer">[^<]*</field>|<field index="tstamp" type="integer">1717269219</field>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<field index="crdate" type="integer">[^<]*</field>|<field index="crdate" type="integer">1717269219</field>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<field index="creation_date" type="integer">[^<]*</field>|<field index="creation_date" type="integer">1717269219</field>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<field index="last_indexed" type="integer">[^<]*</field>|<field index="last_indexed" type="integer">1717269219</field>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<field index="modification_date" type="integer">[^<]*</field>|<field index="modification_date" type="integer">1717269219</field>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<filemtime>[^<]*</filemtime>|<filemtime>1717269219</filemtime>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<created>[^<]*</created>|<created>Sat 22. April 2024</created>|g' $OUTPUT_FOLDER/t3api.xml
+
     rm -rf /var/www/html/.ddev/test/impexp
     mkdir -p /var/www/html/.ddev/test/impexp
-    mv $OUTPUT_FILE/t3api.xml /var/www/html/.ddev/test/impexp
-    mv $OUTPUT_FILE/t3api.xml.files/ /var/www/html/.ddev/test/impexp
+    mv $OUTPUT_FOLDER/t3api.xml /var/www/html/.ddev/test/impexp
+    mv $OUTPUT_FOLDER/t3api.xml.files/ /var/www/html/.ddev/test/impexp
 
-    echo_green "Dump finished and saved at $OUTPUT_FILE"
+    echo_green "Dump finished and saved at $OUTPUT_FOLDER"
 }
 
 TYPE=${1}
@@ -79,6 +89,7 @@ if ! check_typo3_version "$TYPO3"; then
     exit 1
 fi
 
+OUTPUT_FOLDER="/var/www/html/.test/${TYPO3}/public/fileadmin/user_upload/_temp_/importexport"
 TYPO3_BIN=/var/www/html/.test/$TYPO3/vendor/bin/typo3
 DATABASE="database_$TYPO3"
 

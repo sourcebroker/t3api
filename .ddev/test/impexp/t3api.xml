@@ -9,8 +9,8 @@
 			<packager_username>_cli_</packager_username>
 			<packager_name></packager_name>
 			<packager_email></packager_email>
-			<TYPO3_version>12.4.15</TYPO3_version>
-			<created>Sat 1. June 2024</created>
+			<TYPO3_version>12.4.16</TYPO3_version>
+			<created>Sat 22. April 2024</created>
 		</meta>
 		<static_tables index="relStaticTables" type="array">
 			<tablename index="0">_ALL</tablename>
@@ -1242,7 +1242,7 @@ page.100 {
 			<fieldlist index="data" type="array">
 				<field index="uid" type="integer">7</field>
 				<field index="pid" type="integer">6</field>
-				<field index="tstamp" type="integer">1717269233</field>
+				<field index="tstamp" type="integer">1717269219</field>
 				<field index="crdate" type="integer">1717269219</field>
 				<field index="deleted" type="integer">0</field>
 				<field index="hidden" type="integer">0</field>
