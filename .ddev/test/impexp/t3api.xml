@@ -508,6 +508,22 @@
 					</relations>
 					<softrefs type="array"></softrefs>
 				</rec>
+				<rec index="13" type="array">
+					<uid>13</uid>
+					<pid>3</pid>
+					<title>test1.jpg</title>
+					<relations index="rels" type="array">
+						<element index="sys_file_reference:4" type="array">
+							<id>4</id>
+							<table>sys_file_reference</table>
+						</element>
+						<element index="sys_file:1" type="array">
+							<id>1</id>
+							<table>sys_file</table>
+						</element>
+					</relations>
+					<softrefs type="array"></softrefs>
+				</rec>
 			</table>
 			<table index="tx_news_domain_model_news" type="array">
 				<rec index="5" type="array">
@@ -691,6 +707,10 @@
 							<id>1</id>
 							<table>tx_news_domain_model_news</table>
 						</element>
+						<element index="sys_file_reference:13" type="array">
+							<id>13</id>
+							<table>sys_file_reference</table>
+						</element>
 					</relations>
 					<softrefs type="array"></softrefs>
 				</rec>
@@ -699,56 +719,56 @@
 				<rec index="6" type="array">
 					<uid>6</uid>
 					<pid>6</pid>
-					<title>Tag 10</title>
+					<title>Tag 1B</title>
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 				<rec index="7" type="array">
 					<uid>7</uid>
 					<pid>6</pid>
-					<title>Tag 20</title>
+					<title>Tag 2B</title>
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 				<rec index="8" type="array">
 					<uid>8</uid>
 					<pid>6</pid>
-					<title>Tag 30</title>
+					<title>Tag 3B</title>
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 				<rec index="9" type="array">
 					<uid>9</uid>
 					<pid>6</pid>
-					<title>Tag 40</title>
+					<title>Tag 4B</title>
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 				<rec index="1" type="array">
 					<uid>1</uid>
 					<pid>3</pid>
-					<title>Tag 1</title>
+					<title>Tag 1A</title>
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 				<rec index="2" type="array">
 					<uid>2</uid>
 					<pid>3</pid>
-					<title>Tag 2</title>
+					<title>Tag 2A</title>
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 				<rec index="3" type="array">
 					<uid>3</uid>
 					<pid>3</pid>
-					<title>Tag 3</title>
+					<title>Tag 3A</title>
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 				<rec index="4" type="array">
 					<uid>4</uid>
 					<pid>3</pid>
-					<title>Tag 4</title>
+					<title>Tag 4A</title>
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
@@ -849,6 +869,7 @@
 					<item index="10">1</item>
 					<item index="11">1</item>
 					<item index="12">1</item>
+					<item index="13">1</item>
 				</table>
 				<table index="tx_news_domain_model_news" type="array">
 					<item index="1">1</item>
@@ -1050,7 +1071,7 @@
 				<field index="cache_tags"></field>
 				<field index="description" type="NULL"></field>
 				<field index="no_search" type="integer">0</field>
-				<field index="SYS_LASTCHANGED" type="integer">0</field>
+				<field index="SYS_LASTCHANGED" type="integer">1719067811</field>
 				<field index="abstract" type="NULL"></field>
 				<field index="module"></field>
 				<field index="extendToSubpages" type="integer">0</field>
@@ -1363,7 +1384,7 @@ page.100 {
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
 				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource">{&quot;showinpreview&quot;:&quot;&quot;,&quot;alternative&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;link&quot;:&quot;&quot;,&quot;title&quot;:&quot;&quot;,&quot;crop&quot;:&quot;&quot;,&quot;uid_local&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;hidden&quot;:&quot;&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
@@ -1404,7 +1425,7 @@ page.100 {
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
 				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource"></field>
+				<field index="l10n_diffsource">{&quot;hidden&quot;:&quot;&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
@@ -1445,7 +1466,7 @@ page.100 {
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
 				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource"></field>
+				<field index="l10n_diffsource">{&quot;hidden&quot;:&quot;&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
@@ -1486,7 +1507,7 @@ page.100 {
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
 				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource"></field>
+				<field index="l10n_diffsource">{&quot;hidden&quot;:&quot;&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
@@ -1766,7 +1787,7 @@ page.100 {
 				<field index="hidden" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_diffsource"></field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">0</field>
 				<field index="notes"></field>
 				<field index="l10n_state" type="NULL"></field>
@@ -1776,8 +1797,8 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 10</field>
-				<field index="slug">tag-1-1</field>
+				<field index="title">Tag 1B</field>
+				<field index="slug">tag-1b</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
@@ -1795,7 +1816,7 @@ page.100 {
 				<field index="hidden" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_diffsource"></field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">0</field>
 				<field index="notes"></field>
 				<field index="l10n_state" type="NULL"></field>
@@ -1805,8 +1826,8 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 20</field>
-				<field index="slug">tag-2-1</field>
+				<field index="title">Tag 2B</field>
+				<field index="slug">tag-2b</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
@@ -1824,7 +1845,7 @@ page.100 {
 				<field index="hidden" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_diffsource">a:9:{s:5:&quot;title&quot;;N;s:4:&quot;slug&quot;;N;s:6:&quot;hidden&quot;;N;s:9:&quot;seo_title&quot;;N;s:15:&quot;seo_description&quot;;N;s:12:&quot;seo_headline&quot;;N;s:8:&quot;seo_text&quot;;N;s:5:&quot;notes&quot;;N;s:16:&quot;sys_language_uid&quot;;N;}</field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">0</field>
 				<field index="notes"></field>
 				<field index="l10n_state" type="NULL"></field>
@@ -1834,8 +1855,8 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 30</field>
-				<field index="slug">tag-3-1</field>
+				<field index="title">Tag 3B</field>
+				<field index="slug">tag-3b</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
@@ -1853,7 +1874,7 @@ page.100 {
 				<field index="hidden" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_diffsource"></field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">0</field>
 				<field index="notes"></field>
 				<field index="l10n_state" type="NULL"></field>
@@ -1863,8 +1884,8 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 40</field>
-				<field index="slug">tag-4-1</field>
+				<field index="title">Tag 4B</field>
+				<field index="slug">tag-4b</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
@@ -2352,7 +2373,7 @@ page.100 {
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
 				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource"></field>
+				<field index="l10n_diffsource">{&quot;hidden&quot;:&quot;&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
@@ -2475,7 +2496,7 @@ page.100 {
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
 				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource"></field>
+				<field index="l10n_diffsource">{&quot;hidden&quot;:&quot;&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
@@ -2690,6 +2711,56 @@ page.100 {
 					<relations index="itemArray" type="array">
 						<element index="0" type="array">
 							<id>3</id>
+							<table>sys_file_reference</table>
+						</element>
+					</relations>
+				</field>
+				<field index="uid_local" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>1</id>
+							<table>sys_file</table>
+						</element>
+					</relations>
+				</field>
+			</related>
+		</tablerow>
+		<tablerow index="sys_file_reference:13" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">13</field>
+				<field index="pid" type="integer">3</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="sys_language_uid" type="integer">2</field>
+				<field index="l10n_parent" type="integer">4</field>
+				<field index="l10n_state" type="NULL"></field>
+				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;}</field>
+				<field index="t3ver_oid" type="integer">0</field>
+				<field index="t3ver_wsid" type="integer">0</field>
+				<field index="t3ver_state" type="integer">0</field>
+				<field index="t3ver_stage" type="integer">0</field>
+				<field index="uid_local" type="integer">1</field>
+				<field index="uid_foreign" type="integer">11</field>
+				<field index="tablenames">tx_news_domain_model_news</field>
+				<field index="fieldname">fal_media</field>
+				<field index="sorting_foreign" type="integer">1</field>
+				<field index="title" type="NULL"></field>
+				<field index="description" type="NULL"></field>
+				<field index="alternative" type="NULL"></field>
+				<field index="link"></field>
+				<field index="crop">{&quot;default&quot;:{&quot;cropArea&quot;:{&quot;x&quot;:0,&quot;y&quot;:0,&quot;width&quot;:1,&quot;height&quot;:1},&quot;selectedRatio&quot;:&quot;NaN&quot;,&quot;focusArea&quot;:null}}</field>
+				<field index="autoplay" type="integer">0</field>
+				<field index="showinpreview" type="integer">0</field>
+			</fieldlist>
+			<related index="rels" type="array">
+				<field index="l10n_parent" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>4</id>
 							<table>sys_file_reference</table>
 						</element>
 					</relations>
@@ -2993,7 +3064,7 @@ page.100 {
 				<field index="externalurl" type="NULL"></field>
 				<field index="istopnews" type="integer">0</field>
 				<field index="content_elements" type="integer">0</field>
-				<field index="path_segment">ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-a</field>
+				<field index="path_segment">de-ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-a</field>
 				<field index="alternative_title"></field>
 				<field index="sitemap_changefreq"></field>
 				<field index="sitemap_priority">0.5</field>
@@ -3069,7 +3140,7 @@ page.100 {
 				<field index="externalurl" type="NULL"></field>
 				<field index="istopnews" type="integer">0</field>
 				<field index="content_elements" type="integer">0</field>
-				<field index="path_segment">ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-a</field>
+				<field index="path_segment">pl-ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-a</field>
 				<field index="alternative_title"></field>
 				<field index="sitemap_changefreq"></field>
 				<field index="sitemap_priority">0.5</field>
@@ -3145,7 +3216,7 @@ page.100 {
 				<field index="externalurl" type="NULL"></field>
 				<field index="istopnews" type="integer">1</field>
 				<field index="content_elements" type="integer">0</field>
-				<field index="path_segment">natus-error-sit-voluptatem-folder-a</field>
+				<field index="path_segment">de-natus-error-sit-voluptatem-folder-a</field>
 				<field index="alternative_title"></field>
 				<field index="sitemap_changefreq"></field>
 				<field index="sitemap_priority">0.5</field>
@@ -3220,12 +3291,12 @@ page.100 {
 				<field index="description"></field>
 				<field index="tags" type="integer">0</field>
 				<field index="media" type="NULL"></field>
-				<field index="fal_media" type="integer">1</field>
+				<field index="fal_media" type="integer">0</field>
 				<field index="internalurl" type="NULL"></field>
 				<field index="externalurl" type="NULL"></field>
 				<field index="istopnews" type="integer">0</field>
 				<field index="content_elements" type="integer">0</field>
-				<field index="path_segment">sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a</field>
+				<field index="path_segment">pl-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a</field>
 				<field index="alternative_title"></field>
 				<field index="sitemap_changefreq"></field>
 				<field index="sitemap_priority">0.5</field>
@@ -3242,6 +3313,15 @@ page.100 {
 						</element>
 					</relations>
 				</field>
+				<field index="fal_media" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>13</id>
+							<table>sys_file_reference</table>
+						</element>
+					</relations>
+				</field>
 			</related>
 		</tablerow>
 		<tablerow index="tx_news_domain_model_tag:1" type="array">
@@ -3254,7 +3334,7 @@ page.100 {
 				<field index="hidden" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_diffsource"></field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">0</field>
 				<field index="notes"></field>
 				<field index="l10n_state" type="NULL"></field>
@@ -3264,8 +3344,8 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 1</field>
-				<field index="slug">tag-1</field>
+				<field index="title">Tag 1A</field>
+				<field index="slug">tag-1a</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
@@ -3283,7 +3363,7 @@ page.100 {
 				<field index="hidden" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_diffsource"></field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">0</field>
 				<field index="notes"></field>
 				<field index="l10n_state" type="NULL"></field>
@@ -3293,8 +3373,8 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 2</field>
-				<field index="slug">tag-2</field>
+				<field index="title">Tag 2A</field>
+				<field index="slug">tag-2a</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
@@ -3312,7 +3392,7 @@ page.100 {
 				<field index="hidden" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_diffsource">a:9:{s:5:&quot;title&quot;;N;s:4:&quot;slug&quot;;N;s:6:&quot;hidden&quot;;N;s:9:&quot;seo_title&quot;;N;s:15:&quot;seo_description&quot;;N;s:12:&quot;seo_headline&quot;;N;s:8:&quot;seo_text&quot;;N;s:5:&quot;notes&quot;;N;s:16:&quot;sys_language_uid&quot;;N;}</field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">0</field>
 				<field index="notes"></field>
 				<field index="l10n_state" type="NULL"></field>
@@ -3322,8 +3402,8 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 3</field>
-				<field index="slug">tag-3</field>
+				<field index="title">Tag 3A</field>
+				<field index="slug">tag-3a</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
@@ -3341,7 +3421,7 @@ page.100 {
 				<field index="hidden" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_diffsource"></field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">0</field>
 				<field index="notes"></field>
 				<field index="l10n_state" type="NULL"></field>
@@ -3351,8 +3431,8 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 4</field>
-				<field index="slug">tag-4</field>
+				<field index="title">Tag 4A</field>
+				<field index="slug">tag-4a</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
