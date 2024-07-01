@@ -31,13 +31,23 @@ Documentation
 
 Read the docs at https://docs.typo3.org/p/sourcebroker/t3api/master/en-us/
 
-Example integration
--------------------
+Take a look and test
+--------------------
 
-To check some real code see `t3apinews <https://github.com/sourcebroker/t3apinews>`_ - an example integration of t3api for well known `news <https://github.com/georgringer/news>`_ extension.
+After cloning repo you can run ``ddev restart && ddev composer install`` and then ``ddev ci 12`` to install local integration test instance.
+Local instance is available at https://12.t3api.ddev.site/ (login to backend with ``admin`` / ``Password1!`` credentials).
 
-Demo
-----
+At frontend part you can at once test REST API responses for ext news:
 
-If you use `ddev <https://www.ddev.com/>`_ then in less than 5min you can have working demo of ``ext:t3api`` on you local computer.
-Try https://github.com/sourcebroker/t3api-demo
+* https://12.t3api.ddev.site/_api/news/news
+* https://12.t3api.ddev.site/_api/news/news/1
+* https://12.t3api.ddev.site/_api/news/categories
+* etc
+
+You can also run Postman test with ``ddev ci:tests:postman`` command or full test suite with ``ddev composer ci``.
+Postman is doing full CRUD test with category and news (with image).
+
+Development
+-----------
+
+If you want to help with development take a look at https://docs.typo3.org/p/sourcebroker/t3api/main/en-us/Miscellaneous/Development/Index.html
