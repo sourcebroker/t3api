@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Serializer\Handler;
 
-use InvalidArgumentException;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
-use RuntimeException;
 use SourceBroker\T3api\Annotation\ORM\Cascade;
 use SourceBroker\T3api\Service\PropertyInfoService;
 use SourceBroker\T3api\Service\SerializerService;
@@ -17,32 +15,17 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
-/**
- * Class AbstractDomainObjectHandler
- */
 class AbstractDomainObjectHandler extends AbstractHandler implements DeserializeHandlerInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE = 'AbstractDomainObjectTransport';
 
-    /**
-     * @var PersistenceManager
-     */
-    protected $persistenceManager;
-
-    /**
-     * @var SerializerService
-     */
-    protected $serializerService;
-
-    public function injectPersistenceManager(PersistenceManager $persistenceManager): void
-    {
-        $this->persistenceManager = $persistenceManager;
-    }
-
-    public function injectSerializerService(SerializerService $serializerService): void
-    {
-        $this->serializerService = $serializerService;
-    }
+    public function __construct(
+        protected readonly PersistenceManager $persistenceManager,
+        protected readonly SerializerService $serializerService
+    ) {}
 
     /**
      * @var string[]
@@ -50,10 +33,7 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
     protected static $supportedTypes = [self::TYPE];
 
     /**
-     * @param DeserializationVisitorInterface $visitor
      * @param mixed $data
-     * @param array $type
-     * @param DeserializationContext $context
      * @return mixed|object
      */
     public function deserialize(
@@ -81,7 +61,7 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
                 return $this->processCascadePersistence($data, $targetObjectType, $context);
             }
 
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf('It was not possible to deserialize %s into %s', gettype($data), AbstractDomainObject::class),
                 1584866997736
             );
@@ -91,9 +71,6 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
     }
 
     /**
-     * @param array $data
-     * @param string $targetObjectType
-     * @param DeserializationContext $context
      * @return mixed
      */
     protected function processCascadePersistence(
@@ -104,7 +81,7 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
         $propertyMetadata = $context->getMetadataStack()->offsetGet(0);
 
         if (!$propertyMetadata instanceof PropertyMetadata) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 sprintf(
                     'It was not possible to check if property `%s` allows cascade persistence',
                     implode('.', $context->getCurrentPath())
@@ -114,7 +91,7 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
         }
 
         if (!PropertyInfoService::allowsCascadePersistence($propertyMetadata->class, $propertyMetadata->name)) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 sprintf(
                     'Property in path `%s` does not allow cascade persistence. Make sure if you really want to allow it and, if so, add `%s("persist")` annotation to this property.',
                     implode('.', $context->getCurrentPath()),
@@ -150,6 +127,9 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
         );
     }
 
+    /**
+     * @throws \JsonException
+     */
     private function processCascadeUpdate(
         int $uid,
         string $targetObjectType,
@@ -159,8 +139,8 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
     ) {
         $object = $this->persistenceManager->getObjectByIdentifier($uid, $targetObjectType, false);
 
-        if (empty($object)) {
-            throw new InvalidArgumentException(
+        if ($object === null) {
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Path `%s`: Entity of type `%s` with UID `%s` could not be found',
                     implode('.', $context->getCurrentPath()),
@@ -172,7 +152,7 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
         }
 
         if (!$this->isObjectInContextScope($context, $propertyMetadata, $object)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Object in path `%s` is out of scope. You can not update objects which are not related already. To create new object pass it without `uid` property.',
                     implode('.', $context->getCurrentPath())
@@ -183,7 +163,11 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
 
         $deserializationContext = $this->cloneDeserializationContext($context, ['target' => $object]);
 
-        return $this->serializerService->deserialize(json_encode($data, JSON_THROW_ON_ERROR), $targetObjectType, $deserializationContext);
+        return $this->serializerService->deserialize(
+            json_encode($data, JSON_THROW_ON_ERROR),
+            $targetObjectType,
+            $deserializationContext
+        );
     }
 
     private function isObjectInContextScope(
@@ -193,14 +177,14 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
     ): bool {
         $parentObject = $context->getAttribute('target');
 
-        if (!$parentObject) {
-            throw new RuntimeException(
+        if (empty($parentObject)) {
+            throw new \RuntimeException(
                 'It is not possible to check if object is in context scope without parent object. This message should never be thrown',
                 1589811502043
             );
         }
 
-        $property = ObjectAccess::getProperty($parentObject, $propertyMetadata->name, false);
+        $property = ObjectAccess::getProperty($parentObject, $propertyMetadata->name);
 
         if (
             $propertyMetadata->type['name'] === ObjectStorage::class
@@ -213,6 +197,6 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
             return $object->getUid() === $property->getUid();
         }
 
-        throw new RuntimeException('Unsupported object type', 1589811431286);
+        throw new \RuntimeException('Unsupported object type', 1589811431286);
     }
 }

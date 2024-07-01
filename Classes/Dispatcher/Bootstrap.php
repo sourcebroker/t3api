@@ -1,12 +1,18 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Dispatcher;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Exception\ExceptionInterface;
+use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
+use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Service\RouteService;
+use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -14,53 +20,41 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
-use Throwable;
 use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class Bootstrap
- */
 class Bootstrap extends AbstractDispatcher
 {
-    /**
-     * @var ResponseInterface
-     */
-    protected $response;
+    protected ResponseInterface $response;
 
-    /**
-     * @var HttpFoundationFactory
-     */
-    protected $httpFoundationFactory;
+    protected HttpFoundationFactory $httpFoundationFactory;
 
-    /**
-     * Bootstrap constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
+    public function __construct(
+        SerializerService $serializerService,
+        ApiResourceRepository $apiResourceRepository,
+        SerializationContextBuilder $serializationContextBuilder,
+        DeserializationContextBuilder $deserializationContextBuilder,
+        EventDispatcherInterface $eventDispatcherInterface
+    ) {
+        parent::__construct(
+            $serializerService,
+            $apiResourceRepository,
+            $serializationContextBuilder,
+            $deserializationContextBuilder,
+            $eventDispatcherInterface,
+        );
         $this->response = new Response('php://temp', 200, ['Content-Type' => 'application/ld+json']);
+        $this->httpFoundationFactory = GeneralUtility::makeInstance(HttpFoundationFactory::class);
     }
 
     /**
-     * @param HttpFoundationFactory $httpFoundationFactory
-     */
-    public function injectHttpFoundationFactory(HttpFoundationFactory $httpFoundationFactory)
-    {
-        $this->httpFoundationFactory = $httpFoundationFactory;
-    }
-
-    /**
-     * @param ServerRequestInterface $inputRequest
-     *
-     * @throws Throwable
-     * @return Response
+     * @throws \Throwable
      */
     public function process(ServerRequestInterface $inputRequest): ResponseInterface
     {
         try {
             $request = $this->httpFoundationFactory->createRequest($inputRequest);
             $context = (new RequestContext())->fromRequest($request);
-            $matchedRoute = null;
             $this->callProcessors($request, $this->response);
             if ($this->isMainEndpointResponseClassDefined() && $this->isContextMatchingMainEndpointRoute($context)) {
                 $output = $this->processMainEndpoint();
@@ -70,14 +64,14 @@ class Bootstrap extends AbstractDispatcher
         } catch (ExceptionInterface $exception) {
             $output = $this->serializerService->serialize($exception);
             $this->response = $this->response->withStatus($exception->getStatusCode(), $exception->getTitle());
-        } catch (Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             try {
                 $output = $this->serializerService->serialize($throwable);
                 $this->response = $this->response->withStatus(
                     SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR,
                     SymfonyResponse::$statusTexts[SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR]
                 );
-            } catch (Throwable $throwableSerializationException) {
+            } catch (\Throwable $throwableSerializationException) {
                 throw $throwable;
             }
         }
@@ -87,19 +81,11 @@ class Bootstrap extends AbstractDispatcher
         return $this->response;
     }
 
-    /**
-     * @return bool
-     */
     protected function isMainEndpointResponseClassDefined(): bool
     {
         return !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass']);
     }
 
-    /**
-     * @param RequestContext $context
-     *
-     * @return bool
-     */
     protected function isContextMatchingMainEndpointRoute(RequestContext $context): bool
     {
         $routes = (new RouteCollection());
@@ -116,13 +102,10 @@ class Bootstrap extends AbstractDispatcher
         return false;
     }
 
-    /**
-     * @return string
-     */
     protected function processMainEndpoint(): string
     {
         return $this->serializerService->serialize(
-            $this->objectManager->get($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'])
+            GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['mainEndpointResponseClass'])
         );
     }
 }

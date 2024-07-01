@@ -1,46 +1,23 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Domain\Model;
 
 use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
-use SourceBroker\T3api\Filter\FilterInterface;
 use SourceBroker\T3api\Filter\OrderFilter;
 
-/**
- * Class ApiFilter
- */
 class ApiFilter
 {
-    /**
-     * @var string
-     */
-    protected $filterClass;
+    protected string $filterClass;
 
-    /**
-     * @var ApiFilterStrategy
-     */
-    protected $strategy;
+    protected ApiFilterStrategy $strategy;
 
-    /**
-     * @var string
-     */
-    protected $property;
+    protected string $property;
 
-    /**
-     * @var array
-     */
-    protected $arguments = [];
+    protected array $arguments = [];
 
-    /**
-     * ApiFilter constructor.
-     *
-     * @param string $filterClass
-     * @param string $property
-     * @param string|array $strategy
-     * @param array $arguments
-     */
-    public function __construct(string $filterClass, string $property, $strategy, array $arguments)
+    public function __construct(string $filterClass, string $property, array|string $strategy, array $arguments)
     {
         $this->filterClass = $filterClass;
         $this->property = $property;
@@ -49,19 +26,19 @@ class ApiFilter
     }
 
     /**
-     * @param ApiFilterAnnotation $apiFilterAnnotation
-     *
      * @return self[]
      */
     public static function createFromAnnotations(ApiFilterAnnotation $apiFilterAnnotation): array
     {
-        /** @var string|FilterInterface $filterClass */
         $filterClass = $apiFilterAnnotation->getFilterClass();
 
         $arguments = $apiFilterAnnotation->getArguments();
         if (property_exists($filterClass, 'defaultArguments')) {
             if (!is_array($filterClass::$defaultArguments)) {
-                throw new \InvalidArgumentException(sprintf('%s::$defaultArguments has to be an array', $filterClass), 1582290496996);
+                throw new \InvalidArgumentException(
+                    sprintf('%s::$defaultArguments has to be an array', $filterClass),
+                    1582290496996
+                );
             }
             $arguments = array_merge($filterClass::$defaultArguments, $arguments);
         }
@@ -69,7 +46,7 @@ class ApiFilter
         // In case when properties are not determined we still want to register filter.
         // Needed e.g. in `\SourceBroker\T3api\Filter\DistanceFilter` which is not based on single property
         //    and properties are determined inside of arguments.
-        if (empty($apiFilterAnnotation->getProperties())) {
+        if ($apiFilterAnnotation->getProperties() === []) {
             return [new static($apiFilterAnnotation->getFilterClass(), '', '', $arguments)];
         }
 
@@ -86,9 +63,6 @@ class ApiFilter
         return $instances;
     }
 
-    /**
-     * @return string
-     */
     public function getFilterClass(): string
     {
         return $this->filterClass;
@@ -99,25 +73,17 @@ class ApiFilter
         return $this->strategy;
     }
 
-    /**
-     * @return string
-     */
     public function getProperty(): string
     {
         return $this->property;
     }
 
-    /**
-     * @return array
-     */
     public function getArguments(): array
     {
         return $this->arguments;
     }
 
     /**
-     * @param string $argumentName
-     *
      * @return mixed
      */
     public function getArgument(string $argumentName)
@@ -125,9 +91,6 @@ class ApiFilter
         return $this->getArguments()[$argumentName] ?? null;
     }
 
-    /**
-     * @return string
-     */
     public function getParameterName(): string
     {
         if ($this->isOrderFilter()) {
@@ -141,9 +104,6 @@ class ApiFilter
         return str_replace('.', '_', $plainParameterName);
     }
 
-    /**
-     * @return bool
-     */
     public function isOrderFilter(): bool
     {
         return is_a($this->filterClass, OrderFilter::class, true);

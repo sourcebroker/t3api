@@ -1,9 +1,10 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Hook;
 
-use TYPO3\CMS\Core\Http\ServerRequest;
+use SourceBroker\T3api\Service\RouteService;
 
 class EnrichHashBase
 {
@@ -12,21 +13,10 @@ class EnrichHashBase
      * production environment:
      * 1. Extbase framework configuration is not loaded thus tables mapping is unknown and queries to not existing database tables may be done.
      * 2. Links generated using link handler are not build correctly.
-     *
-     * @param array $params
      */
     public function init(array &$params): void
     {
-        /** @var ServerRequest $request */
-        $request = $GLOBALS['TYPO3_REQUEST'];
-        if (
-            defined('IS_T3API_LEGACY_REQUEST')
-            || (
-                $request instanceof ServerRequest
-                && is_array($request->getQueryParams())
-                && array_key_exists('t3apiResource', $request->getQueryParams())
-            )
-        ) {
+        if (RouteService::routeHasT3ApiResourceEnhancerQueryParam()) {
             $params['hashParameters']['t3api_hash_base_random'] = microtime();
         }
     }

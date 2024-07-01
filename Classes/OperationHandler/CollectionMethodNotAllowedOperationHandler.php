@@ -12,16 +12,15 @@ use Symfony\Component\HttpFoundation\Request;
 class CollectionMethodNotAllowedOperationHandler extends AbstractItemOperationHandler
 {
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param array $route
-     * @param ResponseInterface|null $response
      * @throws MethodNotAllowedException
      * @noinspection ReferencingObjectsInspection
-     * @return mixed|void
      */
-    public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response)
-    {
+    public function handle(
+        OperationInterface $operation,
+        Request $request,
+        array $route,
+        ?ResponseInterface &$response
+    ): never {
         throw new MethodNotAllowedException($operation, 1581460954134);
     }
 }

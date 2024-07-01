@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Annotation;
 
 use Doctrine\Common\Annotations\Annotation\Attribute;
@@ -19,52 +20,32 @@ use Doctrine\Common\Annotations\Annotation\Attributes;
  */
 class ApiResource
 {
-    /**
-     * @var array
-     */
-    protected $itemOperations = [];
+    protected array $itemOperations = [];
 
-    /**
-     * @var array
-     */
-    protected $collectionOperations = [];
+    protected array $collectionOperations = [];
 
-    /**
-     * @var array
-     */
-    protected $attributes = [];
+    protected array $attributes = [];
 
-    /**
-     * ApiResource constructor.
-     *
-     * @param array $values
-     */
     public function __construct(array $values = [])
     {
         $this->itemOperations = $values['itemOperations'] ?? $this->itemOperations;
         $this->collectionOperations = $values['collectionOperations'] ?? $this->collectionOperations;
-        $this->attributes = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['pagination'] ?? [], $values['attributes'] ?? []);
+        $this->attributes = array_merge(
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['pagination'] ?? [],
+            $values['attributes'] ?? []
+        );
     }
 
-    /**
-     * @return array
-     */
     public function getItemOperations(): array
     {
         return $this->itemOperations;
     }
 
-    /**
-     * @return array
-     */
     public function getCollectionOperations(): array
     {
         return $this->collectionOperations;
     }
 
-    /**
-     * @return array
-     */
     public function getAttributes(): array
     {
         return $this->attributes;

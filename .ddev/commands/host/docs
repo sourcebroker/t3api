@@ -1,3 +1,25 @@
 #!/bin/bash
 
-docker-compose -f .ddev/docker-compose.docs.yaml up docs
+## Description: Build docs or open docs editing in watch mode. Mode "watch" is default.
+## Usage: "docs [watch|build|test]"
+## Example: "ddev docs" "ddev docs watch" "ddev docs build" "ddev docs test"
+
+MODE=${1:-watch}
+
+if [ "$MODE" == "build" ]; then
+    mkdir -p Documentation-GENERATED-temp
+    docker run --rm --pull always -v ./:/project/ ghcr.io/typo3-documentation/render-guides:latest --no-progress --config Documentation
+elif [ "$MODE" == "watch" ]; then
+    mkdir -p Documentation-GENERATED-temp
+    open http://localhost:5173/Documentation-GENERATED-temp/Index.html
+    docker run --rm -it --pull always \
+             -v "./Documentation:/project/Documentation" \
+             -v "./Documentation-GENERATED-temp:/project/Documentation-GENERATED-temp" \
+             -p 5173:5173 ghcr.io/garvinhicking/typo3-documentation-browsersync:latest
+elif [ "$MODE" == "ci" ]; then
+    mkdir -p Documentation-GENERATED-temp
+    docker run --rm --pull always -v "$(pwd)":/project -t ghcr.io/typo3-documentation/render-guides:latest --config=Documentation --no-progress --fail-on-log
+else
+    echo "Invalid mode. Please use 'build', 'watch', or 'test'."
+    exit 1
+fi

@@ -1,0 +1,32 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  V\Site\:
+    resource: '../Classes/*'
+
+  V\Site\EventListener\AfterProcessOperationEventListener:
+    tags:
+      - name: 'event.listener'
+
+  V\Site\EventListener\AfterCreateContextForOperationEventListener:
+    tags:
+      - name: 'event.listener'
+
+  V\Site\EventListener\AfterDeserializeOperationEventListener:
+    tags:
+      - name: 'event.listener'
+
+  V\Site\EventListener\BeforeFilterAccessGrantedEventListener:
+    tags:
+      - name: 'event.listener'
+
+  V\Site\EventListener\BeforeOperationAccessGrantedEventListener:
+    tags:
+      - name: 'event.listener'
+
+  V\Site\EventListener\BeforeOperationAccessGrantedPostDenormalizeEventListener:
+    tags:
+      - name: 'event.listener'

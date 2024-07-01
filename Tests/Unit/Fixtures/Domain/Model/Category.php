@@ -6,8 +6,5 @@ namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
 
 class Category
 {
-    /**
-     * @var string
-     */
-    public $title;
+    public string $title;
 }

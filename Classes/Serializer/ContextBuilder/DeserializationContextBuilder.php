@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\ContextBuilder;
 
 use JMS\Serializer\Context;
@@ -13,36 +14,37 @@ class DeserializationContextBuilder extends AbstractContextBuilder
     /**
      * @return DeserializationContext
      */
-    public static function create(): Context
+    public function create(): Context
     {
-        return (DeserializationContext::create())
+        return DeserializationContext::create()
             ->enableMaxDepthChecks();
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
      * @param null $targetObject
      * @return DeserializationContext
      */
-    public static function createFromOperation(OperationInterface $operation, Request $request, $targetObject = null): Context
+    public function createFromOperation(OperationInterface $operation, Request $request, $targetObject = null): Context
     {
-        $context = self::create();
+        $context = $this->create();
 
         // There is a fallback to `normalizationContext` because of backward compatibility. Until version 1.2.x
         // `denormalizationContext` did not exist and same attributes were used for both contexts
         $attributes = $operation->getDenormalizationContext() ?? $operation->getNormalizationContext() ?? [];
 
-        if (!empty($targetObject)) {
+        if ($targetObject !== null) {
             $attributes['target'] = $targetObject;
         }
-
-        $attributes = self::getCustomizedContextAttributes($operation, $request, $attributes);
 
         foreach ($attributes as $attributeName => $attributeValue) {
             $context->setAttribute($attributeName, $attributeValue);
         }
 
+        $this->dispatchAfterCreateContextForOperationEvent(
+            $operation,
+            $request,
+            $context
+        );
         return $context;
     }
 }

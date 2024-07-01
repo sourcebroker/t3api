@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Dispatcher;
 
-use Exception;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
+use SourceBroker\T3api\Event\AfterProcessOperationEvent;
 use SourceBroker\T3api\Exception\RouteNotFoundException;
 use SourceBroker\T3api\OperationHandler\OperationHandlerInterface;
 use SourceBroker\T3api\Processor\ProcessorInterface;
+use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,57 +22,36 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException as SymfonyReso
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher as SignalSlotDispatcher;
 
-/**
- * Class AbstractDispatcher
- */
 abstract class AbstractDispatcher
 {
-    /**
-     * @deprecated Move to another place in 2.0. Kept here only for backward compatibility.
-     */
-    public const SIGNAL_AFTER_DESERIALIZE_OPERATION = 'afterDeserializeOperation';
+    protected SerializerService $serializerService;
 
-    /**
-     * @deprecated Move to another place in 2.0. Kept here only for backward compatibility.
-     */
-    public const SIGNAL_AFTER_PROCESS_OPERATION = 'afterProcessOperation';
+    protected ApiResourceRepository $apiResourceRepository;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var SerializerService
-     */
-    protected $serializerService;
+    protected SerializationContextBuilder $serializationContextBuilder;
 
-    /**
-     * @var ApiResourceRepository
-     */
-    protected $apiResourceRepository;
+    protected DeserializationContextBuilder $deserializationContextBuilder;
 
-    /**
-     * Bootstrap constructor.
-     */
-    public function __construct()
-    {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->serializerService = $this->objectManager->get(SerializerService::class);
-        $this->apiResourceRepository = $this->objectManager->get(ApiResourceRepository::class);
+    public function __construct(
+        SerializerService $serializerService,
+        ApiResourceRepository $apiResourceRepository,
+        SerializationContextBuilder $serializationContextBuilder,
+        DeserializationContextBuilder $deserializationContextBuilder,
+        EventDispatcherInterface $eventDispatcherInterface
+    ) {
+        $this->serializerService = $serializerService;
+        $this->apiResourceRepository = $apiResourceRepository;
+        $this->serializationContextBuilder = $serializationContextBuilder;
+        $this->deserializationContextBuilder = $deserializationContextBuilder;
+        $this->eventDispatcher = $eventDispatcherInterface;
     }
 
     /**
-     * @param RequestContext $requestContext
-     * @param Request $request
-     * @param ResponseInterface $response
-     *
-     * @throws Exception
      * @throws RouteNotFoundException
-     * @return string
+     * @throws \Exception
      */
     public function processOperationByRequest(
         RequestContext $requestContext,
@@ -112,11 +92,10 @@ abstract class AbstractDispatcher
         Request $request,
         ResponseInterface &$response = null
     ): string {
-        $result = null;
         $handlers = $this->getHandlersSupportingOperation($operation, $request);
 
-        if (empty($handlers)) {
-            throw new RuntimeException(
+        if ($handlers === []) {
+            throw new \RuntimeException(
                 sprintf(
                     'Could not handle operation. Operation `%s` is unknown',
                     get_class($operation)
@@ -126,21 +105,21 @@ abstract class AbstractDispatcher
         }
 
         /** @var OperationHandlerInterface $handler */
-        $handler = $this->objectManager->get(array_shift($handlers));
-        $result = $handler->handle($operation, $request, $route ?? [], $response);
+        $handler = GeneralUtility::makeInstance(array_shift($handlers));
+        $result = $handler->handle($operation, $request, $route, $response);
 
-        $arguments = [
+        $afterProcessOperationEvent = new AfterProcessOperationEvent(
             $operation,
-            $result,
-        ];
-        $arguments = $this->objectManager->get(SignalSlotDispatcher::class)
-            ->dispatch(__CLASS__, self::SIGNAL_AFTER_PROCESS_OPERATION, $arguments);
+            $result
+        );
+        $this->eventDispatcher->dispatch($afterProcessOperationEvent);
+        $result = $afterProcessOperationEvent->getResult();
 
         return $result === null
             ? ''
             : $this->serializerService->serialize(
-                $arguments[1],
-                SerializationContextBuilder::createFromOperation($operation, $request)
+                $result,
+                $this->serializationContextBuilder->createFromOperation($operation, $request)
             );
     }
 
@@ -150,7 +129,7 @@ abstract class AbstractDispatcher
             Configuration::getOperationHandlers(),
             static function (string $operationHandlerClass) use ($operation, $request) {
                 if (!is_subclass_of($operationHandlerClass, OperationHandlerInterface::class, true)) {
-                    throw new RuntimeException(
+                    throw new \RuntimeException(
                         sprintf(
                             'Operation handler `%s` needs to be an instance of `%s`',
                             $operationHandlerClass,
@@ -165,13 +144,13 @@ abstract class AbstractDispatcher
         );
     }
 
-    protected function callProcessors(Request $request, &$response): void
+    protected function callProcessors(Request $request, ResponseInterface $response): void
     {
         array_filter(
             Configuration::getProcessors(),
-            function (string $processorClass) use ($request, &$response) {
+            static function (string $processorClass) use ($request, &$response) {
                 if (!is_subclass_of($processorClass, ProcessorInterface::class, true)) {
-                    throw new RuntimeException(
+                    throw new \RuntimeException(
                         sprintf(
                             'Process `%s` needs to be an instance of `%s`',
                             $processorClass,
@@ -180,8 +159,9 @@ abstract class AbstractDispatcher
                         1603705384
                     );
                 }
+
                 /** @var ProcessorInterface $processor */
-                $processor = $this->objectManager->get($processorClass);
+                $processor = GeneralUtility::makeInstance($processorClass);
                 $processor->process($request, $response);
             }
         );

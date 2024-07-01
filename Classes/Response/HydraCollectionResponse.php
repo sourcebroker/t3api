@@ -1,20 +1,16 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Response;
 
+use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 
-/**
- * Class CollectionResponse
- */
 class HydraCollectionResponse extends AbstractCollectionResponse
 {
     /**
-     * @param string $membersReference
-     *
-     * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
-     * @return Schema
+     * @throws InvalidArgumentException
      */
     public static function getOpenApiSchema(string $membersReference): Schema
     {
@@ -43,8 +39,6 @@ class HydraCollectionResponse extends AbstractCollectionResponse
     }
 
     /**
-     * @return array
-     *
      * @todo move $viewData to separate class
      */
     public function getView(): array
@@ -91,9 +85,6 @@ class HydraCollectionResponse extends AbstractCollectionResponse
         return $viewData;
     }
 
-    /**
-     * @return array
-     */
     public function getSearch(): array
     {
         $searchData = [];
@@ -106,7 +97,8 @@ class HydraCollectionResponse extends AbstractCollectionResponse
             } else {
                 $variable = $filter->getParameterName();
             }
-            if (!in_array($variable, $variables)) {
+
+            if (!in_array($variable, $variables, true)) {
                 $searchData['hydra:mapping'][] = [
                     'variable' => $variable,
                     'property' => $filter->getProperty(),
@@ -114,16 +106,12 @@ class HydraCollectionResponse extends AbstractCollectionResponse
                 $variables[] = $variable;
             }
         }
+
         $searchData['hydra:template'] .= sprintf('{?%s}', implode(',', $variables));
 
         return $searchData;
     }
 
-    /**
-     * @param array $overrideParams
-     *
-     * @return string
-     */
     protected function getCurrentQueryStringWithOverrideParams(array $overrideParams): string
     {
         return http_build_query(array_merge($this->request->query->all(), $overrideParams));

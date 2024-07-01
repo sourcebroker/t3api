@@ -6,10 +6,6 @@ namespace SourceBroker\T3api\Service;
 
 class ReflectionService
 {
-    /**
-     * @param string $filePath
-     * @return string|null
-     */
     public function getClassNameFromFile(string $filePath): ?string
     {
         $tokens = token_get_all(file_get_contents($filePath));
@@ -26,11 +22,14 @@ class ReflectionService
                         $namespace = trim($namespace);
                         break;
                     }
+
                     $namespace .= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
                 }
+
                 break;
             }
-            $i++;
+
+            ++$i;
         }
 
         if ($namespaceFound) {

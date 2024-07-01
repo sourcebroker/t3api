@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\Handler;
 
-use InvalidArgumentException;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
@@ -11,9 +11,6 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-/**
- * Class ObjectStorageHandler
- */
 class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerInterface, DeserializeHandlerInterface
 {
     /**
@@ -25,12 +22,7 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
     ];
 
     /**
-     * @param SerializationVisitorInterface $visitor
      * @param ObjectStorage $objectStorage
-     * @param array $type
-     * @param SerializationContext $context
-     *
-     * @return array
      */
     public function serialize(
         SerializationVisitorInterface $visitor,
@@ -48,12 +40,7 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
     }
 
     /**
-     * @param DeserializationVisitorInterface $visitor
      * @param mixed $data
-     * @param array $type
-     * @param DeserializationContext $context
-     *
-     * @return ObjectStorage
      */
     public function deserialize(
         DeserializationVisitorInterface $visitor,
@@ -68,7 +55,7 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
         }
 
         if (!is_array($data)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Data of type `%s` can not be converted to %s in path `%s`',
                     gettype($data),

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Factory;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use ReflectionClass;
 use SourceBroker\T3api\Annotation\ApiFilter as ApiFilterAnnotation;
 use SourceBroker\T3api\Annotation\ApiResource as ApiResourceAnnotation;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
@@ -13,10 +12,7 @@ use SourceBroker\T3api\Domain\Model\ApiResource;
 
 class ApiResourceFactory
 {
-    /**
-     * @var AnnotationReader
-     */
-    protected $annotationReader;
+    protected AnnotationReader $annotationReader;
 
     public function __construct()
     {
@@ -27,11 +23,11 @@ class ApiResourceFactory
     {
         /** @var ApiResourceAnnotation $apiResourceAnnotation */
         $apiResourceAnnotation = $this->annotationReader->getClassAnnotation(
-            new ReflectionClass($fqcn),
+            new \ReflectionClass($fqcn),
             ApiResourceAnnotation::class
         );
 
-        if (!$apiResourceAnnotation) {
+        if (!$apiResourceAnnotation instanceof ApiResourceAnnotation) {
             return null;
         }
 
@@ -45,8 +41,8 @@ class ApiResourceFactory
     protected function addFiltersToApiResource(ApiResource $apiResource): void
     {
         $filterAnnotations = array_filter(
-            $this->annotationReader->getClassAnnotations(new ReflectionClass($apiResource->getEntity())),
-            static function ($annotation) {
+            $this->annotationReader->getClassAnnotations(new \ReflectionClass($apiResource->getEntity())),
+            static function ($annotation): bool {
                 return $annotation instanceof ApiFilterAnnotation;
             }
         );

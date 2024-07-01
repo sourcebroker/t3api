@@ -18,18 +18,15 @@ abstract class AbstractCollectionOperationHandler extends AbstractOperationHandl
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param array $route
-     * @param ResponseInterface|null $response
-     * @throws OperationNotAllowedException
      * @return mixed|void
      * @noinspection ReferencingObjectsInspection
+     * @throws OperationNotAllowedException
      */
     public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response)
     {
         if (!$this->operationAccessChecker->isGranted($operation)) {
             throw new OperationNotAllowedException($operation, 1574416639472);
         }
+        return null;
     }
 }

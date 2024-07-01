@@ -1,15 +1,12 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Tests\Utility;
 
-use Nimut\TestingFramework\TestCase\UnitTestCase;
-use RuntimeException;
 use SourceBroker\T3api\Utility\FileUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class FileUtilityTest
- */
 class FileUtilityTest extends UnitTestCase
 {
     /**
@@ -28,7 +25,7 @@ class FileUtilityTest extends UnitTestCase
      */
     public function createWritableDirectoryThrowsExceptionIfCanNotCreate()
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
         $this->expectExceptionCode(1570250836643);
 
         FileUtility::createWritableDirectory($this->getPathToNotExistingDirectory('/root'));
@@ -39,17 +36,12 @@ class FileUtilityTest extends UnitTestCase
      */
     public function createWritableDirectoryThrowsExceptionIfNotWritable()
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
         $this->expectExceptionCode(1570250839604);
 
         FileUtility::createWritableDirectory($this->getPathToNotWritableDirectory());
     }
 
-    /**
-     * @param string $rootPath
-     *
-     * @return string
-     */
     protected function getPathToNotExistingDirectory(string $rootPath = ''): string
     {
         do {
@@ -61,10 +53,6 @@ class FileUtilityTest extends UnitTestCase
 
     /**
      * Returns path to random not writable directory
-     *
-     * @param string $rootPath
-     *
-     * @return string
      */
     protected function getPathToNotWritableDirectory(string $rootPath = '/'): string
     {

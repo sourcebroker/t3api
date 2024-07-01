@@ -20,14 +20,10 @@ abstract class AbstractItemOperationHandler extends AbstractOperationHandler
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param array $route
-     * @param ResponseInterface|null $response
-     * @throws OperationNotAllowedException
-     * @throws ResourceNotFoundException
      * @return mixed|AbstractDomainObject|null
      * @noinspection ReferencingObjectsInspection
+     * @throws ResourceNotFoundException
+     * @throws OperationNotAllowedException
      */
     public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response)
     {
@@ -37,7 +33,11 @@ abstract class AbstractItemOperationHandler extends AbstractOperationHandler
         $object = $repository->findByUid((int)$route['id']);
 
         if (!$object instanceof AbstractDomainObject) {
-            throw new ResourceNotFoundException($operation->getApiResource()->getEntity(), (int)$route['id'], 1581461016515);
+            throw new ResourceNotFoundException(
+                $operation->getApiResource()->getEntity(),
+                (int)$route['id'],
+                1581461016515
+            );
         }
 
         if (!$this->operationAccessChecker->isGranted($operation, ['object' => $object])) {

@@ -1,32 +1,44 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Filter;
 
-use DateTime;
-use Exception;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
-use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/**
- * Class RangeFilter
- */
 class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
+    /**
+     * @var string
+     */
     protected const PARAMETER_BETWEEN = 'between';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_GREATER_THAN = 'gt';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_GREATER_THAN_OR_EQUAL = 'gte';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_LESS_THAN = 'lt';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_LESS_THAN_OR_EQUAL = 'lte';
 
     /**
-     * @param ApiFilter $apiFilter
-     *
      * @return Parameter[]
      */
     public static function getOpenApiParameters(ApiFilter $apiFilter): array
@@ -54,7 +66,7 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
     /**
      * @inheritDoc
      * @throws InvalidQueryException
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function filterProperty(
         string $property,
@@ -66,12 +78,12 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
         foreach ((array)$values as $operator => $value) {
             $constraint = $this->getConstraintForSingleItem($property, $operator, $value, $query, $apiFilter);
 
-            if ($constraint) {
+            if ($constraint instanceof ConstraintInterface) {
                 $constraints[] = $constraint;
             }
         }
 
-        if (empty($constraints)) {
+        if ($constraints === []) {
             return null;
         }
 
@@ -79,15 +91,10 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
     }
 
     /**
-     * @param string $property
-     * @param string $operator
      * @param mixed $value
-     * @param QueryInterface $query
      *
-     * @param ApiFilter $apiFilter
      * @throws InvalidQueryException
-     * @throws Exception
-     * @return ConstraintInterface|null
+     * @throws \Exception
      */
     protected function getConstraintForSingleItem(
         string $property,
@@ -100,7 +107,7 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
             case self::PARAMETER_BETWEEN:
                 [$valueMin, $valueMax] = explode('..', $value);
 
-                return $query->logicalAnd([
+                return $query->logicalAnd(...[
                     $query->greaterThanOrEqual($property, $this->getValue($valueMin, $apiFilter)),
                     $query->lessThanOrEqual($property, $this->getValue($valueMax, $apiFilter)),
                 ]);
@@ -113,7 +120,7 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
             case self::PARAMETER_LESS_THAN_OR_EQUAL:
                 return $query->lessThanOrEqual($property, $this->getValue($value, $apiFilter));
             default:
-                throw new InvalidArgumentException(
+                throw new \InvalidArgumentException(
                     sprintf('Unknown operator of range filter `%s`', $operator),
                     1560929019063
                 );
@@ -122,15 +129,14 @@ class RangeFilter extends AbstractFilter implements OpenApiSupportingFilterInter
 
     /**
      * @param $value
-     * @param ApiFilter $apiFilter
-     * @throws Exception
-     * @return DateTime|int
+     * @return \DateTime|int
+     * @throws \Exception
      */
     protected function getValue($value, ApiFilter $apiFilter)
     {
         switch (strtolower($apiFilter->getStrategy()->getName())) {
             case 'datetime':
-                return new DateTime($value);
+                return new \DateTime($value);
             case 'int':
             case 'integer':
             case 'number':

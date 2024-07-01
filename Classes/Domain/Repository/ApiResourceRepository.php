@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Domain\Repository;
 
 use SourceBroker\T3api\Configuration\Configuration;
@@ -9,45 +10,19 @@ use SourceBroker\T3api\Factory\ApiResourceFactory;
 use SourceBroker\T3api\Service\ReflectionService;
 use SourceBroker\T3api\Service\RouteService;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
 class ApiResourceRepository
 {
-    /**
-     * @var FrontendInterface
-     */
-    protected $cache;
+    protected ?FrontendInterface $cache;
 
-    /**
-     * @var ReflectionService
-     */
-    protected $reflectionService;
-
-    /**
-     * @var ApiResourceFactory
-     */
-    protected $apiResourceFactory;
-
-    /**
-     * @param CacheManager $cacheManager
-     *
-     * @throws NoSuchCacheException
-     */
-    public function injectCache(CacheManager $cacheManager): void
-    {
+    public function __construct(
+        protected readonly CacheManager $cacheManager,
+        protected readonly ReflectionService $reflectionService,
+        protected readonly ApiResourceFactory $apiResourceFactory
+    ) {
         $this->cache = $cacheManager->getCache('t3api');
-    }
-
-    public function injectReflectionService(ReflectionService $reflectionService): void
-    {
-        $this->reflectionService = $reflectionService;
-    }
-
-    public function injectApiResourceFactory(ApiResourceFactory $apiResourceFactory): void
-    {
-        $this->apiResourceFactory = $apiResourceFactory;
     }
 
     /**
@@ -76,12 +51,7 @@ class ApiResourceRepository
         return $apiResources;
     }
 
-    /**
-     * @param string|object $entity Class name or object
-     *
-     * @return ApiResource|null
-     */
-    public function getByEntity($entity): ?ApiResource
+    public function getByEntity(string|object $entity): ?ApiResource
     {
         $className = is_string($entity) ? $entity : get_class($entity);
 
@@ -114,7 +84,7 @@ class ApiResourceRepository
         foreach (Configuration::getApiResourcePathProviders() as $apiResourcePathProvider) {
             foreach ($apiResourcePathProvider->getAll() as $domainModelClassFile) {
                 $className = $this->reflectionService->getClassNameFromFile($domainModelClassFile);
-                if ($className) {
+                if ($className !== null && $className !== '') {
                     yield $className;
                 }
             }

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\ViewHelpers;
 
 use SourceBroker\T3api\Dispatcher\HeadlessDispatcher;
@@ -9,36 +10,23 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
-/**
- * Class InlineViewHelper
- */
 class InlineViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * @var HeadlessDispatcher
-     */
-    protected $headlessDispatcher;
+    protected HeadlessDispatcher $headlessDispatcher;
 
-    /**
-     * @inheritDoc
-     */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
-        $this->headlessDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(HeadlessDispatcher::class);
+        $this->headlessDispatcher = GeneralUtility::makeInstance(HeadlessDispatcher::class);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('route', 'string', 'API endpoint route', true);
         $this->registerArgument('params', 'array', 'Request parameters', false, []);
@@ -47,8 +35,7 @@ class InlineViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @throws RouteNotFoundException
-     * @return string
+     * @throws RouteNotFoundException|\SourceBroker\T3api\Exception\RouteNotFoundException
      */
     public function render(): string
     {
@@ -58,9 +45,6 @@ class InlineViewHelper extends AbstractViewHelper
         return $this->headlessDispatcher->processOperationByRequest($requestContext, $request);
     }
 
-    /**
-     * @return string
-     */
     protected function getRequestUri(): string
     {
         return implode(
@@ -73,9 +57,6 @@ class InlineViewHelper extends AbstractViewHelper
         );
     }
 
-    /**
-     * @return array
-     */
     protected function getRequestParameters(): array
     {
         $params = $this->arguments['params'];

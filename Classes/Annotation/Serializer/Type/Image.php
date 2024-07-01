@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Annotation\Serializer\Type;
 
 use SourceBroker\T3api\Serializer\Handler\ImageHandler;
@@ -32,16 +33,15 @@ class Image implements TypeInterface
     public $maxHeight;
 
     /**
-     * @return array
+     * @var string
      */
+    public $cropVariant;
+
     public function getParams(): array
     {
-        return [$this->width, $this->height, $this->maxWidth, $this->maxHeight];
+        return [$this->width, $this->height, $this->maxWidth, $this->maxHeight, $this->cropVariant];
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return ImageHandler::TYPE;

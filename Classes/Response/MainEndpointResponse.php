@@ -1,39 +1,25 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Response;
 
-use ReflectionException;
+use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 
-/**
- * Class MainEndpointResponse
- */
 class MainEndpointResponse
 {
-    /**
-     * @var ApiResourceRepository
-     */
-    protected $apiResourceRepository;
+    public function __construct(protected readonly ApiResourceRepository $apiResourceRepository) {}
 
     /**
-     * @param ApiResourceRepository $apiResourceRepository
-     */
-    public function injectApiResourceRepository(ApiResourceRepository $apiResourceRepository): void
-    {
-        $this->apiResourceRepository = $apiResourceRepository;
-    }
-
-    /**
-     * @throws ReflectionException
-     * @return array
+     * @throws \ReflectionException
      */
     public function getResources(): array
     {
         $resources = [];
 
         foreach ($this->apiResourceRepository->getAll() as $apiResource) {
-            if (!$apiResource->getMainCollectionOperation()) {
+            if (!$apiResource->getMainCollectionOperation() instanceof CollectionOperation) {
                 continue;
             }
 

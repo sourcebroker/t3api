@@ -1,0 +1,9 @@
+TCEMAIN.linkHandler.tx_news {
+    handler = TYPO3\CMS\Recordlist\LinkHandler\RecordLinkHandler
+    label = News
+    configuration {
+        table = tx_news_domain_model_news
+        hidePageTree = 0
+    }
+    scanAfter = page
+}

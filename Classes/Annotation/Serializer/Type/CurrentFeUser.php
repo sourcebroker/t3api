@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Annotation\Serializer\Type;
 
-use InvalidArgumentException;
 use SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler;
 
 /**
@@ -13,15 +12,12 @@ use SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler;
  */
 class CurrentFeUser implements TypeInterface
 {
-    /**
-     * @var string
-     */
-    protected $feUserClass;
+    protected string $feUserClass;
 
     public function __construct($options = [])
     {
         if (!is_string($options['value'] ?? null)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     '`%s` Annotation needs a value representing the fe user class.',
                     self::class
@@ -33,7 +29,7 @@ class CurrentFeUser implements TypeInterface
         $feUserClass = $options['value'];
 
         if (!class_exists($feUserClass)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Class `%s` which should represent the fe user for `%s` does not exist.',
                     $feUserClass,

@@ -1,5 +1,3 @@
-.. include:: ../../Includes.txt
-
 .. _use-cases_current-user-assignment:
 
 Current user assignment

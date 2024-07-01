@@ -1,5 +1,3 @@
-.. include:: ../../Includes.txt
-
 .. _filtering_filters_boolean-filter:
 
 BooleanFilter

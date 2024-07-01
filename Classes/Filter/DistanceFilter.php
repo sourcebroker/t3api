@@ -1,35 +1,54 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Filter;
 
 use Doctrine\DBAL\FetchMode;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
-use InvalidArgumentException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/**
- * Class DistanceFilter
- */
 class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
+    /**
+     * @var string
+     */
     protected const PARAMETER_LATITUDE = 'lat';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_LONGITUDE = 'lng';
+
+    /**
+     * @var string
+     */
     protected const PARAMETER_RADIUS = 'radius';
+
+    /**
+     * @var int
+     */
     protected const MILES_MULTIPLIER = 3959;
+
+    /**
+     * @var int
+     */
     protected const KILOMETERS_MULTIPLIER = 6371;
+
+    /**
+     * @var int
+     */
     protected const DEFAULT_RADIUS = 100;
 
     /**
-     * @param ApiFilter $apiFilter
-     *
      * @return Parameter[]
      */
     public static function getOpenApiParameters(ApiFilter $apiFilter): array
@@ -68,27 +87,33 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
 
         $tableName = $this->getTableName($query);
         $rootAlias = 'o';
-        $queryBuilder = $this->getObjectManager()
-            ->get(ConnectionPool::class)
-            ->getQueryBuilderForTable($tableName);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($tableName);
 
         if ($this->isPropertyNested($latProperty)) {
-            $joinedProperty = $this->addJoinsForNestedProperty($latProperty, $rootAlias, $query, $queryBuilder);
-            [$latTableAlias, $latPropertyName] = $joinedProperty;
+            [$latTableAlias, $latPropertyName] = $this->addJoinsForNestedProperty(
+                $latProperty,
+                $rootAlias,
+                $query,
+                $queryBuilder
+            );
         } else {
             $latTableAlias = $rootAlias;
             $latPropertyName = $latProperty;
         }
 
         if ($this->isPropertyNested($lngProperty)) {
-            $joinedProperty = $this->addJoinsForNestedProperty($lngProperty, $rootAlias, $query, $queryBuilder);
-            [$lngTableAlias, $lngPropertyName] = $joinedProperty;
+            [$lngTableAlias, $lngPropertyName] = $this->addJoinsForNestedProperty(
+                $lngProperty,
+                $rootAlias,
+                $query,
+                $queryBuilder
+            );
         } else {
             $lngTableAlias = $rootAlias;
             $lngPropertyName = $lngProperty;
         }
 
-        $dataMapper = $this->getObjectManager()->get(DataMapper::class);
+        $dataMapper = GeneralUtility::makeInstance(DataMapper::class);
         $latColumn = $dataMapper->convertPropertyNameToColumnName($latPropertyName, $apiFilter->getFilterClass());
         $lngColumn = $dataMapper->convertPropertyNameToColumnName($lngPropertyName, $apiFilter->getFilterClass());
 
@@ -118,16 +143,12 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
     }
 
     /**
-     * @param array $values
-     * @param ApiFilter $apiFilter
-     *
-     * @throws InvalidArgumentException
-     * @return array array with two elements - lat and lang
+     * @throws \InvalidArgumentException
      */
     protected function getLatLangParameterValues(array $values, ApiFilter $apiFilter): array
     {
         if (!isset($values[self::PARAMETER_LATITUDE], $values[self::PARAMETER_LONGITUDE])) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Parameters `%s[%s]` and %s[%s] are required to use distance filter',
                     $apiFilter->getParameterName(),
@@ -141,12 +162,6 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
         return [(float)$values[self::PARAMETER_LATITUDE], (float)$values[self::PARAMETER_LONGITUDE]];
     }
 
-    /**
-     * @param array $values
-     * @param ApiFilter $apiFilter
-     *
-     * @return float
-     */
     protected function getRadiusParameterValue(array $values, ApiFilter $apiFilter): float
     {
         if (

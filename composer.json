@@ -1,40 +1,53 @@
 {
 	"name": "sourcebroker/t3api",
+	"description": "REST API for your TYPO3 project. Config with annotations, build in filtering, pagination, typolinks, image processing, serialization contexts, responses in Hydra/JSON-LD format.",
 	"license": [
 		"GPL-2.0-or-later"
 	],
 	"type": "typo3-cms-extension",
-	"description": "REST API for your TYPO3 project. Config with annotations, build in filtering, pagination, typolinks, image processing, serialization contexts, responses in Hydra/JSON-LD format.",
 	"authors": [
 		{
-			"name": "SourceBroker Team",
+			"name": "Inscript Team",
 			"role": "Developer"
 		}
 	],
 	"require": {
-		"php": "^7.2.0 || ^8.0.0",
+		"php": "^8.1.0",
 		"ext-json": "*",
-		"ext-tokenizer": "*",
 		"ext-pdo": "*",
-		"typo3/cms-core": "^10.4 || ^11.5",
-		"typo3/cms-extbase": "^10.4 || ^11.5",
-		"typo3/cms-frontend": "^10.4 || ^11.5",
-		"jms/serializer": "^3.1",
-		"symfony/routing": "^4.1 || ^5.0",
-		"symfony/expression-language": "^4.1 || ^5.0",
-		"symfony/http-foundation": "^4.2.9 || ^5.0",
-		"symfony/psr-http-message-bridge": "^2.1",
-		"symfony/property-info": "^4.4 || ^5.0",
-		"symfony/mime": "^4.4 || ^5.0",
-		"symfony/cache": "^4.4 || ^5.0 || ^6.0",
+		"ext-tokenizer": "*",
+		"doctrine/annotations": "^1.13.3 || ^2.0",
 		"goldspecdigital/oooas": "^2.4",
-		"phpdocumentor/reflection-docblock": "^5.1",
-		"doctrine/annotations": "^1.0"
+		"jms/serializer": "^3.1",
+		"phpdocumentor/reflection-docblock": "^5.2",
+		"symfony/cache": "^6.4 || ^7.0",
+		"symfony/expression-language": "^6.4 || ^7.0",
+		"symfony/http-foundation": "^6.4 || ^7.0",
+		"symfony/mime": "^6.4 || ^7.0",
+		"symfony/property-info": "^6.4 || ^7.0",
+		"symfony/psr-http-message-bridge": "^6.4 || ^7.0",
+		"symfony/routing": "^6.4 || ^7.0",
+		"typo3/cms-core": "^12.4",
+		"typo3/cms-extbase": "^12.4",
+		"typo3/cms-frontend": "^12.4"
 	},
 	"require-dev": {
-		"friendsofphp/php-cs-fixer": "^3.0",
-		"nimut/testing-framework": "^6.0",
-		"typo3/coding-standards": "^0.5.2"
+		"ergebnis/composer-normalize": "^2.29.0",
+		"friendsofphp/php-cs-fixer": "^3.57.1",
+		"phpstan/extension-installer": "^1.2.0",
+		"phpstan/phpstan": "^1.10.67",
+		"phpstan/phpstan-phpunit": "^1.3.16",
+		"phpstan/phpstan-strict-rules": "^1.5.5",
+		"phpunit/phpunit": "^10.5.17",
+		"saschaegerer/phpstan-typo3": "^1.10.0",
+		"seld/jsonlint": "^1.10.2",
+		"symfony/yaml": "^5.4 || ^6.1",
+		"typo3/coding-standards": "^0.8",
+		"typo3/testing-framework": "^7.0.4",
+		"webmozart/assert": "^1.11.0"
+	},
+	"replace": {
+		"typo3-ter/t3api": "self.version"
 	},
 	"autoload": {
 		"psr-4": {
@@ -46,39 +59,52 @@
 			"SourceBroker\\T3api\\Tests\\": "Tests"
 		}
 	},
-	"replace": {
-		"typo3-ter/t3api": "self.version"
-	},
 	"config": {
-		"vendor-dir": ".Build/vendor",
-		"bin-dir": ".Build/bin",
 		"allow-plugins": {
-			"typo3/cms-composer-installers": true,
-			"typo3/class-alias-loader": true
-		}
-	},
-	"scripts": {
-		"test-unit-v10": "TYPO3_PATH_ROOT=.test/v10/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/",
-		"test-functional-v10": "TYPO3_PATH_ROOT=.test/v10/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional/",
-		"test-unit-v11": "TYPO3_PATH_ROOT=.test/v11/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/",
-		"test-functional-v11": "TYPO3_PATH_ROOT=.test/v11/public/ ./.Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional/",
-		"test": [
-			"composer run test-unit-v10",
-			"composer run test-functional-v10",
-			"composer run test-unit-v11",
-			"composer run test-functional-v11"
-		],
-		"cs": "./.Build/bin/php-cs-fixer fix --dry-run --diff -vvv",
-		"csfix": "./.Build/bin/php-cs-fixer fix -vvv",
-		"t3doc": "rm -rf ./Documentation-GENERATED-temp && docker-compose run --rm t3docmake && open \"Documentation-GENERATED-temp/Result/project/0.0.0/Index.html\"",
-		"next-patch": "./Resources/Private/Php/nextVersion.php",
-		"next-minor": "./Resources/Private/Php/nextVersion.php --version-type=minor",
-		"next-major": "./Resources/Private/Php/nextVersion.php --version-type=major"
+			"ergebnis/composer-normalize": true,
+			"phpstan/extension-installer": true,
+			"typo3/class-alias-loader": true,
+			"typo3/cms-composer-installers": true
+		},
+		"bin-dir": ".Build/bin",
+		"vendor-dir": ".Build/vendor"
 	},
 	"extra": {
 		"typo3/cms": {
 			"extension-key": "t3api",
 			"web-dir": ".Build/public"
 		}
+	},
+	"scripts": {
+		"ci": [
+			"@ci:composer:normalize",
+			"@ci:yaml:lint",
+			"@ci:json:lint",
+			"@ci:php:lint",
+			"@ci:php:cs-fixer",
+			"@ci:php:stan",
+			"@ci:tests:unit",
+			"@ci:tests:functional",
+			"@ci:tests:postman"
+		],
+		"ci:composer:normalize": "@composer normalize --dry-run",
+		"ci:json:lint": "find ./composer.json ./Resources ./Configuration -name '*.json' | xargs -r php .Build/bin/jsonlint -q",
+		"ci:php:cs-fixer": ".Build/bin/php-cs-fixer fix --config .php-cs-fixer.php -v --dry-run --using-cache no --diff",
+		"ci:php:lint": "find . -name '*.php' -not -path './.Build/*' -not -path './.cache/*' -not -path './.ddev/*' -not -path './.test/*' -not -path './.Documentation/*'  -not -path './.Documentation-GENERATED-temp/*' -print0 | xargs -0 -n 1 -P 4 php -l > /dev/null",
+		"ci:php:stan": ".Build/bin/phpstan --no-progress",
+		"ci:tests:create-directories": "mkdir -p .Build/public/typo3temp/var/tests",
+		"ci:tests:functional": [
+			"@ci:tests:create-directories",
+			"typo3DatabaseHost=db typo3DatabaseUsername=root typo3DatabasePassword=root typo3DatabaseName=db .Build/bin/phpunit -c ./Build/phpunit/FunctionalTests.xml"
+		],
+		"ci:tests:postman": "bash ./Build/postman/run.sh",
+		"ci:tests:unit": ".Build/bin/phpunit -c ./Build/phpunit/UnitTests.xml",
+		"ci:yaml:lint": "find ./Resources ./Configuration -regextype egrep -regex '.*.ya?ml$' | xargs -r php .Build/bin/yaml-lint",
+		"fix": [
+			"@fix:php:cs-fixer",
+			"@fix:composer:normalize"
+		],
+		"fix:composer:normalize": "@composer normalize",
+		"fix:php:cs-fixer": ".Build/bin/php-cs-fixer fix --config .php-cs-fixer.php"
 	}
 }

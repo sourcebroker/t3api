@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Filter;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
@@ -10,14 +11,9 @@ use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/**
- * Class NumericFilter
- */
 class NumericFilter extends AbstractFilter implements OpenApiSupportingFilterInterface
 {
     /**
-     * @param ApiFilter $apiFilter
-     *
      * @return Parameter[]
      */
     public static function getOpenApiParameters(ApiFilter $apiFilter): array

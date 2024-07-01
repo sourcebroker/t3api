@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
-use RuntimeException;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Routing\SiteMatcher;
 use TYPO3\CMS\Core\Routing\SiteRouteResult;
 use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\SiteInterface;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,7 +27,7 @@ class SiteService
         }
 
         if (!$site instanceof Site) {
-            throw new RuntimeException('Could not determine current site', 1604259480589);
+            throw new \RuntimeException('Could not determine current site', 1604259480589);
         }
 
         return $site;
@@ -59,8 +59,6 @@ class SiteService
     }
 
     /**
-     * @param string $identifier
-     * @return Site
      * @throws SiteNotFoundException
      */
     public static function getByIdentifier(string $identifier): Site
@@ -69,11 +67,12 @@ class SiteService
             ->getSiteByIdentifier($identifier);
     }
 
-    protected static function getResolvedByTypo3(): ?Site
+    protected static function getResolvedByTypo3(): ?SiteInterface
     {
         if (!class_exists(SiteMatcher::class)) {
             return null;
         }
+
         $routeResult = GeneralUtility::makeInstance(SiteMatcher::class)
             ->matchRequest(ServerRequestFactory::fromGlobals());
 

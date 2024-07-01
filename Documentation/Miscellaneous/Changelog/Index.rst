@@ -1,15 +1,27 @@
-.. include:: ../Includes.txt
-
 .. _changelog:
 
 =====================================
 Changelog
 =====================================
 
+3.0.0
+====
+- [!!!] Changes signal slots into PSR-14 events [`issue <https://github.com/sourcebroker/t3api/issues/67>`__]
+- Protect against "&cHash empty" error when ``cacheHash.enforceValidation`` is set to ``true`` [`issue <https://github.com/sourcebroker/t3api/issues/81>`__]
+- Add testing instance for TYPO3 12, remove testing instance for TYPO3 10. Change PHP to 8.1 for testing instances.
+- [!!!] Drop TYPO3 10, TYPO3 11 on dependencies. Update dependencies to TYPO3 12.
+- Move changing language request set in header X-Locale to earlier stage, before "typo3/cms-frontend/tsfe". Add support for setting language of api request by standard language prefix instead of header X-Locale. [`commit <https://github.com/sourcebroker/t3api/commit/c36be252>`__]
+- Prevent FileReferenceHandler and ImageHandler from throwing error on problems with processing, missing file etc. [`commit <https://github.com/sourcebroker/t3api/commit/b2f4c63a>`__]
+- Add crop support for ImageHandler [`commit <https://github.com/sourcebroker/t3api/commit/a7481f41>`__]
+- Add essential meta information to the OpenAPI spec [`commit <https://github.com/sourcebroker/t3api/commit/f7b3c1ef>`__]
+- Do not convert empty string to absolute url [`commit <https://github.com/sourcebroker/t3api/commit/0518d3d4>`__]
+- Refactor link generation. Replace getTypoLink_URL with linkFactory. [`commit <https://github.com/sourcebroker/t3api/commit/47f9bbfa>`__]
+- Add support for graceful exception handling for serialization process in TYPO3 [`commit <https://github.com/sourcebroker/t3api/commit/ea6bae2c>`__]
+- Add optional @type attribute for resource. As this is rarely used, and can influence size of response, it must be activated by adding a subscriber to serializerSubscribers array. [`commit <https://github.com/sourcebroker/t3api/commit/32b73726>`__]
+
 2.0.3
 =====
 - Extend dependency for symfony/cache to prevent t3api from downgrading symfony/cache in TYPO3 11 environments [`commit <https://github.com/sourcebroker/t3api/commit/b053679>`__]
-
 
 2.0.2
 =====

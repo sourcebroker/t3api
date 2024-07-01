@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Exception;
 
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Response as OpenApiResponse;
@@ -14,10 +15,9 @@ use TYPO3\CMS\Extbase\Error\Result;
 class ValidationException extends AbstractException implements OpenApiSupportingExceptionInterface
 {
     /**
-     * @var Result
      * @Exclude
      */
-    protected $validationResult;
+    protected Result $validationResult;
 
     public static function getOpenApiResponse(): OpenApiResponse
     {

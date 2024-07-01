@@ -1,0 +1,10 @@
+{
+	"name": "newman",
+	"version": "1.0.0",
+	"description": "",
+	"devDependencies": {
+		"newman": "^6.1.2"
+	},
+	"author": "",
+	"license": ""
+}

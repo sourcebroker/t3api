@@ -1,0 +1,8 @@
+parameters:
+	ignoreErrors:
+		- '#Construct empty\(\)#'
+		- '#Unsafe usage of new static\(\)#'
+		- '#Access to an undefined property Metadata\\PropertyMetadata::\$type.#'
+	typo3:
+		requestGetAttributeMapping:
+			t3apiHeaderLanguageRequest: bool

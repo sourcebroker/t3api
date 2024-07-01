@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\ContextBuilder;
 
 use JMS\Serializer\Context;
@@ -13,29 +14,33 @@ class SerializationContextBuilder extends AbstractContextBuilder
     /**
      * @return SerializationContext
      */
-    public static function create(): Context
+    public function create(): Context
     {
-        return (SerializationContext::create())
+        return SerializationContext::create()
             ->enableMaxDepthChecks()
             ->setSerializeNull(true);
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
      * @return SerializationContext
      */
-    public static function createFromOperation(OperationInterface $operation, Request $request): Context
-    {
-        $context = self::create();
+    public function createFromOperation(
+        OperationInterface $operation,
+        Request $request
+    ): Context {
+        $context = $this->create();
 
         $attributes = $operation->getNormalizationContext() ?? [];
-        $attributes = self::getCustomizedContextAttributes($operation, $request, $attributes);
 
         foreach ($attributes as $attributeName => $attributeValue) {
             $context->setAttribute($attributeName, $attributeValue);
         }
 
+        $this->dispatchAfterCreateContextForOperationEvent(
+            $operation,
+            $request,
+            $context
+        );
         return $context;
     }
 }

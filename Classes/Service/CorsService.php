@@ -27,7 +27,7 @@ class CorsService
                     return true;
                 }
             }
-        } elseif (in_array($origin, $options->allowOrigin, false)) {
+        } elseif (in_array($origin, $options->allowOrigin, true)) {
             return true;
         }
 

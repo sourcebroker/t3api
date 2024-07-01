@@ -1,5 +1,3 @@
-.. include:: ../../Includes.txt
-
 .. _use-cases_current-user-endpoint:
 
 Current user endpoint

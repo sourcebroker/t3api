@@ -1,0 +1,40 @@
+#!/bin/bash
+
+## Description: Tag new version.
+## Usage: next
+## Example: "ddev next, ddev next patch, ddev next major"
+
+INCREASE_PATCH="patch"
+INCREASE_MINOR="minor"
+INCREASE_MAJOR="major"
+
+versionType=${1:-$INCREASE_PATCH}
+
+IFS='.' read -ra lastTagParts <<< "$(git tag -l --sort=v:refname | tail -1)"
+major=${lastTagParts[0]}
+minor=${lastTagParts[1]}
+patch=${lastTagParts[2]}
+
+case $versionType in
+    $INCREASE_MINOR)
+        patch=0
+        minor=$((minor+1))
+        ;;
+    $INCREASE_MAJOR)
+        patch=0
+        minor=0
+        major=$((major+1))
+        ;;
+    $INCREASE_PATCH)
+        patch=$((patch+1))
+        ;;
+esac
+
+nextTag="$major.$minor.$patch"
+
+sed "s/'version' => '[0-9]\+\.[0-9]\+\.[0-9]\+'/'version' => '$nextTag'/g" ./ext_emconf.php
+
+sed "s/release=\"[0-9]\+\.[0-9]\+\.[0-9]\+\"/release=\"$nextTag\"/g" ./Documentation/guides.xml
+sed "s/version=\"[0-9]\+\.[0-9]\+\"/version=\"$major.$minor\"/g" ./Documentation/guides.xml
+
+echo "git add Documentation/guides.xml ext_emconf.php && git commit -m 'Tag new version' && git tag -a '$nextTag' -m '$nextTag' && git push origin master --tags"

@@ -1,6 +1,3 @@
-.. include:: ../Includes.txt
-
-
 .. _getting-started:
 
 ================
@@ -33,16 +30,10 @@ Run ``composer require sourcebroker/t3api``.
 Configuration
 =============
 
-TYPO3 8.7
-+++++++++
+Route enhancer
+++++++++++++++
 
-Open main Template record and add ``T3api`` in tab ``Includes`` -> field ``Include static (from extensions)``.
-Note! Not all options are back ported to TYPO3 8.7.
-
-TYPO3 9.5 / 10.4
-++++++++++++++++
-
-For TYPO3 9.5 / TYPO3 10.4 import route enhancer by adding following line on bottom of your site ``config.yaml`` .
+Import route enhancer by adding following line on bottom of your site ``config.yaml`` .
 
 .. code-block:: yaml
 

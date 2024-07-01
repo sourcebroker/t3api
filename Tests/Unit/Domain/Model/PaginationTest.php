@@ -1,21 +1,19 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Tests\Unit\Domain\Model;
 
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use SourceBroker\T3api\Domain\Model\Pagination;
 use Symfony\Component\HttpFoundation\Request;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class PaginationTest
- */
 class PaginationTest extends UnitTestCase
 {
     /**
      * $GLOBALS['TYPO3_CONF_VARS'] is not available in test environment, so we need to copy default pagination settings
      */
-    const DEFAULT_API_RESOURCE_PAGINATION_ATTRIBUTES = [
+    public const DEFAULT_API_RESOURCE_PAGINATION_ATTRIBUTES = [
         'pagination_enabled' => true,
         'pagination_client_enabled' => false,
         'pagination_items_per_page' => 30,
@@ -26,10 +24,7 @@ class PaginationTest extends UnitTestCase
         'page_parameter_name' => 'page',
     ];
 
-    /**
-     * @return array
-     */
-    public function isEnabledReturnsCorrectStateDataProvider(): array
+    public static function isEnabledReturnsCorrectStateDataProvider(): array
     {
         return [
             'Pagination disabled' => [
@@ -92,30 +87,23 @@ class PaginationTest extends UnitTestCase
     }
 
     /**
-     * @param array $paginationAttributes
-     * @param string $requestUri
-     * @param bool $expectedResult
-     *
      * @dataProvider isEnabledReturnsCorrectStateDataProvider
      * @test
      */
-    public function isEnabledReturnsCorrectState(
+    public static function isEnabledReturnsCorrectState(
         array $paginationAttributes,
         string $requestUri,
         bool $expectedResult
-    ) {
+    ): void {
         $request = !empty($requestUri) ? Request::create($requestUri) : null;
 
         self::assertSame(
             $expectedResult,
-            ($this->getPaginationInstance($paginationAttributes, $request))->isEnabled()
+            (self::getPaginationInstance($paginationAttributes, $request))->isEnabled()
         );
     }
 
-    /**
-     * @return array
-     */
-    public function getNumberOfItemsPerPageReturnsCorrectValueDataProvider(): array
+    public static function getNumberOfItemsPerPageReturnsCorrectValueDataProvider(): array
     {
         return [
             'Maximum items per page overwrites items per page request by client' => [
@@ -161,39 +149,29 @@ class PaginationTest extends UnitTestCase
     }
 
     /**
-     * @param array $paginationAttributes
-     * @param string $requestUri
-     * @param int $expectedResult
-     *
      * @dataProvider getNumberOfItemsPerPageReturnsCorrectValueDataProvider
      * @test
      */
-    public function getNumberOfItemsPerPageReturnsCorrectValue(
+    public static function getNumberOfItemsPerPageReturnsCorrectValue(
         array $paginationAttributes,
         string $requestUri,
         int $expectedResult
-    ) {
+    ): void {
         $request = !empty($requestUri) ? Request::create($requestUri) : null;
 
         self::assertSame(
             $expectedResult,
-            ($this->getPaginationInstance($paginationAttributes, $request))->getNumberOfItemsPerPage()
+            (self::getPaginationInstance($paginationAttributes, $request))->getNumberOfItemsPerPage()
         );
     }
 
-    /**
-     * @param array $attributes
-     * @param Request $request
-     *
-     * @return Pagination
-     */
-    protected function getPaginationInstance($attributes = [], Request $request = null)
+    protected static function getPaginationInstance(array $attributes = [], Request $request = null): Pagination
     {
         $pagination = Pagination::create(
             array_merge(self::DEFAULT_API_RESOURCE_PAGINATION_ATTRIBUTES, $attributes)
         );
 
-        if ($request) {
+        if ($request !== null) {
             $pagination->setParametersFromRequest($request);
         }
 

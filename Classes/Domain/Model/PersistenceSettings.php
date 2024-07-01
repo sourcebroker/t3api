@@ -1,30 +1,20 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Domain\Model;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class Persistence
- */
 class PersistenceSettings extends AbstractOperationResourceSettings
 {
     /**
      * @var int[]
      */
-    protected $storagePids = [];
+    protected array $storagePids = [];
 
-    /**
-     * @var int
-     */
-    protected $recursionLevel = 0;
+    protected int $recursionLevel = 0;
 
-    /**
-     * @param array $attributes
-     * @param self $persistenceSettings
-     * @return self
-     */
     public static function create(
         array $attributes = [],
         ?AbstractOperationResourceSettings $persistenceSettings = null
@@ -46,17 +36,11 @@ class PersistenceSettings extends AbstractOperationResourceSettings
         return $this->storagePids;
     }
 
-    /**
-     * @return int
-     */
     public function getRecursionLevel(): int
     {
         return $this->recursionLevel;
     }
 
-    /**
-     * @return int|null
-     */
     public function getMainStoragePid(): int
     {
         if (empty($this->storagePids)) {

@@ -1,6 +1,3 @@
-.. include:: ../Includes.txt
-
-
 .. _serialization:
 
 Serialization
@@ -17,3 +14,4 @@ Serialization
    Subscribers/Index
    YamlMetadata/Index
    Customization/Index
+   Exceptions/Index

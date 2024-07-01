@@ -12,19 +12,14 @@ use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 
 class PasswordHashHandler extends AbstractHandler implements SerializeHandlerInterface, DeserializeHandlerInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE = 'PasswordHash';
 
     protected static $supportedTypes = [self::TYPE];
 
-    /**
-     * @var PasswordHashFactory
-     */
-    private $passwordHashFactory;
-
-    public function injectPasswordHashFactory(PasswordHashFactory $passwordHashFactory): void
-    {
-        $this->passwordHashFactory = $passwordHashFactory;
-    }
+    public function __construct(private readonly PasswordHashFactory $passwordHashFactory) {}
 
     // serialize method has to exists to handle `PasswordHash` type and avoid error "Class PasswordHash does not exist"
     public function serialize(

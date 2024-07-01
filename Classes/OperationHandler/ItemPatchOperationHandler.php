@@ -11,6 +11,7 @@ use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Exception\ResourceNotFoundException;
 use SourceBroker\T3api\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -23,26 +24,25 @@ class ItemPatchOperationHandler extends AbstractItemOperationHandler
     }
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param array $route
-     * @param ResponseInterface|null $response
-     * @throws ResourceNotFoundException
+     * @noinspection ReferencingObjectsInspection
      * @throws UnknownObjectException
      * @throws OperationNotAllowedException
      * @throws ValidationException
-     * @return mixed|void
-     * @noinspection ReferencingObjectsInspection
+     * @throws ResourceNotFoundException
      */
-    public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response): AbstractDomainObject
-    {
+    public function handle(
+        OperationInterface $operation,
+        Request $request,
+        array $route,
+        ?ResponseInterface &$response
+    ): AbstractDomainObject {
         /** @var ItemOperation $operation */
         $repository = $this->getRepositoryForOperation($operation);
         $object = parent::handle($operation, $request, $route, $response);
         $this->deserializeOperation($operation, $request, $object);
         $this->validationService->validateObject($object);
         $repository->update($object);
-        $this->objectManager->get(PersistenceManager::class)->persistAll();
+        GeneralUtility::makeInstance(PersistenceManager::class)->persistAll();
 
         return $object;
     }

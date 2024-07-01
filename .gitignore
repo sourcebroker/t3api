@@ -12,12 +12,11 @@
 *.idea
 *.project
 *.swp
-.project
-.webprj
-nbproject
+.cache
 
+/composer.lock
 /.Build
 /.test
-/composer.lock
-/var
+/var/
+/.php_cs.cache
 /.php-cs-fixer.cache

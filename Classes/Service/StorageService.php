@@ -1,24 +1,20 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Service;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-/**
- * Class StorageService
- */
 class StorageService implements SingletonInterface
 {
     /**
      * @param int[] $storagePids
-     * @param int $recursionDepth
-     *
      * @return int[]
      */
-    public static function getRecursiveStoragePids(array $storagePids, $recursionDepth = 0): array
+    public static function getRecursiveStoragePids(array $storagePids, int $recursionDepth = 0): array
     {
         if ($recursionDepth <= 0) {
             return $storagePids;
@@ -27,9 +23,12 @@ class StorageService implements SingletonInterface
         $recursiveStoragePids = $storagePids;
 
         foreach ($storagePids as $startPid) {
-            $pids = GeneralUtility::makeInstance(ContentObjectRenderer::class)->getTreeList($startPid, $recursionDepth, 0);
+            $pids = GeneralUtility::makeInstance(ContentObjectRenderer::class)->getTreeList(
+                $startPid,
+                $recursionDepth,
+            );
 
-            if (!empty($pids)) {
+            if ($pids !== '') {
                 $recursiveStoragePids = array_merge(
                     $recursiveStoragePids,
                     GeneralUtility::intExplode(',', $pids)

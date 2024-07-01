@@ -1,37 +1,27 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use SourceBroker\T3api\Service\FileReferenceService;
-use Traversable;
+use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
+use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-/**
- * Class ImageHandler
- */
 class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE = 'Image';
 
-    /**
-     * @var FileReferenceService
-     */
-    private $fileReferenceService;
-
-    /**
-     * @param FileReferenceService $fileReferenceService
-     */
-    public function injectFileReferenceService(FileReferenceService $fileReferenceService): void
-    {
-        $this->fileReferenceService = $fileReferenceService;
-    }
+    public function __construct(private readonly ?FileReferenceService $fileReferenceService) {}
 
     /**
      * @var string[]
@@ -39,10 +29,7 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
     protected static $supportedTypes = [self::TYPE];
 
     /**
-     * @param SerializationVisitorInterface $visitor
      * @param FileReference|FileReference[]|int|int[] $fileReference
-     * @param array $type
-     * @param SerializationContext $context
      *
      * @return string|string[]|null[]|null
      */
@@ -51,14 +38,14 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
         $fileReference,
         array $type,
         SerializationContext $context
-    ) {
+    ): array|string|null {
         if (is_iterable($fileReference)) {
             return array_values(
                 array_map(
-                    function ($fileReference) use ($type, $context) {
+                    function ($fileReference) use ($type, $context): ?string {
                         return $this->processSingleImage($fileReference, $type, $context);
                     },
-                    $fileReference instanceof Traversable ? iterator_to_array($fileReference) : $fileReference
+                    $fileReference instanceof \Traversable ? iterator_to_array($fileReference) : $fileReference
                 )
             );
         }
@@ -66,30 +53,47 @@ class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
         return $this->processSingleImage($fileReference, $type, $context);
     }
 
-    /**
-     * @param FileReference|int $fileReference
-     * @param array $type
-     * @param SerializationContext $context
-     * @return string|null
-     */
-    protected function processSingleImage($fileReference, array $type, SerializationContext $context): ?string
+    protected function processSingleImage(
+        FileReference|int $fileReference,
+        array $type,
+        SerializationContext $context
+    ): ?string {
+        $processedFileUrl = null;
+        try {
+            if (is_int($fileReference)) {
+                $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
+                $fileResource = $fileRepository->findFileReferenceByUid($fileReference);
+            } else {
+                $fileResource = $fileReference->getOriginalResource();
+            }
+
+            $file = $fileResource->getOriginalFile();
+            $processedFile = $file->process(ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, [
+                'width' => $type['params'][0] ?? '',
+                'height' => $type['params'][1] ?? '',
+                'maxWidth' => $type['params'][2] ?? '',
+                'maxHeight' => $type['params'][3] ?? '',
+                'crop' => $this->getCropArea($fileResource, $type['params'][4] ?? 'default'),
+            ]);
+            $processedFileUrl = $this->fileReferenceService->getUrlFromResource($processedFile, $context);
+        } catch (\Exception $e) {
+            trigger_error(
+                $e->getMessage(),
+                E_USER_WARNING
+            );
+        }
+        return $processedFileUrl;
+    }
+
+    protected function getCropArea($fileResource, string $cropVariant): ?Area
     {
-        if (is_int($fileReference)) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $fileRepository = $objectManager->get(FileRepository::class);
-            $fileResource = $fileRepository->findFileReferenceByUid($fileReference);
-        } else {
-            $fileResource = $fileReference->getOriginalResource();
+        if ($fileResource->hasProperty('crop') && $fileResource->getProperty('crop')) {
+            $cropString = $fileResource->getProperty('crop');
+            $cropVariantCollection = CropVariantCollection::create((string)$cropString);
+            $cropArea = $cropVariantCollection->getCropArea($cropVariant);
+            return $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($fileResource);
         }
 
-        $file = $fileResource->getOriginalFile();
-        $processedFile = $file->process(ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, [
-            'width' => $type['params'][0] ?? '',
-            'height' => $type['params'][1] ?? '',
-            'maxWidth' => $type['params'][2] ?? '',
-            'maxHeight' => $type['params'][3] ?? '',
-        ]);
-
-        return $this->fileReferenceService->getUrlFromResource($processedFile, $context);
+        return null;
     }
 }

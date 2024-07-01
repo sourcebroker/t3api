@@ -1,29 +1,24 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Security;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
+use SourceBroker\T3api\ExpressionLanguage\Resolver;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\Exception\AspectPropertyNotFoundException;
 use TYPO3\CMS\Core\Context\UserAspect;
-use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 class AbstractAccessChecker
 {
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    public function __construct(
+        protected readonly EventDispatcherInterface $eventDispatcher
+    ) {}
 
-    public function injectObjectManager(ObjectManager $objectManager): void
-    {
-        $this->objectManager = $objectManager;
-    }
-
-    protected function getExpressionLanguageResolver(): Resolver
+    protected function getExpressionLanguageResolver(array $additionalExpressionLanguageVariables = []): Resolver
     {
         static $expressionLanguageResolver;
 
@@ -56,13 +51,18 @@ class AbstractAccessChecker
             } catch (AspectPropertyNotFoundException $e) {
             }
 
-            $expressionLanguageResolver = GeneralUtility::makeInstance(
-                Resolver::class,
-                't3api',
+            $variables = array_merge(
                 [
                     'backend' => $backend ?? null,
                     'frontend' => $frontend ?? null,
-                ]
+                ],
+                $additionalExpressionLanguageVariables
+            );
+
+            $expressionLanguageResolver = GeneralUtility::makeInstance(
+                Resolver::class,
+                't3api',
+                $variables
             );
         }
 

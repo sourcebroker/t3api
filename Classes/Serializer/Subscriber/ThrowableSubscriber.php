@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\Subscriber;
 
 use JMS\Serializer\EventDispatcher\Events;
@@ -9,7 +10,6 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use SourceBroker\T3api\Service\SerializerService;
-use Throwable;
 
 class ThrowableSubscriber implements EventSubscriberInterface
 {
@@ -25,11 +25,11 @@ class ThrowableSubscriber implements EventSubscriberInterface
 
     public function onPostSerialize(ObjectEvent $event): void
     {
-        if (!$event->getObject() instanceof Throwable) {
+        if (!$event->getObject() instanceof \Throwable) {
             return;
         }
 
-        /** @var Throwable $object */
+        /** @var \Throwable $object */
         $object = $event->getObject();
 
         /** @var JsonSerializationVisitor $visitor */
@@ -39,7 +39,7 @@ class ThrowableSubscriber implements EventSubscriberInterface
         $this->addDebug($object, $visitor);
     }
 
-    protected function addDescription(Throwable $throwable, JsonSerializationVisitor $visitor): void
+    protected function addDescription(\Throwable $throwable, JsonSerializationVisitor $visitor): void
     {
         $visitor->visitProperty(
             new StaticPropertyMetadata(get_class($throwable), 'hydra:description', $throwable->getMessage()),
@@ -47,7 +47,7 @@ class ThrowableSubscriber implements EventSubscriberInterface
         );
     }
 
-    protected function addDebug(Throwable $throwable, JsonSerializationVisitor $visitor): void
+    protected function addDebug(\Throwable $throwable, JsonSerializationVisitor $visitor): void
     {
         if (!SerializerService::isDebugMode()) {
             return;

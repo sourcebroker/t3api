@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\Construction;
 
 use JMS\Serializer\Construction\ObjectConstructorInterface;
@@ -9,8 +10,6 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 /**
- * Class InitializedObjectConstructor
- *
  * Object constructor that allows deserialization into already constructed
  * objects passed through the deserialization context
  */
@@ -26,10 +25,9 @@ class InitializedObjectConstructor implements ObjectConstructorInterface
         array $type,
         DeserializationContext $context
     ): ?object {
-        if ($context->hasAttribute('target') && 1 === $context->getDepth()) {
+        if ($context->hasAttribute('target') && $context->getDepth() === 1) {
             return $context->getAttribute('target');
         }
-
         return null;
     }
 }

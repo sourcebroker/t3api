@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\Subscriber;
 
 use JMS\Serializer\EventDispatcher\Events;
@@ -9,47 +10,18 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
+use SourceBroker\T3api\Domain\Model\ApiResource;
+use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Serializer\Handler\AbstractDomainObjectHandler;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
-/**
- * Class AbstractEntitySubscriber
- */
 class AbstractEntitySubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ApiResourceRepository
-     */
-    protected $apiResourceRepository;
+    public function __construct(protected readonly ApiResourceRepository $apiResourceRepository) {}
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @param ApiResourceRepository $apiResourceRepository
-     */
-    public function injectApiResourceRepository(ApiResourceRepository $apiResourceRepository): void
-    {
-        $this->apiResourceRepository = $apiResourceRepository;
-    }
-
-    /**
-     * @param ObjectManager $objectManager
-     */
-    public function injectObjectManager(ObjectManager $objectManager): void
-    {
-        $this->objectManager = $objectManager;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             [
@@ -63,9 +35,6 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param ObjectEvent $event
-     */
     public function onPostSerialize(ObjectEvent $event): void
     {
         if (!$event->getObject() instanceof AbstractDomainObject) {
@@ -82,9 +51,6 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         $this->addIri($entity, $visitor);
     }
 
-    /**
-     * @param PreDeserializeEvent $event
-     */
     public function onPreDeserialize(PreDeserializeEvent $event): void
     {
         // Changes type to the custom one to make it possible to handle data with serializer handler
@@ -102,10 +68,6 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param AbstractDomainObject $entity
-     * @param JsonSerializationVisitor $visitor
-     */
     protected function addForceEntityProperties(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
     {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['forceEntityProperties'] as $property) {
@@ -117,16 +79,16 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param AbstractDomainObject $entity
-     * @param JsonSerializationVisitor $visitor
-     */
     protected function addIri(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
     {
         $apiResource = $this->apiResourceRepository->getByEntity($entity);
-        if ($apiResource && $apiResource->getMainItemOperation()) {
+        if ($apiResource instanceof ApiResource && $apiResource->getMainItemOperation() instanceof ItemOperation) {
             // @todo should be generated with symfony router
-            $iri = str_replace('{id}', (string)$entity->getUid(), $apiResource->getMainItemOperation()->getRoute()->getPath());
+            $iri = str_replace(
+                '{id}',
+                (string)$entity->getUid(),
+                $apiResource->getMainItemOperation()->getRoute()->getPath()
+            );
             $visitor->visitProperty(
                 new StaticPropertyMetadata(AbstractDomainObject::class, '@id', $iri),
                 $iri

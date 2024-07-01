@@ -12,15 +12,9 @@ use SourceBroker\T3api\Annotation\Serializer\Type\TypeInterface;
  */
 class ExampleTypeWithNestedParams implements TypeInterface
 {
-    /**
-     * @var string
-     */
-    protected $value;
+    protected string $value;
 
-    /**
-     * @var array
-     */
-    protected $config = [];
+    protected array $config = [];
 
     public function __construct($options = [])
     {
@@ -28,9 +22,6 @@ class ExampleTypeWithNestedParams implements TypeInterface
         $this->config = $options['config'] ?? $this->config;
     }
 
-    /**
-     * @return array
-     */
     public function getParams(): array
     {
         return [
@@ -39,9 +30,6 @@ class ExampleTypeWithNestedParams implements TypeInterface
         ];
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return 'ExampleTypeWithNestedParams';

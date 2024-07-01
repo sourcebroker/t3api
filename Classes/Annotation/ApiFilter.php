@@ -1,48 +1,29 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Annotation;
 
-use InvalidArgumentException;
 use SourceBroker\T3api\Filter\FilterInterface;
 
 /**
- * ApiResource annotation.
- *
  * @Annotation
  * @Target({"CLASS"})
  */
 class ApiFilter
 {
-    /**
-     * @var string
-     */
-    protected $strategy = '';
+    protected string $strategy = '';
 
-    /**
-     * @var string
-     */
-    protected $filterClass;
+    protected string $filterClass;
 
-    /**
-     * @var array
-     */
-    protected $properties = [];
+    protected array $properties = [];
 
-    /**
-     * @var array
-     */
-    protected $arguments = [];
+    protected array $arguments = [];
 
-    /**
-     * ApiFilter constructor.
-     *
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (!is_string($options['value'] ?? null)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf('`%s` Annotation needs a value representing the filter class.', self::class),
                 1581881033567
             );
@@ -51,7 +32,7 @@ class ApiFilter
         $filterClass = $options['value'];
 
         if (!is_a($filterClass, FilterInterface::class, true)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     'The filter class `%s` does not extends `%s`.%s',
                     $options['value'],
@@ -68,9 +49,6 @@ class ApiFilter
         $this->arguments = $options['arguments'] ?? $this->arguments;
     }
 
-    /**
-     * @return array
-     */
     public function getProperties(): array
     {
         $properties = [];
@@ -87,17 +65,11 @@ class ApiFilter
         return $properties;
     }
 
-    /**
-     * @return string
-     */
     public function getFilterClass(): string
     {
         return $this->filterClass;
     }
 
-    /**
-     * @return array
-     */
     public function getArguments(): array
     {
         return $this->arguments;

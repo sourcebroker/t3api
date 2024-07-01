@@ -13,12 +13,13 @@ interface OperationHandlerInterface
     public static function supports(OperationInterface $operation, Request $request): bool;
 
     /**
-     * @param OperationInterface $operation
-     * @param Request $request
-     * @param array $route
-     * @param ResponseInterface $response
      * @return mixed
      * @noinspection ReferencingObjectsInspection
      */
-    public function handle(OperationInterface $operation, Request $request, array $route, ?ResponseInterface &$response);
+    public function handle(
+        OperationInterface $operation,
+        Request $request,
+        array $route,
+        ?ResponseInterface &$response
+    );
 }

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Routing\Enhancer;
 
 use SourceBroker\T3api\Service\RouteService;
@@ -17,11 +18,8 @@ use TYPO3\CMS\Core\Routing\RouteCollection;
 class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterface
 {
     public const ENHANCER_NAME = 'T3apiResourceEnhancer';
-
-    /**
-     * @var array
-     */
-    protected $configuration;
+    public const PARAMETER_NAME = 't3apiResource';
+    protected array $configuration;
 
     public function __construct(array $configuration)
     {
@@ -35,8 +33,8 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
     {
         /** @var Route $variant */
         $variant = clone $collection->get('default');
-        $variant->setPath($this->getBasePath() . '/{t3apiResource?}');
-        $variant->setRequirement('t3apiResource', '.*');
+        $variant->setPath($this->getBasePath() . sprintf('/{%s?}', self::PARAMETER_NAME));
+        $variant->setRequirement(self::PARAMETER_NAME, '.*');
         $collection->add('enhancer_' . $this->getBasePath() . spl_object_hash($variant), $variant);
     }
 
@@ -44,9 +42,7 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
      * {@inheritdoc}
      * // @todo Think if it ever could be needed
      */
-    public function enhanceForGeneration(RouteCollection $collection, array $parameters): void
-    {
-    }
+    public function enhanceForGeneration(RouteCollection $collection, array $parameters): void {}
 
     protected function getBasePath(): string
     {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<guides xmlns="https://www.phpdoc.org/guides" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://www.phpdoc.org/guides ../vendor/phpdocumentor/guides-cli/resources/schema/guides.xsd"
+        links-are-relative="true">
+    <extension class="\T3Docs\Typo3DocsTheme\DependencyInjection\Typo3DocsThemeExtension"
+               project-home="https://extensions.typo3.org/extension/t3api/"
+               project-repository="https://github.com/sourcebroker/t3api.git"
+               project-issues="https://github.com/sourcebroker/t3api/issues"
+               edit-on-github-branch="master"
+               edit-on-github="sourcebroker/t3api"
+               typo3-core-preferred="12.4"
+               interlink-shortcode="sourcebroker/t3api"
+    />
+    <project title="TYPO3 REST API"
+             release="3.0.0"
+             version="3.0"
+             copyright="Inscript sp. z o.o."/>
+    <inventory id="t3apinews" url="https://docs.typo3.org/p/sourcebroker/t3api/main/en-us/"/>
+</guides>

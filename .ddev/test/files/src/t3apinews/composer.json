@@ -1,0 +1,39 @@
+{
+  "name": "sourcebroker/t3apinews",
+  "license": [
+    "GPL-2.0-or-later"
+  ],
+  "type": "typo3-cms-extension",
+  "description": "T3api sample for ext:news",
+  "authors": [
+    {
+      "name": "SourceBroker Team",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "typo3/cms-core": "^12.4 || ^13.1",
+    "sourcebroker/t3api": "@dev",
+    "georgringer/news": "@dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "SourceBroker\\T3apinews\\": "Classes"
+    }
+  },
+  "replace": {
+    "typo3-ter/t3apinews": "self.version"
+  },
+  "config": {
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin"
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "t3apinews",
+      "app-dir": ".Build",
+      "web-dir": ".Build/public"
+    }
+  },
+  "version": "1.0.0"
+}

@@ -10,20 +10,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CorsProcessor implements ProcessorInterface
 {
-    /**
-     * @var CorsService
-     */
-    private $corsService;
+    public function __construct(private readonly ?CorsService $corsService) {}
 
-    public function injectCorsService(CorsService $corsService): void
+    public function process(Request $request, ResponseInterface $response): void
     {
-        $this->corsService = $corsService;
-    }
-
-    public function process(
-        Request $request,
-        ResponseInterface &$response
-    ): void {
         if (
             !$this->isCorsRequest($request)
             || $this->isPreflightRequest($request)
@@ -35,24 +25,23 @@ class CorsProcessor implements ProcessorInterface
         $requestOrigin = $request->headers->get('Origin');
 
         if (!$this->corsService->isAllowedOrigin($requestOrigin, $options)) {
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $response = $response->withoutHeader('Access-Control-Allow-Origin');
         }
 
-        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $response = $response->withHeader(
             'Access-Control-Allow-Origin',
             $requestOrigin
         );
 
         if ($options->allowCredentials) {
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $response = $response->withHeader('Access-Control-Allow-Credentials', 'true');
         }
 
-        if ($options->exposeHeaders) {
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-            $response = $response->withHeader('Access-Control-Expose-Headers', strtolower(implode(', ', $options->exposeHeaders)));
+        if ($options->exposeHeaders !== []) {
+            $response = $response->withHeader(
+                'Access-Control-Expose-Headers',
+                strtolower(implode(', ', $options->exposeHeaders))
+            );
         }
     }
 

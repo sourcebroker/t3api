@@ -4,42 +4,27 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
 
-use DateTimeImmutable;
 use SourceBroker\T3api\Annotation\Serializer\SerializedName;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 use SourceBroker\T3api\Tests\Unit\Fixtures\Annotation\Serializer\Type\ExampleTypeWithNestedParams;
 
 class Person extends AbstractEntry
 {
-    /**
-     * @var string
-     */
-    protected $firstName;
+    protected string $firstName;
 
-    /**
-     * @var string
-     */
-    protected $lastName;
+    protected string $lastName;
 
     /**
      * @SerializedName("familyName")
-     * @var string
      */
-    protected $maidenName;
+    protected string $maidenName;
 
-    /**
-     * @var \DateTime|null
-     */
-    protected $dateOfBirth;
+    protected \DateTime|null $dateOfBirth;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    protected $created;
+    protected \DateTimeImmutable $created;
 
     /**
      * @VirtualProperty
-     * @return string
      */
     public function getFullName(): string
     {

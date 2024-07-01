@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Domain\Repository;
 
-use RuntimeException;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Filter\FilterInterface;
@@ -12,8 +12,6 @@ use SourceBroker\T3api\Service\StorageService;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
@@ -22,53 +20,26 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
- * Class CommonRepository
- *
  * We do not extend \TYPO3\CMS\Extbase\Persistence\Repository because we don't want to use singleton interface
  */
 class CommonRepository
 {
-    /**
-     * @var OperationInterface
-     */
-    protected $operation;
+    protected OperationInterface $operation;
 
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
+    protected string $objectType;
 
-    /**
-     * @var QuerySettingsInterface
-     */
-    protected $defaultQuerySettings;
+    public function __construct(
+        protected readonly PersistenceManagerInterface $persistenceManager,
+        protected readonly FilterAccessChecker $filterAccessChecker,
+        protected readonly Typo3QuerySettings $defaultQuerySettings
+    ) {}
 
-    /**
-     * @var PersistenceManagerInterface
-     */
-    protected $persistenceManager;
-
-    /**
-     * @var string
-     */
-    protected $objectType;
-
-    /**
-     * @var FilterAccessChecker
-     */
-    protected $filterAccessChecker;
-
-    /**
-     * @param OperationInterface $operation
-     *
-     * @return CommonRepository
-     */
     public static function getInstanceForOperation(OperationInterface $operation): self
     {
         $repository = self::getInstanceForEntity($operation->getApiResource()->getEntity());
         $repository->operation = $operation;
 
-        if (!empty($operation->getPersistenceSettings()->getStoragePids())) {
+        if ($operation->getPersistenceSettings()->getStoragePids() !== []) {
             $repository->defaultQuerySettings->setRespectStoragePage(true);
             $repository->defaultQuerySettings->setStoragePageIds(
                 StorageService::getRecursiveStoragePids(
@@ -86,50 +57,17 @@ class CommonRepository
     }
 
     /**
-     * @param string $entity
-     *
      * @return static
      */
     public static function getInstanceForEntity(string $entity): self
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        /** @var self $repository */
-        $repository = $objectManager->get(self::class);
+        /** @var static $repository */
+        $repository = GeneralUtility::makeInstance(self::class);
         $repository->setObjectType($entity);
 
         return $repository;
     }
 
-    /**
-     * @param PersistenceManagerInterface $persistenceManager
-     */
-    public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager)
-    {
-        $this->persistenceManager = $persistenceManager;
-    }
-
-    public function injectFilterAccessChecker(FilterAccessChecker $filterAccessChecker): void
-    {
-        $this->filterAccessChecker = $filterAccessChecker;
-    }
-
-    /**
-     * CommonRepository constructor.
-     *
-     * @param ObjectManagerInterface $objectManager
-     */
-    public function __construct(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
-        $this->defaultQuerySettings = $this->objectManager->get(Typo3QuerySettings::class);
-    }
-
-    /**
-     * @param string $objectType
-     *
-     * @return self
-     */
     public function setObjectType(string $objectType): self
     {
         $this->objectType = $objectType;
@@ -137,21 +75,13 @@ class CommonRepository
         return $this;
     }
 
-    /**
-     * @param int $uid The identifier of the object to find
-     *
-     * @return object The matching object if found, otherwise NULL
-     */
-    public function findByUid($uid)
+    public function findByUid(int $uid): ?object
     {
         return $this->persistenceManager->getObjectByIdentifier($uid, $this->objectType);
     }
 
     /**
      * @param ApiFilter[] $apiFilters
-     * @param Request $request
-     *
-     * @return QueryInterface
      */
     public function findFiltered(array $apiFilters, Request $request): QueryInterface
     {
@@ -167,7 +97,7 @@ class CommonRepository
             $parameterName = $apiFilter->getParameterName();
 
             /** @var FilterInterface $filter */
-            $filter = $this->objectManager->get($apiFilter->getFilterClass());
+            $filter = GeneralUtility::makeInstance($apiFilter->getFilterClass());
             $constraint = $filter->filterProperty(
                 $apiFilter->getProperty(),
                 $queryParams[$parameterName],
@@ -185,13 +115,11 @@ class CommonRepository
 
         $constraints = [];
         foreach ($constraintGroups as $constraintGroup) {
-            if (!empty($constraintGroup)) {
-                $constraints[] = $query->logicalOr($constraintGroup);
-            }
+            $constraints[] = $query->logicalOr(...$constraintGroup);
         }
 
-        if (!empty($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+        if ($constraints !== []) {
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         return $query;
@@ -205,7 +133,7 @@ class CommonRepository
     {
         return array_filter(
             $apiFilters,
-            function (ApiFilter $apiFilter) {
+            function (ApiFilter $apiFilter): bool {
                 return $this->filterAccessChecker->isGranted($apiFilter);
             }
         );
@@ -216,7 +144,6 @@ class CommonRepository
      * This method ensures that filters are applied in the order which they was requested in $queryParams.
      *
      * @param ApiFilter[] $apiFilters
-     * @param array $queryParams
      *
      * @return ApiFilter[]
      */
@@ -224,28 +151,30 @@ class CommonRepository
     {
         $apiFilters = array_filter(
             $apiFilters,
-            static function (ApiFilter $apiFilter) use ($queryParams) {
+            static function (ApiFilter $apiFilter) use ($queryParams): bool {
                 return isset($queryParams[$apiFilter->getParameterName()]);
             }
         );
 
         usort(
             $apiFilters,
-            static function (ApiFilter $apiFilterA, ApiFilter $apiFilterB) use ($queryParams) {
+            static function (ApiFilter $apiFilterA, ApiFilter $apiFilterB) use ($queryParams): int {
                 if (
                     is_array($queryParams[$apiFilterA->getParameterName()])
                     && $apiFilterA->getParameterName() === $apiFilterB->getParameterName()
                     && $apiFilterA->getProperty() !== $apiFilterB->getProperty()
                 ) {
-                    return array_search(
+                    $a = array_search(
                         $apiFilterA->getProperty(),
                         array_keys($queryParams[$apiFilterA->getParameterName()]),
                         true
-                    ) - array_search(
+                    );
+                    $b = array_search(
                         $apiFilterB->getProperty(),
                         array_keys($queryParams[$apiFilterA->getParameterName()]),
                         true
                     );
+                    return $a - $b;
                 }
 
                 return array_search($apiFilterA->getParameterName(), array_keys($queryParams), true)
@@ -256,34 +185,26 @@ class CommonRepository
         return $apiFilters;
     }
 
-    /**
-     * @return QueryInterface
-     */
-    protected function createQuery()
+    protected function createQuery(): QueryInterface
     {
         $query = $this->persistenceManager->createQueryForType($this->objectType);
-        if ($this->defaultQuerySettings !== null) {
+        if ($this->defaultQuerySettings instanceof QuerySettingsInterface) {
             $query->setQuerySettings(clone $this->defaultQuerySettings);
         }
 
         return $query;
     }
 
-    /**
-     * @param AbstractDomainObject $object
-     *
-     * @throws @todo 591
-     */
-    public function add($object)
+    public function add(AbstractDomainObject $object): void
     {
-        if ($object->getPid() === null && $this->operation->getPersistenceSettings()->getMainStoragePid()) {
+        if ($object->getPid() === null && $this->operation->getPersistenceSettings()->getMainStoragePid() > 0) {
             $object->setPid($this->operation->getPersistenceSettings()->getMainStoragePid());
         } elseif (
-            (bool)$object->getPid()
+            $object->getPid() > 0
             && $this->defaultQuerySettings->getRespectStoragePage()
             && !in_array($object->getPid(), $this->defaultQuerySettings->getStoragePageIds(), true)
         ) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 sprintf(
                     '`%d` is not allowed storage pid for %s API resource',
                     $object->getPid(),
@@ -296,20 +217,15 @@ class CommonRepository
         $this->persistenceManager->add($object);
     }
 
-    /**
-     * @param object $object The object to remove
-     */
-    public function remove($object): void
+    public function remove(object $object): void
     {
         $this->persistenceManager->remove($object);
     }
 
     /**
-     * @param object $modifiedObject
-     *
      * @throws UnknownObjectException
      */
-    public function update($modifiedObject)
+    public function update(object $modifiedObject): void
     {
         $this->persistenceManager->update($modifiedObject);
     }

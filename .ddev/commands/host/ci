@@ -1,0 +1,90 @@
+#!/bin/bash
+
+## Description: Run matrix tests from TYPO3_VERSIONS, PHP_VERSIONS, composer "lowest/highest".
+## Usage: "ci"
+## Example: "ddev ci" or "ddev ci all" or "ddev ci 12 8.3 lowest"
+
+set -e
+
+source .ddev/test/utils.sh
+export_ddev_env_vars
+
+ci_single() {
+    TYPO3=$1
+    PHP=$2
+    COMPOSER=${3:-highest}
+
+    if [ -z "$TYPO3" ]; then
+        TYPO3=$(get_lowest_supported_typo3_versions)
+    else
+        if ! check_typo3_version "$TYPO3"; then
+            exit 1
+        fi
+    fi
+
+    if [ -z "$PHP" ]; then
+        PHP=$(get_lowest_supported_php_versions_for_typo3 "$TYPO3")
+    else
+        if ! check_php_version_for_typo3 "$TYPO3" "$PHP"; then
+            exit 1
+        fi
+    fi
+
+    if [[ "$COMPOSER" != "lowest" && "$COMPOSER" != "highest" ]]; then
+        echo_red "Invalid third argument. COMPOSER value can only be 'lowest' or 'highest'."
+        exit 1
+    fi
+
+    echo_magenta "-------------------------------------------------"
+    echo_magenta "| TYPO3 \t| PHP\t\t| Composer\t|"
+    echo_magenta "-------------------------------------------------"
+    echo_magenta "| $TYPO3\t\t| $PHP\t\t| $COMPOSER\t|"
+    echo_magenta "-------------------------------------------------"
+    echo_magenta ""
+
+    ddev config --php-version="$PHP"
+    ddev restart
+    if [ "$COMPOSER" == "lowest" ]; then
+        ddev exec composer update --prefer-lowest --prefer-stable
+    else
+        ddev exec composer update
+    fi
+    ddev composer normalize
+    ddev install "$TYPO3"
+    ddev composer ci
+}
+
+if [ $# -eq 0 ]; then
+    ddev composer ci
+    ddev docs ci
+    exit 0
+fi
+
+TYPO3=${1}
+
+if [ "$TYPO3" == "all" ]; then
+    COMPOSER_INSTALLS=("lowest" "highest")
+
+    TYPO3_VERSIONS_ARRAY=()
+    while IFS= read -r line; do
+        TYPO3_VERSIONS_ARRAY+=("$line")
+    done < <(get_supported_typo3_versions)
+
+    for TYPO3 in "${TYPO3_VERSIONS_ARRAY[@]}"; do
+        PHP_VERSIONS=()
+        while IFS= read -r line; do
+            PHP_VERSIONS+=("$line")
+        done < <(get_supported_php_versions_for_typo3 "$TYPO3")
+        for PHP in "${PHP_VERSIONS[@]}"; do
+            for COMPOSER in "${COMPOSER_INSTALLS[@]}"; do
+                ci_single "$TYPO3" "$PHP" "$COMPOSER"
+            done
+        done
+    done
+    ddev docs ci
+else
+    PHP=${2}
+    COMPOSER=${3}
+    ci_single "$TYPO3" "$PHP" "$COMPOSER"
+    ddev docs ci
+fi

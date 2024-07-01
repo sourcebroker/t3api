@@ -6,13 +6,7 @@ namespace SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model;
 
 class Company extends AbstractEntry
 {
-    /**
-     * @var string
-     */
-    protected $name;
+    protected string $name;
 
-    /**
-     * @var Address
-     */
-    protected $invoiceAddress;
+    protected Address $invoiceAddress;
 }

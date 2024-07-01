@@ -1,5 +1,3 @@
-.. include:: Includes.txt
-
 .. _start:
 
 =============================================================
@@ -13,13 +11,13 @@ TYPO3 REST API
    en
 
 :Authors:
-   SourceBroker Team
+   Inscript Team
 
 :Email:
-    office@sourcebroker.dev
+    office@inscript.dev
 
 :Website:
-   https://sourcebroker.dev/
+   https://www.inscript.team/
 
 :License:
    This extension documentation is published under the
@@ -54,7 +52,7 @@ If you find an error or something is missing, please: `Report a Problem
    Serialization/Index
    Integration/Index
    Customization/Index
-   SignalsAndSlots/Index
+   Events/Index
    Multilanguage/Index
    HandlingFileUpload/Index
    HandlingCascadePersistence/Index

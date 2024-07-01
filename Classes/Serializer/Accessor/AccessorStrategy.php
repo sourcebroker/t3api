@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace SourceBroker\T3api\Serializer\Accessor;
 
 use JMS\Serializer\Accessor\AccessorStrategyInterface;
@@ -13,15 +14,9 @@ use JMS\Serializer\SerializationContext;
 use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
-/**
- * Class AccessorStrategy
- */
 class AccessorStrategy implements AccessorStrategyInterface
 {
-    /**
-     * @var ExpressionEvaluator
-     */
-    protected $evaluator;
+    protected ExpressionEvaluator $evaluator;
 
     public function __construct()
     {
@@ -33,17 +28,41 @@ class AccessorStrategy implements AccessorStrategyInterface
      */
     public function getValue(object $object, PropertyMetadata $metadata, SerializationContext $context)
     {
-        if ($metadata instanceof ExpressionPropertyMetadata) {
-            $variables = ['object' => $object, 'context' => $context, 'property_metadata' => $metadata];
+        try {
+            if ($metadata instanceof ExpressionPropertyMetadata) {
+                $variables = ['object' => $object, 'context' => $context, 'property_metadata' => $metadata];
 
-            return $this->evaluator->evaluate((string)($metadata->expression), $variables);
+                return $this->evaluator->evaluate((string)($metadata->expression), $variables);
+            }
+
+            if ($metadata->getter === null) {
+                return ObjectAccess::getProperty($object, $metadata->name);
+            }
+
+            $callback = [$object, $metadata->getter];
+            if (is_callable($callback)) {
+                return $callback();
+            }
+        } catch (\Exception $exception) {
+            $exclusionForExceptions = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializer']['exclusionForExceptionsInAccessorStrategyGetValue'];
+            foreach ($exclusionForExceptions as $objectClass => $exceptionClasses) {
+                if ($object instanceof $objectClass) {
+                    if (in_array('*', $exceptionClasses, true)) {
+                        trigger_error($exception->getMessage(), E_USER_WARNING);
+                        return null;
+                    }
+                    foreach ($exceptionClasses as $exceptionClass) {
+                        if ($exception instanceof $exceptionClass) {
+                            trigger_error($exception->getMessage(), E_USER_WARNING);
+                            return null;
+                        }
+                    }
+                }
+            }
+            throw $exception;
         }
 
-        if (null === $metadata->getter) {
-            return ObjectAccess::getProperty($object, $metadata->name, false);
-        }
-
-        return $object->{$metadata->getter}();
+        return null;
     }
 
     /**
@@ -51,16 +70,19 @@ class AccessorStrategy implements AccessorStrategyInterface
      */
     public function setValue(object $object, $value, PropertyMetadata $metadata, DeserializationContext $context): void
     {
-        if (true === $metadata->readOnly) {
+        if ($metadata->readOnly === true) {
             throw new LogicException(sprintf('Property `%s` on `%s` is read only.', $metadata->name, $metadata->class));
         }
 
-        if (null === $metadata->setter) {
+        if ($metadata->setter === null) {
             ObjectAccess::setProperty($object, $metadata->name, $value);
 
             return;
         }
 
-        $object->{$metadata->setter}($value);
+        $callback = [$object, $metadata->setter];
+        if (is_callable($callback)) {
+            $callback($value);
+        }
     }
 }
