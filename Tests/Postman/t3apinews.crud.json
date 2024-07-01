@@ -269,6 +269,50 @@
 			"response": []
 		},
 		{
+			"name": "Check list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cc83e60a-85f3-4fcf-8b9e-38082b598fd9",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{newsEndpointPath}}",
+					"host": [
+						"{{baseUrl}}{{newsEndpointPath}}"
+					]
+				}
+			},
+			"response": []
+		},
+
+		{
 			"name": "Edit news",
 			"event": [
 				{

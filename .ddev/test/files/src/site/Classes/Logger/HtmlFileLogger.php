@@ -2,6 +2,7 @@
 
 namespace V\Site\Logger;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\AbstractLogger;
 use Stringable;
 use TYPO3\CMS\Core\Core\Environment;
@@ -10,36 +11,60 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class HtmlFileLogger extends AbstractLogger
 {
+    private const LOGS_DIRECTORY = 'logs';
     private static int $logCalls = 0;
+    private static ?string $logPath;
 
     public function __construct()
     {
-        $directoryPath = Environment::getPublicPath() . '/logs/';
-        if (!is_dir($directoryPath)) {
-            GeneralUtility::mkdir_deep($directoryPath);
+        self::$logPath = self::$logPath ?? Environment::getPublicPath() . '/' . self::LOGS_DIRECTORY;
+        if (!is_dir(self::$logPath)) {
+            GeneralUtility::mkdir_deep(self::$logPath);
         }
     }
 
     public function log($level, Stringable|string $message, array $context = []): void
     {
         self::$logCalls++;
-
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
-        $normalizedClassName = ltrim(str_replace(['\\', '/'], '_', $backtrace[2]['class']), '_');
-
         $logEntry = '<h3><strong>Message:</strong></h3>';
         $logEntry .= '<p>' . $message . '</p>';
-        $logEntry .= '<h3>Data:</h3>';
+        $logEntry .= '<h3>Data from caller:</h3>';
         $logEntry .= '<hr>';
         if (self::$logCalls > 1) {
             $logEntry .= $this->getDebuggerUtilityCss();
         }
 
         $logEntry .= DebuggerUtility::var_dump($context, null, 20, false, false, true);
+
+        $logEntry .= '<h3>Data from logger:</h3>';
+        $logEntry .= '<hr>';
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+        $request = $this->getRequest();
+        $fileName = $this->normalizeStringForFilename(
+            implode('_', [
+                sprintf('%.5f', microtime(true)),
+                (string)$request->getUri(),
+                $request->getMethod(),
+                $backtrace[2]['class']
+            ])
+        );
+
         GeneralUtility::writeFile(
-            Environment::getPublicPath() . '/logs/' . $normalizedClassName . '.html',
+            self::$logPath . '/' . $fileName . '.html',
             $logEntry
         );
+    }
+
+    protected function normalizeStringForFilename(string $uri): string
+    {
+        $uri = explode('?', $uri)[0];
+        $uri = str_replace(array('/', '\\'), '_', $uri);
+        return preg_replace('/[^A-Za-z0-9_\-\.]/', '', $uri);
+    }
+
+    private function getRequest(): ServerRequestInterface
+    {
+        return $GLOBALS['TYPO3_REQUEST'];
     }
 
     /*

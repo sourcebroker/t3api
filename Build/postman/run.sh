@@ -28,7 +28,7 @@ if [[ ! -d "/var/www/html/.test/$TYPO3" ]]; then
         DOMAINS=("https://$TYPO3.t3api.ddev.site")
         for DOMAIN in "${DOMAINS[@]}"; do
             for TEST_FILE in ../../Tests/Postman/*.json; do
-                ./node_modules/.bin/newman run "$TEST_FILE" --env-var "baseUrl=$DOMAIN"
+                ./node_modules/.bin/newman run "$TEST_FILE" --verbose --env-var "baseUrl=$DOMAIN"
             done
         done
 fi
