@@ -554,30 +554,6 @@
 					</relations>
 					<softrefs type="array"></softrefs>
 				</rec>
-				<rec index="14" type="array">
-					<uid>14</uid>
-					<pid>3</pid>
-					<title>N/A</title>
-					<relations index="rels" type="array">
-						<element index="sys_file:2" type="array">
-							<id>2</id>
-							<table>sys_file</table>
-						</element>
-					</relations>
-					<softrefs type="array"></softrefs>
-				</rec>
-				<rec index="15" type="array">
-					<uid>15</uid>
-					<pid>3</pid>
-					<title>N/A</title>
-					<relations index="rels" type="array">
-						<element index="sys_file:2" type="array">
-							<id>2</id>
-							<table>sys_file</table>
-						</element>
-					</relations>
-					<softrefs type="array"></softrefs>
-				</rec>
 			</table>
 			<table index="tx_news_domain_model_news" type="array">
 				<rec index="5" type="array">
@@ -926,8 +902,6 @@
 					<item index="11">1</item>
 					<item index="12">1</item>
 					<item index="13">1</item>
-					<item index="14">1</item>
-					<item index="15">1</item>
 				</table>
 				<table index="tx_news_domain_model_news" type="array">
 					<item index="1">1</item>
@@ -3004,88 +2978,6 @@ page.100 {
 					<relations index="itemArray" type="array">
 						<element index="0" type="array">
 							<id>1</id>
-							<table>sys_file</table>
-						</element>
-					</relations>
-				</field>
-			</related>
-		</tablerow>
-		<tablerow index="sys_file_reference:14" type="array">
-			<fieldlist index="data" type="array">
-				<field index="uid" type="integer">14</field>
-				<field index="pid" type="integer">3</field>
-				<field index="tstamp" type="integer">1717269219</field>
-				<field index="crdate" type="integer">1717269219</field>
-				<field index="deleted" type="integer">0</field>
-				<field index="hidden" type="integer">0</field>
-				<field index="sys_language_uid" type="integer">0</field>
-				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource"></field>
-				<field index="t3ver_oid" type="integer">0</field>
-				<field index="t3ver_wsid" type="integer">0</field>
-				<field index="t3ver_state" type="integer">0</field>
-				<field index="t3ver_stage" type="integer">0</field>
-				<field index="uid_local" type="integer">2</field>
-				<field index="uid_foreign" type="integer">12</field>
-				<field index="tablenames">tx_news_domain_model_news</field>
-				<field index="fieldname">fal_media</field>
-				<field index="sorting_foreign" type="integer">1</field>
-				<field index="title"></field>
-				<field index="description"></field>
-				<field index="alternative"></field>
-				<field index="link"></field>
-				<field index="crop"></field>
-				<field index="autoplay" type="integer">0</field>
-				<field index="showinpreview" type="integer">1</field>
-			</fieldlist>
-			<related index="rels" type="array">
-				<field index="uid_local" type="array">
-					<type>db</type>
-					<relations index="itemArray" type="array">
-						<element index="0" type="array">
-							<id>2</id>
-							<table>sys_file</table>
-						</element>
-					</relations>
-				</field>
-			</related>
-		</tablerow>
-		<tablerow index="sys_file_reference:15" type="array">
-			<fieldlist index="data" type="array">
-				<field index="uid" type="integer">15</field>
-				<field index="pid" type="integer">3</field>
-				<field index="tstamp" type="integer">1717269219</field>
-				<field index="crdate" type="integer">1717269219</field>
-				<field index="deleted" type="integer">0</field>
-				<field index="hidden" type="integer">0</field>
-				<field index="sys_language_uid" type="integer">0</field>
-				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource"></field>
-				<field index="t3ver_oid" type="integer">0</field>
-				<field index="t3ver_wsid" type="integer">0</field>
-				<field index="t3ver_state" type="integer">0</field>
-				<field index="t3ver_stage" type="integer">0</field>
-				<field index="uid_local" type="integer">2</field>
-				<field index="uid_foreign" type="integer">12</field>
-				<field index="tablenames">tx_news_domain_model_news</field>
-				<field index="fieldname">fal_media</field>
-				<field index="sorting_foreign" type="integer">2</field>
-				<field index="title"></field>
-				<field index="description"></field>
-				<field index="alternative"></field>
-				<field index="link"></field>
-				<field index="crop"></field>
-				<field index="autoplay" type="integer">0</field>
-				<field index="showinpreview" type="integer">0</field>
-			</fieldlist>
-			<related index="rels" type="array">
-				<field index="uid_local" type="array">
-					<type>db</type>
-					<relations index="itemArray" type="array">
-						<element index="0" type="array">
-							<id>2</id>
 							<table>sys_file</table>
 						</element>
 					</relations>
