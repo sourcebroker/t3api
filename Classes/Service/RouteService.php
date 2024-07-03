@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 class RouteService implements SingletonInterface
 {
@@ -24,7 +25,7 @@ class RouteService implements SingletonInterface
      */
     public static function getFullApiBasePath(): string
     {
-        return trim(self::getDefaultLanguageBasePath() . self::getApiBasePath(), '/');
+        return trim(self::getLanguageBasePath() . self::getApiBasePath(), '/');
     }
 
     public static function getFullApiBaseUrl(): string
