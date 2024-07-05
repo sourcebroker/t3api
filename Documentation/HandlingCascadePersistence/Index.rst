@@ -1,6 +1,3 @@
-.. include:: ../Includes.txt
-
-
 .. _handling_cascade_persistence:
 
 =======================

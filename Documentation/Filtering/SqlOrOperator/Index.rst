@@ -1,5 +1,3 @@
-.. include:: ../../Includes.txt
-
 .. _filtering_sql-or-operator:
 
 SQL "OR" conjunction

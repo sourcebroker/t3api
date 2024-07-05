@@ -1,5 +1,3 @@
-.. include:: Includes.txt
-
 .. _start:
 
 =============================================================
@@ -54,7 +52,7 @@ If you find an error or something is missing, please: `Report a Problem
    Serialization/Index
    Integration/Index
    Customization/Index
-   SignalsAndSlots/Index
+   Events/Index
    Multilanguage/Index
    HandlingFileUpload/Index
    HandlingCascadePersistence/Index

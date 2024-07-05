@@ -1,5 +1,3 @@
-.. include:: ../../Includes.txt
-
 .. _operations_customizing-operation-handler:
 
 Customizing operation handler

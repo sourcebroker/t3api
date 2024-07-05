@@ -48,8 +48,8 @@ abstract class AbstractOperation implements OperationInterface
             : $this->denormalizationContext;
         $this->route = new Route(
             RouteService::getFullApiBasePath() . $this->path,
-            [],
-            [],
+            $params['defaults'] ?? [],
+            $params['requirements'] ?? [],
             [],
             null,
             [],

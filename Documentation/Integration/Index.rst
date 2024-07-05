@@ -1,6 +1,3 @@
-.. include:: ../Includes.txt
-
-
 .. _integration:
 
 ============
@@ -18,7 +15,7 @@ Integration with other extensions
 News extension - Example integration
 ======================================
 
-@todo - write docs :ref:`t3apinews`
+@todo - write docs t3apinews
 
 Inline output
 ======================================

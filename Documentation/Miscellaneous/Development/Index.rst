@@ -1,5 +1,3 @@
-.. include:: ../Includes.txt
-
 .. _development:
 
 ============
@@ -11,3 +9,4 @@ Development
 
    Introduction/Index
    CommandsList/Index
+   TypicalUseCases/Index

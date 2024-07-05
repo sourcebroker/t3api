@@ -6,16 +6,97 @@
 
 source .ddev/test/utils.sh
 
+function import_data {
+    rm -rf $OUTPUT_FOLDER/*
+    cp -r /var/www/html/.ddev/test/impexp/* $OUTPUT_FOLDER/
+
+    mysql -uroot -proot -Nse 'SHOW TABLES' "$DATABASE" | while read table; do
+      if [ "$table" != "be_users" ] && [ "$table" != "be_sessions" ]; then
+        mysql -uroot -proot -e "SET FOREIGN_KEY_CHECKS = 0; DROP TABLE IF EXISTS $table" "$DATABASE";
+      fi
+    done
+    $TYPO3_BIN database:updateschema
+
+    /var/www/html/.test/${TYPO3}/vendor/bin/typo3 impexp:import -vvv --force-uid fileadmin/user_upload/_temp_/importexport/t3api.xml
+}
+
+function export_data {
+    # cleanup database tables before export
+    $TYPO3_BIN cleanup:missingrelations --update-refindex
+    $TYPO3_BIN cleanup:flexforms
+    $TYPO3_BIN cleanup:deletedrecords
+    $TYPO3_BIN cleanup:orphanrecords
+    echo "DELETE sys_file_metadata FROM sys_file_metadata LEFT JOIN sys_file ON sys_file_metadata.file = sys_file.uid WHERE sys_file.uid IS NULL;" | mysql -uroot -proot "$DATABASE"
+    echo "DELETE sys_file_metadata FROM sys_file_metadata INNER JOIN sys_file ON sys_file_metadata.file = sys_file.uid WHERE sys_file.identifier LIKE '/user_upload/_temp_/%' OR sys_file.identifier LIKE '%index.html' OR identifier LIKE '/user_upload/news-media/%';" | mysql -uroot -proot "$DATABASE"
+    echo "DELETE FROM sys_file WHERE identifier LIKE '/user_upload/_temp_/%' OR identifier LIKE '%index.html' OR identifier LIKE '/user_upload/news-media/%';" | mysql -uroot -proot "$DATABASE"
+    echo 'TRUNCATE sys_history; TRUNCATE sys_log; TRUNCATE be_sessions; TRUNCATE fe_sessions; TRUNCATE fe_sessions; TRUNCATE sys_file_processedfile; TRUNCATE sys_lockedrecords; TRUNCATE tx_extensionmanager_domain_model_extension;' | mysql -uroot -proot "$DATABASE"
+    echo "SELECT concat('TRUNCATE TABLE ', TABLE_NAME, ';') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$DATABASE' AND TABLE_NAME LIKE 'cache%'" | mysql -uroot -proot "$DATABASE" | sed 1d > tmp.sql
+    mysql -uroot -proot "$DATABASE" < tmp.sql
+    rm tmp.sql
+
+    # be_users excluded because of problems on import
+    /var/www/html/.test/${TYPO3}/vendor/bin/typo3 impexp:export -vvv \
+                                                    --type=xml \
+                                                    --pid=0 \
+                                                    --levels=99 \
+                                                    --table=backend_layout \
+                                                    --table=be_groups \
+                                                    --table=fe_groups \
+                                                    --table=fe_users \
+                                                    --table=sys_category \
+                                                    --table=sys_file \
+                                                    --table=sys_file_collection \
+                                                    --table=sys_file_metadata \
+                                                    --table=sys_file_reference \
+                                                    --table=sys_file_storage \
+                                                    --table=sys_filemounts \
+                                                    --table=sys_log \
+                                                    --table=sys_news \
+                                                    --table=sys_template \
+                                                    --table=tt_content \
+                                                    --table=tx_news_domain_model_news \
+                                                    --table=tx_news_domain_model_link \
+                                                    --table=tx_news_domain_model_tag \
+                                                    --include-related=_ALL \
+                                                    --include-static=_ALL \
+                                                    --save-files-outside-export-file \
+                                                    t3api
+
+    echo "DELETE sys_file_metadata FROM sys_file_metadata LEFT JOIN sys_file ON sys_file_metadata.file = sys_file.uid WHERE sys_file.uid IS NULL;" | mysql -uroot -proot "$DATABASE"
+    echo "DELETE sys_file_metadata FROM sys_file_metadata INNER JOIN sys_file ON sys_file_metadata.file = sys_file.uid WHERE sys_file.identifier LIKE '/user_upload/_temp_/%' OR sys_file.identifier LIKE '%index.html' OR identifier LIKE '/user_upload/news-media/%';" | mysql -uroot -proot "$DATABASE"
+    echo "DELETE FROM sys_file WHERE identifier LIKE '/user_upload/_temp_/%' OR identifier LIKE '%index.html' OR identifier LIKE '/user_upload/news-media/%';" | mysql -uroot -proot "$DATABASE"
+
+
+    sed -i 's|<field index="tstamp" type="integer">[^<]*</field>|<field index="tstamp" type="integer">1717269219</field>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<field index="crdate" type="integer">[^<]*</field>|<field index="crdate" type="integer">1717269219</field>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<field index="creation_date" type="integer">[^<]*</field>|<field index="creation_date" type="integer">1717269219</field>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<field index="last_indexed" type="integer">[^<]*</field>|<field index="last_indexed" type="integer">1717269219</field>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<field index="modification_date" type="integer">[^<]*</field>|<field index="modification_date" type="integer">1717269219</field>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<filemtime>[^<]*</filemtime>|<filemtime>1717269219</filemtime>|g' $OUTPUT_FOLDER/t3api.xml
+    sed -i 's|<created>[^<]*</created>|<created>Sat 22. April 2024</created>|g' $OUTPUT_FOLDER/t3api.xml
+
+    rm -rf /var/www/html/.ddev/test/impexp
+    mkdir -p /var/www/html/.ddev/test/impexp
+    mv $OUTPUT_FOLDER/t3api.xml /var/www/html/.ddev/test/impexp
+    mv $OUTPUT_FOLDER/t3api.xml.files/ /var/www/html/.ddev/test/impexp
+
+    echo_green "Dump finished and saved at $OUTPUT_FOLDER"
+}
+
 TYPE=${1}
 TYPO3=${2}
 if ! check_typo3_version "$TYPO3"; then
     exit 1
 fi
 
+OUTPUT_FOLDER="/var/www/html/.test/${TYPO3}/public/fileadmin/user_upload/_temp_/importexport"
+TYPO3_BIN=/var/www/html/.test/$TYPO3/vendor/bin/typo3
+DATABASE="database_$TYPO3"
+
 if [ "$TYPE" == "export" ]; then
-    source .ddev/commands/web/.data-export "$TYPO3"
+    export_data
 elif [ "$TYPE" == "import" ]; then
-    source .ddev/commands/web/.data-import "$TYPO3"
+    import_data
 else
     echo "Invalid type. Please use 'export' or 'import' as first argument."
     exit 1
