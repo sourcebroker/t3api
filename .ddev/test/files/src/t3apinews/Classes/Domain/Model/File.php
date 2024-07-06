@@ -14,7 +14,7 @@ use TYPO3\CMS\Core\Resource\DuplicationBehavior;
  *     },
  *     attributes={
  *          "upload"={
- *              "folder"="1:/user_upload/news-media/",
+ *              "folder"="1:/user_upload/media-export-excluded/",
  *              "allowedFileExtensions"={"jpg", "jpeg", "png"},
  *              "conflictMode"=DuplicationBehavior::RENAME,
  *          }

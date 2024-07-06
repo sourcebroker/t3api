@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Description: Tag new version.
+## Description: [ExtDev] Tag new extension version.
 ## Usage: next
 ## Example: "ddev next, ddev next patch, ddev next major"
 

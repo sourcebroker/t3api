@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Description: Build docs or open docs editing in watch mode. Mode "watch" is default.
+## Description: [ExtDev] Build docs or open docs editing in watch mode. Mode "watch" is default.
 ## Usage: "docs [watch|build|test]"
 ## Example: "ddev docs" "ddev docs watch" "ddev docs build" "ddev docs test"
 

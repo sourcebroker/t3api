@@ -15,7 +15,12 @@ $supportedVersions = explode(' ', getenv('TYPO3_VERSIONS'));
 <ul>
     <?php
     foreach ($supportedVersions as $version) {
-        echo "<li><a target='_blank' href='https://{$version}.{$extensionKey}.ddev.site/typo3/'>https://{$version}.{$extensionKey}.ddev.site/typo3</a> user: <b>{$typo3AdminUser}</b>, pass: <b>{$typo3AdminPassword}</b></li>";
+        $directoryPath = "/var/www/html/.test/" . $version;
+        if (is_dir($directoryPath)) {
+            echo "<li><a target='_blank' href='https://{$version}.{$extensionKey}.ddev.site/typo3/'>https://{$version}.{$extensionKey}.ddev.site/typo3</a> user: <b>{$typo3AdminUser}</b>, pass: <b>{$typo3AdminPassword}</b></li>";
+        } else {
+            echo "<li>Version {$version} is not installed. Run <b>'ddev install {$version}'</b> or <b>'ddev ci {$version}'</b> to install.</li>";
+        }
     }
     ?>
 </ul>
