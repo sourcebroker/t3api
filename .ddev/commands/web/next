@@ -2,7 +2,7 @@
 
 ## Description: [ExtDev] Tag new extension version.
 ## Usage: next
-## Example: "ddev next, ddev next patch, ddev next major"
+## Example: "ddev next, ddev next patch, ddev next minor, ddev next major"
 
 INCREASE_PATCH="patch"
 INCREASE_MINOR="minor"
@@ -32,9 +32,10 @@ esac
 
 nextTag="$major.$minor.$patch"
 
-sed "s/'version' => '[0-9]\+\.[0-9]\+\.[0-9]\+'/'version' => '$nextTag'/g" ./ext_emconf.php
+sed -i "s/'version' => '[0-9]\+\.[0-9]\+\.[0-9]\+'/'version' => '$nextTag'/g" ./ext_emconf.php
 
-sed "s/release=\"[0-9]\+\.[0-9]\+\.[0-9]\+\"/release=\"$nextTag\"/g" ./Documentation/guides.xml
-sed "s/version=\"[0-9]\+\.[0-9]\+\"/version=\"$major.$minor\"/g" ./Documentation/guides.xml
+sed -i "s/release=\"[0-9]\+\.[0-9]\+\.[0-9]\+\"/release=\"$nextTag\"/g" ./Documentation/guides.xml
+sed -i'' -E "s/(<project[^>]* version=\")[^\"]+(\")/\1$nextTag\2/" ./Documentation/guides.xml
 
-echo "git add Documentation/guides.xml ext_emconf.php && git commit -m 'Tag new version' && git tag -a '$nextTag' -m '$nextTag' && git push origin master --tags"
+default_branch=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+echo "git add Documentation/guides.xml ext_emconf.php && git commit -m 'Tag new version' && git tag -a '$nextTag' -m '$nextTag' -s && git push origin $default_branch --tags"
