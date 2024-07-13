@@ -12,7 +12,7 @@
                interlink-shortcode="sourcebroker/t3api"
     />
     <project title="TYPO3 REST API"
-             release="3.0.0"
+             release="3.0.1"
              version="3.0"
              copyright="Inscript sp. z o.o."/>
     <inventory id="t3apinews" url="https://docs.typo3.org/p/sourcebroker/t3api/main/en-us/"/>
