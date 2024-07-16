@@ -87,7 +87,7 @@ class Bootstrap extends AbstractDispatcher
         $output = OpenApiBuilder::build($this->apiResourceRepository->getAll())->toJson();
         $this->response->getBody()->write($output);
 
-        return $this->response;
+        return $this->response->withHeader('Content-Type', 'application/json');
     }
 
     protected function isMainEndpointResponseClassDefined(): bool
