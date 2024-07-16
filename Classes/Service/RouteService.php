@@ -20,6 +20,11 @@ class RouteService implements SingletonInterface
         );
     }
 
+    public static function getApiSpecFileName(): string
+    {
+        return self::getApiRouteEnhancer()['specFileName'] ?? $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['specFileName'];
+    }
+
     /**
      * Returns base path including language prefix
      */
@@ -39,6 +44,12 @@ class RouteService implements SingletonInterface
         $request = $request ?? self::getRequest();
         return $request instanceof ServerRequest && is_array($request->getQueryParams())
             && array_key_exists(ResourceEnhancer::PARAMETER_NAME, $request->getQueryParams());
+    }
+
+    public static function routeIsT3ApiSpecificationFile(ServerRequestInterface $request = null): bool
+    {
+        $request = $request ?? self::getRequest();
+        return $request instanceof ServerRequest && self::getApiSpecFileName() && ($request->getQueryParams()[ResourceEnhancer::PARAMETER_NAME] ?? '') === self::getApiSpecFileName();
     }
 
     protected static function getApiRouteEnhancer(): array
