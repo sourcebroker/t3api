@@ -94,8 +94,8 @@ class OpenApiBuilder
     {
         // @todo caching because it is used in few places
         return Tag::create()
-            ->name($apiResource->getEntity())
-            ->description(sprintf('Operations about %s', $apiResource->getEntity()));
+            ->name($apiResource->getOpenApiSettings()->getTagName())
+            ->description($apiResource->getOpenApiSettings()->getTagDescription());
     }
 
     /**

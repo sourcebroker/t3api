@@ -34,6 +34,8 @@ class ApiResource
 
     protected UploadSettings $uploadSettings;
 
+    protected OpenApiSettings $openApiSettings;
+
     public function __construct(string $entity, ApiResourceAnnotation $apiResourceAnnotation)
     {
         $this->entity = $entity;
@@ -43,6 +45,7 @@ class ApiResource
         $this->pagination = Pagination::create($attributes);
         $this->persistenceSettings = PersistenceSettings::create($attributes['persistence'] ?? []);
         $this->uploadSettings = UploadSettings::create($attributes['upload'] ?? []);
+        $this->openApiSettings = OpenApiSettings::create($attributes['openApi'] ?? [], null, $entity);
 
         foreach ($apiResourceAnnotation->getItemOperations() as $operationKey => $operationData) {
             $this->itemOperations[] = new ItemOperation($operationKey, $this, $operationData);
@@ -150,5 +153,10 @@ class ApiResource
     public function getUploadSettings(): UploadSettings
     {
         return $this->uploadSettings;
+    }
+
+    public function getOpenApiSettings(): OpenApiSettings
+    {
+        return $this->openApiSettings;
     }
 }
