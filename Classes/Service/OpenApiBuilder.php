@@ -311,16 +311,16 @@ class OpenApiBuilder
             $collectionResponseClass = Configuration::getCollectionResponseClass();
 
             return $collectionResponseClass::getOpenApiSchema(
-                self::getComponentsSchemaReference($operation->getApiResource()->getEntity())
+                self::getComponentsSchemaReference($operation->getApiResource())
             );
         }
 
-        return Schema::ref(self::getComponentsSchemaReference($operation->getApiResource()->getEntity()));
+        return Schema::ref(self::getComponentsSchemaReference($operation->getApiResource()));
     }
 
-    protected static function getComponentsSchemaReference(string $class, string $mode = 'READ'): string
+    protected static function getComponentsSchemaReference(ApiResource $apiResource, string $mode = 'READ'): string
     {
-        $schemaIdentifier = str_replace('\\', '.', $class) . '__' . $mode;
+        $schemaIdentifier = $apiResource->getOpenApiSettings()->getSchemaIdentifierForMode($mode);
         $referencePath = '#/components/schemas/' . $schemaIdentifier;
 
         $definedSchemas = array_map(
@@ -331,7 +331,7 @@ class OpenApiBuilder
         );
 
         if (!in_array($schemaIdentifier, $definedSchemas, true)) {
-            self::setComponentsSchema($schemaIdentifier, $class, $mode);
+            self::setComponentsSchema($schemaIdentifier, $apiResource->getEntity(), $mode);
         }
 
         return $referencePath;
@@ -441,7 +441,8 @@ class OpenApiBuilder
             } else {
                 // NOTICE! because of a bug https://github.com/swagger-api/swagger-ui/issues/3325 reference to itself
                 // will not be displayed correctly
-                $schema = Schema::ref(self::getComponentsSchemaReference($type, $mode));
+                $apiResource = self::getApiResourceByClassName($type);
+                $schema = Schema::ref(self::getComponentsSchemaReference($apiResource, $mode));
             }
         } elseif (in_array($type, ['int', 'integer'], true)) {
             $schema = Schema::integer();
@@ -477,9 +478,20 @@ class OpenApiBuilder
             ->content(
                 MediaType::json()->schema(
                     Schema::ref(
-                        self::getComponentsSchemaReference($operation->getApiResource()->getEntity(), 'WRITE')
+                        self::getComponentsSchemaReference($operation->getApiResource(), 'WRITE')
                     )
                 )
             );
+    }
+
+    protected static function getApiResourceByClassName(string $entity): ApiResource
+    {
+        foreach (self::$apiResources as $apiResource) {
+            if ($apiResource->getEntity() === $entity) {
+                return $apiResource;
+            }
+        }
+
+        return new ApiResource($entity);
     }
 }

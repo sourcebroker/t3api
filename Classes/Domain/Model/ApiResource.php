@@ -36,10 +36,12 @@ class ApiResource
 
     protected OpenApiSettings $openApiSettings;
 
-    public function __construct(string $entity, ApiResourceAnnotation $apiResourceAnnotation)
+    public function __construct(string $entity, ?ApiResourceAnnotation $apiResourceAnnotation = null)
     {
         $this->entity = $entity;
         $this->routes = new RouteCollection();
+
+        $apiResourceAnnotation = $apiResourceAnnotation ?? new ApiResourceAnnotation([]);
 
         $attributes = $apiResourceAnnotation->getAttributes();
         $this->pagination = Pagination::create($attributes);
