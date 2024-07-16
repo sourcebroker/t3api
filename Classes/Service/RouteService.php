@@ -49,7 +49,7 @@ class RouteService implements SingletonInterface
     public static function routeIsT3ApiSpecificationFile(ServerRequestInterface $request = null): bool
     {
         $request = $request ?? self::getRequest();
-        return $request instanceof ServerRequest && self::getApiSpecFileName() && ($request->getQueryParams()[ResourceEnhancer::PARAMETER_NAME] ?? '') === self::getApiSpecFileName();
+        return $request instanceof ServerRequest && (bool)self::getApiSpecFileName() && ($request->getQueryParams()[ResourceEnhancer::PARAMETER_NAME] ?? '') === self::getApiSpecFileName();
     }
 
     protected static function getApiRouteEnhancer(): array
