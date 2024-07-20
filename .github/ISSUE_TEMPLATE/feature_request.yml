@@ -1,0 +1,44 @@
+name: Feature request
+description: Suggest an idea for this extension.
+title: "[FEATURE]"
+labels:
+  - enhancement
+assignees:
+  - kszymukowicz
+body:
+  - type: textarea
+    attributes:
+      label: Is your feature request related to a problem?
+      description: A clear description of what the problem is.
+      placeholder: I'm always frustrated when [...]
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the solution you'd like
+      description: A clear description of what you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe alternatives you've considered
+      description: A clear description of any alternative solutions or features you've considered.
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request here.
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: >
+        By submitting this issue, you agree to follow our
+        [Code of Conduct](https://github.com/sourcebroker/t3api/blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct.
+          required: true
+  - type: markdown
+    attributes:
+      value: >
+        :bulb: **Tip:** Have you already looked into https://github.com/sourcebroker/t3api/discussions/categories/ideas?
+        Maybe your idea has already been discussed there.
