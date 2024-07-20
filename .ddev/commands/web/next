@@ -4,38 +4,93 @@
 ## Usage: next
 ## Example: "ddev next, ddev next patch, ddev next minor, ddev next major"
 
-INCREASE_PATCH="patch"
-INCREASE_MINOR="minor"
-INCREASE_MAJOR="major"
+DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
 
-versionType=${1:-$INCREASE_PATCH}
+# Ensure DEFAULT_BRANCH is set
+if [ -z "$DEFAULT_BRANCH" ]; then
+    echo "Error: DEFAULT_BRANCH could not be determined."
+    exit 1
+fi
 
-IFS='.' read -ra lastTagParts <<< "$(git tag -l --sort=v:refname | tail -1)"
+# Check if on '${DEFAULT_BRANCH}' branch
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$CURRENT_BRANCH" != "$DEFAULT_BRANCH" ]; then
+    echo "You are on branch '$CURRENT_BRANCH'. Before tagging please switch to the '$DEFAULT_BRANCH' branch and make sure it's up to date by running 'git pull'. Then run 'ddev next' command again."
+    exit 1
+fi
+
+# Fetch the latest state of the remote branch
+if ! git fetch -q origin $DEFAULT_BRANCH; then
+    echo "Error: Failed to fetch from origin. Please check your network connection and remote repository configuration."
+    exit 1
+fi
+
+# Check if the local branch is behind the remote branch
+LOCAL=$(git rev-parse @)
+REMOTE=$(git rev-parse @{u})
+BASE=$(git merge-base @ @{u})
+
+if [ "$LOCAL" != "$REMOTE" ]; then
+    if [ "$LOCAL" == "$BASE" ]; then
+        echo "Your local '$DEFAULT_BRANCH' branch is behind the remote. Please update it with 'git pull' and run 'ddev next' command again."
+        exit 1
+    elif [ "$REMOTE" == "$BASE" ]; then
+        echo "Your local '$DEFAULT_BRANCH' branch has commits that are not pushed to the remote. Please push your changes with 'git push' and run 'ddev next' command again."
+        exit 1
+    else
+        echo "Your local '$DEFAULT_BRANCH' branch has diverged from the remote. Please resolve the divergence before proceeding."
+        exit 1
+    fi
+fi
+
+
+versionType=${1:-patch}
+if [ ! -z "$versionType" ]; then
+    if [ "$versionType" != "patch" ] && [ "$versionType" != "minor" ] && [ "$versionType" != "major" ]; then
+        echo "Error: Invalid argument. Please use 'patch', 'minor', or 'major'."
+        exit 1
+    fi
+fi
+
+# Validate and increment version
+lastTag=$(git tag -l --sort=v:refname | tail -1)
+if ! [[ $lastTag =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Error: Last tag '$lastTag' does not follow semantic versioning."
+    exit 1
+fi
+
+IFS='.' read -ra lastTagParts <<< "$lastTag"
 major=${lastTagParts[0]}
 minor=${lastTagParts[1]}
 patch=${lastTagParts[2]}
 
 case $versionType in
-    $INCREASE_MINOR)
-        patch=0
-        minor=$((minor+1))
-        ;;
-    $INCREASE_MAJOR)
-        patch=0
+    major)
+        ((major++))
         minor=0
-        major=$((major+1))
+        patch=0
         ;;
-    $INCREASE_PATCH)
-        patch=$((patch+1))
+    minor)
+        ((minor++))
+        patch=0
+        ;;
+    patch)
+        ((patch++))
         ;;
 esac
 
-nextTag="$major.$minor.$patch"
+NEXT_TAG="$major.$minor.$patch"
 
-sed -i "s/'version' => '[0-9]\+\.[0-9]\+\.[0-9]\+'/'version' => '$nextTag'/g" ./ext_emconf.php
+if git rev-parse "$NEXT_TAG" >/dev/null 2>&1; then
+    echo "Error: Tag '$NEXT_TAG' already exists. Please check the current version."
+    exit 1
+fi
 
-sed -i "s/release=\"[0-9]\+\.[0-9]\+\.[0-9]\+\"/release=\"$nextTag\"/g" ./Documentation/guides.xml
-sed -i'' -E "s/(<project[^>]* version=\")[^\"]+(\")/\1$nextTag\2/" ./Documentation/guides.xml
+# Update files with the new version
+sed -i "s/'version' => '[0-9]\+\.[0-9]\+\.[0-9]\+'/'version' => '$NEXT_TAG'/g" ./ext_emconf.php
+sed -i "s/release=\"[0-9]\+\.[0-9]\+\.[0-9]\+\"/release=\"$NEXT_TAG\"/g" ./Documentation/guides.xml
+sed -i'' -E "s/(<project[^>]* version=\")[^\"]+(\")/\1$NEXT_TAG\2/" ./Documentation/guides.xml
 
-default_branch=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
-echo "git add Documentation/guides.xml ext_emconf.php && git commit -m 'Tag new version' && git tag -a '$nextTag' -m '$nextTag' -s && git push origin $default_branch --tags"
+# Prepare command to tag the new version
+echo "Copy the command below and run it to tag the new version:"
+echo "git add Documentation/guides.xml ext_emconf.php && git commit -m 'Tag version $NEXT_TAG' && git tag -a '$NEXT_TAG' -m 'Version $NEXT_TAG' -s && git push origin $DEFAULT_BRANCH --tags"
