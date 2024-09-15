@@ -9,10 +9,12 @@ use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
+use SourceBroker\T3api\Attribute\AsSerializerSubscriber;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Serializer\Handler\FileReferenceHandler;
 use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
 
+#[AsSerializerSubscriber]
 class FileReferenceSubscriber implements EventSubscriberInterface
 {
     public function __construct(protected readonly ApiResourceRepository $apiResourceRepository) {}

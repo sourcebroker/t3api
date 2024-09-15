@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\OperationHandler;
 
 use Psr\Http\Message\ResponseInterface;
+use SourceBroker\T3api\Attribute\AsOperationHandler;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
@@ -14,6 +15,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
+#[AsOperationHandler(priority: -500)]
 class CollectionPostOperationHandler extends AbstractCollectionOperationHandler
 {
     public static function supports(OperationInterface $operation, Request $request): bool

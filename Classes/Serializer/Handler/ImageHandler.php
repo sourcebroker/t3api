@@ -6,6 +6,7 @@ namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use SourceBroker\T3api\Attribute\AsSerializerHandler;
 use SourceBroker\T3api\Service\FileReferenceService;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
@@ -14,6 +15,7 @@ use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 
+#[AsSerializerHandler]
 class ImageHandler extends AbstractHandler implements SerializeHandlerInterface
 {
     /**
