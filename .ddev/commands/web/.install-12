@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Description: Install TYPO3 12 instance.
+## Description: [ExtDev] Install TYPO3 12 integration instance.
 ## Usage: install
 ## Example: "ddev install 12"
 
@@ -8,7 +8,7 @@ set +x
 set -e
 
 VERSION=12
-BASE_PATH=/var/www/html/.test/$VERSION
+BASE_PATH=.test/$VERSION
 TYPO3_BIN=$BASE_PATH/vendor/bin/typo3
 DATABASE=database_$VERSION
 
@@ -16,7 +16,7 @@ rm -rf $BASE_PATH
 
 exclusions=(".*" "Documentation" "Documentation-GENERATED-temp" "var")
 mkdir -p "$BASE_PATH/src/$EXTENSION_KEY"
-for item in /var/www/html/*; do
+for item in ./*; do
     base_name=$(basename "$item")
     for exclusion in "${exclusions[@]}"; do
         if [[ $base_name == "$exclusion" ]]; then

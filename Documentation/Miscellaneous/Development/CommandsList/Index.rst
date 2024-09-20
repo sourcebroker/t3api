@@ -119,16 +119,22 @@ Example:
 .. _development_commands_list_ddev_next:
 :bash:`ddev next [major|minor|patch]`
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-This command will prepare t3api for next release.
+This command will help to tag next release of extension.
 
-For now, the following files are changed with info about next version:
+It does several checks. Amongst other it:
 
-* :file:`/ext_emconf.php`
-* :file:`/Documentation/guides.xml`
+1. Checks if you are on default branch.
+2. Checks if you are are up to date with remote default branch.
+3. Checks if you do not have any not pushed changes to remote.
+4. Checks validity of last tag.
+5. Increase version in few files:
 
-Additionally it outputs a command you need to run to push changes and tag to git.
+   * :file:`/ext_emconf.php`
+   * :file:`/Documentation/guides.xml`
+
+After all checks it outputs a command you need to run to push changes and tag to git.
 
 Example output:
 
 .. code-block:: bash
-    git add Documentation/guides.xml ext_emconf.php && git commit -m 'Tag new version' && git tag -a '2.0.4' -m '2.0.4' && git push origin master --tags
+    git add Documentation/guides.xml ext_emconf.php && git commit -m 'Tag version 3.1.0' && git tag -a '3.1.0' -m 'Version 3.1.0' -s && git push origin main --tags

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Description: Run matrix tests from TYPO3_VERSIONS, PHP_VERSIONS, composer "lowest/highest".
+## Description: [ExtDev] Run matrix tests for TYPO3_VERSIONS, PHP_VERSIONS and composer "lowest/highest".
 ## Usage: "ci"
 ## Example: "ddev ci" or "ddev ci all" or "ddev ci 12 8.3 lowest"
 

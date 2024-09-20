@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Description: Run all possible automate fixes.
+## Description: [ExtDev] Run all possible automate fixes.
 ## Usage: fix
 ## Example: "ddev fix"
 
