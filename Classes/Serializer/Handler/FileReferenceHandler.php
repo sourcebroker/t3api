@@ -17,8 +17,10 @@ use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
 use TYPO3\CMS\Core\Resource\Rendering\RendererRegistry;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
+use TYPO3\CMS\Extbase\Domain\Model\File;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+use TYPO3\CMS\Extbase\Domain\Model\Folder;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Error\Error;
 use TYPO3\CMS\Extbase\Error\Result;
@@ -120,9 +122,18 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
             throw new \RuntimeException('`targetType` is required parameter.', 1577534803669);
         }
 
-        if (!is_subclass_of($type['params']['targetType'], AbstractFileFolder::class)) {
+        if (
+            !is_subclass_of($type['params']['targetType'], Folder::class)
+            && !is_subclass_of($type['params']['targetType'], File::class)
+            && !is_subclass_of($type['params']['targetType'], FileReference::class)
+        ) {
             throw new \RuntimeException(
-                sprintf('Has to be an instance of `%s` to be processed', AbstractFileFolder::class),
+                sprintf('Has to be an instance of %s to be processed',
+                    implode(',', [
+                        Folder::class,
+                        File::class,
+                        FileReference::class,
+                    ])),
                 1577534838461
             );
         }
