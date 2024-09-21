@@ -202,7 +202,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
      *     "api_put_item_t3apinews_news",
      * })
      */
-    protected $categories;
+    protected \TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3apinews\Domain\Model\News>
@@ -278,7 +278,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
      *     "api_get_item_t3apinews_news",
      * })
      */
-    protected $tags;
+    protected \TYPO3\CMS\Extbase\Persistence\ObjectStorage $tags;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3apinews\Domain\Model\FileReference>

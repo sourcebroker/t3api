@@ -125,6 +125,23 @@ function export_ddev_env_vars() {
     done <<< "$ENV_VARS"
 }
 
+stashComposerFiles() {
+    cp composer.json composer.json.orig
+}
+
+restoreComposerFiles() {
+    local exit_status=$?
+    if [ -f "composer.json.orig" ]; then
+        mv composer.json.orig composer.json
+        local message='composer.json has been restored.'
+        if [ $exit_status -eq 0 ]; then
+            echo_green "${message}"
+        else
+            echo_red "${message}"
+        fi
+    fi
+}
+
 function echo_magenta() {
     echo -e "\033[35m$1\033[0m"
 }
@@ -136,3 +153,4 @@ function echo_red() {
 function echo_green() {
     echo -e "\033[32m$1\033[0m"
 }
+

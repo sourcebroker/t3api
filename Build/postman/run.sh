@@ -2,6 +2,15 @@
 
 source .ddev/test/utils.sh
 
+TYPO3=${1}
+if [ -z "$TYPO3" ]; then
+    TYPO3=$(".Build/bin/typo3" --version  | grep -oP 'TYPO3 CMS \K[0-9]+')
+fi
+
+if ! check_typo3_version "$TYPO3"; then
+   exit 1
+fi
+
 POSTMAN_BUILD_PATH=/var/www/html/Build/postman/
 cd ${POSTMAN_BUILD_PATH} || exit
 
@@ -11,15 +20,6 @@ fi
 
 if [[ ! -d "node_modules" ]]; then
     npm ci
-fi
-
-TYPO3=${1}
-if [ -z "$TYPO3" ]; then
-    TYPO3=$("../../.Build/bin/typo3" | grep -oP 'TYPO3 CMS \K[0-9]+')
-fi
-
-if ! check_typo3_version "$TYPO3"; then
-   exit 1
 fi
 
 if [[ ! -d "/var/www/html/.test/$TYPO3" ]]; then

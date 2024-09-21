@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Filter;
 
-use Doctrine\DBAL\FetchMode;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
@@ -120,13 +119,13 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
         $ids = $queryBuilder
             ->select($rootAlias . '.uid')
             ->addSelectLiteral('(
-                :multiplier * ACOS(
-                    COS(RADIANS(:lat))
-                    * COS(RADIANS(' . $latTableAlias . '.' . $latColumn . '))
-                    * COS(RADIANS(' . $lngTableAlias . '.' . $lngColumn . ') - RADIANS(:lng))
-                    + SIN(RADIANS(:lat))
-                    * SIN(RADIANS(' . $latTableAlias . '.' . $latColumn . '))
-                )
+            :multiplier * ACOS(
+            COS(RADIANS(:lat))
+            * COS(RADIANS(' . $latTableAlias . '.' . $latColumn . '))
+            * COS(RADIANS(' . $lngTableAlias . '.' . $lngColumn . ') - RADIANS(:lng))
+            + SIN(RADIANS(:lat))
+            * SIN(RADIANS(' . $latTableAlias . '.' . $latColumn . '))
+            )
             ) AS distance')
             ->from($tableName, $rootAlias)
             ->having($queryBuilder->expr()->lte('distance', ':radius'))
@@ -136,8 +135,8 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
                 'lat' => $lat,
                 'lng' => $lng,
             ])
-            ->execute()
-            ->fetchAll(FetchMode::COLUMN);
+            ->executeQuery()
+            ->fetchFirstColumn();
 
         return $query->in('uid', array_merge($ids, [0]));
     }
