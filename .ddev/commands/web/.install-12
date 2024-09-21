@@ -31,18 +31,19 @@ mysql -uroot -proot -e "DROP DATABASE IF EXISTS $DATABASE"
 ln -sr ".ddev/test/files/src/site/" $BASE_PATH/src/site
 ln -sr ".ddev/test/files/src/t3apinews/" $BASE_PATH/src/t3apinews
 
+mkdir -p $BASE_PATH/patches
 composer init --name="sourcebroker/typo3-$VERSION" --description="TYPO3 $VERSION" --no-interaction --working-dir $BASE_PATH
 composer config extra.typo3/cms.web-dir public --working-dir $BASE_PATH
 composer config repositories.src path 'src/*' --working-dir $BASE_PATH
 composer config --no-interaction allow-plugins.typo3/cms-composer-installers true --working-dir $BASE_PATH
 composer config --no-interaction allow-plugins.typo3/class-alias-loader true --working-dir $BASE_PATH
 composer config --no-plugins allow-plugins.cweagans/composer-patches true --working-dir $BASE_PATH
-jq '.extra.patches += {"typo3/cms-impexp": {"Disable error on new sys_file warning.": "typo3-cms-impexp-disable-error-on-sys-file-warning.patch"}}' $BASE_PATH/composer.json > $BASE_PATH/composer.json.tmp && mv $BASE_PATH/composer.json.tmp $BASE_PATH/composer.json
-cp ".ddev/test/files/typo3-cms-impexp-disable-error-on-sys-file-warning.patch" $BASE_PATH
+jq '.extra.patches += {"typo3/cms-impexp": {"Disable error on new sys_file warning.": "patches/typo3-cms-impexp-disable-error-on-sys-file-warning.patch"}}' $BASE_PATH/composer.json > $BASE_PATH/composer.json.tmp && mv $BASE_PATH/composer.json.tmp $BASE_PATH/composer.json
+cp ".ddev/test/files/patches/typo3-cms-impexp-disable-error-on-sys-file-warning.patch" $BASE_PATH/patches/
 
 composer req typo3/minimal:'^12.4' typo3/cms-recycler:'^12.4' typo3/cms-tstemplate:'^12.4' typo3/cms-info:'^12.4' \
          typo3/cms-lowlevel:'^12.4' typo3/cms-rte-ckeditor:'^12.4' typo3/cms-impexp:'^12.4' \
-         helhum/typo3-console:'^8.1' georgringer/news:'^11.3.0' \
+         helhum/typo3-console:'^8.1' georgringer/news:'dev-12-13' \
          v/site:'^1.0.0' sourcebroker/t3apinews:'^1.0.0' cweagans/composer-patches \
          sourcebroker/t3api:'@dev' \
          --no-progress --no-interaction --working-dir $BASE_PATH

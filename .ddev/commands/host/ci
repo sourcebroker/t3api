@@ -9,6 +9,8 @@ set -e
 source .ddev/test/utils.sh
 export_ddev_env_vars
 
+trap 'restoreComposerFiles' SIGINT SIGTERM
+
 ci_single() {
     TYPO3=$1
     PHP=$2
@@ -44,14 +46,17 @@ ci_single() {
 
     ddev config --php-version="$PHP"
     ddev restart
+    stashComposerFiles
+    ddev composer require --no-ansi --no-interaction --no-progress --no-update typo3/cms-core:^${TYPO3} || exit 1
     if [ "$COMPOSER" == "lowest" ]; then
-        ddev exec composer update --prefer-lowest --prefer-stable
+        ddev exec composer update --prefer-lowest --prefer-stable --with-dependencies --no-progress --no-interaction || exit 1
     else
-        ddev exec composer update
+        ddev exec composer update --with-dependencies --no-progress --no-interaction || exit 1
     fi
     ddev composer normalize
     ddev install "$TYPO3"
     ddev composer ci
+    restoreComposerFiles
 }
 
 if [ $# -eq 0 ]; then
