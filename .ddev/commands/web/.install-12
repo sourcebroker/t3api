@@ -42,7 +42,7 @@ jq '.extra.patches += {"typo3/cms-impexp": {"Disable error on new sys_file warni
 cp ".ddev/test/files/patches/typo3-cms-impexp-disable-error-on-sys-file-warning.patch" $BASE_PATH/patches/
 
 composer req typo3/minimal:'^12.4' typo3/cms-recycler:'^12.4' typo3/cms-tstemplate:'^12.4' typo3/cms-info:'^12.4' \
-         typo3/cms-lowlevel:'^12.4' typo3/cms-rte-ckeditor:'^12.4' typo3/cms-impexp:'^12.4' \
+         typo3/cms-install:'^12.4' typo3/cms-lowlevel:'^12.4' typo3/cms-rte-ckeditor:'^12.4' typo3/cms-impexp:'^12.4' \
          helhum/typo3-console:'^8.1' georgringer/news:'dev-12-13' \
          v/site:'^1.0.0' sourcebroker/t3apinews:'^1.0.0' cweagans/composer-patches \
          sourcebroker/t3api:'@dev' \
