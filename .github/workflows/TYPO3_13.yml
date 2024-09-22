@@ -1,0 +1,23 @@
+name: TYPO3 13
+
+on:
+  push:
+    branches:
+      - release/4.0.0
+  pull_request:
+    branches:
+      - release/4.0.0
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        typo3: ["13"]
+        php: ["8.2", "8.3"]
+        composer: ["lowest", "highest"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        uses: ddev/github-action-setup-ddev@v1
+      - run: ddev ci ${{ matrix.typo3 }} ${{ matrix.php }} ${{ matrix.composer }}
