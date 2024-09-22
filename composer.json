@@ -43,7 +43,7 @@
 		"seld/jsonlint": "^1.10.2",
 		"symfony/yaml": "^5.4 || ^6.0 || ^7.0",
 		"typo3/coding-standards": "^0.8",
-		"typo3/testing-framework": "^8.0",
+		"typo3/testing-framework": "^8.2.1",
 		"webmozart/assert": "^1.11.0"
 	},
 	"replace": {
