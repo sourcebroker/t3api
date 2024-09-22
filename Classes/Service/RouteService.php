@@ -74,9 +74,9 @@ class RouteService implements SingletonInterface
     {
         $request = self::getRequest();
         /** @var SiteLanguage $requestLanguage */
-        $requestLanguage = $request->getAttribute('language');
+        $requestLanguage = $request?->getAttribute('language');
         if ($requestLanguage instanceof SiteLanguage
-            && $request->getAttribute('t3apiHeaderLanguageRequest') !== true) {
+            && $request?->getAttribute('t3apiHeaderLanguageRequest') !== true) {
             $languagePrefix = $requestLanguage->getBase()->getPath();
         } else {
             $languagePrefix = SiteService::getCurrent()->getDefaultLanguage()->getBase()->getPath();
@@ -89,7 +89,7 @@ class RouteService implements SingletonInterface
         return '';
     }
 
-    protected static function getRequest(): ServerRequestInterface
+    protected static function getRequest(): ?ServerRequestInterface
     {
         return $GLOBALS['TYPO3_REQUEST'];
     }

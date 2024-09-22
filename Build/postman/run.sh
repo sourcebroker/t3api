@@ -13,7 +13,22 @@ if [[ ! -d "node_modules" ]]; then
     npm ci
 fi
 
-TYPO3=${1}
+TYPO3=""
+TEST_FILE=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --file)
+            TEST_FILE="$2"
+            shift 2
+            ;;
+        *)
+            TYPO3="$1"
+            shift
+            ;;
+    esac
+done
+
 if [ -z "$TYPO3" ]; then
     TYPO3=$("../../.Build/bin/typo3" | grep -oP 'TYPO3 CMS \K[0-9]+')
 fi
@@ -23,12 +38,16 @@ if ! check_typo3_version "$TYPO3"; then
 fi
 
 if [[ ! -d "/var/www/html/.test/$TYPO3" ]]; then
-        echo_red "Can not test. Install first TYPO3 $TYPO3 with command 'ddev install $TYPO3'"
-    else
-        DOMAINS=("https://$TYPO3.t3api.ddev.site")
-        for DOMAIN in "${DOMAINS[@]}"; do
+    echo_red "Can not test. Install first TYPO3 $TYPO3 with command 'ddev install $TYPO3'"
+else
+    DOMAINS=("https://$TYPO3.$EXTENSION_KEY.ddev.site")
+    for DOMAIN in "${DOMAINS[@]}"; do
+        if [[ -n "$TEST_FILE" ]]; then
+            ./node_modules/.bin/newman run "../../Tests/Postman/$TEST_FILE" --verbose --bail  --env-var "baseUrl=$DOMAIN"
+        else
             for TEST_FILE in ../../Tests/Postman/*.json; do
-                ./node_modules/.bin/newman run "$TEST_FILE" --verbose --env-var "baseUrl=$DOMAIN"
+                ./node_modules/.bin/newman run "$TEST_FILE" --verbose --bail  --env-var "baseUrl=$DOMAIN"
             done
-        done
+        fi
+    done
 fi
