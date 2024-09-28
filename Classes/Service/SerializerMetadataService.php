@@ -46,10 +46,12 @@ class SerializerMetadataService
                 self::getMetadataFromMetadataDirs($reflectionClass->getName())
             );
 
+            $tmpFile = $generatedMetadataFile . '.' . uniqid('', true);
             file_put_contents(
-                $generatedMetadataFile,
+                $tmpFile,
                 Yaml::dump([$reflectionClass->getName() => $classMergedMetadata], 99)
             );
+            rename($tmpFile, $generatedMetadataFile);
 
             self::$runtimeGeneratedCache[] = $reflectionClass->getName();
         }

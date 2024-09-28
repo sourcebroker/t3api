@@ -9,7 +9,7 @@
 			<packager_username>_cli_</packager_username>
 			<packager_name></packager_name>
 			<packager_email></packager_email>
-			<TYPO3_version>12.4.16</TYPO3_version>
+			<TYPO3_version>12.4.20</TYPO3_version>
 			<created>Sat 22. April 2024</created>
 		</meta>
 		<static_tables index="relStaticTables" type="array">
@@ -59,6 +59,9 @@
 			</node>
 			<node index="12" type="array">
 				<uid>12</uid>
+			</node>
+			<node index="17" type="array">
+				<uid>17</uid>
 			</node>
 			<node index="11" type="array">
 				<uid>11</uid>
@@ -217,6 +220,18 @@
 					</relations>
 					<softrefs type="array"></softrefs>
 				</rec>
+				<rec index="17" type="array">
+					<uid>17</uid>
+					<pid>1</pid>
+					<title>News</title>
+					<relations index="rels" type="array">
+						<element index="pages:5" type="array">
+							<id>5</id>
+							<table>pages</table>
+						</element>
+					</relations>
+					<softrefs type="array"></softrefs>
+				</rec>
 				<rec index="4" type="array">
 					<uid>4</uid>
 					<pid>1</pid>
@@ -328,6 +343,42 @@
 					</relations>
 					<softrefs type="array"></softrefs>
 				</rec>
+				<rec index="11" type="array">
+					<uid>11</uid>
+					<pid>3</pid>
+					<title>[No title]</title>
+					<relations index="rels" type="array">
+						<element index="sys_category:1" type="array">
+							<id>1</id>
+							<table>sys_category</table>
+						</element>
+					</relations>
+					<softrefs type="array"></softrefs>
+				</rec>
+				<rec index="12" type="array">
+					<uid>12</uid>
+					<pid>3</pid>
+					<title>[No title]</title>
+					<relations index="rels" type="array">
+						<element index="sys_category:1" type="array">
+							<id>1</id>
+							<table>sys_category</table>
+						</element>
+					</relations>
+					<softrefs type="array"></softrefs>
+				</rec>
+				<rec index="13" type="array">
+					<uid>13</uid>
+					<pid>3</pid>
+					<title>[No title]</title>
+					<relations index="rels" type="array">
+						<element index="sys_category:2" type="array">
+							<id>2</id>
+							<table>sys_category</table>
+						</element>
+					</relations>
+					<softrefs type="array"></softrefs>
+				</rec>
 				<rec index="2" type="array">
 					<uid>2</uid>
 					<pid>3</pid>
@@ -368,6 +419,18 @@
 						<element index="tx_news_domain_model_news:3" type="array">
 							<id>3</id>
 							<table>tx_news_domain_model_news</table>
+						</element>
+					</relations>
+					<softrefs type="array"></softrefs>
+				</rec>
+				<rec index="14" type="array">
+					<uid>14</uid>
+					<pid>3</pid>
+					<title>[No title]</title>
+					<relations index="rels" type="array">
+						<element index="sys_category:3" type="array">
+							<id>3</id>
+							<table>sys_category</table>
 						</element>
 					</relations>
 					<softrefs type="array"></softrefs>
@@ -635,7 +698,7 @@
 				<rec index="1" type="array">
 					<uid>1</uid>
 					<pid>3</pid>
-					<title>Sed ut perspiciatis unde omnis iste natu...</title>
+					<title>[EN] Sed ut perspiciatis unde omnis iste...</title>
 					<relations index="rels" type="array">
 						<element index="tx_news_domain_model_tag:1" type="array">
 							<id>1</id>
@@ -655,7 +718,7 @@
 				<rec index="2" type="array">
 					<uid>2</uid>
 					<pid>3</pid>
-					<title>Natus error sit voluptatem folder A</title>
+					<title>[EN] Natus error sit voluptatem folder A</title>
 					<relations index="rels" type="array">
 						<element index="tx_news_domain_model_tag:1" type="array">
 							<id>1</id>
@@ -679,7 +742,7 @@
 				<rec index="3" type="array">
 					<uid>3</uid>
 					<pid>3</pid>
-					<title>Ut enim ad minima veniam, quis nostrum e...</title>
+					<title>[EN] Ut enim ad minima veniam, quis nost...</title>
 					<relations index="rels" type="array">
 						<element index="tx_news_domain_model_tag:4" type="array">
 							<id>4</id>
@@ -701,6 +764,10 @@
 							<id>3</id>
 							<table>tx_news_domain_model_news</table>
 						</element>
+						<element index="tx_news_domain_model_tag:4" type="array">
+							<id>4</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
 						<element index="sys_file_reference:9" type="array">
 							<id>9</id>
 							<table>sys_file_reference</table>
@@ -717,6 +784,10 @@
 							<id>3</id>
 							<table>tx_news_domain_model_news</table>
 						</element>
+						<element index="tx_news_domain_model_tag:4" type="array">
+							<id>4</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
 						<element index="sys_file_reference:10" type="array">
 							<id>10</id>
 							<table>sys_file_reference</table>
@@ -732,6 +803,14 @@
 						<element index="tx_news_domain_model_news:2" type="array">
 							<id>2</id>
 							<table>tx_news_domain_model_news</table>
+						</element>
+						<element index="tx_news_domain_model_tag:1" type="array">
+							<id>1</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+						<element index="tx_news_domain_model_tag:2" type="array">
+							<id>2</id>
+							<table>tx_news_domain_model_tag</table>
 						</element>
 						<element index="sys_file_reference:11" type="array">
 							<id>11</id>
@@ -752,6 +831,14 @@
 						<element index="tx_news_domain_model_news:1" type="array">
 							<id>1</id>
 							<table>tx_news_domain_model_news</table>
+						</element>
+						<element index="tx_news_domain_model_tag:1" type="array">
+							<id>1</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+						<element index="tx_news_domain_model_tag:4" type="array">
+							<id>4</id>
+							<table>tx_news_domain_model_tag</table>
 						</element>
 						<element index="sys_file_reference:13" type="array">
 							<id>13</id>
@@ -790,32 +877,80 @@
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
+				<rec index="10" type="array">
+					<uid>10</uid>
+					<pid>3</pid>
+					<title>[DE] Tag 1A</title>
+					<relations index="rels" type="array">
+						<element index="tx_news_domain_model_tag:1" type="array">
+							<id>1</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+					</relations>
+					<softrefs type="array"></softrefs>
+				</rec>
+				<rec index="12" type="array">
+					<uid>12</uid>
+					<pid>3</pid>
+					<title>[DE] Tag 2A</title>
+					<relations index="rels" type="array">
+						<element index="tx_news_domain_model_tag:2" type="array">
+							<id>2</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+					</relations>
+					<softrefs type="array"></softrefs>
+				</rec>
 				<rec index="1" type="array">
 					<uid>1</uid>
 					<pid>3</pid>
-					<title>Tag 1A</title>
+					<title>[EN] Tag 1A</title>
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 				<rec index="2" type="array">
 					<uid>2</uid>
 					<pid>3</pid>
-					<title>Tag 2A</title>
+					<title>[EN] Tag 2A</title>
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 				<rec index="3" type="array">
 					<uid>3</uid>
 					<pid>3</pid>
-					<title>Tag 3A</title>
+					<title>[EN] Tag 3A</title>
 					<relations index="rels" type="array"></relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 				<rec index="4" type="array">
 					<uid>4</uid>
 					<pid>3</pid>
-					<title>Tag 4A</title>
+					<title>[EN] Tag 4A</title>
 					<relations index="rels" type="array"></relations>
+					<softrefs type="array"></softrefs>
+				</rec>
+				<rec index="11" type="array">
+					<uid>11</uid>
+					<pid>3</pid>
+					<title>[PL] Tag 1A</title>
+					<relations index="rels" type="array">
+						<element index="tx_news_domain_model_tag:1" type="array">
+							<id>1</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+					</relations>
+					<softrefs type="array"></softrefs>
+				</rec>
+				<rec index="13" type="array">
+					<uid>13</uid>
+					<pid>3</pid>
+					<title>[PL] Tag 3A</title>
+					<relations index="rels" type="array">
+						<element index="tx_news_domain_model_tag:3" type="array">
+							<id>3</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+					</relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 			</table>
@@ -825,6 +960,18 @@
 					<pid>5</pid>
 					<title>[No title]</title>
 					<relations index="rels" type="array"></relations>
+					<softrefs type="array"></softrefs>
+				</rec>
+				<rec index="3" type="array">
+					<uid>3</uid>
+					<pid>5</pid>
+					<title>[No title]</title>
+					<relations index="rels" type="array">
+						<element index="tt_content:1" type="array">
+							<id>1</id>
+							<table>tt_content</table>
+						</element>
+					</relations>
 					<softrefs type="array"></softrefs>
 				</rec>
 				<rec index="2" type="array">
@@ -876,6 +1023,7 @@
 					<item index="6">1</item>
 					<item index="3">1</item>
 					<item index="5">1</item>
+					<item index="17">1</item>
 					<item index="4">1</item>
 					<item index="2">1</item>
 				</table>
@@ -908,8 +1056,12 @@
 			<page_contents index="3" type="array">
 				<table index="sys_category" type="array">
 					<item index="1">1</item>
+					<item index="11">1</item>
+					<item index="12">1</item>
+					<item index="13">1</item>
 					<item index="2">1</item>
 					<item index="3">1</item>
+					<item index="14">1</item>
 					<item index="4">1</item>
 				</table>
 				<table index="sys_file_reference" type="array">
@@ -933,15 +1085,20 @@
 					<item index="11">1</item>
 				</table>
 				<table index="tx_news_domain_model_tag" type="array">
+					<item index="10">1</item>
+					<item index="12">1</item>
 					<item index="1">1</item>
 					<item index="2">1</item>
 					<item index="3">1</item>
 					<item index="4">1</item>
+					<item index="11">1</item>
+					<item index="13">1</item>
 				</table>
 			</page_contents>
 			<page_contents index="5" type="array">
 				<table index="tt_content" type="array">
 					<item index="1">1</item>
+					<item index="3">1</item>
 					<item index="2">1</item>
 				</table>
 			</page_contents>
@@ -2454,12 +2611,12 @@ page.100 {
 				<field index="l10n_parent" type="integer">0</field>
 				<field index="l10n_state" type="NULL"></field>
 				<field index="t3_origuid" type="integer">0</field>
-				<field index="l10n_diffsource">{&quot;items&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;parent&quot;:&quot;&quot;,&quot;items&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;starttime&quot;:&quot;&quot;,&quot;endtime&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;images&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;single_pid&quot;:&quot;&quot;,&quot;shortcut&quot;:&quot;&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
 				<field index="t3ver_stage" type="integer">0</field>
-				<field index="title">Category 1A</field>
+				<field index="title">[EN] Category 1A</field>
 				<field index="items" type="integer">2</field>
 				<field index="parent" type="integer">0</field>
 				<field index="fe_group">0</field>
@@ -2472,7 +2629,7 @@ page.100 {
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
 				<field index="seo_text"></field>
-				<field index="slug">category-1a</field>
+				<field index="slug">en-category-1a</field>
 			</fieldlist>
 			<related index="rels" type="array">
 				<field index="items" type="array">
@@ -2490,6 +2647,150 @@ page.100 {
 				</field>
 			</related>
 		</tablerow>
+		<tablerow index="sys_category:11" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">11</field>
+				<field index="pid" type="integer">3</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="starttime" type="integer">0</field>
+				<field index="endtime" type="integer">0</field>
+				<field index="sorting" type="integer">256</field>
+				<field index="description"></field>
+				<field index="sys_language_uid" type="integer">2</field>
+				<field index="l10n_parent" type="integer">1</field>
+				<field index="l10n_state">{&quot;starttime&quot;:&quot;parent&quot;,&quot;endtime&quot;:&quot;parent&quot;,&quot;images&quot;:&quot;parent&quot;,&quot;single_pid&quot;:&quot;parent&quot;,&quot;shortcut&quot;:&quot;parent&quot;}</field>
+				<field index="t3_origuid" type="integer">1</field>
+				<field index="l10n_diffsource">{&quot;items&quot;:&quot;2&quot;,&quot;l10n_parent&quot;:&quot;0&quot;,&quot;l10n_diffsource&quot;:&quot;{\&quot;items\&quot;:\&quot;\&quot;}&quot;,&quot;starttime&quot;:&quot;0&quot;,&quot;endtime&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;parent&quot;:&quot;0&quot;,&quot;single_pid&quot;:&quot;0&quot;,&quot;shortcut&quot;:&quot;0&quot;,&quot;slug&quot;:&quot;category-1a&quot;,&quot;t3_origuid&quot;:&quot;0&quot;,&quot;sorting&quot;:&quot;256&quot;,&quot;tstamp&quot;:&quot;1726992542&quot;,&quot;crdate&quot;:&quot;1726992542&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;title&quot;:&quot;Category 1A&quot;,&quot;import_id&quot;:&quot;&quot;,&quot;import_source&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;images&quot;:&quot;0&quot;}</field>
+				<field index="t3ver_oid" type="integer">0</field>
+				<field index="t3ver_wsid" type="integer">0</field>
+				<field index="t3ver_state" type="integer">0</field>
+				<field index="t3ver_stage" type="integer">0</field>
+				<field index="title">[PL] Category 1A</field>
+				<field index="items" type="integer">0</field>
+				<field index="parent" type="integer">0</field>
+				<field index="fe_group">0</field>
+				<field index="images" type="integer">0</field>
+				<field index="single_pid" type="integer">0</field>
+				<field index="shortcut" type="integer">0</field>
+				<field index="import_id"></field>
+				<field index="import_source"></field>
+				<field index="seo_title"></field>
+				<field index="seo_description"></field>
+				<field index="seo_headline"></field>
+				<field index="seo_text"></field>
+				<field index="slug">pl-category-1a</field>
+			</fieldlist>
+			<related index="rels" type="array">
+				<field index="l10n_parent" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>1</id>
+							<table>sys_category</table>
+						</element>
+					</relations>
+				</field>
+			</related>
+		</tablerow>
+		<tablerow index="sys_category:12" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">12</field>
+				<field index="pid" type="integer">3</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="starttime" type="integer">0</field>
+				<field index="endtime" type="integer">0</field>
+				<field index="sorting" type="integer">256</field>
+				<field index="description"></field>
+				<field index="sys_language_uid" type="integer">1</field>
+				<field index="l10n_parent" type="integer">1</field>
+				<field index="l10n_state">{&quot;starttime&quot;:&quot;parent&quot;,&quot;endtime&quot;:&quot;parent&quot;,&quot;images&quot;:&quot;parent&quot;,&quot;single_pid&quot;:&quot;parent&quot;,&quot;shortcut&quot;:&quot;parent&quot;}</field>
+				<field index="t3_origuid" type="integer">1</field>
+				<field index="l10n_diffsource">{&quot;items&quot;:&quot;2&quot;,&quot;l10n_parent&quot;:&quot;0&quot;,&quot;l10n_diffsource&quot;:&quot;{\&quot;items\&quot;:\&quot;\&quot;}&quot;,&quot;starttime&quot;:&quot;0&quot;,&quot;endtime&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;parent&quot;:&quot;0&quot;,&quot;single_pid&quot;:&quot;0&quot;,&quot;shortcut&quot;:&quot;0&quot;,&quot;slug&quot;:&quot;category-1a&quot;,&quot;t3_origuid&quot;:&quot;0&quot;,&quot;sorting&quot;:&quot;256&quot;,&quot;tstamp&quot;:&quot;1726992542&quot;,&quot;crdate&quot;:&quot;1726992542&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;title&quot;:&quot;Category 1A&quot;,&quot;import_id&quot;:&quot;&quot;,&quot;import_source&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;images&quot;:&quot;0&quot;}</field>
+				<field index="t3ver_oid" type="integer">0</field>
+				<field index="t3ver_wsid" type="integer">0</field>
+				<field index="t3ver_state" type="integer">0</field>
+				<field index="t3ver_stage" type="integer">0</field>
+				<field index="title">[DE] Category 1A</field>
+				<field index="items" type="integer">0</field>
+				<field index="parent" type="integer">0</field>
+				<field index="fe_group">0</field>
+				<field index="images" type="integer">0</field>
+				<field index="single_pid" type="integer">0</field>
+				<field index="shortcut" type="integer">0</field>
+				<field index="import_id"></field>
+				<field index="import_source"></field>
+				<field index="seo_title"></field>
+				<field index="seo_description"></field>
+				<field index="seo_headline"></field>
+				<field index="seo_text"></field>
+				<field index="slug">de-category-1a</field>
+			</fieldlist>
+			<related index="rels" type="array">
+				<field index="l10n_parent" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>1</id>
+							<table>sys_category</table>
+						</element>
+					</relations>
+				</field>
+			</related>
+		</tablerow>
+		<tablerow index="sys_category:13" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">13</field>
+				<field index="pid" type="integer">3</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="starttime" type="integer">0</field>
+				<field index="endtime" type="integer">0</field>
+				<field index="sorting" type="integer">1024</field>
+				<field index="description"></field>
+				<field index="sys_language_uid" type="integer">1</field>
+				<field index="l10n_parent" type="integer">2</field>
+				<field index="l10n_state">{&quot;starttime&quot;:&quot;parent&quot;,&quot;endtime&quot;:&quot;parent&quot;,&quot;images&quot;:&quot;parent&quot;,&quot;single_pid&quot;:&quot;parent&quot;,&quot;shortcut&quot;:&quot;parent&quot;}</field>
+				<field index="t3_origuid" type="integer">2</field>
+				<field index="l10n_diffsource">{&quot;items&quot;:&quot;4&quot;,&quot;l10n_parent&quot;:&quot;0&quot;,&quot;l10n_diffsource&quot;:&quot;{\&quot;items\&quot;:\&quot;\&quot;}&quot;,&quot;starttime&quot;:&quot;0&quot;,&quot;endtime&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;parent&quot;:&quot;0&quot;,&quot;single_pid&quot;:&quot;0&quot;,&quot;shortcut&quot;:&quot;0&quot;,&quot;slug&quot;:&quot;category-2a&quot;,&quot;t3_origuid&quot;:&quot;0&quot;,&quot;sorting&quot;:&quot;1536&quot;,&quot;tstamp&quot;:&quot;1726992542&quot;,&quot;crdate&quot;:&quot;1726992542&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;title&quot;:&quot;Category 2A&quot;,&quot;import_id&quot;:&quot;&quot;,&quot;import_source&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;images&quot;:&quot;0&quot;}</field>
+				<field index="t3ver_oid" type="integer">0</field>
+				<field index="t3ver_wsid" type="integer">0</field>
+				<field index="t3ver_state" type="integer">0</field>
+				<field index="t3ver_stage" type="integer">0</field>
+				<field index="title">[DE] Category 2A</field>
+				<field index="items" type="integer">0</field>
+				<field index="parent" type="integer">0</field>
+				<field index="fe_group">0</field>
+				<field index="images" type="integer">0</field>
+				<field index="single_pid" type="integer">0</field>
+				<field index="shortcut" type="integer">0</field>
+				<field index="import_id"></field>
+				<field index="import_source"></field>
+				<field index="seo_title"></field>
+				<field index="seo_description"></field>
+				<field index="seo_headline"></field>
+				<field index="seo_text"></field>
+				<field index="slug">de-category-2a</field>
+			</fieldlist>
+			<related index="rels" type="array">
+				<field index="l10n_parent" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>2</id>
+							<table>sys_category</table>
+						</element>
+					</relations>
+				</field>
+			</related>
+		</tablerow>
 		<tablerow index="sys_category:2" type="array">
 			<fieldlist index="data" type="array">
 				<field index="uid" type="integer">2</field>
@@ -2500,18 +2801,18 @@ page.100 {
 				<field index="hidden" type="integer">0</field>
 				<field index="starttime" type="integer">0</field>
 				<field index="endtime" type="integer">0</field>
-				<field index="sorting" type="integer">512</field>
+				<field index="sorting" type="integer">1536</field>
 				<field index="description"></field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
 				<field index="l10n_state" type="NULL"></field>
 				<field index="t3_origuid" type="integer">0</field>
-				<field index="l10n_diffsource">{&quot;items&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;parent&quot;:&quot;&quot;,&quot;items&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;starttime&quot;:&quot;&quot;,&quot;endtime&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;images&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;single_pid&quot;:&quot;&quot;,&quot;shortcut&quot;:&quot;&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
 				<field index="t3ver_stage" type="integer">0</field>
-				<field index="title">Category 2A</field>
+				<field index="title">[EN] Category 2A</field>
 				<field index="items" type="integer">4</field>
 				<field index="parent" type="integer">0</field>
 				<field index="fe_group">0</field>
@@ -2524,7 +2825,7 @@ page.100 {
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
 				<field index="seo_text"></field>
-				<field index="slug">category-2a</field>
+				<field index="slug">en-category-2a</field>
 			</fieldlist>
 			<related index="rels" type="array">
 				<field index="items" type="array">
@@ -2560,18 +2861,18 @@ page.100 {
 				<field index="hidden" type="integer">0</field>
 				<field index="starttime" type="integer">0</field>
 				<field index="endtime" type="integer">0</field>
-				<field index="sorting" type="integer">768</field>
+				<field index="sorting" type="integer">1792</field>
 				<field index="description"></field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
 				<field index="l10n_state" type="NULL"></field>
 				<field index="t3_origuid" type="integer">0</field>
-				<field index="l10n_diffsource">{&quot;items&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;parent&quot;:&quot;&quot;,&quot;items&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;starttime&quot;:&quot;&quot;,&quot;endtime&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;images&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;single_pid&quot;:&quot;&quot;,&quot;shortcut&quot;:&quot;&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
 				<field index="t3ver_stage" type="integer">0</field>
-				<field index="title">Category 3A</field>
+				<field index="title">[EN] Category 3A</field>
 				<field index="items" type="integer">3</field>
 				<field index="parent" type="integer">0</field>
 				<field index="fe_group">0</field>
@@ -2584,7 +2885,7 @@ page.100 {
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
 				<field index="seo_text"></field>
-				<field index="slug">category-3a</field>
+				<field index="slug">en-category-3a</field>
 			</fieldlist>
 			<related index="rels" type="array">
 				<field index="items" type="array">
@@ -2606,6 +2907,54 @@ page.100 {
 				</field>
 			</related>
 		</tablerow>
+		<tablerow index="sys_category:14" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">14</field>
+				<field index="pid" type="integer">3</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="starttime" type="integer">0</field>
+				<field index="endtime" type="integer">0</field>
+				<field index="sorting" type="integer">1792</field>
+				<field index="description"></field>
+				<field index="sys_language_uid" type="integer">2</field>
+				<field index="l10n_parent" type="integer">3</field>
+				<field index="l10n_state">{&quot;starttime&quot;:&quot;parent&quot;,&quot;endtime&quot;:&quot;parent&quot;,&quot;images&quot;:&quot;parent&quot;,&quot;single_pid&quot;:&quot;parent&quot;,&quot;shortcut&quot;:&quot;parent&quot;}</field>
+				<field index="t3_origuid" type="integer">3</field>
+				<field index="l10n_diffsource">{&quot;items&quot;:&quot;3&quot;,&quot;l10n_parent&quot;:&quot;0&quot;,&quot;l10n_diffsource&quot;:&quot;{\&quot;items\&quot;:\&quot;\&quot;}&quot;,&quot;starttime&quot;:&quot;0&quot;,&quot;endtime&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;parent&quot;:&quot;0&quot;,&quot;single_pid&quot;:&quot;0&quot;,&quot;shortcut&quot;:&quot;0&quot;,&quot;slug&quot;:&quot;category-3a&quot;,&quot;t3_origuid&quot;:&quot;0&quot;,&quot;sorting&quot;:&quot;1792&quot;,&quot;tstamp&quot;:&quot;1726992542&quot;,&quot;crdate&quot;:&quot;1726992542&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;title&quot;:&quot;Category 3A&quot;,&quot;import_id&quot;:&quot;&quot;,&quot;import_source&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;images&quot;:&quot;0&quot;}</field>
+				<field index="t3ver_oid" type="integer">0</field>
+				<field index="t3ver_wsid" type="integer">0</field>
+				<field index="t3ver_state" type="integer">0</field>
+				<field index="t3ver_stage" type="integer">0</field>
+				<field index="title">[PL] Category 3A</field>
+				<field index="items" type="integer">0</field>
+				<field index="parent" type="integer">0</field>
+				<field index="fe_group">0</field>
+				<field index="images" type="integer">0</field>
+				<field index="single_pid" type="integer">0</field>
+				<field index="shortcut" type="integer">0</field>
+				<field index="import_id"></field>
+				<field index="import_source"></field>
+				<field index="seo_title"></field>
+				<field index="seo_description"></field>
+				<field index="seo_headline"></field>
+				<field index="seo_text"></field>
+				<field index="slug">pl-category-3a</field>
+			</fieldlist>
+			<related index="rels" type="array">
+				<field index="l10n_parent" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>3</id>
+							<table>sys_category</table>
+						</element>
+					</relations>
+				</field>
+			</related>
+		</tablerow>
 		<tablerow index="sys_category:4" type="array">
 			<fieldlist index="data" type="array">
 				<field index="uid" type="integer">4</field>
@@ -2616,18 +2965,18 @@ page.100 {
 				<field index="hidden" type="integer">0</field>
 				<field index="starttime" type="integer">0</field>
 				<field index="endtime" type="integer">0</field>
-				<field index="sorting" type="integer">1024</field>
+				<field index="sorting" type="integer">2048</field>
 				<field index="description"></field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
 				<field index="l10n_state" type="NULL"></field>
 				<field index="t3_origuid" type="integer">0</field>
-				<field index="l10n_diffsource">{&quot;items&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;&quot;,&quot;slug&quot;:&quot;&quot;,&quot;parent&quot;:&quot;&quot;,&quot;items&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;starttime&quot;:&quot;&quot;,&quot;endtime&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;,&quot;images&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;single_pid&quot;:&quot;&quot;,&quot;shortcut&quot;:&quot;&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
 				<field index="t3ver_stage" type="integer">0</field>
-				<field index="title">Category 4A</field>
+				<field index="title">[EN] Category 4A</field>
 				<field index="items" type="integer">3</field>
 				<field index="parent" type="integer">0</field>
 				<field index="fe_group">0</field>
@@ -2640,7 +2989,7 @@ page.100 {
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
 				<field index="seo_text"></field>
-				<field index="slug">category-4a</field>
+				<field index="slug">en-category-4a</field>
 			</fieldlist>
 			<related index="rels" type="array">
 				<field index="items" type="array">
@@ -2837,7 +3186,7 @@ page.100 {
 				<field index="sys_language_uid" type="integer">1</field>
 				<field index="l10n_parent" type="integer">1</field>
 				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;0&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
@@ -2887,7 +3236,7 @@ page.100 {
 				<field index="sys_language_uid" type="integer">2</field>
 				<field index="l10n_parent" type="integer">1</field>
 				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;0&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
@@ -2937,7 +3286,7 @@ page.100 {
 				<field index="sys_language_uid" type="integer">1</field>
 				<field index="l10n_parent" type="integer">2</field>
 				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;0&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
@@ -2987,7 +3336,7 @@ page.100 {
 				<field index="sys_language_uid" type="integer">1</field>
 				<field index="l10n_parent" type="integer">3</field>
 				<field index="l10n_state" type="NULL"></field>
-				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;0&quot;}</field>
 				<field index="t3ver_oid" type="integer">0</field>
 				<field index="t3ver_wsid" type="integer">0</field>
 				<field index="t3ver_state" type="integer">0</field>
@@ -3085,7 +3434,7 @@ page.100 {
 				<field index="editlock" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_diffsource">{&quot;tags&quot;:&quot;&quot;,&quot;fal_media&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;type&quot;:&quot;&quot;,&quot;istopnews&quot;:&quot;&quot;,&quot;title&quot;:&quot;&quot;,&quot;path_segment&quot;:&quot;&quot;,&quot;teaser&quot;:&quot;&quot;,&quot;datetime&quot;:&quot;&quot;,&quot;archive&quot;:&quot;&quot;,&quot;bodytext&quot;:&quot;&quot;,&quot;content_elements&quot;:&quot;&quot;,&quot;fal_media&quot;:&quot;&quot;,&quot;fal_related_files&quot;:&quot;&quot;,&quot;categories&quot;:&quot;&quot;,&quot;related&quot;:&quot;&quot;,&quot;related_links&quot;:&quot;&quot;,&quot;tags&quot;:&quot;&quot;,&quot;author&quot;:&quot;&quot;,&quot;author_email&quot;:&quot;&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;alternative_title&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;starttime&quot;:&quot;&quot;,&quot;endtime&quot;:&quot;&quot;,&quot;fe_group&quot;:&quot;&quot;,&quot;editlock&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">0</field>
 				<field index="deleted" type="integer">0</field>
 				<field index="hidden" type="integer">0</field>
@@ -3101,14 +3450,14 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">1</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Sed ut perspiciatis unde omnis iste natus error sit voluptatem folder A</field>
+				<field index="title">[EN] Sed ut perspiciatis unde omnis iste natus error sit voluptatem folder A</field>
 				<field index="teaser"></field>
 				<field index="bodytext">&lt;p&gt;Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?&lt;/p&gt;</field>
 				<field index="datetime" type="integer">1590693600</field>
 				<field index="archive" type="integer">0</field>
 				<field index="author"></field>
 				<field index="author_email"></field>
-				<field index="categories" type="integer">1</field>
+				<field index="categories" type="integer">2</field>
 				<field index="related" type="integer">0</field>
 				<field index="related_from" type="integer">0</field>
 				<field index="related_files" type="NULL"></field>
@@ -3124,7 +3473,7 @@ page.100 {
 				<field index="externalurl" type="NULL"></field>
 				<field index="istopnews" type="integer">0</field>
 				<field index="content_elements" type="integer">0</field>
-				<field index="path_segment">sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a</field>
+				<field index="path_segment">en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a</field>
 				<field index="alternative_title"></field>
 				<field index="sitemap_changefreq"></field>
 				<field index="sitemap_priority">0.5</field>
@@ -3165,7 +3514,7 @@ page.100 {
 				<field index="editlock" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_diffsource">{&quot;tags&quot;:&quot;&quot;,&quot;fal_media&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;type&quot;:&quot;&quot;,&quot;istopnews&quot;:&quot;&quot;,&quot;title&quot;:&quot;&quot;,&quot;path_segment&quot;:&quot;&quot;,&quot;teaser&quot;:&quot;&quot;,&quot;datetime&quot;:&quot;&quot;,&quot;archive&quot;:&quot;&quot;,&quot;bodytext&quot;:&quot;&quot;,&quot;content_elements&quot;:&quot;&quot;,&quot;fal_media&quot;:&quot;&quot;,&quot;fal_related_files&quot;:&quot;&quot;,&quot;categories&quot;:&quot;&quot;,&quot;related&quot;:&quot;&quot;,&quot;related_links&quot;:&quot;&quot;,&quot;tags&quot;:&quot;&quot;,&quot;author&quot;:&quot;&quot;,&quot;author_email&quot;:&quot;&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;alternative_title&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;starttime&quot;:&quot;&quot;,&quot;endtime&quot;:&quot;&quot;,&quot;fe_group&quot;:&quot;&quot;,&quot;editlock&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">0</field>
 				<field index="deleted" type="integer">0</field>
 				<field index="hidden" type="integer">0</field>
@@ -3181,7 +3530,7 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">1</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Natus error sit voluptatem folder A</field>
+				<field index="title">[EN] Natus error sit voluptatem folder A</field>
 				<field index="teaser"></field>
 				<field index="bodytext">&lt;p&gt;Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas.&lt;/p&gt;</field>
 				<field index="datetime" type="integer">1590695100</field>
@@ -3204,7 +3553,7 @@ page.100 {
 				<field index="externalurl" type="NULL"></field>
 				<field index="istopnews" type="integer">1</field>
 				<field index="content_elements" type="integer">0</field>
-				<field index="path_segment">natus-error-sit-voluptatem-folder-a</field>
+				<field index="path_segment">en-natus-error-sit-voluptatem-folder-a</field>
 				<field index="alternative_title"></field>
 				<field index="sitemap_changefreq"></field>
 				<field index="sitemap_priority">0.5</field>
@@ -3249,7 +3598,7 @@ page.100 {
 				<field index="editlock" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">0</field>
 				<field index="l10n_parent" type="integer">0</field>
-				<field index="l10n_diffsource">{&quot;tags&quot;:&quot;&quot;,&quot;fal_media&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;type&quot;:&quot;&quot;,&quot;istopnews&quot;:&quot;&quot;,&quot;title&quot;:&quot;&quot;,&quot;path_segment&quot;:&quot;&quot;,&quot;teaser&quot;:&quot;&quot;,&quot;datetime&quot;:&quot;&quot;,&quot;archive&quot;:&quot;&quot;,&quot;bodytext&quot;:&quot;&quot;,&quot;content_elements&quot;:&quot;&quot;,&quot;fal_media&quot;:&quot;&quot;,&quot;fal_related_files&quot;:&quot;&quot;,&quot;categories&quot;:&quot;&quot;,&quot;related&quot;:&quot;&quot;,&quot;related_links&quot;:&quot;&quot;,&quot;tags&quot;:&quot;&quot;,&quot;author&quot;:&quot;&quot;,&quot;author_email&quot;:&quot;&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;alternative_title&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;&quot;,&quot;hidden&quot;:&quot;&quot;,&quot;starttime&quot;:&quot;&quot;,&quot;endtime&quot;:&quot;&quot;,&quot;fe_group&quot;:&quot;&quot;,&quot;editlock&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">0</field>
 				<field index="deleted" type="integer">0</field>
 				<field index="hidden" type="integer">0</field>
@@ -3265,14 +3614,14 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">1</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur folder A</field>
+				<field index="title">[EN] Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur folder A</field>
 				<field index="teaser"></field>
 				<field index="bodytext">&lt;p&gt;At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.&lt;/p&gt;</field>
 				<field index="datetime" type="integer">1590783000</field>
 				<field index="archive" type="integer">0</field>
 				<field index="author"></field>
 				<field index="author_email"></field>
-				<field index="categories" type="integer">1</field>
+				<field index="categories" type="integer">2</field>
 				<field index="related" type="integer">0</field>
 				<field index="related_from" type="integer">0</field>
 				<field index="related_files" type="NULL"></field>
@@ -3288,7 +3637,7 @@ page.100 {
 				<field index="externalurl" type="NULL"></field>
 				<field index="istopnews" type="integer">0</field>
 				<field index="content_elements" type="integer">0</field>
-				<field index="path_segment">ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-a</field>
+				<field index="path_segment">en-ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-a</field>
 				<field index="alternative_title"></field>
 				<field index="sitemap_changefreq"></field>
 				<field index="sitemap_priority">0.5</field>
@@ -3325,7 +3674,7 @@ page.100 {
 				<field index="editlock" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">1</field>
 				<field index="l10n_parent" type="integer">3</field>
-				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;0&quot;,&quot;author&quot;:&quot;&quot;,&quot;author_email&quot;:&quot;&quot;,&quot;categories&quot;:&quot;2&quot;,&quot;related&quot;:&quot;0&quot;,&quot;related_links&quot;:&quot;0&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;editlock&quot;:&quot;0&quot;,&quot;content_elements&quot;:&quot;0&quot;,&quot;tags&quot;:&quot;1&quot;,&quot;fal_media&quot;:&quot;1&quot;,&quot;fal_related_files&quot;:&quot;0&quot;,&quot;type&quot;:&quot;0&quot;,&quot;istopnews&quot;:&quot;0&quot;,&quot;title&quot;:&quot;[EN] Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur folder A&quot;,&quot;path_segment&quot;:&quot;en-ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-a&quot;,&quot;teaser&quot;:&quot;&quot;,&quot;datetime&quot;:&quot;1590783000&quot;,&quot;archive&quot;:&quot;0&quot;,&quot;bodytext&quot;:&quot;&lt;p&gt;At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.&lt;\/p&gt;&quot;,&quot;alternative_title&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;starttime&quot;:&quot;0&quot;,&quot;endtime&quot;:&quot;0&quot;,&quot;fe_group&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">3</field>
 				<field index="deleted" type="integer">0</field>
 				<field index="hidden" type="integer">0</field>
@@ -3348,7 +3697,7 @@ page.100 {
 				<field index="archive" type="integer">0</field>
 				<field index="author"></field>
 				<field index="author_email"></field>
-				<field index="categories" type="integer">1</field>
+				<field index="categories" type="integer">2</field>
 				<field index="related" type="integer">0</field>
 				<field index="related_from" type="integer">0</field>
 				<field index="related_files" type="NULL"></field>
@@ -3357,9 +3706,9 @@ page.100 {
 				<field index="type">0</field>
 				<field index="keywords"></field>
 				<field index="description"></field>
-				<field index="tags" type="integer">0</field>
+				<field index="tags" type="integer">1</field>
 				<field index="media" type="NULL"></field>
-				<field index="fal_media" type="integer">0</field>
+				<field index="fal_media" type="integer">1</field>
 				<field index="internalurl" type="NULL"></field>
 				<field index="externalurl" type="NULL"></field>
 				<field index="istopnews" type="integer">0</field>
@@ -3378,6 +3727,15 @@ page.100 {
 						<element index="0" type="array">
 							<id>3</id>
 							<table>tx_news_domain_model_news</table>
+						</element>
+					</relations>
+				</field>
+				<field index="tags" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>4</id>
+							<table>tx_news_domain_model_tag</table>
 						</element>
 					</relations>
 				</field>
@@ -3401,7 +3759,7 @@ page.100 {
 				<field index="editlock" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">2</field>
 				<field index="l10n_parent" type="integer">3</field>
-				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;0&quot;,&quot;author&quot;:&quot;&quot;,&quot;author_email&quot;:&quot;&quot;,&quot;categories&quot;:&quot;2&quot;,&quot;related&quot;:&quot;0&quot;,&quot;related_links&quot;:&quot;0&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;editlock&quot;:&quot;0&quot;,&quot;content_elements&quot;:&quot;0&quot;,&quot;tags&quot;:&quot;1&quot;,&quot;fal_media&quot;:&quot;1&quot;,&quot;fal_related_files&quot;:&quot;0&quot;,&quot;type&quot;:&quot;0&quot;,&quot;istopnews&quot;:&quot;0&quot;,&quot;title&quot;:&quot;[EN] Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur folder A&quot;,&quot;path_segment&quot;:&quot;en-ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-a&quot;,&quot;teaser&quot;:&quot;&quot;,&quot;datetime&quot;:&quot;1590783000&quot;,&quot;archive&quot;:&quot;0&quot;,&quot;bodytext&quot;:&quot;&lt;p&gt;At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.&lt;\/p&gt;&quot;,&quot;alternative_title&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;starttime&quot;:&quot;0&quot;,&quot;endtime&quot;:&quot;0&quot;,&quot;fe_group&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">3</field>
 				<field index="deleted" type="integer">0</field>
 				<field index="hidden" type="integer">0</field>
@@ -3424,7 +3782,7 @@ page.100 {
 				<field index="archive" type="integer">0</field>
 				<field index="author"></field>
 				<field index="author_email"></field>
-				<field index="categories" type="integer">1</field>
+				<field index="categories" type="integer">2</field>
 				<field index="related" type="integer">0</field>
 				<field index="related_from" type="integer">0</field>
 				<field index="related_files" type="NULL"></field>
@@ -3433,9 +3791,9 @@ page.100 {
 				<field index="type">0</field>
 				<field index="keywords"></field>
 				<field index="description"></field>
-				<field index="tags" type="integer">0</field>
+				<field index="tags" type="integer">1</field>
 				<field index="media" type="NULL"></field>
-				<field index="fal_media" type="integer">0</field>
+				<field index="fal_media" type="integer">1</field>
 				<field index="internalurl" type="NULL"></field>
 				<field index="externalurl" type="NULL"></field>
 				<field index="istopnews" type="integer">0</field>
@@ -3454,6 +3812,15 @@ page.100 {
 						<element index="0" type="array">
 							<id>3</id>
 							<table>tx_news_domain_model_news</table>
+						</element>
+					</relations>
+				</field>
+				<field index="tags" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>4</id>
+							<table>tx_news_domain_model_tag</table>
 						</element>
 					</relations>
 				</field>
@@ -3477,7 +3844,7 @@ page.100 {
 				<field index="editlock" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">1</field>
 				<field index="l10n_parent" type="integer">2</field>
-				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;0&quot;,&quot;author&quot;:&quot;&quot;,&quot;author_email&quot;:&quot;&quot;,&quot;categories&quot;:&quot;1&quot;,&quot;related&quot;:&quot;0&quot;,&quot;related_links&quot;:&quot;0&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;editlock&quot;:&quot;0&quot;,&quot;content_elements&quot;:&quot;0&quot;,&quot;tags&quot;:&quot;2&quot;,&quot;fal_media&quot;:&quot;2&quot;,&quot;fal_related_files&quot;:&quot;0&quot;,&quot;type&quot;:&quot;0&quot;,&quot;istopnews&quot;:&quot;1&quot;,&quot;title&quot;:&quot;[EN] Natus error sit voluptatem folder A&quot;,&quot;path_segment&quot;:&quot;en-natus-error-sit-voluptatem-folder-a&quot;,&quot;teaser&quot;:&quot;&quot;,&quot;datetime&quot;:&quot;1590695100&quot;,&quot;archive&quot;:&quot;0&quot;,&quot;bodytext&quot;:&quot;&lt;p&gt;Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas.&lt;\/p&gt;&quot;,&quot;alternative_title&quot;:&quot;&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;starttime&quot;:&quot;0&quot;,&quot;endtime&quot;:&quot;0&quot;,&quot;fe_group&quot;:&quot;&quot;,&quot;notes&quot;:&quot;&quot;}</field>
 				<field index="l10n_source" type="integer">2</field>
 				<field index="deleted" type="integer">0</field>
 				<field index="hidden" type="integer">0</field>
@@ -3509,9 +3876,9 @@ page.100 {
 				<field index="type">0</field>
 				<field index="keywords"></field>
 				<field index="description"></field>
-				<field index="tags" type="integer">0</field>
+				<field index="tags" type="integer">2</field>
 				<field index="media" type="NULL"></field>
-				<field index="fal_media" type="integer">0</field>
+				<field index="fal_media" type="integer">2</field>
 				<field index="internalurl" type="NULL"></field>
 				<field index="externalurl" type="NULL"></field>
 				<field index="istopnews" type="integer">1</field>
@@ -3530,6 +3897,19 @@ page.100 {
 						<element index="0" type="array">
 							<id>2</id>
 							<table>tx_news_domain_model_news</table>
+						</element>
+					</relations>
+				</field>
+				<field index="tags" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>1</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+						<element index="1" type="array">
+							<id>2</id>
+							<table>tx_news_domain_model_tag</table>
 						</element>
 					</relations>
 				</field>
@@ -3557,7 +3937,7 @@ page.100 {
 				<field index="editlock" type="integer">0</field>
 				<field index="sys_language_uid" type="integer">2</field>
 				<field index="l10n_parent" type="integer">1</field>
-				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;}</field>
+				<field index="l10n_diffsource">{&quot;l10n_parent&quot;:&quot;&quot;,&quot;author&quot;:&quot;&quot;,&quot;author_email&quot;:&quot;&quot;,&quot;categories&quot;:&quot;2&quot;,&quot;related&quot;:&quot;0&quot;,&quot;related_links&quot;:&quot;0&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;editlock&quot;:&quot;0&quot;,&quot;content_elements&quot;:&quot;0&quot;,&quot;tags&quot;:&quot;2&quot;,&quot;fal_media&quot;:&quot;1&quot;,&quot;fal_related_files&quot;:&quot;0&quot;}</field>
 				<field index="l10n_source" type="integer">1</field>
 				<field index="deleted" type="integer">0</field>
 				<field index="hidden" type="integer">0</field>
@@ -3580,7 +3960,7 @@ page.100 {
 				<field index="archive" type="integer">0</field>
 				<field index="author"></field>
 				<field index="author_email"></field>
-				<field index="categories" type="integer">1</field>
+				<field index="categories" type="integer">2</field>
 				<field index="related" type="integer">0</field>
 				<field index="related_from" type="integer">0</field>
 				<field index="related_files" type="NULL"></field>
@@ -3589,9 +3969,9 @@ page.100 {
 				<field index="type">0</field>
 				<field index="keywords"></field>
 				<field index="description"></field>
-				<field index="tags" type="integer">0</field>
+				<field index="tags" type="integer">2</field>
 				<field index="media" type="NULL"></field>
-				<field index="fal_media" type="integer">0</field>
+				<field index="fal_media" type="integer">1</field>
 				<field index="internalurl" type="NULL"></field>
 				<field index="externalurl" type="NULL"></field>
 				<field index="istopnews" type="integer">0</field>
@@ -3613,12 +3993,103 @@ page.100 {
 						</element>
 					</relations>
 				</field>
+				<field index="tags" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>1</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+						<element index="1" type="array">
+							<id>4</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+					</relations>
+				</field>
 				<field index="fal_media" type="array">
 					<type>db</type>
 					<relations index="itemArray" type="array">
 						<element index="0" type="array">
 							<id>13</id>
 							<table>sys_file_reference</table>
+						</element>
+					</relations>
+				</field>
+			</related>
+		</tablerow>
+		<tablerow index="tx_news_domain_model_tag:10" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">10</field>
+				<field index="pid" type="integer">3</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="sys_language_uid" type="integer">1</field>
+				<field index="l10n_parent" type="integer">1</field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;[EN] Tag 1A&quot;,&quot;l10n_parent&quot;:&quot;0&quot;,&quot;l10n_diffsource&quot;:&quot;{\&quot;title\&quot;:\&quot;\&quot;}&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;slug&quot;:&quot;tag-1a&quot;,&quot;tstamp&quot;:&quot;1726993255&quot;,&quot;crdate&quot;:&quot;1726992542&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;l10n_source&quot;:&quot;0&quot;,&quot;notes&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;}</field>
+				<field index="l10n_source" type="integer">1</field>
+				<field index="notes"></field>
+				<field index="l10n_state" type="NULL"></field>
+				<field index="t3ver_oid" type="integer">0</field>
+				<field index="t3ver_wsid" type="integer">0</field>
+				<field index="t3ver_state" type="integer">0</field>
+				<field index="t3ver_stage" type="integer">0</field>
+				<field index="cruser_id" type="integer">0</field>
+				<field index="sorting" type="integer">0</field>
+				<field index="title">[DE] Tag 1A</field>
+				<field index="slug">de-tag-1a</field>
+				<field index="seo_title"></field>
+				<field index="seo_description"></field>
+				<field index="seo_headline"></field>
+				<field index="seo_text"></field>
+			</fieldlist>
+			<related index="rels" type="array">
+				<field index="l10n_parent" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>1</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+					</relations>
+				</field>
+			</related>
+		</tablerow>
+		<tablerow index="tx_news_domain_model_tag:12" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">12</field>
+				<field index="pid" type="integer">3</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="sys_language_uid" type="integer">1</field>
+				<field index="l10n_parent" type="integer">2</field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;[EN] Tag 2A&quot;,&quot;l10n_parent&quot;:&quot;0&quot;,&quot;l10n_diffsource&quot;:&quot;{\&quot;title\&quot;:\&quot;\&quot;}&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;slug&quot;:&quot;tag-2a&quot;,&quot;tstamp&quot;:&quot;1726993255&quot;,&quot;crdate&quot;:&quot;1726992542&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;l10n_source&quot;:&quot;0&quot;,&quot;notes&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;}</field>
+				<field index="l10n_source" type="integer">2</field>
+				<field index="notes"></field>
+				<field index="l10n_state" type="NULL"></field>
+				<field index="t3ver_oid" type="integer">0</field>
+				<field index="t3ver_wsid" type="integer">0</field>
+				<field index="t3ver_state" type="integer">0</field>
+				<field index="t3ver_stage" type="integer">0</field>
+				<field index="cruser_id" type="integer">0</field>
+				<field index="sorting" type="integer">0</field>
+				<field index="title">[DE] Tag 2A</field>
+				<field index="slug">de-tag-2a</field>
+				<field index="seo_title"></field>
+				<field index="seo_description"></field>
+				<field index="seo_headline"></field>
+				<field index="seo_text"></field>
+			</fieldlist>
+			<related index="rels" type="array">
+				<field index="l10n_parent" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>2</id>
+							<table>tx_news_domain_model_tag</table>
 						</element>
 					</relations>
 				</field>
@@ -3644,8 +4115,8 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 1A</field>
-				<field index="slug">tag-1a</field>
+				<field index="title">[EN] Tag 1A</field>
+				<field index="slug">en-tag-1a</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
@@ -3673,8 +4144,8 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 2A</field>
-				<field index="slug">tag-2a</field>
+				<field index="title">[EN] Tag 2A</field>
+				<field index="slug">en-tag-2a</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
@@ -3702,8 +4173,8 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 3A</field>
-				<field index="slug">tag-3a</field>
+				<field index="title">[EN] Tag 3A</field>
+				<field index="slug">en-tag-3a</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
@@ -3731,14 +4202,92 @@ page.100 {
 				<field index="t3ver_stage" type="integer">0</field>
 				<field index="cruser_id" type="integer">0</field>
 				<field index="sorting" type="integer">0</field>
-				<field index="title">Tag 4A</field>
-				<field index="slug">tag-4a</field>
+				<field index="title">[EN] Tag 4A</field>
+				<field index="slug">en-tag-4a</field>
 				<field index="seo_title"></field>
 				<field index="seo_description"></field>
 				<field index="seo_headline"></field>
 				<field index="seo_text"></field>
 			</fieldlist>
 			<related index="rels" type="array"></related>
+		</tablerow>
+		<tablerow index="tx_news_domain_model_tag:11" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">11</field>
+				<field index="pid" type="integer">3</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="sys_language_uid" type="integer">2</field>
+				<field index="l10n_parent" type="integer">1</field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;[EN] Tag 1A&quot;,&quot;l10n_parent&quot;:&quot;0&quot;,&quot;l10n_diffsource&quot;:&quot;{\&quot;title\&quot;:\&quot;\&quot;}&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;slug&quot;:&quot;tag-1a&quot;,&quot;tstamp&quot;:&quot;1726993255&quot;,&quot;crdate&quot;:&quot;1726992542&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;l10n_source&quot;:&quot;0&quot;,&quot;notes&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;}</field>
+				<field index="l10n_source" type="integer">1</field>
+				<field index="notes"></field>
+				<field index="l10n_state" type="NULL"></field>
+				<field index="t3ver_oid" type="integer">0</field>
+				<field index="t3ver_wsid" type="integer">0</field>
+				<field index="t3ver_state" type="integer">0</field>
+				<field index="t3ver_stage" type="integer">0</field>
+				<field index="cruser_id" type="integer">0</field>
+				<field index="sorting" type="integer">0</field>
+				<field index="title">[PL] Tag 1A</field>
+				<field index="slug">pl-tag-1a</field>
+				<field index="seo_title"></field>
+				<field index="seo_description"></field>
+				<field index="seo_headline"></field>
+				<field index="seo_text"></field>
+			</fieldlist>
+			<related index="rels" type="array">
+				<field index="l10n_parent" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>1</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+					</relations>
+				</field>
+			</related>
+		</tablerow>
+		<tablerow index="tx_news_domain_model_tag:13" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">13</field>
+				<field index="pid" type="integer">3</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="sys_language_uid" type="integer">2</field>
+				<field index="l10n_parent" type="integer">3</field>
+				<field index="l10n_diffsource">{&quot;title&quot;:&quot;[EN] Tag 3A&quot;,&quot;l10n_parent&quot;:&quot;0&quot;,&quot;l10n_diffsource&quot;:&quot;{\&quot;title\&quot;:\&quot;\&quot;}&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;slug&quot;:&quot;tag-3a&quot;,&quot;tstamp&quot;:&quot;1726993255&quot;,&quot;crdate&quot;:&quot;1726992542&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;l10n_source&quot;:&quot;0&quot;,&quot;notes&quot;:&quot;&quot;,&quot;seo_title&quot;:&quot;&quot;,&quot;seo_description&quot;:&quot;&quot;,&quot;seo_headline&quot;:&quot;&quot;,&quot;seo_text&quot;:&quot;&quot;}</field>
+				<field index="l10n_source" type="integer">3</field>
+				<field index="notes"></field>
+				<field index="l10n_state" type="NULL"></field>
+				<field index="t3ver_oid" type="integer">0</field>
+				<field index="t3ver_wsid" type="integer">0</field>
+				<field index="t3ver_state" type="integer">0</field>
+				<field index="t3ver_stage" type="integer">0</field>
+				<field index="cruser_id" type="integer">0</field>
+				<field index="sorting" type="integer">0</field>
+				<field index="title">[PL] Tag 3A</field>
+				<field index="slug">pl-tag-3a</field>
+				<field index="seo_title"></field>
+				<field index="seo_description"></field>
+				<field index="seo_headline"></field>
+				<field index="seo_text"></field>
+			</fieldlist>
+			<related index="rels" type="array">
+				<field index="l10n_parent" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>3</id>
+							<table>tx_news_domain_model_tag</table>
+						</element>
+					</relations>
+				</field>
+			</related>
 		</tablerow>
 		<tablerow index="pages:5" type="array">
 			<fieldlist index="data" type="array">
@@ -3875,6 +4424,94 @@ page.100 {
 				<field index="newUntil" type="integer">0</field>
 				<field index="slug">/news</field>
 				<field index="tx_impexp_origuid" type="integer">12</field>
+			</fieldlist>
+			<related index="rels" type="array">
+				<field index="l10n_parent" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>5</id>
+							<table>pages</table>
+						</element>
+					</relations>
+				</field>
+				<field index="l10n_source" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>5</id>
+							<table>pages</table>
+						</element>
+					</relations>
+				</field>
+			</related>
+		</tablerow>
+		<tablerow index="pages:17" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">17</field>
+				<field index="pid" type="integer">1</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="starttime" type="integer">0</field>
+				<field index="endtime" type="integer">0</field>
+				<field index="fe_group"></field>
+				<field index="sorting" type="integer">64</field>
+				<field index="rowDescription" type="NULL"></field>
+				<field index="editlock" type="integer">0</field>
+				<field index="sys_language_uid" type="integer">1</field>
+				<field index="l10n_parent" type="integer">5</field>
+				<field index="l10n_source" type="integer">5</field>
+				<field index="l10n_state">{&quot;starttime&quot;:&quot;parent&quot;,&quot;endtime&quot;:&quot;parent&quot;,&quot;nav_hide&quot;:&quot;parent&quot;,&quot;url&quot;:&quot;parent&quot;,&quot;lastUpdated&quot;:&quot;parent&quot;,&quot;newUntil&quot;:&quot;parent&quot;,&quot;no_search&quot;:&quot;parent&quot;,&quot;shortcut&quot;:&quot;parent&quot;,&quot;shortcut_mode&quot;:&quot;parent&quot;,&quot;content_from_pid&quot;:&quot;parent&quot;,&quot;author&quot;:&quot;parent&quot;,&quot;author_email&quot;:&quot;parent&quot;,&quot;media&quot;:&quot;parent&quot;}</field>
+				<field index="t3_origuid" type="integer">0</field>
+				<field index="l10n_diffsource">{&quot;doktype&quot;:&quot;1&quot;,&quot;slug&quot;:&quot;\/news&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;starttime&quot;:&quot;0&quot;,&quot;endtime&quot;:&quot;0&quot;,&quot;l10n_parent&quot;:&quot;0&quot;,&quot;categories&quot;:&quot;0&quot;,&quot;l10n_diffsource&quot;:&quot;{\&quot;doktype\&quot;:\&quot;\&quot;,\&quot;title\&quot;:\&quot;\&quot;,\&quot;slug\&quot;:\&quot;\&quot;,\&quot;nav_title\&quot;:\&quot;\&quot;,\&quot;subtitle\&quot;:\&quot;\&quot;,\&quot;abstract\&quot;:\&quot;\&quot;,\&quot;keywords\&quot;:\&quot;\&quot;,\&quot;description\&quot;:\&quot;\&quot;,\&quot;author\&quot;:\&quot;\&quot;,\&quot;author_email\&quot;:\&quot;\&quot;,\&quot;lastUpdated\&quot;:\&quot;\&quot;,\&quot;layout\&quot;:\&quot;\&quot;,\&quot;newUntil\&quot;:\&quot;\&quot;,\&quot;backend_layout\&quot;:\&quot;\&quot;,\&quot;backend_layout_next_level\&quot;:\&quot;\&quot;,\&quot;content_from_pid\&quot;:\&quot;\&quot;,\&quot;target\&quot;:\&quot;\&quot;,\&quot;cache_timeout\&quot;:\&quot;\&quot;,\&quot;cache_tags\&quot;:\&quot;\&quot;,\&quot;is_siteroot\&quot;:\&quot;\&quot;,\&quot;no_search\&quot;:\&quot;\&quot;,\&quot;php_tree_stop\&quot;:\&quot;\&quot;,\&quot;module\&quot;:\&quot;\&quot;,\&quot;media\&quot;:\&quot;\&quot;,\&quot;tsconfig_includes\&quot;:\&quot;\&quot;,\&quot;TSconfig\&quot;:\&quot;\&quot;,\&quot;l18n_cfg\&quot;:\&quot;\&quot;,\&quot;hidden\&quot;:\&quot;\&quot;,\&quot;nav_hide\&quot;:\&quot;\&quot;,\&quot;starttime\&quot;:\&quot;\&quot;,\&quot;endtime\&quot;:\&quot;\&quot;,\&quot;extendToSubpages\&quot;:\&quot;\&quot;,\&quot;fe_group\&quot;:\&quot;\&quot;,\&quot;fe_login_mode\&quot;:\&quot;\&quot;,\&quot;editlock\&quot;:\&quot;\&quot;,\&quot;categories\&quot;:\&quot;\&quot;,\&quot;rowDescription\&quot;:\&quot;\&quot;}&quot;,&quot;layout&quot;:&quot;0&quot;,&quot;lastUpdated&quot;:&quot;0&quot;,&quot;newUntil&quot;:&quot;0&quot;,&quot;cache_timeout&quot;:&quot;0&quot;,&quot;shortcut&quot;:&quot;0&quot;,&quot;shortcut_mode&quot;:&quot;0&quot;,&quot;content_from_pid&quot;:&quot;0&quot;,&quot;mount_pid&quot;:&quot;0&quot;,&quot;module&quot;:&quot;&quot;,&quot;t3_origuid&quot;:&quot;0&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;l10n_source&quot;:&quot;0&quot;,&quot;title&quot;:&quot;News&quot;,&quot;nav_hide&quot;:&quot;0&quot;,&quot;url&quot;:&quot;&quot;,&quot;no_search&quot;:&quot;0&quot;,&quot;author&quot;:&quot;&quot;,&quot;author_email&quot;:&quot;&quot;,&quot;media&quot;:&quot;0&quot;,&quot;TSconfig&quot;:&quot;&quot;,&quot;php_tree_stop&quot;:&quot;0&quot;,&quot;editlock&quot;:&quot;0&quot;,&quot;fe_group&quot;:&quot;&quot;,&quot;extendToSubpages&quot;:&quot;0&quot;,&quot;target&quot;:&quot;&quot;,&quot;cache_tags&quot;:&quot;&quot;,&quot;is_siteroot&quot;:&quot;0&quot;,&quot;mount_pid_ol&quot;:&quot;0&quot;,&quot;l18n_cfg&quot;:&quot;0&quot;,&quot;backend_layout&quot;:&quot;&quot;,&quot;backend_layout_next_level&quot;:&quot;&quot;,&quot;tsconfig_includes&quot;:&quot;&quot;,&quot;nav_title&quot;:&quot;&quot;,&quot;subtitle&quot;:&quot;&quot;,&quot;abstract&quot;:&quot;&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;description&quot;:&quot;&quot;,&quot;rowDescription&quot;:&quot;&quot;}</field>
+				<field index="t3ver_oid" type="integer">0</field>
+				<field index="t3ver_wsid" type="integer">0</field>
+				<field index="t3ver_state" type="integer">0</field>
+				<field index="t3ver_stage" type="integer">0</field>
+				<field index="perms_userid" type="integer">2</field>
+				<field index="perms_groupid" type="integer">0</field>
+				<field index="perms_user" type="integer">31</field>
+				<field index="perms_group" type="integer">27</field>
+				<field index="perms_everybody" type="integer">0</field>
+				<field index="title">News</field>
+				<field index="doktype" type="integer">1</field>
+				<field index="TSconfig" type="NULL"></field>
+				<field index="is_siteroot" type="integer">0</field>
+				<field index="php_tree_stop" type="integer">0</field>
+				<field index="url"></field>
+				<field index="shortcut" type="integer">0</field>
+				<field index="shortcut_mode" type="integer">0</field>
+				<field index="subtitle"></field>
+				<field index="layout" type="integer">0</field>
+				<field index="target"></field>
+				<field index="media" type="integer">0</field>
+				<field index="keywords" type="NULL"></field>
+				<field index="cache_timeout" type="integer">0</field>
+				<field index="cache_tags"></field>
+				<field index="description" type="NULL"></field>
+				<field index="no_search" type="integer">0</field>
+				<field index="SYS_LASTCHANGED" type="integer">1717269219</field>
+				<field index="abstract" type="NULL"></field>
+				<field index="module"></field>
+				<field index="extendToSubpages" type="integer">0</field>
+				<field index="author"></field>
+				<field index="author_email"></field>
+				<field index="nav_title"></field>
+				<field index="nav_hide" type="integer">0</field>
+				<field index="content_from_pid" type="integer">0</field>
+				<field index="mount_pid" type="integer">0</field>
+				<field index="mount_pid_ol" type="integer">0</field>
+				<field index="l18n_cfg" type="integer">0</field>
+				<field index="backend_layout"></field>
+				<field index="backend_layout_next_level"></field>
+				<field index="tsconfig_includes"></field>
+				<field index="categories" type="integer">0</field>
+				<field index="lastUpdated" type="integer">0</field>
+				<field index="newUntil" type="integer">0</field>
+				<field index="slug">/news</field>
+				<field index="tx_impexp_origuid" type="integer">0</field>
 			</fieldlist>
 			<related index="rels" type="array">
 				<field index="l10n_parent" type="array">
@@ -4075,6 +4712,211 @@ page.100 {
 						<db_relations index="db" type="array"></db_relations>
 						<softref_relations index="softrefs" type="array"></softref_relations>
 					</flexform>
+				</field>
+			</related>
+		</tablerow>
+		<tablerow index="tt_content:3" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">3</field>
+				<field index="rowDescription"></field>
+				<field index="pid" type="integer">5</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="starttime" type="integer">0</field>
+				<field index="endtime" type="integer">0</field>
+				<field index="fe_group"></field>
+				<field index="sorting" type="integer">192</field>
+				<field index="editlock" type="integer">0</field>
+				<field index="sys_language_uid" type="integer">1</field>
+				<field index="l18n_parent" type="integer">1</field>
+				<field index="l10n_source" type="integer">1</field>
+				<field index="l10n_state" type="NULL"></field>
+				<field index="t3_origuid" type="integer">1</field>
+				<field index="l18n_diffsource">{&quot;pi_flexform&quot;:&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;utf-8\&quot; standalone=\&quot;yes\&quot; ?&gt;\n&lt;T3FlexForms&gt;\n    &lt;data&gt;\n        &lt;sheet index=\&quot;sDEF\&quot;&gt;\n            &lt;language index=\&quot;lDEF\&quot;&gt;\n                &lt;field index=\&quot;settings.orderBy\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.orderDirection\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.categoryConjunction\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.categories\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.includeSubCategories\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;0&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.archiveRestriction\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.timeRestriction\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.timeRestrictionHigh\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.topNewsRestriction\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.startingpoint\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.recursive\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n            &lt;\/language&gt;\n        &lt;\/sheet&gt;\n        &lt;sheet index=\&quot;additional\&quot;&gt;\n            &lt;language index=\&quot;lDEF\&quot;&gt;\n                &lt;field index=\&quot;settings.detailPid\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.listPid\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.backPid\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.limit\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.offset\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.tags\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.hidePagination\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;0&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.list.paginate.itemsPerPage\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.topNewsFirst\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;0&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.excludeAlreadyDisplayedNews\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;0&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.disableOverrideDemand\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;1&lt;\/value&gt;\n                &lt;\/field&gt;\n            &lt;\/language&gt;\n        &lt;\/sheet&gt;\n        &lt;sheet index=\&quot;template\&quot;&gt;\n            &lt;language index=\&quot;lDEF\&quot;&gt;\n                &lt;field index=\&quot;settings.media.maxWidth\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.media.maxHeight\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.cropMaxCharacters\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n                &lt;field index=\&quot;settings.templateLayout\&quot;&gt;\n                    &lt;value index=\&quot;vDEF\&quot;&gt;&lt;\/value&gt;\n                &lt;\/field&gt;\n            &lt;\/language&gt;\n        &lt;\/sheet&gt;\n    &lt;\/data&gt;\n&lt;\/T3FlexForms&gt;&quot;,&quot;CType&quot;:&quot;news_pi1&quot;,&quot;starttime&quot;:&quot;0&quot;,&quot;endtime&quot;:&quot;0&quot;,&quot;categories&quot;:&quot;0&quot;,&quot;l18n_parent&quot;:&quot;0&quot;,&quot;layout&quot;:&quot;0&quot;,&quot;frame_class&quot;:&quot;default&quot;,&quot;space_before_class&quot;:&quot;&quot;,&quot;space_after_class&quot;:&quot;&quot;,&quot;bullets_type&quot;:&quot;0&quot;,&quot;colPos&quot;:&quot;0&quot;,&quot;date&quot;:&quot;0&quot;,&quot;header_layout&quot;:&quot;0&quot;,&quot;header_position&quot;:&quot;&quot;,&quot;imagewidth&quot;:&quot;0&quot;,&quot;imageheight&quot;:&quot;0&quot;,&quot;imageorient&quot;:&quot;0&quot;,&quot;imagecols&quot;:&quot;2&quot;,&quot;cols&quot;:&quot;0&quot;,&quot;recursive&quot;:&quot;0&quot;,&quot;list_type&quot;:&quot;&quot;,&quot;target&quot;:&quot;&quot;,&quot;sectionIndex&quot;:&quot;1&quot;,&quot;accessibility_title&quot;:&quot;&quot;,&quot;accessibility_bypass_text&quot;:&quot;&quot;,&quot;l18n_diffsource&quot;:&quot;{\&quot;pi_flexform\&quot;:\&quot;\&quot;}&quot;,&quot;table_class&quot;:&quot;&quot;,&quot;table_delimiter&quot;:&quot;124&quot;,&quot;table_enclosure&quot;:&quot;0&quot;,&quot;table_header_position&quot;:&quot;0&quot;,&quot;table_tfoot&quot;:&quot;0&quot;,&quot;uploads_description&quot;:&quot;0&quot;,&quot;uploads_type&quot;:&quot;0&quot;,&quot;t3_origuid&quot;:&quot;0&quot;,&quot;rowDescription&quot;:&quot;&quot;,&quot;tstamp&quot;:&quot;1726992542&quot;,&quot;crdate&quot;:&quot;1726992542&quot;,&quot;hidden&quot;:&quot;0&quot;,&quot;fe_group&quot;:&quot;&quot;,&quot;editlock&quot;:&quot;0&quot;,&quot;sys_language_uid&quot;:&quot;0&quot;,&quot;l10n_source&quot;:&quot;0&quot;,&quot;header&quot;:&quot;&quot;,&quot;bodytext&quot;:&quot;&quot;,&quot;assets&quot;:&quot;0&quot;,&quot;image&quot;:&quot;0&quot;,&quot;imageborder&quot;:&quot;0&quot;,&quot;media&quot;:&quot;0&quot;,&quot;records&quot;:&quot;&quot;,&quot;pages&quot;:&quot;&quot;,&quot;subheader&quot;:&quot;&quot;,&quot;header_link&quot;:&quot;&quot;,&quot;image_zoom&quot;:&quot;0&quot;,&quot;linkToTop&quot;:&quot;0&quot;,&quot;file_collections&quot;:&quot;&quot;,&quot;filelink_size&quot;:&quot;0&quot;,&quot;filelink_sorting&quot;:&quot;&quot;,&quot;filelink_sorting_direction&quot;:&quot;&quot;,&quot;accessibility_bypass&quot;:&quot;0&quot;,&quot;category_field&quot;:&quot;&quot;,&quot;table_caption&quot;:&quot;&quot;,&quot;selected_categories&quot;:&quot;0&quot;,&quot;tx_impexp_origuid&quot;:&quot;1&quot;,&quot;tx_news_related_news&quot;:&quot;0&quot;}</field>
+				<field index="t3ver_oid" type="integer">0</field>
+				<field index="t3ver_wsid" type="integer">0</field>
+				<field index="t3ver_state" type="integer">0</field>
+				<field index="t3ver_stage" type="integer">0</field>
+				<field index="CType">news_pi1</field>
+				<field index="header"></field>
+				<field index="header_position"></field>
+				<field index="bodytext" type="NULL"></field>
+				<field index="bullets_type" type="integer">0</field>
+				<field index="uploads_description" type="integer">0</field>
+				<field index="uploads_type" type="integer">0</field>
+				<field index="assets" type="integer">0</field>
+				<field index="image" type="integer">0</field>
+				<field index="imagewidth" type="integer">0</field>
+				<field index="imageorient" type="integer">0</field>
+				<field index="imagecols" type="integer">2</field>
+				<field index="imageborder" type="integer">0</field>
+				<field index="media" type="integer">0</field>
+				<field index="layout" type="integer">0</field>
+				<field index="frame_class">default</field>
+				<field index="cols" type="integer">0</field>
+				<field index="space_before_class"></field>
+				<field index="space_after_class"></field>
+				<field index="records"></field>
+				<field index="pages"></field>
+				<field index="colPos" type="integer">0</field>
+				<field index="subheader"></field>
+				<field index="header_link"></field>
+				<field index="image_zoom" type="integer">0</field>
+				<field index="header_layout">0</field>
+				<field index="list_type"></field>
+				<field index="sectionIndex" type="integer">1</field>
+				<field index="linkToTop" type="integer">0</field>
+				<field index="file_collections"></field>
+				<field index="filelink_size" type="integer">0</field>
+				<field index="filelink_sorting"></field>
+				<field index="filelink_sorting_direction"></field>
+				<field index="target"></field>
+				<field index="recursive" type="integer">0</field>
+				<field index="imageheight" type="integer">0</field>
+				<field index="pi_flexform">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot; ?&gt;
+&lt;T3FlexForms&gt;
+    &lt;data&gt;
+        &lt;sheet index=&quot;sDEF&quot;&gt;
+            &lt;language index=&quot;lDEF&quot;&gt;
+                &lt;field index=&quot;settings.orderBy&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.orderDirection&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.dateField&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.categoryConjunction&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.categories&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.includeSubCategories&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;0&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.archiveRestriction&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.timeRestriction&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.timeRestrictionHigh&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.topNewsRestriction&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.previewHiddenRecords&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;2&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.startingpoint&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.recursive&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+            &lt;/language&gt;
+        &lt;/sheet&gt;
+        &lt;sheet index=&quot;additional&quot;&gt;
+            &lt;language index=&quot;lDEF&quot;&gt;
+                &lt;field index=&quot;settings.detailPid&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.listPid&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.backPid&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.limit&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.offset&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.tags&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.hidePagination&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;0&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.list.paginate.itemsPerPage&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.topNewsFirst&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;0&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.excludeAlreadyDisplayedNews&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;0&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.disableOverrideDemand&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;1&lt;/value&gt;
+                &lt;/field&gt;
+            &lt;/language&gt;
+        &lt;/sheet&gt;
+        &lt;sheet index=&quot;template&quot;&gt;
+            &lt;language index=&quot;lDEF&quot;&gt;
+                &lt;field index=&quot;settings.media.maxWidth&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.media.maxHeight&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.cropMaxCharacters&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+                &lt;field index=&quot;settings.templateLayout&quot;&gt;
+                    &lt;value index=&quot;vDEF&quot;&gt;&lt;/value&gt;
+                &lt;/field&gt;
+            &lt;/language&gt;
+        &lt;/sheet&gt;
+    &lt;/data&gt;
+&lt;/T3FlexForms&gt;</field>
+				<field index="accessibility_title"></field>
+				<field index="accessibility_bypass" type="integer">0</field>
+				<field index="accessibility_bypass_text"></field>
+				<field index="category_field"></field>
+				<field index="table_class"></field>
+				<field index="table_caption" type="NULL"></field>
+				<field index="table_delimiter" type="integer">124</field>
+				<field index="table_enclosure" type="integer">0</field>
+				<field index="table_header_position" type="integer">0</field>
+				<field index="table_tfoot" type="integer">0</field>
+				<field index="categories" type="integer">0</field>
+				<field index="selected_categories">0</field>
+				<field index="date" type="integer">0</field>
+				<field index="tx_impexp_origuid" type="integer">1</field>
+				<field index="tx_news_related_news" type="integer">0</field>
+			</fieldlist>
+			<related index="rels" type="array">
+				<field index="l18n_parent" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>1</id>
+							<table>tt_content</table>
+						</element>
+					</relations>
+				</field>
+				<field index="pi_flexform" type="array">
+					<type>flex</type>
+					<flexform index="flexFormRels" type="array">
+						<db_relations index="db" type="array"></db_relations>
+						<softref_relations index="softrefs" type="array"></softref_relations>
+					</flexform>
+				</field>
+				<field index="l10n_source" type="array">
+					<type>db</type>
+					<relations index="itemArray" type="array">
+						<element index="0" type="array">
+							<id>1</id>
+							<table>tt_content</table>
+						</element>
+					</relations>
 				</field>
 			</related>
 		</tablerow>

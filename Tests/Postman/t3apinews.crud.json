@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "a8d86f46-cf85-47b1-bd9f-aed3c9723ec1",
-		"name": "t3api news",
+		"name": "CRUD",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
