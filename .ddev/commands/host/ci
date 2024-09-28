@@ -33,19 +33,29 @@ ci_single() {
     fi
 
     if [[ "$COMPOSER" != "lowest" && "$COMPOSER" != "highest" ]]; then
-        echo_red "Invalid third argument. COMPOSER value can only be 'lowest' or 'highest'."
+        message red "Invalid third argument. COMPOSER value can only be 'lowest' or 'highest'."
         exit 1
     fi
 
-    echo_magenta "-------------------------------------------------"
-    echo_magenta "| TYPO3 \t| PHP\t\t| Composer\t|"
-    echo_magenta "-------------------------------------------------"
-    echo_magenta "| $TYPO3\t\t| $PHP\t\t| $COMPOSER\t|"
-    echo_magenta "-------------------------------------------------"
-    echo_magenta ""
+    message magenta "-------------------------------------------------"
+    message magenta "| TYPO3 \t| PHP\t\t| Composer\t|"
+    message magenta "-------------------------------------------------"
+    message magenta "| $TYPO3\t\t| $PHP\t\t| $COMPOSER\t|"
+    message magenta "-------------------------------------------------"
+    message magenta ""
 
     ddev config --php-version="$PHP"
     ddev restart
+
+    if [ -z "$GH_TOKEN" ] && ! ddev composer config --global --list | grep -q "github-oauth.github.com"; then
+      message red 'Be sure we have some github token. Add it to your  ~/.ddev/homeadditions/.composer/auth.json or make available as GH_TOKEN'
+      exit 1
+    fi
+    if ! ddev composer config --global --list | grep -q "github-oauth.github.com"; then
+      message magenta "Add GH_TOKEN to composer github-oauth.github.com"
+      ddev composer config --global github-oauth.github.com ${GH_TOKEN}
+    fi
+
     stashComposerFiles
     ddev composer require --no-ansi --no-interaction --no-progress --no-update typo3/cms-core:^${TYPO3} || exit 1
     if [ "$COMPOSER" == "lowest" ]; then
@@ -53,8 +63,11 @@ ci_single() {
     else
         ddev exec composer update --with-dependencies --no-progress --no-interaction || exit 1
     fi
+    message magenta "ddev composer normalize"
     ddev composer normalize
+    message magenta "ddev install $TYPO3"
     ddev install "$TYPO3"
+    message magenta "composer ci"
     ddev composer ci
     restoreComposerFiles
 }

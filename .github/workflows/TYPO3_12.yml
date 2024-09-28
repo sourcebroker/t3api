@@ -4,11 +4,9 @@ on:
   push:
     branches:
       - main
-      - release/4.0.0
   pull_request:
     branches:
       - main
-      - release/4.0.0
 
 jobs:
   test:
@@ -18,9 +16,17 @@ jobs:
         typo3: ["12"]
         php: ["8.1", "8.2", "8.3"]
         composer: ["lowest", "highest"]
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - uses: actions/checkout@v2
+      - name: Check Gitlab Token
+        run: |
+          if [ -z "${{ env.GH_TOKEN }}" ]; then
+            echo "GH_TOKEN is not set in Action Secrets"
+            exit 1
+          fi
       - name: Run tests
         uses: ddev/github-action-setup-ddev@v1
-      - run: if [ -n "${{ secrets.GH_TOKEN }}" ]; then composer config --global github-oauth.github.com ${{ secrets.GH_TOKEN }}; fi
+      - run: ddev composer config --global github-oauth.github.com ${{ env.GH_TOKEN }}
       - run: ddev ci ${{ matrix.typo3 }} ${{ matrix.php }} ${{ matrix.composer }}

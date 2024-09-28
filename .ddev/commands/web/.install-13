@@ -14,6 +14,7 @@ DATABASE=database_$VERSION
 
 rm -rf $BASE_PATH
 
+
 exclusions=(".*" "Documentation" "Documentation-GENERATED-temp" "var")
 mkdir -p "$BASE_PATH/src/$EXTENSION_KEY"
 for item in ./*; do
@@ -49,8 +50,9 @@ composer req typo3/cms-backend:'^13.3' typo3/cms-core:'^13.3' typo3/cms-extbase:
          typo3/cms-fluid:'^13.3' typo3/cms-frontend:'^13.3' typo3/cms-recycler:'^13.3' typo3/cms-tstemplate:'^13.3' \
          typo3/cms-info:'^13.3' typo3/cms-lowlevel:'^13.3' typo3/cms-rte-ckeditor:'^13.3' typo3/cms-impexp:'^13.3' \
          typo3/cms-install:'^13.3' \
-         helhum/typo3-console:'dev-issue/1169' georgringer/news:'dev-12-13' \
-         v/site:'^1.0.0' sourcebroker/t3apinews:'^1.0.0' cweagans/composer-patches:'^1.7.3' \
+         helhum/typo3-console:'dev-issue/1169' \
+         cweagans/composer-patches:'^1.7.3' georgringer/news:'dev-12-13' \
+         sourcebroker/t3apinews:'^1.0.0' v/site:'^1.0.0' \
          sourcebroker/t3api:'@dev' \
          --no-progress --no-interaction --working-dir $BASE_PATH
 
