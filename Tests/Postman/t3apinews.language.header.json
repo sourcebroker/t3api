@@ -1,0 +1,244 @@
+{
+	"info": {
+		"_postman_id": "a8d86f46-cf85-47b1-bd9f-aed3c9723ec2",
+		"name": "Language tests. Language set by standard language prefix.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get endpoint list. Lang: default",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bdfe5eb-5b52-4f81-95d0-121d63daa550",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							"",
+							"pm.environment.set('newsEndpointPath', response.resources['SourceBroker\\\\T3apinews\\\\Domain\\\\Model\\\\News']);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Locale",
+						"name": "X-Locale",
+						"type": "text",
+						"value": "0"
+					}
+				],
+				"url": {
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"_api",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check news list. Lang: default",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bdfe5eb-5b52-4f81-95d0-121d63daa550",
+						"exec": [
+							"const response = pm.response.json();",
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Response structure is correct', function () {",
+							"    pm.expect(response).to.have.property('hydra:member');",
+							"    pm.expect(response['hydra:member']).to.be.an('array');",
+							"});",
+							"",
+							"const record = response['hydra:member'].find(item => item.uid === 2);",
+							"pm.test('Record with uid 2 has correct singleUri in lang default1', function () {",
+							"    const trimmedUri = record.singleUri.replace(pm.environment.get('baseUrl'), '');",
+							"    pm.expect(trimmedUri.startsWith('/news/en-')).to.be.true;",
+							"});",
+							"pm.test('Record with uid 2 has correct title in lang default', function () {",
+							"    pm.expect(record.title.startsWith('[EN]')).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Locale",
+						"name": "X-Locale",
+						"type": "text",
+						"value": "0"
+					}
+				],
+				"url": {
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{newsEndpointPath}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get endpoint list. Lang: DE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bdfe5eb-5b52-4f81-95d0-121d63daa550",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							"",
+							"pm.environment.set('newsEndpointPath', response.resources['SourceBroker\\\\T3apinews\\\\Domain\\\\Model\\\\News']);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Locale",
+						"name": "X-Locale",
+						"type": "text",
+						"value": "1"
+					}
+				],
+				"url": {
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"_api",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check news list. Lang: DE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bdfe5eb-5b52-4f81-95d0-121d63daa550",
+						"exec": [
+							"const response = pm.response.json();",
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Response structure is correct', function () {",
+							"    pm.expect(response).to.have.property('hydra:member');",
+							"    pm.expect(response['hydra:member']).to.be.an('array');",
+							"});",
+							"",
+							"const record = response['hydra:member'].find(item => item.uid === 2);",
+							"pm.test('Record with uid 2 has correct singleUri in lang default1', function () {",
+							"    const trimmedUri = record.singleUri.replace(pm.environment.get('baseUrl'), '');",
+							"    pm.expect(trimmedUri.startsWith('/de/news/de-')).to.be.true;",
+							"});",
+							"pm.test('Record with uid 2 has correct title in lang default', function () {",
+							"    pm.expect(record.title.startsWith('[DE]')).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Locale",
+						"name": "X-Locale",
+						"type": "text",
+						"value": "1"
+					}
+				],
+				"url": {
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{newsEndpointPath}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"id": "8feb2d12-5e3a-446f-b8ca-e800ef303dfa",
+			"key": "baseUrl",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "1d54d8d0-c8bb-4bad-a55f-e06a67b5c57b",
+			"key": "newsEndpointPath",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
