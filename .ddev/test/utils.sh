@@ -2,13 +2,13 @@
 
 function get_supported_typo3_versions() {
     if [ -z "${TYPO3_VERSIONS+x}" ]; then
-        echo_red "TYPO3_VERSIONS is unset. Please set it before running this function."
+        message red "TYPO3_VERSIONS is unset. Please set it before running this function."
         return 1
     else
         local TYPO3_VERSIONS_ARRAY=()
         IFS=' ' read -r -a TYPO3_VERSIONS_ARRAY <<< "$TYPO3_VERSIONS"
         if [ ${#TYPO3_VERSIONS_ARRAY[@]} -eq 0 ]; then
-            echo_red "Error! No supported TYPO3 versions found in environment variables."
+            message red "Error! No supported TYPO3 versions found in environment variables."
             return 1
         fi
         printf "%s\n" "${TYPO3_VERSIONS_ARRAY[@]}"
@@ -29,7 +29,7 @@ function get_supported_php_versions_for_typo3() {
     local PHP_VERSIONS_ARRAY=()
     eval "IFS=' ' read -r -a PHP_VERSIONS_ARRAY <<< \"\${TYPO3_VERSIONS_${TYPO3_VERSION}_PHP}\""
     if [ ${#PHP_VERSIONS_ARRAY[@]} -eq 0 ]; then
-        echo_red "Error! There is no TYPO3_VERSIONS_${TYPO3_VERSION}_PHP variable."
+        message red "Error! There is no TYPO3_VERSIONS_${TYPO3_VERSION}_PHP variable."
         exit 1
     fi
     printf "%s\n" "${PHP_VERSIONS_ARRAY[@]}"
@@ -41,7 +41,7 @@ function check_typo3_version() {
     local found=0
 
     if [ -z "$TYPO3" ]; then
-        echo_red "No TYPO3 version provided. Please set one of the supported TYPO3 versions as argument: $(get_supported_typo3_versions_comma_separated)"
+        message red "No TYPO3 version provided. Please set one of the supported TYPO3 versions as argument: $(get_supported_typo3_versions_comma_separated)"
         exit 1
     fi
 
@@ -57,7 +57,7 @@ function check_typo3_version() {
     done
 
     if [[ $found -eq 0 ]]; then
-        echo_red "TYPO3 version '$TYPO3' is not supported."
+        message red "TYPO3 version '$TYPO3' is not supported."
         exit 1
     fi
 
@@ -83,7 +83,7 @@ function check_php_version_for_typo3() {
 
     if [[ $found -eq 0 ]]; then
         IFS=', '
-        echo_red "Invalid second argument. PHP version can only be one of: ${SUPPORTED_PHP_VERSIONS_ARRAY[*]} for TYPO3 ${TYPO3}."
+        message red "Invalid second argument. PHP version can only be one of: ${SUPPORTED_PHP_VERSIONS_ARRAY[*]} for TYPO3 ${TYPO3}."
         IFS=' '
         return 1
     fi
@@ -95,7 +95,7 @@ function get_lowest_supported_typo3_versions() {
     local TYPO3_VERSIONS_ARRAY=()
     IFS=' ' read -r -a TYPO3_VERSIONS_ARRAY <<< "$TYPO3_VERSIONS"
     if [ ${#TYPO3_VERSIONS_ARRAY[@]} -eq 0 ]; then
-        echo_red "Error! No supported TYPO3 versions found in environment variables."
+        message red "Error! No supported TYPO3 versions found in environment variables."
         exit 1
     fi
     printf "%s\n" "${TYPO3_VERSIONS_ARRAY[@]}" | sort -V | head -n 1
@@ -106,7 +106,7 @@ function get_lowest_supported_php_versions_for_typo3() {
     local PHP_VERSIONS_ARRAY=()
     eval "IFS=' ' read -r -a PHP_VERSIONS_ARRAY <<< \"\${TYPO3_VERSIONS_${TYPO3}_PHP}\""
     if [ ${#PHP_VERSIONS_ARRAY[@]} -eq 0 ]; then
-        echo_red "Error! There is no TYPO3_VERSIONS_${TYPO3}_PHP variable."
+        message red "Error! There is no TYPO3_VERSIONS_${TYPO3}_PHP variable."
         exit 1
     fi
     printf "%s\n" "${PHP_VERSIONS_ARRAY[@]}" | sort -V | head -n 1
@@ -135,22 +135,38 @@ restoreComposerFiles() {
         mv composer.json.orig composer.json
         local message='composer.json has been restored.'
         if [ $exit_status -eq 0 ]; then
-            echo_green "${message}"
+            message green "${message}"
         else
-            echo_red "${message}"
+            message red "${message}"
         fi
     fi
 }
 
-function echo_magenta() {
-    echo -e "\033[35m$1\033[0m"
-}
+message() {
+    local color=$1
+    local message=$2
 
-function echo_red() {
-    echo -e "\033[41m$1\033[0m"
+    case $color in
+        red)
+            echo -e "\033[31m$message\033[0m"
+            ;;
+        green)
+            echo -e "\033[32m$message\033[0m"
+            ;;
+        yellow)
+            echo -e "\033[33m$message\033[0m"
+            ;;
+        blue)
+            echo -e "\033[34m$message\033[0m"
+            ;;
+        magenta)
+            echo -e "\033[35m$message\033[0m"
+            ;;
+        cyan)
+            echo -e "\033[36m$message\033[0m"
+            ;;
+        *)
+            echo "$message"
+            ;;
+    esac
 }
-
-function echo_green() {
-    echo -e "\033[32m$1\033[0m"
-}
-

@@ -11,7 +11,7 @@ TYPO3=${1}
 if [ "$TYPO3" == "all" ]; then
     mapfile -t versions < <(get_supported_typo3_versions)
     for version in "${versions[@]}"; do
-        echo_green "Installing TYPO3 v${version}..."
+        message green  "Installing TYPO3 v${version}..."
         .ddev/commands/web/.install-$version
     done
 else
