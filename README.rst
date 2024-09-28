@@ -4,8 +4,11 @@ TYPO3 Extension t3api
 .. image:: https://poser.pugx.org/sourcebroker/t3api/v/stable
    :target: https://extensions.typo3.org/extension/t3api/
 
-.. image:: https://github.com/sourcebroker/t3api/actions/workflows/TYPO3_12.yml/badge.svg
+.. image:: https://img.shields.io/github/actions/workflow/status/sourcebroker/t3api/TYPO3_12.yml?label=Tests%20TYPO3%2012&logo=github
    :target: https://github.com/sourcebroker/t3api/actions/workflows/TYPO3_12.yml
+
+.. image:: https://img.shields.io/github/actions/workflow/status/sourcebroker/t3api/TYPO3_13.yml?label=Tests%20TYPO3%2013&logo=github
+   :target: https://github.com/sourcebroker/t3api/actions/workflows/TYPO3_13.yml
 
 Features
 --------
