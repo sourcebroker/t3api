@@ -47,13 +47,9 @@ ci_single() {
     ddev config --php-version="$PHP"
     ddev restart
 
-    if [ -z "$GH_TOKEN" ] && ! ddev composer config --global --list | grep -q "github-oauth.github.com"; then
-      message red 'Be sure we have some github token. Add it to your  ~/.ddev/homeadditions/.composer/auth.json or make available as GH_TOKEN'
-      exit 1
-    fi
-    if ! ddev composer config --global --list | grep -q "github-oauth.github.com"; then
-      message magenta "Add GH_TOKEN to composer github-oauth.github.com"
-      ddev composer config --global github-oauth.github.com ${GH_TOKEN}
+    if [ -n "$GH_TOKEN" ] && ! ddev composer config --global --list | grep -q "github-oauth.github.com"; then
+      message magenta "Add GH_TOKEN to composer github-oauth.github.com after 'ddev ci' internal ddev restart"
+      ddev composer config --global github-oauth.github.com "${GH_TOKEN}"
     fi
 
     stashComposerFiles
