@@ -8,9 +8,11 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use SourceBroker\T3api\Attribute\AsSerializerHandler;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
+#[AsSerializerHandler]
 class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerInterface, DeserializeHandlerInterface
 {
     /**

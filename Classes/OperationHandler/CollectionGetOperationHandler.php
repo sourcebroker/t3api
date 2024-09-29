@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\OperationHandler;
 
 use Psr\Http\Message\ResponseInterface;
+use SourceBroker\T3api\Attribute\AsOperationHandler;
 use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
@@ -12,6 +13,7 @@ use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[AsOperationHandler(priority: -500)]
 class CollectionGetOperationHandler extends AbstractCollectionOperationHandler
 {
     public static function supports(OperationInterface $operation, Request $request): bool

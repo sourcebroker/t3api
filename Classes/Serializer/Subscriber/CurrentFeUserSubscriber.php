@@ -11,8 +11,10 @@ use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use Metadata\ClassHierarchyMetadata;
 use Metadata\ClassMetadata;
 use Metadata\MergeableClassMetadata;
+use SourceBroker\T3api\Attribute\AsSerializerSubscriber;
 use SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler;
 
+#[AsSerializerSubscriber]
 class CurrentFeUserSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
