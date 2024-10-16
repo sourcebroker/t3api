@@ -55,7 +55,7 @@ class CurrentFeUserSubscriber implements EventSubscriberInterface
 
         $data = $event->getData();
         foreach ($metadata->propertyMetadata as $propertyName => $propertyMetadata) {
-            if ($propertyMetadata->type['name'] !== CurrentFeUserHandler::TYPE) {
+            if ($propertyMetadata->type === null || $propertyMetadata->type['name'] !== CurrentFeUserHandler::TYPE) {
                 continue;
             }
 
