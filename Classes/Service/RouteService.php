@@ -91,6 +91,6 @@ class RouteService implements SingletonInterface
 
     protected static function getRequest(): ?ServerRequestInterface
     {
-        return $GLOBALS['TYPO3_REQUEST'];
+        return $GLOBALS['TYPO3_REQUEST'] ?? null;
     }
 }
