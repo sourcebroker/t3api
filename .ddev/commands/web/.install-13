@@ -7,45 +7,12 @@
 set +x
 set -e
 
-VERSION=13
-BASE_PATH=.test/$VERSION
-TYPO3_BIN=$BASE_PATH/vendor/bin/typo3
-DATABASE=database_$VERSION
+source .ddev/test/utils-install.sh
+install_start "13"
 
-rm -rf $BASE_PATH
-
-
-exclusions=(".*" "Documentation" "Documentation-GENERATED-temp" "var")
-mkdir -p "$BASE_PATH/src/$EXTENSION_KEY"
-for item in ./*; do
-    base_name=$(basename "$item")
-    for exclusion in "${exclusions[@]}"; do
-        if [[ $base_name == "$exclusion" ]]; then
-            continue 2
-        fi
-    done
-    ln -sr "$item" "$BASE_PATH/src/$EXTENSION_KEY/$base_name"
-done
-
-mysql -uroot -proot -e "DROP DATABASE IF EXISTS $DATABASE"
-
-ln -sr ".ddev/test/files/src/site/" $BASE_PATH/src/site
-ln -sr ".ddev/test/files/src/t3apinews/" $BASE_PATH/src/t3apinews
-
-mkdir -p $BASE_PATH/patches
-composer init --name="sourcebroker/typo3-$VERSION" --description="TYPO3 $VERSION" --no-interaction --working-dir $BASE_PATH
-composer config extra.typo3/cms.web-dir public --working-dir $BASE_PATH
-composer config repositories.src path 'src/*' --working-dir $BASE_PATH
-composer config --no-interaction allow-plugins.typo3/cms-composer-installers true --working-dir $BASE_PATH
-composer config --no-interaction allow-plugins.typo3/class-alias-loader true --working-dir $BASE_PATH
-composer config --no-plugins allow-plugins.cweagans/composer-patches true --working-dir $BASE_PATH
-jq '.extra.patches += {"typo3/cms-impexp": {"Disable error on new sys_file warning.": "patches/typo3-cms-impexp-disable-error-on-sys-file-warning.patch"}}' $BASE_PATH/composer.json > $BASE_PATH/composer.json.tmp && mv $BASE_PATH/composer.json.tmp $BASE_PATH/composer.json
-cp ".ddev/test/files/patches/typo3-cms-impexp-disable-error-on-sys-file-warning.patch" $BASE_PATH/patches/
-
-## remove later after stable version of helhum/typo3-console
+# remove next two lines later after stable version of helhum/typo3-console START
 composer config repositories.helhum/typo3-console vcs https://github.com/bmack/TYPO3-Console --working-dir $BASE_PATH
 cp ".ddev/test/files/patches/typo3-cms-core-review-85198.patch" $BASE_PATH/patches/
-
 composer req typo3/cms-backend:'^13.3' typo3/cms-core:'^13.3' typo3/cms-extbase:'^13.3' typo3/cms-filelist:'^13.3' \
          typo3/cms-fluid:'^13.3' typo3/cms-frontend:'^13.3' typo3/cms-recycler:'^13.3' typo3/cms-tstemplate:'^13.3' \
          typo3/cms-info:'^13.3' typo3/cms-lowlevel:'^13.3' typo3/cms-rte-ckeditor:'^13.3' typo3/cms-impexp:'^13.3' \
@@ -54,24 +21,6 @@ composer req typo3/cms-backend:'^13.3' typo3/cms-core:'^13.3' typo3/cms-extbase:
          cweagans/composer-patches:'^1.7.3' georgringer/news:'dev-12-13' \
          sourcebroker/t3apinews:'^1.0.0' v/site:'^1.0.0' \
          sourcebroker/t3api:'@dev' \
-         --no-progress --no-interaction --working-dir $BASE_PATH
+         --no-progress --no-interaction --working-dir "$BASE_PATH"
 
-$TYPO3_BIN install:setup -n --database-name $DATABASE
-$TYPO3_BIN configuration:set 'BE/debug' 1
-$TYPO3_BIN configuration:set 'BE/lockSSL' true
-$TYPO3_BIN configuration:set 'FE/debug' 1
-$TYPO3_BIN configuration:set 'SYS/devIPmask' '*'
-$TYPO3_BIN configuration:set 'SYS/displayErrors' 1
-$TYPO3_BIN configuration:set 'SYS/trustedHostsPattern' '.*.*'
-$TYPO3_BIN configuration:set 'MAIL/transport' 'smtp'
-$TYPO3_BIN configuration:set 'MAIL/transport_smtp_server' 'localhost:1025'
-$TYPO3_BIN configuration:set 'GFX/processor' 'ImageMagick'
-$TYPO3_BIN configuration:set 'GFX/processor_path' '/usr/bin/'
-
-ln -srf ".ddev/test/files/config/sites/main/config.yaml" $BASE_PATH/config/sites/main/config.yaml
-
-.ddev/commands/web/data import "$VERSION"
-
-$TYPO3_BIN database:updateschema
-$TYPO3_BIN cache:flush
-
+install_end
