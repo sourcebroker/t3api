@@ -3,10 +3,10 @@ name: TYPO3 13
 on:
   push:
     branches:
-      - release/4.0.0
+      - main
   pull_request:
     branches:
-      - release/4.0.0
+      - main
 
 jobs:
   test:
