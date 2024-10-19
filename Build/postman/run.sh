@@ -2,6 +2,9 @@
 
 source .ddev/test/utils.sh
 
+set +x
+set -e
+
 POSTMAN_BUILD_PATH=/var/www/html/Build/postman/
 cd ${POSTMAN_BUILD_PATH} || exit
 
@@ -46,7 +49,7 @@ else
             ./node_modules/.bin/newman run "../../Tests/Postman/$TEST_FILE" --verbose --bail  --env-var "baseUrl=$DOMAIN"
         else
             for TEST_FILE in ../../Tests/Postman/*.json; do
-                ./node_modules/.bin/newman run "$TEST_FILE" --verbose --bail  --env-var "baseUrl=$DOMAIN"
+                ./node_modules/.bin/newman run "$TEST_FILE" --verbose --bail --env-var "baseUrl=$DOMAIN"
             done
         fi
     done

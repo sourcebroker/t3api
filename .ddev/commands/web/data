@@ -78,7 +78,7 @@ exportData() {
     mv "${EXPORT_PATH}" "${TEST_SRC_IMPEXP_DIR}"
     mv "${EXPORT_PATH}.files/" "${TEST_SRC_IMPEXP_DIR}"
 
-    echo_green "Dump finished and saved at ${TEST_SRC_IMPEXP_DIR}/${EXPORT_FILE}"
+    message green "Dump finished and saved at ${TEST_SRC_IMPEXP_DIR}/${EXPORT_FILE}"
 }
 
 

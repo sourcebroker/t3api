@@ -11,7 +11,9 @@ use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Serializer\Handler\FileReferenceHandler;
-use TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder;
+use TYPO3\CMS\Extbase\Domain\Model\File;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+use TYPO3\CMS\Extbase\Domain\Model\Folder;
 
 class FileReferenceSubscriber implements EventSubscriberInterface
 {
@@ -50,7 +52,11 @@ class FileReferenceSubscriber implements EventSubscriberInterface
     protected function changeTypeToHandleAllFileReferenceExtendingClasses(Event $event): void
     {
         if (
-            is_subclass_of($event->getType()['name'], AbstractFileFolder::class)
+            (
+                is_subclass_of($event->getType()['name'], Folder::class)
+                || is_subclass_of($event->getType()['name'], File::class)
+                || is_subclass_of($event->getType()['name'], FileReference::class)
+            )
             && $event->getContext()->getDepth() > 1
         ) {
             /** @var PreDeserializeEvent|PreSerializeEvent $event */

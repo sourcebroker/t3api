@@ -115,7 +115,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
         return $queryBuilder
             ->select($rootAlias . '.uid')
             ->from($tableName, $rootAlias)
-            ->andWhere($queryBuilder->expr()->orX(...$conditions))
+            ->andWhere($queryBuilder->expr()->or(...$conditions))
             ->setParameters($binds)
             ->executeQuery()
             ->fetchFirstColumn();
