@@ -12,19 +12,23 @@ use TYPO3\CMS\Core\Resource\Exception;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException;
 use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
 use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderWritePermissionsException;
-use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Resource\Security\FileNameValidator;
+use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 class FileUploadService implements SingletonInterface
 {
-    public function __construct(protected readonly ResourceFactory $resourceFactory) {}
+    public function __construct(
+        protected readonly ResourceFactory $resourceFactory,
+        protected readonly StorageRepository $storageRepository
+    ) {}
 
     /**
      * @throws Exception
@@ -33,6 +37,7 @@ class FileUploadService implements SingletonInterface
     {
         /** @var UploadedFile $uploadedFile */
         $uploadedFile = $request->files->get('originalResource');
+
         $uploadSettings = $operation->getUploadSettings();
 
         $this->verifyFileExtension($uploadSettings, $uploadedFile);
@@ -95,10 +100,19 @@ class FileUploadService implements SingletonInterface
             $uploadFolder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier(
                 $uploadSettings->getFolder()
             );
-        } catch (ResourceDoesNotExistException $resourceDoesNotExistException) {
-            $resource = $this->resourceFactory->getStorageObjectFromCombinedIdentifier(
-                $uploadSettings->getFolder()
+        } catch (\Throwable $e) {
+
+            [$storageId, $objectIdentifier] = array_pad(
+                GeneralUtility::trimExplode(':', $uploadSettings->getFolder()),
+                2,
+                null
             );
+
+            if ($objectIdentifier === null && !MathUtility::canBeInterpretedAsInteger($storageId)) {
+                $resource = $this->storageRepository->findByUid(0);
+            } else {
+                $resource = $this->storageRepository->findByUid((int)$storageId);
+            }
 
             if (!$resource instanceof ResourceStorage) {
                 throw new \InvalidArgumentException(
