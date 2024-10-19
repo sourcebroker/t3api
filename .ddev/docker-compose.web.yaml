@@ -4,7 +4,7 @@ services:
       - EXTENSION_KEY=t3api
       - PACKAGE_NAME=sourcebroker/t3api
 
-      - TYPO3_VERSIONS=12
+      - TYPO3_VERSIONS=12 13
       - TYPO3_VERSIONS_12_PHP=8.1 8.2 8.3
       - TYPO3_VERSIONS_13_PHP=8.2 8.3
 
