@@ -20,7 +20,7 @@ composer req typo3/cms-backend:'^13.3' typo3/cms-core:'^13.3' typo3/cms-extbase:
          helhum/typo3-console:'dev-issue/1169' \
          cweagans/composer-patches:'^1.7.3' georgringer/news:'dev-12-13' \
          sourcebroker/t3apinews:'^1.0.0' v/site:'^1.0.0' \
-         sourcebroker/t3api:'dev-main' \
+         sourcebroker/t3api:'@dev' \
          --no-progress --no-interaction --working-dir "$BASE_PATH"
 
 install_end
