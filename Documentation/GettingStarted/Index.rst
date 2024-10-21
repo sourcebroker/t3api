@@ -16,15 +16,15 @@ developers experienced in this awesome framework.
 T3api comes with partial support of `JSON-LD <https://json-ld.org/>`__ and `Hydra <http://www.hydra-cg.com/>`__,
 which allows to build smart frontend applications with auto-discoverability capabilities.
 
-If you want to fast check working example check demo at: https://github.com/sourcebroker/t3api-demo
-
-@todo - write docs: short description for IRI
-
 
 Installation
 ============
 
-Run ``composer require sourcebroker/t3api``.
+Run
+
+.. code-block:: yaml
+
+    composer require sourcebroker/t3api
 
 
 Configuration

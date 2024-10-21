@@ -4,9 +4,36 @@
 Multilanguage
 ==============
 
-Yes, **t3api supports multilanguage applications**! If you would like to do request in language other than default you just need to add request header ``X-Locale`` with value set to identifier of expected language. Identifier means ``languageId`` from your site's ``config.yaml``.
+Yes, **t3api supports multilanguage applications**!
 
-Here is an example configuration of multilanguage page.
+T3api offers two ways you can request multilanguage data:
+
+- standard language prefix
+- language header
+
+
+Standard prefix
++++++++++++++++
+
+First is a standard way, just to prefix your request with language ``base`` as defined
+in your site's ``config.yaml``.
+
+- :uri:`https://13.t3api.ddev.site/_api/news/news` will return news in default language.
+- :uri:`https://13.t3api.ddev.site/de/_api/news/news` will return news in ``de`` language.
+
+
+Language header
+++++++++++++++++
+
+Second way it to use always the same default lang url and add request header ``X-Locale``
+with value set to identifier of expected language. Identifier means ``languageId`` value
+from your site's ``config.yaml``.
+
+- :uri:`https://13.t3api.ddev.site/_api/news/news` with header :header:`X-Locale: 0` or no header at all will return news in default language.
+- :uri:`https://13.t3api.ddev.site/_api/news/news` with header :header:`X-Locale: 1` will return news in ``de`` language.
+
+
+Here is an ``config.yaml`` for the above examples:
 
 .. code-block:: php
 
@@ -37,10 +64,10 @@ Here is an example configuration of multilanguage page.
        fallbackType: strict
        flag: de
 
-According to example above: Sending ``X-Locale: 0`` or not sending ``X-Locale`` header at all means that it will be processed in English. If request would include header ``X-Locale: 1`` then it will be processed in German.
 
 .. important::
-   t3api **respects** `fallbackType <https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/SiteHandling/AddLanguages.html#fallbacktype>`_ set in site's configuration.
+   t3api **respects** `fallbackType <https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/SiteHandling/AddLanguages.html#fallbacktype>`_
+   set in site's configuration.
 
 It is possible to customize name of the language header inside ``ext_localconf.php``:
 
