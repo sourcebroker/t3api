@@ -20,10 +20,6 @@ for the endpoint, prefixed by the ``basePath`` from route enhancer (see more on 
 Path of the item operation needs to contain ``{id}`` parameter. This parameter is replaced by ``uid`` of the entity
 when fetching single item.
 
-.. important::
-    Path to API endpoints is prefixed by the default language base path. For example: If your default language base
-    path is ``en`` then endpoint URL will be: ``/en/_api/*``.
-
 .. code-block:: php
 
     use SourceBroker\T3api\Annotation\ApiResource;
@@ -61,17 +57,17 @@ T3api supports all REST methods
 +--------------+-----------------+-------------------+--------------------------------------+
 | HTTP Method  | Operation type  | Example URL       | Purpose                              |
 +==============+=================+===================+======================================+
-| **GET**      | Collection      | \/resource        | Reading collection of the items      |
+| **GET**      | Collection      | /resource         | Reading collection of the items      |
 +--------------+-----------------+-------------------+--------------------------------------+
-| **GET**      | Item            | \/resource\/{id}  | Reading single item                  |
+| **GET**      | Item            | /resource/{id}    | Reading single item                  |
 +--------------+-----------------+-------------------+--------------------------------------+
-| **POST**     | Collection      | \/resource        | Creating new item                    |
+| **POST**     | Collection      | /resource         | Creating new item                    |
 +--------------+-----------------+-------------------+--------------------------------------+
-| **PATCH**    | Item            | \/resource\/{id}  | Updating the item                    |
+| **PATCH**    | Item            | /resource/{id}    | Updating the item                    |
 +--------------+-----------------+-------------------+--------------------------------------+
-| **PUT**      | Item            | \/resource\/{id}  | Replacing the item                   |
+| **PUT**      | Item            | /resource/{id}    | Replacing the item                   |
 +--------------+-----------------+-------------------+--------------------------------------+
-| **DELETE**   | Item            | \/resource\/{id}  | Deleting the item                    |
+| **DELETE**   | Item            | /resource/{id}    | Deleting the item                    |
 +--------------+-----------------+-------------------+--------------------------------------+
 
 .. important::
@@ -88,40 +84,353 @@ response of GET method is enriched by some additional properties:
 - ``hydra:view`` - contains data useful for pagination (see more on :ref:`pagination`).
 - ``hydra:search`` - contains data useful for filtering (see more on :ref:`filtering`).
 
-Here is an example of basic response for collection operation.
+Here is an example of basic response for collection operation. You can open it at following url: https://13.t3api.ddev.site/_api/news/news
 
 .. code-block:: json
 
     {
       "hydra:member": [
         {
-          "@id": "/_api/news/news/1",
+          "title": "[EN] Sed ut perspiciatis unde omnis iste natus error sit voluptatem folder A",
+          "alternativeTitle": "",
+          "teaser": "",
+          "datetime": "2020-05-28T19:20:00.000+00:00",
+          "author": "",
+          "authorEmail": "",
+          "categories": [
+            {
+              "title": "[EN] Category 1A",
+              "image": null,
+              "uid": 1,
+              "@id": "/_api/news/categories/1"
+            },
+            {
+              "title": "[EN] Category 2A",
+              "image": null,
+              "uid": 2,
+              "@id": "/_api/news/categories/2"
+            }
+          ],
+          "type": "0",
+          "falMedia": [
+            {
+              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+              "uid": 4,
+              "file": {
+                "uid": 1,
+                "name": "test1.jpg",
+                "mimeType": "image/jpeg",
+                "size": 42520
+              }
+            }
+          ],
+          "internalurl": "",
+          "externalurl": "",
+          "istopnews": false,
+          "tags": [
+            {
+              "title": "[EN] Tag 1A",
+              "uid": 1,
+              "@id": "/_api/news/tags/1"
+            },
+            {
+              "title": "[EN] Tag 4A",
+              "uid": 4,
+              "@id": "/_api/news/tags/4"
+            }
+          ],
+          "singleUri": "https://13.t3api.ddev.site/news/en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
+          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
+          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
           "uid": 1,
-          "title": "Lorem ipsum dolor sit amet enim",
-          "teaser": "Pellentesque facilisis. Nulla imperdiet sit amet magna.",
-          "datetime": "2019-08-30T07:30:00+00:00"
+          "@id": "/_api/news/news/1"
         },
         {
-          "@id": "/_api/news/news/2",
+          "title": "[EN] Natus error sit voluptatem folder A",
+          "alternativeTitle": "",
+          "teaser": "",
+          "datetime": "2020-05-28T19:45:00.000+00:00",
+          "author": "",
+          "authorEmail": "",
+          "categories": [
+            {
+              "title": "[EN] Category 2A",
+              "image": null,
+              "uid": 2,
+              "@id": "/_api/news/categories/2"
+            }
+          ],
+          "type": "0",
+          "falMedia": [
+            {
+              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+              "uid": 2,
+              "file": {
+                "uid": 1,
+                "name": "test1.jpg",
+                "mimeType": "image/jpeg",
+                "size": 42520
+              }
+            },
+            {
+              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+              "uid": 3,
+              "file": {
+                "uid": 1,
+                "name": "test1.jpg",
+                "mimeType": "image/jpeg",
+                "size": 42520
+              }
+            }
+          ],
+          "internalurl": "",
+          "externalurl": "",
+          "istopnews": true,
+          "tags": [
+            {
+              "title": "[EN] Tag 1A",
+              "uid": 1,
+              "@id": "/_api/news/tags/1"
+            },
+            {
+              "title": "[EN] Tag 2A",
+              "uid": 2,
+              "@id": "/_api/news/tags/2"
+            }
+          ],
+          "singleUri": "https://13.t3api.ddev.site/news/en-natus-error-sit-voluptatem-folder-a",
+          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
+          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
           "uid": 2,
-          "title": "Lorem ipsum dolor sit amet enim",
-          "teaser": "Aliquam erat ac ipsum. Integer aliquam purus",
-          "datetime": "2019-08-30T07:30:00+00:00"
+          "@id": "/_api/news/news/2"
+        },
+        {
+          "title": "[EN] Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur folder A",
+          "alternativeTitle": "",
+          "teaser": "",
+          "datetime": "2020-05-29T20:10:00.000+00:00",
+          "author": "",
+          "authorEmail": "",
+          "categories": [
+            {
+              "title": "[EN] Category 3A",
+              "image": null,
+              "uid": 3,
+              "@id": "/_api/news/categories/3"
+            },
+            {
+              "title": "[EN] Category 4A",
+              "image": null,
+              "uid": 4,
+              "@id": "/_api/news/categories/4"
+            }
+          ],
+          "type": "0",
+          "falMedia": [
+            {
+              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+              "uid": 1,
+              "file": {
+                "uid": 1,
+                "name": "test1.jpg",
+                "mimeType": "image/jpeg",
+                "size": 42520
+              }
+            }
+          ],
+          "internalurl": "",
+          "externalurl": "",
+          "istopnews": false,
+          "tags": [
+            {
+              "title": "[EN] Tag 4A",
+              "uid": 4,
+              "@id": "/_api/news/tags/4"
+            }
+          ],
+          "singleUri": "https://13.t3api.ddev.site/news/en-ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-a",
+          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
+          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
+          "uid": 3,
+          "@id": "/_api/news/news/3"
+        },
+        {
+          "title": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem folder B",
+          "alternativeTitle": "",
+          "teaser": "",
+          "datetime": "2020-05-28T19:20:00.000+00:00",
+          "author": "",
+          "authorEmail": "",
+          "categories": [],
+          "type": "0",
+          "falMedia": [
+            {
+              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+              "uid": 8,
+              "file": {
+                "uid": 1,
+                "name": "test1.jpg",
+                "mimeType": "image/jpeg",
+                "size": 42520
+              }
+            }
+          ],
+          "internalurl": "",
+          "externalurl": "",
+          "istopnews": false,
+          "tags": [
+            {
+              "title": "Tag 1B",
+              "uid": 6,
+              "@id": "/_api/news/tags/6"
+            },
+            {
+              "title": "Tag 4B",
+              "uid": 9,
+              "@id": "/_api/news/tags/9"
+            }
+          ],
+          "singleUri": "https://13.t3api.ddev.site/news/sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-b",
+          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
+          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
+          "uid": 5,
+          "@id": "/_api/news/news/5"
+        },
+        {
+          "title": "Natus error sit voluptatem folder B",
+          "alternativeTitle": "",
+          "teaser": "",
+          "datetime": "2020-05-28T19:45:00.000+00:00",
+          "author": "",
+          "authorEmail": "",
+          "categories": [],
+          "type": "0",
+          "falMedia": [
+            {
+              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+              "uid": 6,
+              "file": {
+                "uid": 1,
+                "name": "test1.jpg",
+                "mimeType": "image/jpeg",
+                "size": 42520
+              }
+            },
+            {
+              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+              "uid": 7,
+              "file": {
+                "uid": 1,
+                "name": "test1.jpg",
+                "mimeType": "image/jpeg",
+                "size": 42520
+              }
+            }
+          ],
+          "internalurl": "",
+          "externalurl": "",
+          "istopnews": false,
+          "tags": [
+            {
+              "title": "Tag 1B",
+              "uid": 6,
+              "@id": "/_api/news/tags/6"
+            },
+            {
+              "title": "Tag 2B",
+              "uid": 7,
+              "@id": "/_api/news/tags/7"
+            }
+          ],
+          "singleUri": "https://13.t3api.ddev.site/news/natus-error-sit-voluptatem-folder-b",
+          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
+          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
+          "uid": 6,
+          "@id": "/_api/news/news/6"
+        },
+        {
+          "title": "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur folder B",
+          "alternativeTitle": "",
+          "teaser": "",
+          "datetime": "2020-05-29T20:10:00.000+00:00",
+          "author": "",
+          "authorEmail": "",
+          "categories": [],
+          "type": "0",
+          "falMedia": [
+            {
+              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+              "uid": 5,
+              "file": {
+                "uid": 1,
+                "name": "test1.jpg",
+                "mimeType": "image/jpeg",
+                "size": 42520
+              }
+            }
+          ],
+          "internalurl": "",
+          "externalurl": "",
+          "istopnews": false,
+          "tags": [
+            {
+              "title": "Tag 4B",
+              "uid": 9,
+              "@id": "/_api/news/tags/9"
+            }
+          ],
+          "singleUri": "https://13.t3api.ddev.site/news/ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-b",
+          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
+          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
+          "uid": 7,
+          "@id": "/_api/news/news/7"
         }
       ],
-      "hydra:totalItems": 2,
+      "hydra:totalItems": 6,
       "hydra:view": {
-          "hydra:first": "/_api/users?itemsPerPage=50&page=1",
-          "hydra:last": "/_api/users?itemsPerPage=50&page=5",
-          "hydra:next": "/_api/users?itemsPerPage=50&page=2",
-          "hydra:pages": [
-              "/_api/users?itemsPerPage=50&page=1",
-              "/_api/users?itemsPerPage=50&page=2",
-              "/_api/users?itemsPerPage=50&page=3",
-              "/_api/users?itemsPerPage=50&page=4",
-              "/_api/users?itemsPerPage=50&page=5"
-          ],
-          "hydra:page": 1
+        "hydra:first": "/_api/news/news?page=1",
+        "hydra:last": "/_api/news/news?page=1",
+        "hydra:pages": [
+          "/_api/news/news?page=1"
+        ],
+        "hydra:page": 1
+      },
+      "hydra:search": {
+        "hydra:template": "/_api/news/news{?order[uid],order[title],order[datetime],istopnews,uid,datetime,pid,search}",
+        "hydra:mapping": [
+          {
+            "variable": "order[uid]",
+            "property": "uid"
+          },
+          {
+            "variable": "order[title]",
+            "property": "title"
+          },
+          {
+            "variable": "order[datetime]",
+            "property": "datetime"
+          },
+          {
+            "variable": "istopnews",
+            "property": "istopnews"
+          },
+          {
+            "variable": "uid",
+            "property": "uid"
+          },
+          {
+            "variable": "datetime",
+            "property": "datetime"
+          },
+          {
+            "variable": "pid",
+            "property": "pid"
+          },
+          {
+            "variable": "search",
+            "property": "title"
+          }
+        ]
       }
     }
 
@@ -154,18 +463,24 @@ security reasons. You can easily manage properties returned from any endpoint us
 Main endpoint
 ================
 
-There is one special build-in endpoint which is not determined by ``@ApiResource`` annotation - Main endpoint. It contains list all available collection operations. It is useful for creating Postman requests collections or for frontend applications which avoids to use hardcoded path for the endpoints. Main endpoint is available under :ref:`base path <getting-started_base-path>` (default ``https://example.com/_api/``). Example response on the main endpoint may looks as one below:
+There is one special build-in endpoint which is not determined by ``@ApiResource`` annotation - Main endpoint.
+It contains list all available collection operations. It is useful for creating Postman requests collections
+or for frontend applications which avoids to use hardcoded path for the endpoints.
+Main endpoint is available under :ref:`base path <getting-started_base-path>` (default ``https://example.com/_api/``).
+
+Example response on the main endpoint for th3 t3api demo is available at: `https://13.t3api.ddev.site/_api <https://13.t3api.ddev.site/_api>`__
+and looks like:
 
 .. code-block:: json
 
-   {
-     "resources": {
-       "SourceBroker\\T3apinews\\Domain\\Model\\Category": "/_api/news/categories",
-       "SourceBroker\\T3apinews\\Domain\\Model\\File": "/_api/news/files",
-       "SourceBroker\\T3apinews\\Domain\\Model\\News": "/_api/news/news",
-       "SourceBroker\\T3apinews\\Domain\\Model\\Tag": "/_api/news/tags"
-     }
-   }
+    {
+      "resources": {
+        "SourceBroker\\T3apinews\\Domain\\Model\\File": "/_api/news/files",
+        "SourceBroker\\T3apinews\\Domain\\Model\\Tag": "/_api/news/tags",
+        "SourceBroker\\T3apinews\\Domain\\Model\\Category": "/_api/news/categories",
+        "SourceBroker\\T3apinews\\Domain\\Model\\News": "/_api/news/news"
+      }
+    }
 
 Class used as a response in main endpoint may be overwritten in ``ext_localconf.php``:
 

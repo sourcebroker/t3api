@@ -34,14 +34,14 @@ Read the docs at https://docs.typo3.org/p/sourcebroker/t3api/master/en-us/
 Take a look and test
 --------------------
 
-After cloning repo you can run ``ddev restart && ddev composer install`` and then ``ddev ci 12`` to install local integration test instance.
-Local instance is available at https://12.t3api.ddev.site/ (login to backend with ``admin`` / ``Password1!`` credentials).
+After cloning repo you can run ``ddev restart && ddev composer install`` and then ``ddev ci 13`` to install local integration test instance.
+Local instance is available at https://13.t3api.ddev.site/ (login to backend with ``admin`` / ``Password1!`` credentials).
 
 At frontend part you can at once test REST API responses for ext news:
 
-* https://12.t3api.ddev.site/_api/news/news
-* https://12.t3api.ddev.site/_api/news/news/1
-* https://12.t3api.ddev.site/_api/news/categories
+* https://13.t3api.ddev.site/_api/news/news
+* https://13.t3api.ddev.site/_api/news/news/1
+* https://13.t3api.ddev.site/_api/news/categories
 * etc
 
 You can also run Postman test with ``ddev ci:tests:postman`` command or full test suite with ``ddev composer ci``.
