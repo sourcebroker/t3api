@@ -10,17 +10,14 @@ set -e
 source .ddev/test/utils-install.sh
 install_start "13"
 
-# remove next two lines later after stable version of helhum/typo3-console START
-composer config repositories.helhum/typo3-console vcs https://github.com/bmack/TYPO3-Console --working-dir $BASE_PATH
-cp ".ddev/test/files/patches/typo3-cms-core-review-85198.patch" $BASE_PATH/patches/
 composer req typo3/cms-backend:'^13.3' typo3/cms-core:'^13.3' typo3/cms-extbase:'^13.3' typo3/cms-filelist:'^13.3' \
-         typo3/cms-fluid:'^13.3' typo3/cms-frontend:'^13.3' typo3/cms-recycler:'^13.3' typo3/cms-tstemplate:'^13.3' \
-         typo3/cms-info:'^13.3' typo3/cms-lowlevel:'^13.3' typo3/cms-rte-ckeditor:'^13.3' typo3/cms-impexp:'^13.3' \
-         typo3/cms-install:'^13.3' \
-         helhum/typo3-console:'dev-issue/1169' \
-         cweagans/composer-patches:'^1.7.3' georgringer/news:'dev-12-13' \
-         sourcebroker/t3apinews:'^1.0.0' v/site:'^1.0.0' \
-         sourcebroker/t3api:'@dev' \
-         --no-progress --no-interaction --working-dir "$BASE_PATH"
+            typo3/cms-fluid:'^13.3' typo3/cms-frontend:'^13.3' typo3/cms-recycler:'^13.3' typo3/cms-tstemplate:'^13.3' \
+            typo3/cms-info:'^13.3' typo3/cms-lowlevel:'^13.3' typo3/cms-rte-ckeditor:'^13.3' typo3/cms-impexp:'^13.3' \
+            typo3/cms-install:'^13.3' \
+            helhum/typo3-console:'^8.2.1' \
+            cweagans/composer-patches:'^1.7.3' georgringer/news:'^12.1' \
+            sourcebroker/t3apinews:'^1.0.0' v/site:'^1.0.0' \
+            sourcebroker/t3api:'@dev' \
+            --no-progress --no-interaction --working-dir "$BASE_PATH"
 
 install_end

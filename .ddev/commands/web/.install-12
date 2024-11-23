@@ -14,8 +14,8 @@ composer req typo3/cms-backend:'^12.4' typo3/cms-core:'^12.4' typo3/cms-extbase:
             typo3/cms-fluid:'^12.4' typo3/cms-frontend:'^12.4' typo3/cms-recycler:'^12.4' typo3/cms-tstemplate:'^12.4' \
             typo3/cms-info:'^12.4' typo3/cms-lowlevel:'^12.4' typo3/cms-rte-ckeditor:'^12.4' typo3/cms-impexp:'^12.4' \
             typo3/cms-install:'^12.4' \
-            helhum/typo3-console:'^8.1' \
-            cweagans/composer-patches:'^1.7.3' georgringer/news:'dev-12-13' \
+            helhum/typo3-console:'^8.2.1' \
+            cweagans/composer-patches:'^1.7.3' georgringer/news:'^12.1' \
             sourcebroker/t3apinews:'^1.0.0' v/site:'^1.0.0' \
             sourcebroker/t3api:'@dev' \
             --no-progress --no-interaction --working-dir "$BASE_PATH"

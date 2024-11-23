@@ -7,8 +7,10 @@ router_http_port: "80"
 router_https_port: "443"
 xdebug_enabled: false
 additional_hostnames:
-    - '*.t3api'
-    - '*.api.t3api'
+    - 12.t3api
+    - 12.api.t3api
+    - 13.t3api
+    - 13.api.t3api
 additional_fqdns: []
 database:
     type: mariadb
