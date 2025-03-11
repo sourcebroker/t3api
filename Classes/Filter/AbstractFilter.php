@@ -42,7 +42,8 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
         $parentClassName = $query->getType();
 
         $dataMapFactory = GeneralUtility::makeInstance(DataMapFactory::class);
-        $dataMapper = GeneralUtility::makeInstance(DataMapper::class, $query);
+        $dataMapper = GeneralUtility::makeInstance(DataMapper::class);
+        $dataMapper->setQuery($query);
 
         $parentAlias = $rootAlias;
 
