@@ -144,7 +144,7 @@ abstract class AbstractDispatcher
         );
     }
 
-    protected function callProcessors(Request $request, ResponseInterface $response): void
+    protected function callProcessors(Request $request, ResponseInterface &$response): void
     {
         array_filter(
             Configuration::getProcessors(),

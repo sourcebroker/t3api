@@ -9,5 +9,5 @@ use Symfony\Component\HttpFoundation\Request;
 
 interface ProcessorInterface
 {
-    public function process(Request $request, ResponseInterface $response): void;
+    public function process(Request $request, ResponseInterface &$response): void;
 }

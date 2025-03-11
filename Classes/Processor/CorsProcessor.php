@@ -12,7 +12,7 @@ class CorsProcessor implements ProcessorInterface
 {
     public function __construct(private readonly ?CorsService $corsService) {}
 
-    public function process(Request $request, ResponseInterface $response): void
+    public function process(Request $request, ResponseInterface &$response): void
     {
         if (
             !$this->isCorsRequest($request)
@@ -22,6 +22,7 @@ class CorsProcessor implements ProcessorInterface
         }
 
         $options = $this->corsService->getOptions();
+
         $requestOrigin = $request->headers->get('Origin');
 
         if (!$this->corsService->isAllowedOrigin($requestOrigin, $options)) {
