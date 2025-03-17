@@ -6,11 +6,12 @@ namespace SourceBroker\T3api\Dispatcher;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
-use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Event\AfterProcessOperationEvent;
 use SourceBroker\T3api\Exception\RouteNotFoundException;
+use SourceBroker\T3api\Factory\OperationHandlerCollectionFactory;
+use SourceBroker\T3api\Factory\ProcessorsCollectionFactory;
 use SourceBroker\T3api\OperationHandler\OperationHandlerInterface;
 use SourceBroker\T3api\Processor\ProcessorInterface;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
@@ -21,7 +22,6 @@ use Symfony\Component\Routing\Exception\MethodNotAllowedException as SymfonyMeth
 use Symfony\Component\Routing\Exception\ResourceNotFoundException as SymfonyResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class AbstractDispatcher
 {
@@ -35,19 +35,31 @@ abstract class AbstractDispatcher
 
     protected DeserializationContextBuilder $deserializationContextBuilder;
 
+    protected OperationHandlerCollectionFactory $operationHandlerCollectionFactory;
+
+    protected ProcessorsCollectionFactory $processorsCollectionFactory;
+
     public function __construct(
         SerializerService $serializerService,
         ApiResourceRepository $apiResourceRepository,
         SerializationContextBuilder $serializationContextBuilder,
         DeserializationContextBuilder $deserializationContextBuilder,
-        EventDispatcherInterface $eventDispatcherInterface
+        EventDispatcherInterface $eventDispatcherInterface,
+        OperationHandlerCollectionFactory $operationHandlerCollectionFactory,
+        ProcessorsCollectionFactory $processorsCollectionFactory
     ) {
         $this->serializerService = $serializerService;
         $this->apiResourceRepository = $apiResourceRepository;
         $this->serializationContextBuilder = $serializationContextBuilder;
         $this->deserializationContextBuilder = $deserializationContextBuilder;
         $this->eventDispatcher = $eventDispatcherInterface;
+        $this->operationHandlerCollectionFactory = $operationHandlerCollectionFactory;
+        $this->processorsCollectionFactory = $processorsCollectionFactory;
+
+        $this->init();
     }
+
+    abstract protected function init(): void;
 
     /**
      * @throws RouteNotFoundException
@@ -104,8 +116,7 @@ abstract class AbstractDispatcher
             );
         }
 
-        /** @var OperationHandlerInterface $handler */
-        $handler = GeneralUtility::makeInstance(array_shift($handlers));
+        $handler = array_shift($handlers);
         $result = $handler->handle($operation, $request, $route, $response);
 
         $afterProcessOperationEvent = new AfterProcessOperationEvent(
@@ -126,20 +137,19 @@ abstract class AbstractDispatcher
     protected function getHandlersSupportingOperation(OperationInterface $operation, Request $request): array
     {
         return array_filter(
-            Configuration::getOperationHandlers(),
-            static function (string $operationHandlerClass) use ($operation, $request) {
-                if (!is_subclass_of($operationHandlerClass, OperationHandlerInterface::class, true)) {
+            $this->operationHandlerCollectionFactory->get(),
+            static function ($operationHandler) use ($operation, $request) {
+                if (!$operationHandler instanceof OperationHandlerInterface) {
                     throw new \RuntimeException(
                         sprintf(
                             'Operation handler `%s` needs to be an instance of `%s`',
-                            $operationHandlerClass,
+                            $operationHandler::class,
                             OperationHandlerInterface::class
                         ),
                         1591018489732
                     );
                 }
-
-                return call_user_func($operationHandlerClass . '::supports', $operation, $request);
+                return $operationHandler::supports($operation, $request);
             }
         );
     }
@@ -147,21 +157,19 @@ abstract class AbstractDispatcher
     protected function callProcessors(Request $request, ResponseInterface &$response): void
     {
         array_filter(
-            Configuration::getProcessors(),
-            static function (string $processorClass) use ($request, &$response) {
-                if (!is_subclass_of($processorClass, ProcessorInterface::class, true)) {
+            $this->processorsCollectionFactory->get(),
+            static function ($processor) use ($request, &$response) {
+                if (!$processor instanceof ProcessorInterface) {
                     throw new \RuntimeException(
                         sprintf(
                             'Process `%s` needs to be an instance of `%s`',
-                            $processorClass,
+                            $processor::class,
                             ProcessorInterface::class
                         ),
                         1603705384
                     );
                 }
 
-                /** @var ProcessorInterface $processor */
-                $processor = GeneralUtility::makeInstance($processorClass);
                 $processor->process($request, $response);
             }
         );

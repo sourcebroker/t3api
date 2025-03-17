@@ -11,12 +11,32 @@ class Configuration
 {
     public static function getOperationHandlers(): array
     {
-        return self::getClassNamesSortedByPriority($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['operationHandlers']);
+        trigger_error('Configuration::getOperationHandlers() will be removed in t3api v4.0.', E_USER_DEPRECATED);
+        return self::getClassNamesSortedByPriority($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['operationHandlers'] ?? []);
     }
 
     public static function getProcessors(): array
     {
-        return self::getClassNamesSortedByPriority($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['processors']);
+        trigger_error('Configuration::getProcessors() will be removed in t3api v4.0.', E_USER_DEPRECATED);
+        return self::getClassNamesSortedByPriority($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['processors'] ?? []);
+    }
+
+    public static function getSerializerHandlers(): array
+    {
+        trigger_error('Configuration::getSerializerHandlers() will be removed in t3api v4.0.', E_USER_DEPRECATED);
+        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] ?? [];
+    }
+
+    public static function getSerializerSubscribers(): array
+    {
+        trigger_error('Configuration::getSerializerSubscribers() will be removed in t3api v4.0.', E_USER_DEPRECATED);
+        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] ?? [];
+    }
+
+    public static function getSerializerObjectConstructors(): array
+    {
+        trigger_error('Configuration::getSerializerObjectConstructors() will be removed in t3api v4.0.', E_USER_DEPRECATED);
+        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors'] ?? [];
     }
 
     public static function getCollectionResponseClass(): string
@@ -27,6 +47,34 @@ class Configuration
     public static function getCors(): array
     {
         return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['cors'];
+    }
+
+    /**
+     * @return \Generator|ApiResourcePathProvider[]
+     */
+    public static function getApiResourcePathProviders(): \Generator
+    {
+        trigger_error('Configuration::getApiResourcePathProviders() will be removed in t3api v4.0.', E_USER_DEPRECATED);
+
+        $apiResourcePathProvidersClasses
+            = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['apiResourcePathProviders'] ?? [];
+
+        foreach ($apiResourcePathProvidersClasses as $apiResourcePathProviderClass) {
+            $apiResourcePathProvider = GeneralUtility::makeInstance($apiResourcePathProviderClass);
+
+            if (!$apiResourcePathProvider instanceof ApiResourcePathProvider) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'API resource path provider `%s` has to be an instance of `%s`',
+                        $apiResourcePathProviderClass,
+                        ApiResourcePathProvider::class
+                    ),
+                    1609066405400
+                );
+            }
+
+            yield $apiResourcePathProvider;
+        }
     }
 
     protected static function getClassNamesSortedByPriority(?array $items): array
@@ -51,30 +99,5 @@ class Configuration
         );
 
         return array_column($items, 'className');
-    }
-
-    /**
-     * @return \Generator|ApiResourcePathProvider[]
-     */
-    public static function getApiResourcePathProviders(): \Generator
-    {
-        $apiResourcePathProvidersClasses = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['apiResourcePathProviders'];
-
-        foreach ($apiResourcePathProvidersClasses as $apiResourcePathProviderClass) {
-            $apiResourcePathProvider = GeneralUtility::makeInstance($apiResourcePathProviderClass);
-
-            if (!$apiResourcePathProvider instanceof ApiResourcePathProvider) {
-                throw new \InvalidArgumentException(
-                    sprintf(
-                        'API resource path provider `%s` has to be an instance of `%s`',
-                        $apiResourcePathProviderClass,
-                        ApiResourcePathProvider::class
-                    ),
-                    1609066405400
-                );
-            }
-
-            yield $apiResourcePathProvider;
-        }
     }
 }
