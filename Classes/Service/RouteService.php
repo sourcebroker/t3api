@@ -34,7 +34,7 @@ class RouteService implements SingletonInterface
             . '/' . ltrim(self::getFullApiBasePath(), '/');
     }
 
-    public static function routeHasT3ApiResourceEnhancerQueryParam(ServerRequestInterface $request = null): bool
+    public static function routeHasT3ApiResourceEnhancerQueryParam(?ServerRequestInterface $request = null): bool
     {
         $request = $request ?? self::getRequest();
         return $request instanceof ServerRequest && is_array($request->getQueryParams())

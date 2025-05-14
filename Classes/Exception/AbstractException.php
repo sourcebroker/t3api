@@ -20,7 +20,7 @@ abstract class AbstractException extends \Exception implements ExceptionInterfac
      */
     protected string $title;
 
-    protected static function translate(string $key, array $arguments = null): ?string
+    protected static function translate(string $key, ?array $arguments = null): ?string
     {
         return LocalizationUtility::translate($key, 't3api', $arguments);
     }
