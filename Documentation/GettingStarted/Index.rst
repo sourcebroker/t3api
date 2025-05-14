@@ -63,6 +63,15 @@ Default base path to api requests is: ``_api``. To change it, it is needed to ex
         type: T3apiResourceEnhancer
         basePath: 'my_custom_api_basepath'
 
+You can make the OpenAPI specification available at ``/_api/openapi.json`` by adding the following to the route enhancer:
+
+.. code-block:: yaml
+
+    routeEnhancers:
+      T3api:
+        type: T3apiResourceEnhancer
+        specFileName: 'openapi.json'
+
 
 Creating API resource
 ======================
