@@ -24,7 +24,7 @@ class DeserializationContextBuilder extends AbstractContextBuilder
      * @param null $targetObject
      * @return DeserializationContext
      */
-    public function createFromOperation(OperationInterface $operation, Request $request, $targetObject = null): Context
+    public function createFromOperation(OperationInterface $operation, Request $request, mixed $targetObject = null): Context
     {
         $context = $this->create();
 

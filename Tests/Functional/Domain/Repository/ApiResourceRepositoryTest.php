@@ -49,7 +49,7 @@ class ApiResourceRepositoryTest extends FunctionalTestCase
      * @return mixed
      * @throws \ReflectionException
      */
-    protected static function callProtectedMethod(string $methodName, array $arguments = [], object $object = null)
+    protected static function callProtectedMethod(string $methodName, array $arguments = [], ?object $object = null)
     {
         $serializerMetadataServiceReflection = new \ReflectionClass(ApiResourceRepository::class);
         $method = $serializerMetadataServiceReflection->getMethod($methodName);

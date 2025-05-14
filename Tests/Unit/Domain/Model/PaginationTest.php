@@ -165,7 +165,7 @@ class PaginationTest extends UnitTestCase
         );
     }
 
-    protected static function getPaginationInstance(array $attributes = [], Request $request = null): Pagination
+    protected static function getPaginationInstance(array $attributes = [], ?Request $request = null): Pagination
     {
         $pagination = Pagination::create(
             array_merge(self::DEFAULT_API_RESOURCE_PAGINATION_ATTRIBUTES, $attributes)

@@ -10,11 +10,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         typo3: ["13"]
-        php: ["8.2", "8.3"]
+        php: ["8.2", "8.3", "8.4"]
         composer: ["lowest", "highest"]
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

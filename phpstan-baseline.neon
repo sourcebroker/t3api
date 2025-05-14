@@ -1,6 +1,5 @@
 parameters:
 	ignoreErrors:
-		- '#Construct empty\(\)#'
 		- '#Unsafe usage of new static\(\)#'
 		- '#Access to an undefined property Metadata\\PropertyMetadata::\$type.#'
 	typo3:

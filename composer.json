@@ -27,25 +27,21 @@
 		"symfony/property-info": "^6.4 || ^7.0",
 		"symfony/psr-http-message-bridge": "^6.4 || ^7.0",
 		"symfony/routing": "^6.4 || ^7.0",
-		"typo3/cms-core": "^12.4.16 || ^13.3",
+		"typo3/cms-core": "^13",
 		"typo3/cms-extbase": "^12.4.16 || ^13.3",
 		"typo3/cms-frontend": "^12.4.16 || ^13.3"
 	},
 	"require-dev": {
-		"ergebnis/composer-normalize": "^2.29.0",
-		"friendsofphp/php-cs-fixer": "^3.57.1",
+		"ergebnis/composer-normalize": "^2.47.0",
+		"friendsofphp/php-cs-fixer": "^3.75.0",
 		"phpstan/extension-installer": "^1.2.0",
-		"phpstan/phpstan": "^1.10.67",
-		"phpstan/phpstan-phpunit": "^1.3.16",
-		"phpstan/phpstan-strict-rules": "^1.5.5",
-		"phpunit/phpunit": "^10.5.17",
-		"saschaegerer/phpstan-typo3": "^1.10.0",
-		"seld/jsonlint": "^1.10.2",
-		"symfony/yaml": "^5.4 || ^6.0 || ^7.0",
+		"phpstan/phpstan": "^1.12.26",
+		"saschaegerer/phpstan-typo3": "~1.10.2",
+		"seld/jsonlint": "^1.11.0",
+		"symfony/yaml": "^6.0 || ^7.0",
 		"typo3/cms-install": "^12.4.16 || ^13.3",
 		"typo3/coding-standards": "^0.8",
-		"typo3/testing-framework": "^8.2.1",
-		"webmozart/assert": "^1.11.0"
+		"typo3/testing-framework": "^8.2.1"
 	},
 	"replace": {
 		"typo3-ter/t3api": "self.version"
@@ -90,7 +86,7 @@
 		],
 		"ci:composer:normalize": "@composer normalize --dry-run",
 		"ci:json:lint": "find ./composer.json ./Resources ./Configuration -name '*.json' | xargs -r php .Build/bin/jsonlint -q",
-		"ci:php:cs-fixer": ".Build/bin/php-cs-fixer fix --config .php-cs-fixer.php -v --dry-run --using-cache no --diff",
+		"ci:php:cs-fixer": "PHP_CS_FIXER_IGNORE_ENV=1 .Build/bin/php-cs-fixer fix --config .php-cs-fixer.php -v --dry-run --using-cache no --diff",
 		"ci:php:lint": "find . -name '*.php' -not -path './.Build/*' -not -path './.cache/*' -not -path './.ddev/*' -not -path './.test/*' -not -path './.Documentation/*'  -not -path './.Documentation-GENERATED-temp/*' -print0 | xargs -0 -n 1 -P 4 php -l > /dev/null",
 		"ci:php:stan": ".Build/bin/phpstan --no-progress",
 		"ci:tests:create-directories": "mkdir -p .Build/public/typo3temp/var/tests",
@@ -106,6 +102,6 @@
 			"@fix:composer:normalize"
 		],
 		"fix:composer:normalize": "@composer normalize",
-		"fix:php:cs-fixer": ".Build/bin/php-cs-fixer fix --config .php-cs-fixer.php"
+		"fix:php:cs-fixer": "PHP_CS_FIXER_IGNORE_ENV=1 .Build/bin/php-cs-fixer fix --config .php-cs-fixer.php"
 	}
 }
