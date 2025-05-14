@@ -56,7 +56,7 @@ abstract class AbstractDispatcher
     public function processOperationByRequest(
         RequestContext $requestContext,
         Request $request,
-        ResponseInterface &$response = null
+        ?ResponseInterface &$response = null
     ): string {
         foreach ($this->apiResourceRepository->getAll() as $apiResource) {
             try {
@@ -90,7 +90,7 @@ abstract class AbstractDispatcher
         OperationInterface $operation,
         array $route,
         Request $request,
-        ResponseInterface &$response = null
+        ?ResponseInterface &$response = null
     ): string {
         $handlers = $this->getHandlersSupportingOperation($operation, $request);
 
