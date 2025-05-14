@@ -6,6 +6,7 @@ namespace SourceBroker\T3api\Tests\Functional\Domain\Repository;
 
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Factory\ApiResourceFactory;
+use SourceBroker\T3api\Factory\ApiResourcePathProviderCollectionFactory;
 use SourceBroker\T3api\Service\ReflectionService;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -15,6 +16,7 @@ class ApiResourceRepositoryTest extends FunctionalTestCase
     protected array $testExtensionsToLoad = ['typo3conf/ext/t3api'];
     protected CacheManager $cacheManager;
     protected ApiResourceFactory $apiResourceFactory;
+    protected ApiResourcePathProviderCollectionFactory $apiResourcePathProviderCollectionFactory;
     protected ReflectionService $reflectionService;
 
     public function setUp(): void
@@ -23,6 +25,7 @@ class ApiResourceRepositoryTest extends FunctionalTestCase
         $this->cacheManager = $this->getMockBuilder(CacheManager::class)->disableOriginalConstructor()->getMock();
         $this->reflectionService = $this->getMockBuilder(ReflectionService::class)->disableOriginalConstructor()->getMock();
         $this->apiResourceFactory = $this->getMockBuilder(ApiResourceFactory::class)->disableOriginalConstructor()->getMock();
+        $this->apiResourcePathProviderCollectionFactory = $this->getMockBuilder(ApiResourcePathProviderCollectionFactory::class)->disableOriginalConstructor()->getMock();
     }
 
     /**
@@ -35,7 +38,8 @@ class ApiResourceRepositoryTest extends FunctionalTestCase
         $apiResourceRepository = new ApiResourceRepository(
             $this->cacheManager,
             $this->reflectionService,
-            $this->apiResourceFactory
+            $this->apiResourceFactory,
+            $this->apiResourcePathProviderCollectionFactory
         );
 
         // iterator_to_arrays converts the Generator object to an array because Generator can not be serialized
