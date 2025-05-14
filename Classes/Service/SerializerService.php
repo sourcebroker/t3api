@@ -75,10 +75,7 @@ class SerializerService implements SingletonInterface
         return Environment::getContext()->isDevelopment();
     }
 
-    /**
-     * @param mixed $result
-     */
-    public function serialize($result, SerializationContext|null $serializationContext = null): string
+    public function serialize(mixed $result, ?SerializationContext $serializationContext = null): string
     {
         return $this->getSerializerBuilder()
             ->setSerializationContextFactory(function () use ($serializationContext): SerializationContext {
@@ -88,10 +85,7 @@ class SerializerService implements SingletonInterface
             ->serialize($result, 'json');
     }
 
-    /**
-     * @return mixed
-     */
-    public function deserialize(string $data, string $type, DeserializationContext|null $deserializationContext = null)
+    public function deserialize(string $data, string $type, ?DeserializationContext $deserializationContext = null): mixed
     {
         return $this->getSerializerBuilder()
             ->setDeserializationContextFactory(function () use ($deserializationContext): DeserializationContext {
