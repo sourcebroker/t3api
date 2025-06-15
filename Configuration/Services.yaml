@@ -134,3 +134,9 @@ services:
       - name: event.listener
         identifier: 't3api/SetStoragePidForSnapshot'
         event: SourceBroker\T3api\Event\AfterCreateContextForOperationEvent
+
+  SourceBroker\T3api\EventListener\EnrichPageCacheIdentifierParametersEventListener:
+    tags:
+      - name: event.listener
+        identifier: 't3api/EnrichPageCacheIdentifierParametersEventListener'
+        event: TYPO3\CMS\Frontend\Event\BeforePageCacheIdentifierIsHashedEvent
