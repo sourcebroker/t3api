@@ -6,10 +6,12 @@ namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use SourceBroker\T3api\Attribute\AsSerializerHandler;
 use SourceBroker\T3api\Service\UrlService;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
+#[AsSerializerHandler]
 class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterface
 {
     /**
