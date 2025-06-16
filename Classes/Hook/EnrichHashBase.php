@@ -6,6 +6,7 @@ namespace SourceBroker\T3api\Hook;
 
 use SourceBroker\T3api\Service\RouteService;
 
+// @todo remove this class when support for TYPO3 v12 is dropped. For TYPO3 >= v13 \SourceBroker\T3api\EventListener\EnrichPageCacheIdentifierParametersEventListener is doing the same job.
 class EnrichHashBase
 {
     /**

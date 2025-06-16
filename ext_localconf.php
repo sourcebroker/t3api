@@ -1,6 +1,9 @@
 <?php
 
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
+
+use TYPO3\CMS\Core\Information\Typo3Version;
+
 defined('TYPO3') || die('Access denied.');
 
 call_user_func(
@@ -117,6 +120,11 @@ call_user_func(
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['t3api_clearcache'] =
             \SourceBroker\T3api\Service\SerializerService::class . '->clearCache';
+
+        if ((new Typo3Version())->getMajorVersion() < 13) {
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['createHashBase']['t3api']
+                = \SourceBroker\T3api\Hook\EnrichHashBase::class.'->init';
+        }
 
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::ENHANCER_NAME] = \SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer::class;
 
