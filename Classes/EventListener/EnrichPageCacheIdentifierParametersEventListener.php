@@ -15,16 +15,13 @@ use TYPO3\CMS\Frontend\Event\BeforePageCacheIdentifierIsHashedEvent;
  */
 class EnrichPageCacheIdentifierParametersEventListener
 {
-    /** @phpstan-ignore-next-line @todo Remove this comment when support for TYPO3 v12 is dropped */
     public function __invoke(BeforePageCacheIdentifierIsHashedEvent $beforePageCacheIdentifierIsHashedEvent): void
     {
         if (!RouteService::routeHasT3ApiResourceEnhancerQueryParam()) {
             return;
         }
 
-        /** @phpstan-ignore-next-line @todo Remove this comment when support for TYPO3 v12 is dropped */
         $beforePageCacheIdentifierIsHashedEvent->setPageCacheIdentifierParameters([
-            /** @phpstan-ignore-next-line @todo Remove this comment when support for TYPO3 v12 is dropped */
             ...$beforePageCacheIdentifierIsHashedEvent->getPageCacheIdentifierParameters(),
             't3api_hash_base_random' => microtime(),
         ]);

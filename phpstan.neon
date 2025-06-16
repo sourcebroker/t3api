@@ -11,3 +11,11 @@ parameters:
     - Classes
     - Configuration
     - Tests
+
+  ignoreErrors:
+    # @todo This ignoreError can be removed when support for TYPO3 v12 is dropped
+    - message: "#Parameter \\$beforePageCacheIdentifierIsHashedEvent of method SourceBroker\\\\T3api\\\\EventListener\\\\EnrichPageCacheIdentifierParametersEventListener::__invoke\\(\\) has invalid type TYPO3\\\\CMS\\\\Frontend\\\\Event\\\\BeforePageCacheIdentifierIsHashedEvent#"
+    # @todo This ignoreError can be removed when support for TYPO3 v12 is dropped
+    - message: "#Call to method setPageCacheIdentifierParameters\\(\\) on an unknown class TYPO3\\\\CMS\\\\Frontend\\\\Event\\\\BeforePageCacheIdentifierIsHashedEvent#"
+    # @todo This ignoreError can be removed when support for TYPO3 v12 is dropped
+    - message: "#Call to method getPageCacheIdentifierParameters\\(\\) on an unknown class TYPO3\\\\CMS\\\\Frontend\\\\Event\\\\BeforePageCacheIdentifierIsHashedEvent#"
