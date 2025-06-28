@@ -6,9 +6,11 @@ namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use SourceBroker\T3api\Attribute\AsSerializerHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
+#[AsSerializerHandler]
 class RteHandler extends AbstractHandler implements SerializeHandlerInterface
 {
     /**
