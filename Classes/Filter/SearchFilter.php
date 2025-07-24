@@ -109,7 +109,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
                 $key,
                 $queryExpansion ? ' WITH QUERY EXPANSION ' : ''
             );
-            $binds[$key] = $value;
+            $binds[ltrim($key, ':')] = $value;
         }
 
         return $queryBuilder
