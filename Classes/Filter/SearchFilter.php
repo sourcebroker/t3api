@@ -108,7 +108,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
                 $booleanQuery = '';
                 foreach ($words as $word) {
                     if (!empty(trim($word))) {
-                        $booleanQuery .= trim($word) . '* ';
+                        $booleanQuery .= ' +'. trim($word) . '* ';
                     }
                 }
                 $booleanQuery = trim($booleanQuery);
