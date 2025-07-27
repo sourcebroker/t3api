@@ -311,7 +311,6 @@
 			},
 			"response": []
 		},
-
 		{
 			"name": "Edit news",
 			"event": [
@@ -607,6 +606,20 @@
 							"    }",
 							");",
 							"",
+							"pm.test(",
+							"    'Each falMedia item has proper properties',",
+							"    function() {",
+							"        pm.expect(response.falMedia[0].uid).to.be.a('number');",
+							"        pm.expect(response.falMedia[0].url).to.be.a('string');",
+							"        pm.expect(response.falMedia[0].file).to.be.an('object');",
+							"        pm.expect(response.falMedia[0].file.uid).to.equal(Number(pm.environment.get('uploadedFieldUid')));",
+							"",
+							"        pm.expect(response.falMedia[1].uid).to.be.a('number');",
+							"        pm.expect(response.falMedia[1].url).to.be.a('string');",
+							"        pm.expect(response.falMedia[1].file).to.be.an('object');",
+							"        pm.expect(response.falMedia[1].file.uid).to.equal(Number(pm.environment.get('uploadedFieldUid')));",
+							"    }",
+							");",
 							""
 						],
 						"type": "text/javascript"
@@ -631,6 +644,212 @@
 					"mode": "raw",
 					"raw": "{\n\t\"title\": \"This is title of the news with new image\",\n\t\"falMedia\": [\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 1\n\t\t},\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 0\n\t\t}\n\t]\n}"
 				},
+				"url": {
+					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete news",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4de54e1e-64cb-4e41-a7fb-91b37d66a481",
+						"exec": [
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check news after remove",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "37f85fba-b0aa-40d6-95a6-54f03b6b396f",
+						"exec": [
+							"pm.test(",
+							"    'Status code is 404',",
+							"    function () {",
+							"        pm.response.to.have.status(404);",
+							"    }",
+							");",
+							"",
+							"pm.environment.set('newsUid', 0);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create news with file references in the same request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7cdf6990-c444-4b88-bd80-12a614d47ed7",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 201',",
+							"    function () {",
+							"        pm.response.to.have.status(201);",
+							"    }",
+							");",
+							"",
+							"pm.environment.set('newsUid', response.uid);",
+							"pm.environment.set('singleNewsEndpoint', response['@id']);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\": \"This is an example news with file reference added at once\",\n\t\"alternativeTitle\": \"Alt title\",\n\t\"pid\": 3,\n\t\"pathSegment\":\"this_is_an_example_news_with_file_reference\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"bodytext\": \"Here is the body\",\n\t\"falMedia\": [\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 1\n\t\t},\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 0\n\t\t}\n\t]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{newsEndpointPath}}",
+					"host": [
+						"{{baseUrl}}{{newsEndpointPath}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check news if has fal media",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9cb798ce-62c7-494f-a005-747a54caa09c",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Title of the new news is correct',",
+							"    function() {",
+							"        pm.expect(response.title).to.eql('This is an example news with file reference added at once')",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'falMedia is an array with at least two elements',",
+							"    function() {",
+							"        pm.expect(response.falMedia).to.be.an('array');",
+							"        pm.expect(response.falMedia.length).to.be.at.least(2);",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Each falMedia item has proper properties',",
+							"    function() {",
+							"        pm.expect(response.falMedia[0].uid).to.be.a('number');",
+							"        pm.expect(response.falMedia[0].url).to.be.a('string');",
+							"        pm.expect(response.falMedia[0].file).to.be.an('object');",
+							"        pm.expect(response.falMedia[0].file.uid).to.equal(Number(pm.environment.get('uploadedFieldUid')));",
+							"",
+							"        pm.expect(response.falMedia[1].uid).to.be.a('number');",
+							"        pm.expect(response.falMedia[1].url).to.be.a('string');",
+							"        pm.expect(response.falMedia[1].file).to.be.an('object');",
+							"        pm.expect(response.falMedia[1].file.uid).to.equal(Number(pm.environment.get('uploadedFieldUid')));",
+							"    }",
+							");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
 				"url": {
 					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
 					"host": [
