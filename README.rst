@@ -44,7 +44,7 @@ At frontend part you can at once test REST API responses for ext news:
 * https://13.t3api.ddev.site/_api/news/categories
 * etc
 
-You can also run Postman test with ``ddev ci:tests:postman`` command or full test suite with ``ddev composer ci``.
+You can also run Postman test with ``ddev composer ci:tests:postman`` command or full test suite with ``ddev composer ci``.
 Postman is doing full CRUD test with category and news (with image).
 
 Development

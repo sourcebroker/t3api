@@ -139,6 +139,9 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @T3api\Serializer\Groups({
      *     "api_get_collection_t3apinews_news",
      *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $teaser = '';
@@ -148,6 +151,8 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @T3api\Serializer\Groups({
      *     "api_get_item_t3apinews_news",
      *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $bodytext = '';
@@ -156,10 +161,10 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @var \DateTime
      * @T3api\Serializer\Groups({
      *     "api_get_collection_t3apinews_news",
-     *      "api_get_item_t3apinews_news",
-     *      "api_post_item_t3apinews_news",
-     *      "api_patch_item_t3apinews_news",
-     *      "api_put_item_t3apinews_news",
+     *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $datetime;
@@ -167,9 +172,9 @@ class News extends \GeorgRinger\News\Domain\Model\News
     /**
      * @var \Datetime
      * @T3api\Serializer\Groups({
-     *      "api_post_item_t3apinews_news",
-     *      "api_patch_item_t3apinews_news",
-     *      "api_put_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $crdate;
@@ -179,6 +184,9 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @T3api\Serializer\Groups({
      *     "api_get_collection_t3apinews_news",
      *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $author = '';
@@ -188,6 +196,9 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @T3api\Serializer\Groups({
      *     "api_get_collection_t3apinews_news",
      *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $authorEmail = '';
@@ -207,10 +218,10 @@ class News extends \GeorgRinger\News\Domain\Model\News
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3apinews\Domain\Model\News>
      * @T3api\Serializer\Groups({
-     *      "api_get_item_t3apinews_news",
-     *      "api_post_item_t3apinews_news",
-     *      "api_patch_item_t3apinews_news",
-     *      "api_put_item_t3apinews_news",
+     *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $related;
@@ -218,10 +229,10 @@ class News extends \GeorgRinger\News\Domain\Model\News
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\SourceBroker\T3apinews\Domain\Model\News>
      * @T3api\Serializer\Groups({
-     *      "api_get_item_t3apinews_news",
-     *      "api_post_item_t3apinews_news",
-     *      "api_patch_item_t3apinews_news",
-     *      "api_put_item_t3apinews_news",
+     *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $relatedFrom;
@@ -231,6 +242,9 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @T3api\Serializer\Groups({
      *     "api_get_collection_t3apinews_news",
      *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $type = '';
@@ -238,6 +252,8 @@ class News extends \GeorgRinger\News\Domain\Model\News
     /**
      * @var string
      * @T3api\Serializer\Groups({
+     *     "api_get_collection_t3apinews_news",
+     *     "api_get_item_t3apinews_news",
      *     "api_post_item_t3apinews_news",
      *     "api_patch_item_t3apinews_news",
      *     "api_put_item_t3apinews_news",
@@ -249,6 +265,9 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @T3api\Serializer\Groups({
      *     "api_get_collection_t3apinews_news",
      *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $internalurl = '';
@@ -258,6 +277,9 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @T3api\Serializer\Groups({
      *     "api_get_collection_t3apinews_news",
      *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $externalurl = '';
@@ -267,6 +289,9 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @T3api\Serializer\Groups({
      *     "api_get_collection_t3apinews_news",
      *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $istopnews = false;
@@ -276,6 +301,9 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @T3api\Serializer\Groups({
      *     "api_get_collection_t3apinews_news",
      *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
+     *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected \TYPO3\CMS\Extbase\Persistence\ObjectStorage $tags;
@@ -285,7 +313,9 @@ class News extends \GeorgRinger\News\Domain\Model\News
      * @T3api\Serializer\Groups({
      *     "api_get_collection_t3apinews_news",
      *     "api_get_item_t3apinews_news",
+     *     "api_post_item_t3apinews_news",
      *     "api_patch_item_t3apinews_news",
+     *     "api_put_item_t3apinews_news",
      * })
      */
     protected $falMedia;

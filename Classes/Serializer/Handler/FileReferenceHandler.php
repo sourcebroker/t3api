@@ -205,7 +205,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         if ($visitor->getCurrentObject() instanceof AbstractDomainObject) {
             /** @var AbstractDomainObject $currentObject */
             $currentObject = $visitor->getCurrentObject();
-            $fileReference->setPid($currentObject->getPid());
+            $fileReference->setPid($currentObject->getPid() ?? 0);
             $fileReference->_setProperty('_languageUid', $currentObject->_getProperty('_languageUid'));
         }
 
