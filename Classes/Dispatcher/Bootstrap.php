@@ -11,6 +11,7 @@ use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Exception\ExceptionInterface;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
+use SourceBroker\T3api\Service\OpenApiBuilder;
 use SourceBroker\T3api\Service\RouteService;
 use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -79,6 +80,14 @@ class Bootstrap extends AbstractDispatcher
         $this->response->getBody()->write($output);
 
         return $this->response;
+    }
+
+    public function processSpecFileEndpoint(): ResponseInterface
+    {
+        $output = OpenApiBuilder::build($this->apiResourceRepository->getAll())->toJson();
+        $this->response->getBody()->write($output);
+
+        return $this->response->withHeader('Content-Type', 'application/json');
     }
 
     protected function isMainEndpointResponseClassDefined(): bool
