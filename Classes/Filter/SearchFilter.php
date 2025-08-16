@@ -36,7 +36,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
      */
     public function filterProperty(
         string $property,
-        $values,
+               $values,
         QueryInterface $query,
         ApiFilter $apiFilter
     ): ?ConstraintInterface {
@@ -82,6 +82,7 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
         $binds = [];
         $rootAlias = 'o';
         $queryExpansion = (bool)$apiFilter->getArgument('withQueryExpansion');
+        $booleanQuery = (bool)$apiFilter->getArgument('withBooleanQuery');
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($tableName);
@@ -100,16 +101,43 @@ class SearchFilter extends AbstractFilter implements OpenApiSupportingFilterInte
 
         foreach ($values as $i => $value) {
             $key = ':text_ma_' . ((int)$i);
-            $conditions[] = sprintf(
-                'MATCH(%s) AGAINST (%s IN NATURAL LANGUAGE MODE %s)',
-                $queryBuilder->quoteIdentifier(
-                    $tableAlias . '.' . GeneralUtility::makeInstance(DataMapper::class)
-                        ->convertPropertyNameToColumnName($propertyName, $apiFilter->getFilterClass())
-                ),
-                $key,
-                $queryExpansion ? ' WITH QUERY EXPANSION ' : ''
-            );
-            $binds[$key] = $value;
+
+            if ($booleanQuery) {
+                // Split the value into individual words and create OR conditions
+                $words = explode(' ', trim($value));
+                $booleanQuery = '';
+                foreach ($words as $word) {
+                    if (!empty(trim($word))) {
+                        $booleanQuery .= ' +'. trim($word) . '* ';
+                    }
+                }
+                $booleanQuery = trim($booleanQuery);
+
+                // use IN BOOLEAN MODE to search for partials of words
+                $conditions[] = sprintf(
+                    'MATCH(%s) AGAINST (%s IN BOOLEAN MODE)',
+                    $queryBuilder->quoteIdentifier(
+                        $tableAlias . '.' . GeneralUtility::makeInstance(DataMapper::class)
+                            ->convertPropertyNameToColumnName($propertyName, $apiFilter->getFilterClass())
+                    ),
+                    $key
+                );
+
+                $binds[ltrim($key, ':')] = $booleanQuery;
+            } else {
+                // Original natural language mode query
+                $conditions[] = sprintf(
+                    'MATCH(%s) AGAINST (%s IN NATURAL LANGUAGE MODE %s)',
+                    $queryBuilder->quoteIdentifier(
+                        $tableAlias . '.' . GeneralUtility::makeInstance(DataMapper::class)
+                            ->convertPropertyNameToColumnName($propertyName, $apiFilter->getFilterClass())
+                    ),
+                    $key,
+                    $queryExpansion ? ' WITH QUERY EXPANSION ' : ''
+                );
+
+                $binds[ltrim($key, ':')] = $value;
+            }
         }
 
         return $queryBuilder
