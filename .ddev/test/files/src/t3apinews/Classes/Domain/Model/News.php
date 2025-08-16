@@ -317,6 +317,7 @@ class News extends \GeorgRinger\News\Domain\Model\News
      *     "api_patch_item_t3apinews_news",
      *     "api_put_item_t3apinews_news",
      * })
+     * @T3api\ORM\Cascade("persist")
      */
     protected $falMedia;
 

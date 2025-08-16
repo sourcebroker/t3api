@@ -8,5 +8,8 @@ use TYPO3\CMS\Core\SingletonInterface;
 
 class HeadlessDispatcher extends AbstractDispatcher implements SingletonInterface
 {
-    // @TODO This comment is here just for reformatting compatibility of csfixes and phpstorm.
+    protected function init(): void
+    {
+        // @TODO This comment is here just for reformatting compatibility of csfixes and phpstorm.
+    }
 }

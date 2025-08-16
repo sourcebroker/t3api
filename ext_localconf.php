@@ -11,52 +11,6 @@ call_user_func(
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['basePath'] = '_api';
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader'] = 'X-Locale';
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['operationHandlers'] = [
-            \SourceBroker\T3api\OperationHandler\OptionsOperationHandler::class => 10500,
-            \SourceBroker\T3api\OperationHandler\FileUploadOperationHandler::class => -400,
-            \SourceBroker\T3api\OperationHandler\CollectionGetOperationHandler::class => -500,
-            \SourceBroker\T3api\OperationHandler\CollectionPostOperationHandler::class => -500,
-            \SourceBroker\T3api\OperationHandler\CollectionMethodNotAllowedOperationHandler::class => -9999,
-            \SourceBroker\T3api\OperationHandler\ItemGetOperationHandler::class => -500,
-            \SourceBroker\T3api\OperationHandler\ItemPutOperationHandler::class => -500,
-            \SourceBroker\T3api\OperationHandler\ItemPatchOperationHandler::class => -500,
-            \SourceBroker\T3api\OperationHandler\ItemDeleteOperationHandler::class => -500,
-            \SourceBroker\T3api\OperationHandler\ItemMethodNotAllowedOperationHandler::class => -9999,
-        ];
-
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['processors'] = [
-            \SourceBroker\T3api\Processor\CorsProcessor::class => 100,
-        ];
-
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['apiResourcePathProviders'] = [
-            \SourceBroker\T3api\Provider\ApiResourcePath\LoadedExtensionsDomainModelApiResourcePathProvider::class,
-        ];
-
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors'] = [
-            \SourceBroker\T3api\Serializer\Construction\InitializedObjectConstructor::class,
-            \SourceBroker\T3api\Serializer\Construction\ExtbaseObjectConstructor::class,
-        ];
-
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] = [
-            \SourceBroker\T3api\Serializer\Handler\AbstractDomainObjectHandler::class,
-            \SourceBroker\T3api\Serializer\Handler\ObjectStorageHandler::class,
-            \SourceBroker\T3api\Serializer\Handler\FileReferenceHandler::class,
-            \SourceBroker\T3api\Serializer\Handler\ImageHandler::class,
-            \SourceBroker\T3api\Serializer\Handler\RecordUriHandler::class,
-            \SourceBroker\T3api\Serializer\Handler\TypolinkHandler::class,
-            \SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler::class,
-            \SourceBroker\T3api\Serializer\Handler\RteHandler::class,
-            \SourceBroker\T3api\Serializer\Handler\PasswordHashHandler::class,
-        ];
-
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] = [
-            \SourceBroker\T3api\Serializer\Subscriber\GenerateMetadataSubscriber::class,
-            \SourceBroker\T3api\Serializer\Subscriber\FileReferenceSubscriber::class,
-            \SourceBroker\T3api\Serializer\Subscriber\AbstractEntitySubscriber::class,
-            \SourceBroker\T3api\Serializer\Subscriber\ThrowableSubscriber::class,
-            \SourceBroker\T3api\Serializer\Subscriber\CurrentFeUserSubscriber::class,
-        ];
-
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerMetadataDirs'] = [
             't3api' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3api') . 'Resources/Private/Serializer/Metadata',
         ];

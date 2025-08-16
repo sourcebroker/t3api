@@ -8,8 +8,10 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use SourceBroker\T3api\Attribute\AsSerializerObjectConstructor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[AsSerializerObjectConstructor(priority: 400)]
 class ExtbaseObjectConstructor implements ObjectConstructorInterface
 {
     /**
