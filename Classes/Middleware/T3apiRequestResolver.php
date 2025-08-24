@@ -26,6 +26,10 @@ class T3apiRequestResolver implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        if (RouteService::routeIsT3ApiSpecificationFile($request)) {
+            return $this->bootstrap->processSpecFileEndpoint();
+        }
+
         if (RouteService::routeHasT3ApiResourceEnhancerQueryParam($request)) {
             return $this->bootstrap->process($this->cleanupRequest($request));
         }
