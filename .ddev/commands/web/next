@@ -4,6 +4,8 @@
 ## Usage: next
 ## Example: "ddev next, ddev next patch, ddev next minor, ddev next major"
 
+set -e
+
 DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
 
 # Ensure DEFAULT_BRANCH is set
@@ -93,4 +95,4 @@ sed -i'' -E "s/(<project[^>]* version=\")[^\"]+(\")/\1$NEXT_TAG\2/" ./Documentat
 
 # Prepare command to tag the new version
 echo "Copy the command below and run it to tag the new version:"
-echo "git add Documentation/guides.xml ext_emconf.php && git commit -m 'Tag version $NEXT_TAG' && git tag -a '$NEXT_TAG' -m 'Version $NEXT_TAG' -s && git push origin $DEFAULT_BRANCH --tags"
+echo "zsh -e -c \"git add Documentation/guides.xml ext_emconf.php; git commit -m 'Tag version $NEXT_TAG'; git tag -a '$NEXT_TAG' -m 'Version $NEXT_TAG' -s; git push origin $DEFAULT_BRANCH '$NEXT_TAG'\""
