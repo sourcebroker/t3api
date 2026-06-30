@@ -11,12 +11,9 @@ use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 class InlineViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     protected HeadlessDispatcher $headlessDispatcher;
 
     public function initialize(): void
