@@ -1,0 +1,23 @@
+#!/bin/bash
+
+## Description: [ExtDev] Install TYPO3 14 integration instance.
+## Usage: install
+## Example: "ddev install 14"
+
+set +x
+set -e
+
+source .ddev/test/utils-install.sh
+install_start "14"
+
+composer req typo3/cms-backend:'^14.0' typo3/cms-core:'^14.0' typo3/cms-extbase:'^14.0' typo3/cms-filelist:'^14.0' \
+            typo3/cms-fluid:'^14.0' typo3/cms-frontend:'^14.0' typo3/cms-recycler:'^14.0' typo3/cms-tstemplate:'^14.0' \
+            typo3/cms-info:'^14.0' typo3/cms-lowlevel:'^14.0' typo3/cms-rte-ckeditor:'^14.0' typo3/cms-impexp:'^14.0' \
+            typo3/cms-install:'^14.0' typo3/cms-seo:'^14.0' \
+            helhum/typo3-console:'^9.0' \
+            cweagans/composer-patches:'^1.7.3' georgringer/news:'dev-main' \
+            sourcebroker/t3apinews:'^1.0.0' v/site:'^1.0.0' \
+            sourcebroker/t3api:'@dev' \
+            --no-progress --no-interaction "${COMPOSER_SECURITY_FLAGS[@]}" --working-dir "$BASE_PATH"
+
+install_end

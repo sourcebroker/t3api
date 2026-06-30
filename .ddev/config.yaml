@@ -9,6 +9,8 @@ additional_hostnames:
     - 12.api.t3api
     - 13.t3api
     - 13.api.t3api
+    - 14.t3api
+    - 14.api.t3api
 additional_fqdns: []
 database:
     type: mariadb
