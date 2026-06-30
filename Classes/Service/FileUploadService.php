@@ -42,6 +42,11 @@ class FileUploadService implements SingletonInterface
 
         $this->verifyFileExtension($uploadSettings, $uploadedFile);
 
+        $conflictMode = $operation->getUploadSettings()->getConflictMode();
+        if (class_exists(\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior::class)) {
+            $conflictMode = \TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior::from($conflictMode);
+        }
+
         return $this->getUploadFolder($uploadSettings)
             ->addUploadedFile(
                 [
@@ -51,7 +56,7 @@ class FileUploadService implements SingletonInterface
                     'tmp_name' => $uploadedFile->getPathname(),
                     'type' => $uploadedFile->getMimeType(),
                 ],
-                $operation->getUploadSettings()->getConflictMode()
+                $conflictMode
             );
     }
 

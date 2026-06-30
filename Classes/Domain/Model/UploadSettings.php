@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Domain\Model;
 
-use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class UploadSettings extends AbstractOperationResourceSettings
@@ -16,7 +15,7 @@ class UploadSettings extends AbstractOperationResourceSettings
      */
     protected array $allowedFileExtensions = [];
 
-    protected string $conflictMode = DuplicationBehavior::RENAME;
+    protected string $conflictMode = 'rename';
 
     protected string $filenameHashAlgorithm = 'md5';
 
