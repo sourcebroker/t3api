@@ -17,6 +17,7 @@
 /composer.lock
 /.Build
 /.test
+/packages/
 /var/
 /.php_cs.cache
 /.php-cs-fixer.cache
