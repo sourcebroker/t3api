@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Tests\Unit\Service;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use SourceBroker\T3api\Annotation\Serializer\Groups;
 use SourceBroker\T3api\Annotation\Serializer\Type\Image;
 use SourceBroker\T3api\Annotation\Serializer\Type\RecordUri;
@@ -97,6 +99,8 @@ class SerializerMetadataServiceTest extends UnitTestCase
      *
      * @throws \ReflectionException
      */
+    #[DataProvider('getPropertyMetadataFromAnnotationsReturnsCorrectValueDataProvider')]
+    #[Test]
     public static function getPropertyMetadataFromAnnotationsReturnsCorrectValue(
         callable $annotations,
         array $expectedResult
@@ -179,6 +183,8 @@ class SerializerMetadataServiceTest extends UnitTestCase
      *
      * @throws \ReflectionException
      */
+    #[DataProvider('stringifyPropertyTypeReturnsCorrectValueDataProvider')]
+    #[Test]
     public static function stringifyPropertyTypeReturnsCorrectValue(Type $type, string $expectedType): void
     {
         self::assertEquals(
@@ -320,6 +326,8 @@ class SerializerMetadataServiceTest extends UnitTestCase
      * @dataProvider getPropertiesReturnsCorrectValueDataProvider
      * @test
      */
+    #[DataProvider('getPropertiesReturnsCorrectValueDataProvider')]
+    #[Test]
     public static function getPropertiesReturnsCorrectValue(string $className, mixed $expectedType): void
     {
         self::assertEquals(
@@ -427,6 +435,8 @@ class SerializerMetadataServiceTest extends UnitTestCase
      * @dataProvider getVirtualPropertiesReturnsCorrectValueDataProvider
      * @test
      */
+    #[DataProvider('getVirtualPropertiesReturnsCorrectValueDataProvider')]
+    #[Test]
     public static function getVirtualPropertiesReturnsCorrectValue(string $className, mixed $expectedType): void
     {
         self::assertEquals(

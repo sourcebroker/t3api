@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Utility;
 
+use PHPUnit\Framework\Attributes\Test;
 use SourceBroker\T3api\Utility\FileUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -12,6 +13,7 @@ class FileUtilityTest extends UnitTestCase
     /**
      * @test
      */
+    #[Test]
     public function createWritableDirectoryCreatesNewWritableDirectory()
     {
         $directoryPath = FileUtility::createWritableDirectory($this->getPathToNotExistingDirectory(sys_get_temp_dir()));
@@ -23,6 +25,7 @@ class FileUtilityTest extends UnitTestCase
     /**
      * @test
      */
+    #[Test]
     public function createWritableDirectoryThrowsExceptionIfCanNotCreate()
     {
         $this->expectException(\RuntimeException::class);
@@ -34,6 +37,7 @@ class FileUtilityTest extends UnitTestCase
     /**
      * @test
      */
+    #[Test]
     public function createWritableDirectoryThrowsExceptionIfNotWritable()
     {
         $this->expectException(\RuntimeException::class);

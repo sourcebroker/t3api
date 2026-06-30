@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Functional\Domain\Repository;
 
+use PHPUnit\Framework\Attributes\Test;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Factory\ApiResourceFactory;
 use SourceBroker\T3api\Service\ReflectionService;
@@ -30,6 +31,7 @@ class ApiResourceRepositoryTest extends FunctionalTestCase
      *
      * @throws \ReflectionException
      */
+    #[Test]
     public function getAllDomainModelsReturnsAllClasses(): void
     {
         $apiResourceRepository = new ApiResourceRepository(

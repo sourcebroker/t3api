@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Unit\Domain\Model;
 
+use PHPUnit\Framework\Attributes\Test;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -25,6 +26,7 @@ class ApiFilterTest extends UnitTestCase
     /**
      * @test
      */
+    #[Test]
     public function getFilterClassReturnsInitialValueForString()
     {
         self::assertSame(
@@ -36,6 +38,7 @@ class ApiFilterTest extends UnitTestCase
     /**
      * @test
      */
+    #[Test]
     public function getStrategyReturnsInitialValueForApiFilterStrategy()
     {
         self::assertSame(
@@ -47,6 +50,7 @@ class ApiFilterTest extends UnitTestCase
     /**
      * @test
      */
+    #[Test]
     public function getPropertyReturnsInitialValueForString()
     {
         self::assertSame(
@@ -58,6 +62,7 @@ class ApiFilterTest extends UnitTestCase
     /**
      * @test
      */
+    #[Test]
     public function getArgumentsReturnsInitialValueForArray()
     {
         self::assertSame(
@@ -69,6 +74,7 @@ class ApiFilterTest extends UnitTestCase
     /**
      * @test
      */
+    #[Test]
     public function getArgumentReturnsInitialValueForAccessingSingleItem()
     {
         self::assertSame(

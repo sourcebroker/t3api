@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Unit\Domain\Model;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use SourceBroker\T3api\Domain\Model\Pagination;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -90,6 +92,8 @@ class PaginationTest extends UnitTestCase
      * @dataProvider isEnabledReturnsCorrectStateDataProvider
      * @test
      */
+    #[DataProvider('isEnabledReturnsCorrectStateDataProvider')]
+    #[Test]
     public static function isEnabledReturnsCorrectState(
         array $paginationAttributes,
         string $requestUri,
@@ -152,6 +156,8 @@ class PaginationTest extends UnitTestCase
      * @dataProvider getNumberOfItemsPerPageReturnsCorrectValueDataProvider
      * @test
      */
+    #[DataProvider('getNumberOfItemsPerPageReturnsCorrectValueDataProvider')]
+    #[Test]
     public static function getNumberOfItemsPerPageReturnsCorrectValue(
         array $paginationAttributes,
         string $requestUri,
