@@ -64,6 +64,21 @@ function check_typo3_version() {
     return 0
 }
 
+function typo3_version_uses_no_security_blocking() {
+    local TYPO3=$1
+    local TYPO3_VERSIONS_NO_SECURITY_BLOCKING_ARRAY=()
+    local IFS=' '
+    read -r -a TYPO3_VERSIONS_NO_SECURITY_BLOCKING_ARRAY <<< "${TYPO3_VERSIONS_NO_SECURITY_BLOCKING:-}"
+
+    for version in "${TYPO3_VERSIONS_NO_SECURITY_BLOCKING_ARRAY[@]}"; do
+        if [[ "$version" == "$TYPO3" ]]; then
+            return 0
+        fi
+    done
+
+    return 1
+}
+
 function check_php_version_for_typo3() {
     local TYPO3=$1
     local PHP=$2

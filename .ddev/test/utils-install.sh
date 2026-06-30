@@ -2,9 +2,13 @@
 
 set -e
 
+source .ddev/test/utils.sh
+
 function install_start() {
     check_ddev_environment
     setup_environment "$1"
+    check_current_php_version
+    setup_composer_security_flags
     create_symlinks_main_extension
     create_symlinks_additional_extensions
     setup_composer
@@ -33,6 +37,20 @@ function setup_environment() {
     export VERSION="$version"
     export TYPO3_BIN="$BASE_PATH/vendor/bin/typo3"
     mysql -uroot -proot -e "DROP DATABASE IF EXISTS $DATABASE"
+}
+
+function check_current_php_version() {
+    local current_php
+    current_php=$(php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;')
+
+    check_php_version_for_typo3 "$VERSION" "$current_php"
+}
+
+function setup_composer_security_flags() {
+    COMPOSER_SECURITY_FLAGS=()
+    if typo3_version_uses_no_security_blocking "$VERSION"; then
+        COMPOSER_SECURITY_FLAGS+=(--no-security-blocking)
+    fi
 }
 
 function create_symlinks_main_extension() {
@@ -67,7 +85,12 @@ function setup_composer() {
 }
 
 function setup_typo3() {
-    $TYPO3_BIN install:setup -n --database-name "$DATABASE"
+    local install_options=()
+    if [ "$VERSION" = "12" ]; then
+        install_options+=(--skip-extension-setup)
+    fi
+
+    $TYPO3_BIN install:setup -n --database-name "$DATABASE" "${install_options[@]}"
     $TYPO3_BIN configuration:set 'BE/debug' 1
     $TYPO3_BIN configuration:set 'BE/lockSSL' true
     $TYPO3_BIN configuration:set 'FE/debug' 1

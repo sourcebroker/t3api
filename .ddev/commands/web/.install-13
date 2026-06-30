@@ -18,6 +18,6 @@ composer req typo3/cms-backend:'^13.3' typo3/cms-core:'^13.3' typo3/cms-extbase:
             cweagans/composer-patches:'^1.7.3' georgringer/news:'^12.1' \
             sourcebroker/t3apinews:'^1.0.0' v/site:'^1.0.0' \
             sourcebroker/t3api:'@dev' \
-            --no-progress --no-interaction --working-dir "$BASE_PATH"
+            --no-progress --no-interaction "${COMPOSER_SECURITY_FLAGS[@]}" --working-dir "$BASE_PATH"
 
 install_end

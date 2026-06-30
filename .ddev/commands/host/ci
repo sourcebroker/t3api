@@ -9,7 +9,7 @@ set -e
 source .ddev/test/utils.sh
 export_ddev_env_vars
 
-trap 'restoreComposerFiles' SIGINT SIGTERM
+trap 'restoreComposerFiles' EXIT SIGINT SIGTERM
 
 ci_single() {
     TYPO3=$1
@@ -46,6 +46,7 @@ ci_single() {
 
     ddev config --php-version="$PHP"
     ddev restart
+    export_ddev_env_vars
 
     if [ -n "$GH_TOKEN" ] && ! ddev composer config --global --list | grep -q "github-oauth.github.com"; then
       message magenta "Add GH_TOKEN to composer github-oauth.github.com after 'ddev ci' internal ddev restart"
@@ -54,10 +55,15 @@ ci_single() {
 
     stashComposerFiles
     ddev composer require --no-ansi --no-interaction --no-progress --no-update typo3/cms-core:^${TYPO3} || exit 1
+    ddev exec rm -rf .Build/vendor .Build/bin
+    SECURITY_FLAG=()
+    if typo3_version_uses_no_security_blocking "$TYPO3"; then
+        SECURITY_FLAG+=(--no-security-blocking)
+    fi
     if [ "$COMPOSER" == "lowest" ]; then
-        ddev exec composer update --prefer-lowest --prefer-stable --with-dependencies --no-progress --no-interaction || exit 1
+        ddev exec composer update --prefer-lowest --prefer-stable --with-dependencies --no-progress --no-interaction "${SECURITY_FLAG[@]}" || exit 1
     else
-        ddev exec composer update --with-dependencies --no-progress --no-interaction || exit 1
+        ddev exec composer update --with-dependencies --no-progress --no-interaction "${SECURITY_FLAG[@]}" || exit 1
     fi
     message magenta "ddev composer normalize"
     ddev composer normalize
