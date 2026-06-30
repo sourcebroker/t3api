@@ -307,7 +307,7 @@ class OpenApiBuilder
     protected static function getOperationSchema(OperationInterface $operation): Schema
     {
         if ($operation instanceof CollectionOperation && $operation->isMethodGet()) {
-            /** @var AbstractCollectionResponse $collectionResponseClass */
+            /** @var class-string<AbstractCollectionResponse> $collectionResponseClass */
             $collectionResponseClass = Configuration::getCollectionResponseClass();
 
             return $collectionResponseClass::getOpenApiSchema(
