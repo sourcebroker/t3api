@@ -50,56 +50,6 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
  */
 class Category extends \GeorgRinger\News\Domain\Model\Category
 {
-
-    /**
-     * @var string
-     * @T3api\Serializer\Groups({
-     *     "api_get_collection_t3apinews_category",
-     *     "api_get_item_t3apinews_category",
-     *     "api_get_collection_t3apinews_news",
-     *     "api_get_item_t3apinews_news",
-     *     "api_post_item_t3apinews_category",
-     * })
-     */
-    protected $title = '';
-
-    /**
-     * @var string
-     * @T3api\Serializer\Groups({
-     *     "api_get_item_t3apinews_category",
-     *     "api_get_item_t3apinews_news",
-     * })
-     */
-    protected $description = '';
-
-    /**
-     * @var \SourceBroker\T3apinews\Domain\Model\Category
-     * @T3api\Serializer\Groups({
-     *     "api_get_collection_t3apinews_category",
-     *     "api_get_item_t3apinews_category",
-     * })
-     */
-    protected $parentcategory;
-
-    /**
-     * @var int
-     * @T3api\Serializer\Groups({
-     *     "api_get_collection_t3apinews_category",
-     *     "api_get_item_t3apinews_category",
-     * })
-     */
-    protected $shortcut = 0;
-
-    /**
-     * @T3api\Serializer\VirtualProperty()
-     * @T3api\Serializer\Groups({
-     *     "api_get_collection_t3apinews_category",
-     *     "api_get_item_t3apinews_category",
-     *     "api_get_collection_t3apinews_news",
-     *     "api_get_item_t3apinews_news",
-     * })
-     * @T3api\Serializer\Type\Image(width=640, height=380)
-     */
     public function getImage(): ?FileReference
     {
         return $this->getImages()->count() ? $this->getImages()->toArray()[0] : null;

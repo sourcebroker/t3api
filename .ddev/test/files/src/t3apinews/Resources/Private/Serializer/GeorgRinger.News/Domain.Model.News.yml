@@ -1,0 +1,61 @@
+GeorgRinger\News\Domain\Model\News:
+  properties:
+    title:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    alternativeTitle:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    teaser:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    bodytext:
+      groups: [api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    datetime:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    crdate:
+      groups: [api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    author:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    authorEmail:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    categories:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+      type: 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3apinews\Domain\Model\Category>'
+    related:
+      groups: [api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+      type: 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3apinews\Domain\Model\News>'
+    relatedFrom:
+      groups: [api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+      type: 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3apinews\Domain\Model\News>'
+    type:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    pathSegment:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    internalurl:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    externalurl:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    istopnews:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    falMedia:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+      type: 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3apinews\Domain\Model\FileReference>'
+    tags:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+      type: 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3apinews\Domain\Model\Tag>'
+
+SourceBroker\T3apinews\Domain\Model\News:
+  virtual_properties:
+    getSingleUri:
+      name: singleUri
+      serialized_name: singleUri
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news]
+      type: "RecordUri<'tx_news'>"
+    getImageThumbnail:
+      name: imageThumbnail
+      serialized_name: imageThumbnail
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news]
+      type: "Image<'380','250c','','',''>"
+    getImageLarge:
+      name: imageLarge
+      serialized_name: imageLarge
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news]
+      type: "Image<'1280','768','','',''>"

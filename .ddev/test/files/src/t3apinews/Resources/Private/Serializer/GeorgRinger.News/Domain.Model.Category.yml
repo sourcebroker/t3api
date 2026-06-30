@@ -1,0 +1,22 @@
+GeorgRinger\News\Domain\Model\Category:
+  properties:
+    title:
+      groups: [api_get_collection_t3apinews_category, api_get_item_t3apinews_category, api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_category]
+      type: string
+    description:
+      groups: [api_get_item_t3apinews_category, api_get_item_t3apinews_news]
+      type: string
+    parentcategory:
+      groups: [api_get_collection_t3apinews_category, api_get_item_t3apinews_category]
+      type: SourceBroker\T3apinews\Domain\Model\Category
+    shortcut:
+      groups: [api_get_collection_t3apinews_category, api_get_item_t3apinews_category]
+      type: int
+
+SourceBroker\T3apinews\Domain\Model\Category:
+  virtual_properties:
+    getImage:
+      name: image
+      serialized_name: image
+      groups: [api_get_collection_t3apinews_category, api_get_item_t3apinews_category, api_get_collection_t3apinews_news, api_get_item_t3apinews_news]
+      type: "Image<'640','380','','',''>"

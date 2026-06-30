@@ -26,14 +26,4 @@ use SourceBroker\T3api\Filter\OrderFilter;
  */
 class Tag extends \GeorgRinger\News\Domain\Model\Tag
 {
-
-    /**
-     * @var string
-     * @T3api\Serializer\Groups({
-     *     "api_get_collection_t3apinews_news",
-     *     "api_get_item_t3apinews_news",
-     * })
-     */
-    protected $title = '';
-
 }

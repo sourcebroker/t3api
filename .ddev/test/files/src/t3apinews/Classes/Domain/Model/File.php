@@ -2,7 +2,6 @@
 namespace SourceBroker\T3apinews\Domain\Model;
 
 use SourceBroker\T3api\Annotation as T3api;
-use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 
 /**
  * @T3api\ApiResource (
@@ -16,7 +15,7 @@ use TYPO3\CMS\Core\Resource\DuplicationBehavior;
  *          "upload"={
  *              "folder"="1:/user_upload/media-export-excluded/",
  *              "allowedFileExtensions"={"jpg", "jpeg", "png"},
- *              "conflictMode"=DuplicationBehavior::RENAME,
+ *              "conflictMode"="rename",
  *          }
  *     }
  * )

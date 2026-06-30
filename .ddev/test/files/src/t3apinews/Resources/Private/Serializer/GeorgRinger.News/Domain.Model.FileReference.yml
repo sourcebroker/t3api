@@ -2,3 +2,31 @@ GeorgRinger\News\Domain\Model\FileReference:
   properties:
     uidLocal:
       exclude: true
+    title:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news]
+      type: string
+    description:
+      groups: [api_get_item_t3apinews_news]
+      type: string
+    alternative:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news]
+      type: string
+    link:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news]
+      type: Typolink
+    showinpreview:
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_patch_item_t3apinews_news]
+      type: int
+
+SourceBroker\T3apinews\Domain\Model\FileReference:
+  virtual_properties:
+    getImageThumbnail:
+      name: imageThumbnail
+      serialized_name: imageThumbnail
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news]
+      type: "Image<'380','250c','','',''>"
+    getImageOriginal:
+      name: imageOriginal
+      serialized_name: imageOriginal
+      groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news]
+      type: "Image<'','','','',''>"
