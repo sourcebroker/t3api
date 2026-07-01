@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Service;
 
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Routing\SiteMatcher;
@@ -70,11 +69,7 @@ class SiteService
 
     protected static function getResolvedByTypo3(): ?SiteInterface
     {
-        // On CLI there is no valid request URL, so ServerRequestFactory::fromGlobals()
-        // throws InvalidRequestUrlOnCliException. That breaks any consumer which triggers
-        // route-enhancer matching inside a CLI sub-request (e.g. EXT:solr v14 indexing).
-        // Returning null lets the URL / wildcard fallbacks below resolve the site instead.
-        if (!class_exists(SiteMatcher::class) || Environment::isCli()) {
+        if (!class_exists(SiteMatcher::class)) {
             return null;
         }
 
