@@ -59,21 +59,16 @@ class ConditionFunctionsProviderTest extends UnitTestCase
     #[Test]
     public function getFunctionsUsesTypo3ProviderResolvedByGeneralUtility(): void
     {
-        GeneralUtility::addInstance(
-            Typo3ConditionFunctionsProvider::class,
-            new class () extends Typo3ConditionFunctionsProvider {
-                public function getFunctions(): array
-                {
-                    return [
-                        new ExpressionFunction(
-                            'delegated_condition_function',
-                            static fn(): string => 'null',
-                            static fn(array $arguments): string => 'delegated'
-                        ),
-                    ];
-                }
-            }
-        );
+        $delegatedProvider = self::createStub(Typo3ConditionFunctionsProvider::class);
+        $delegatedProvider->method('getFunctions')->willReturn([
+            new ExpressionFunction(
+                'delegated_condition_function',
+                static fn(): string => 'null',
+                static fn(array $arguments): string => 'delegated'
+            ),
+        ]);
+
+        GeneralUtility::addInstance(Typo3ConditionFunctionsProvider::class, $delegatedProvider);
 
         $expressionLanguage = new ExpressionLanguage(null, [
             new ConditionFunctionsProvider(),
