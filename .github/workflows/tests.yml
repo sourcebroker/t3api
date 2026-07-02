@@ -1,0 +1,57 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/*'
+  pull_request:
+    branches:
+      - main
+      - 'release/*'
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-matrix
+        # Single source of truth: .ddev/docker-compose.web.yaml (TYPO3_VERSIONS / TYPO3_VERSIONS_<v>_PHP).
+        # Adding/removing a TYPO3 candidate version there is all that's needed - no workflow edits.
+        run: |
+          python3 - <<'EOF' >> "$GITHUB_OUTPUT"
+          import json
+          import re
+
+          text = open('.ddev/docker-compose.web.yaml').read()
+          versions = re.search(r'TYPO3_VERSIONS=([\d ]+)', text).group(1).split()
+
+          include = []
+          for version in versions:
+              php_versions = re.search(rf'TYPO3_VERSIONS_{version}_PHP=([\d. ]+)', text).group(1).split()
+              for php in php_versions:
+                  for composer in ('lowest', 'highest'):
+                      include.append({'typo3': version, 'php': php, 'composer': composer})
+
+          print('matrix=' + json.dumps({'include': include}))
+          EOF
+
+  test:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        uses: ddev/github-action-setup-ddev@v1
+      - run: |
+          if [ -n "$GH_TOKEN" ] && ! ddev composer config --global --list | grep -q "github-oauth.github.com"; then
+            echo "Add composer github-oauth.github.com to ddev web container."
+            ddev composer config --global github-oauth.github.com ${{ env.GH_TOKEN }}
+          fi
+      - run: ddev ci ${{ matrix.typo3 }} ${{ matrix.php }} ${{ matrix.composer }}
