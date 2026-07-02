@@ -6,35 +6,44 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use SourceBroker\T3api\Service\RequestLanguageService;
 use SourceBroker\T3api\Service\RouteService;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 class T3apiRequestLanguageResolver implements MiddlewareInterface
 {
+    public function __construct(protected RequestLanguageService $requestLanguageService) {}
+
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        /** @var SiteLanguage $language */
-        $language = $request->getAttribute('language');
-        $t3apiHeaderLanguageUid = $this->getT3apiLanguageUid($request);
-
-        if ($t3apiHeaderLanguageUid !== null
-            && RouteService::routeHasT3ApiResourceEnhancerQueryParam($request)
-            && ($language instanceof SiteLanguage && $language->getLanguageId() !== $t3apiHeaderLanguageUid)
-        ) {
-            $request->withAttribute('t3apiHeaderLanguageRequest', true);
-            $request = $request->withAttribute(
-                'language',
-                $request->getAttribute('site')->getLanguageById($t3apiHeaderLanguageUid)
-            );
+        if ($this->isT3apiRequest($request)) {
+            /**
+             * Only registered for TYPO3 v12 (see Configuration/RequestMiddlewares.php). On v13+,
+             * T3apiRequestResolver's own header override, applied later, is sufficient on its own -
+             * remove this class entirely once TYPO3 v12 support is dropped.
+             */
+            $request = $this->requestLanguageService->withLanguageFromHeader($request);
         }
+
         return $handler->handle($request);
     }
 
-    protected function getT3apiLanguageUid(ServerRequestInterface $request): ?int
+    private function isT3apiRequest(ServerRequestInterface $request): bool
     {
-        $languageHeader = $request->getHeader($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['languageHeader']);
-        return !empty($languageHeader) ? (int)array_shift($languageHeader) : null;
+        if (RouteService::routeHasT3ApiResourceEnhancerQueryParam($request)) {
+            return true;
+        }
+
+        $language = $request->getAttribute('language');
+        if (!$language instanceof SiteLanguage) {
+            return false;
+        }
+
+        $requestPath = '/' . trim($request->getUri()->getPath(), '/');
+        $apiPath = RouteService::getApiPathForLanguage($language);
+
+        return $requestPath === $apiPath || str_starts_with($requestPath, $apiPath . '/');
     }
 }

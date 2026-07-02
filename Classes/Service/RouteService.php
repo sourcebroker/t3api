@@ -41,6 +41,32 @@ class RouteService implements SingletonInterface
             && array_key_exists(ResourceEnhancer::PARAMETER_NAME, $request->getQueryParams());
     }
 
+    /**
+     * Returns the absolute (site-base-included) API path for a given site language,
+     * e.g. "/shop/de/_api" for a "de" language based at "/de/" on a site based at "/shop/".
+     */
+    public static function getApiPathForLanguage(SiteLanguage $language): string
+    {
+        return rtrim('/' . trim($language->getBase()->getPath(), '/'), '/') . '/' . self::getApiBasePath();
+    }
+
+    /**
+     * Strips a site's base path off the front of $path, if present.
+     *
+     * Needed because SiteLanguage::getBase() resolves to an absolute path that already
+     * includes the site's own base (e.g. site base "/shop/" + language base "/de/" =>
+     * "/shop/de/"), while getFullApiBaseUrl() prepends the site base separately - so the
+     * language prefix used there must not also carry it, or the site base gets duplicated.
+     */
+    public static function stripSiteBasePathPrefix(string $path, string $siteBasePath): string
+    {
+        if ($siteBasePath !== '/' && str_starts_with($path, $siteBasePath)) {
+            return '/' . ltrim(substr($path, strlen($siteBasePath)), '/');
+        }
+
+        return $path;
+    }
+
     protected static function getApiRouteEnhancer(): array
     {
         static $apiRouteEnhancer;
@@ -82,11 +108,12 @@ class RouteService implements SingletonInterface
             $languagePrefix = SiteService::getCurrent()->getDefaultLanguage()->getBase()->getPath();
         }
 
-        if (str_starts_with($request?->getUri()->getPath(), $languagePrefix)) {
-            return $languagePrefix;
+        $requestPath = $request?->getUri()->getPath() ?? '';
+        if (!str_starts_with($requestPath, $languagePrefix)) {
+            return '';
         }
 
-        return '';
+        return self::stripSiteBasePathPrefix($languagePrefix, SiteService::getCurrent()->getBase()->getPath());
     }
 
     protected static function getRequest(): ?ServerRequestInterface

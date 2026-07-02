@@ -1,12 +1,12 @@
 {
 	"info": {
 		"_postman_id": "a8d86f46-cf85-47b1-bd9f-aed3c9723ec2",
-		"name": "Language tests. Language set by X-Locale header.",
+		"name": "Language tests. Language set by standard language prefix.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Get endpoint list. Lang: default",
+			"name": "Get endpoint list. Lang: default by URL prefix",
 			"event": [
 				{
 					"listen": "test",
@@ -40,6 +40,7 @@
 					}
 				],
 				"url": {
+					"raw": "{{baseUrl}}/_api/",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -52,7 +53,7 @@
 			"response": []
 		},
 		{
-			"name": "Check news list. Lang: default",
+			"name": "Check news list. Lang: default by URL prefix",
 			"event": [
 				{
 					"listen": "test",
@@ -70,7 +71,7 @@
 							"});",
 							"",
 							"const record = response['hydra:member'].find(item => item.uid === 2);",
-							"pm.test('Record with uid 2 has correct singleUri in lang default1', function () {",
+							"pm.test('Record with uid 2 has correct singleUri in lang default', function () {",
 							"    const trimmedUri = record.singleUri.replace(pm.environment.get('baseUrl'), '');",
 							"    pm.expect(trimmedUri.startsWith('/news/en-')).to.be.true;",
 							"});",
@@ -93,18 +94,16 @@
 					}
 				],
 				"url": {
+					"raw": "{{baseUrl}}{{newsEndpointPath}}",
 					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"{{newsEndpointPath}}"
+						"{{baseUrl}}{{newsEndpointPath}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get endpoint list. Lang: DE",
+			"name": "Get endpoint list. Lang: DE by URL prefix",
 			"event": [
 				{
 					"listen": "test",
@@ -138,10 +137,12 @@
 					}
 				],
 				"url": {
+					"raw": "{{baseUrl}}/de/_api/",
 					"host": [
-						"{{baseUrl}}/de"
+						"{{baseUrl}}"
 					],
 					"path": [
+						"de",
 						"_api",
 						""
 					]
@@ -150,7 +151,7 @@
 			"response": []
 		},
 		{
-			"name": "Check news list. Lang: DE",
+			"name": "Check news list. Lang: DE by URL prefix",
 			"event": [
 				{
 					"listen": "test",
@@ -168,11 +169,11 @@
 							"});",
 							"",
 							"const record = response['hydra:member'].find(item => item.uid === 2);",
-							"pm.test('Record with uid 2 has correct singleUri in lang default1', function () {",
+							"pm.test('Record with uid 2 has correct singleUri in lang DE', function () {",
 							"    const trimmedUri = record.singleUri.replace(pm.environment.get('baseUrl'), '');",
 							"    pm.expect(trimmedUri.startsWith('/de/news/de-')).to.be.true;",
 							"});",
-							"pm.test('Record with uid 2 has correct title in lang default', function () {",
+							"pm.test('Record with uid 2 has correct title in lang DE', function () {",
 							"    pm.expect(record.title.startsWith('[DE]')).to.be.true;",
 							"});"
 						],
@@ -191,11 +192,9 @@
 					}
 				],
 				"url": {
+					"raw": "{{baseUrl}}{{newsEndpointPath}}",
 					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"{{newsEndpointPath}}"
+						"{{baseUrl}}{{newsEndpointPath}}"
 					]
 				}
 			},
