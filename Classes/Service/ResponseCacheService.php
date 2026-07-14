@@ -77,7 +77,11 @@ class ResponseCacheService implements LoggerAwareInterface
             $keyParts[] = $identifierExpressionValue;
         }
 
-        return md5(implode('|', $keyParts));
+        // md5() here is a non-cryptographic cache key derivation, not a security control - there is
+        // no secret to protect and no adversarial value in collision resistance, since `security` is
+        // still fully re-evaluated on every cache hit (see `OperationResponseCache`), so a collision
+        // could not bypass access control.
+        return md5(implode('|', $keyParts)); // NOSONAR php:S4790 - weak hash algorithm, not used in a sensitive context here
     }
 
     /**
