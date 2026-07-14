@@ -36,6 +36,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SerializerService implements SingletonInterface
 {
+    private ?SerializerBuilder $serializerBuilder = null;
+
     public function __construct(
         protected readonly SerializationContextBuilder $serializationContextBuilder,
         protected readonly DeserializationContextBuilder $deserializationContextBuilder
@@ -97,10 +99,8 @@ class SerializerService implements SingletonInterface
 
     public function getSerializerBuilder(): SerializerBuilder
     {
-        static $serializerBuilder;
-
-        if (empty($serializerBuilder)) {
-            $serializerBuilder = SerializerBuilder::create()
+        if ($this->serializerBuilder === null) {
+            $this->serializerBuilder = SerializerBuilder::create()
                 ->setCacheDir(self::getSerializerCacheDirectory())
                 ->setDebug(self::isDebugMode())
                 ->configureHandlers(static function (HandlerRegistry $registry): void {
@@ -131,7 +131,7 @@ class SerializerService implements SingletonInterface
                 ->setExpressionEvaluator(self::getExpressionEvaluator());
         }
 
-        return clone $serializerBuilder;
+        return clone $this->serializerBuilder;
     }
 
     public function getMetadataFactory(): MetadataFactoryInterface

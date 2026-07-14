@@ -15,6 +15,7 @@ use SourceBroker\T3api\OperationHandler\OperationHandlerInterface;
 use SourceBroker\T3api\Processor\ProcessorInterface;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
+use SourceBroker\T3api\Service\OperationResponseCache;
 use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException as SymfonyMethodNotAllowedException;
@@ -35,18 +36,22 @@ abstract class AbstractDispatcher
 
     protected DeserializationContextBuilder $deserializationContextBuilder;
 
+    protected OperationResponseCache $operationResponseCache;
+
     public function __construct(
         SerializerService $serializerService,
         ApiResourceRepository $apiResourceRepository,
         SerializationContextBuilder $serializationContextBuilder,
         DeserializationContextBuilder $deserializationContextBuilder,
-        EventDispatcherInterface $eventDispatcherInterface
+        EventDispatcherInterface $eventDispatcherInterface,
+        OperationResponseCache $operationResponseCache
     ) {
         $this->serializerService = $serializerService;
         $this->apiResourceRepository = $apiResourceRepository;
         $this->serializationContextBuilder = $serializationContextBuilder;
         $this->deserializationContextBuilder = $deserializationContextBuilder;
         $this->eventDispatcher = $eventDispatcherInterface;
+        $this->operationResponseCache = $operationResponseCache;
     }
 
     /**
@@ -62,12 +67,18 @@ abstract class AbstractDispatcher
             try {
                 $matchedRoute = (new UrlMatcher($apiResource->getRoutes(), $requestContext))
                     ->matchRequest($request);
+                $operation = $apiResource->getOperationByRouteName($matchedRoute['_route']);
+                $result = null;
 
-                return $this->processOperation(
-                    $apiResource->getOperationByRouteName($matchedRoute['_route']),
+                return $this->operationResponseCache->resolve(
+                    $operation,
                     $matchedRoute,
                     $request,
-                    $response
+                    function () use ($operation, $matchedRoute, $request, &$response, &$result) {
+                        return $this->processOperation($operation, $matchedRoute, $request, $response, $result);
+                    },
+                    $response,
+                    $result
                 );
             } catch (SymfonyResourceNotFoundException $resourceNotFoundException) {
                 // do not stop - continue to find correct route
@@ -80,17 +91,27 @@ abstract class AbstractDispatcher
     }
 
     /**
+     * `$result` is an internal, protected-only out-parameter: it receives the operation handler's
+     * un-serialized result (post `AfterProcessOperationEvent`) so `processOperationByRequest()`'s
+     * closure can hand it to `OperationResponseCache::resolve()`, which needs it to evaluate the
+     * `object` expression variable in `cache.memberTagExpressions` and
+     * `cacheInvalidation.tagExpressions` - see `OperationResponseCache::resolve()`. It is not part
+     * of this method's public contract; callers that do not need it simply omit it, same as
+     * `$response`.
+     *
      * @param OperationInterface $operation
      * @param array $route
      * @param Request $request
      * @param ResponseInterface|null $response
+     * @param mixed $result
      * @return string
      */
     protected function processOperation(
         OperationInterface $operation,
         array $route,
         Request $request,
-        ?ResponseInterface &$response = null
+        ?ResponseInterface &$response = null,
+        mixed &$result = null
     ): string {
         $handlers = $this->getHandlersSupportingOperation($operation, $request);
 
