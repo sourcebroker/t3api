@@ -8,8 +8,10 @@ use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
+use SourceBroker\T3api\Attribute\AsSerializerSubscriber;
 use SourceBroker\T3api\Service\SerializerMetadataService;
 
+#[AsSerializerSubscriber]
 class GenerateMetadataSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array

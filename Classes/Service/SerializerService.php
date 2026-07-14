@@ -24,6 +24,8 @@ use JMS\Serializer\Type\Parser;
 use Metadata\Cache\FileCache;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
+use SourceBroker\T3api\Factory\SerializerHandlerCollectionFactory;
+use SourceBroker\T3api\Factory\SerializerSubscriberCollectionFactory;
 use SourceBroker\T3api\Serializer\Accessor\AccessorStrategy;
 use SourceBroker\T3api\Serializer\Construction\ObjectConstructorChain;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
@@ -38,7 +40,9 @@ class SerializerService implements SingletonInterface
 {
     public function __construct(
         protected readonly SerializationContextBuilder $serializationContextBuilder,
-        protected readonly DeserializationContextBuilder $deserializationContextBuilder
+        protected readonly DeserializationContextBuilder $deserializationContextBuilder,
+        protected readonly SerializerHandlerCollectionFactory $serializerHandlerCollectionFactory,
+        protected readonly SerializerSubscriberCollectionFactory $serializerSubscriberCollectionFactory
     ) {}
 
     public static function getSerializerCacheDirectory(): string
@@ -100,21 +104,23 @@ class SerializerService implements SingletonInterface
         static $serializerBuilder;
 
         if (empty($serializerBuilder)) {
+            $serializerHandlers = $this->serializerHandlerCollectionFactory->get();
+            $serializerSubscribers = $this->serializerSubscriberCollectionFactory->get();
             $serializerBuilder = SerializerBuilder::create()
                 ->setCacheDir(self::getSerializerCacheDirectory())
                 ->setDebug(self::isDebugMode())
-                ->configureHandlers(static function (HandlerRegistry $registry): void {
-                    foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerHandlers'] ?? [] as $handlerClass) {
-                        /** @var SubscribingHandlerInterface $handler */
-                        $handler = GeneralUtility::makeInstance($handlerClass);
-                        $registry->registerSubscribingHandler($handler);
+                ->configureHandlers(static function (HandlerRegistry $registry) use ($serializerHandlers): void {
+                    foreach ($serializerHandlers as $handler) {
+                        if ($handler instanceof SubscribingHandlerInterface) {
+                            $registry->registerSubscribingHandler($handler);
+                        }
                     }
                 })
-                ->configureListeners(static function (EventDispatcher $dispatcher): void {
-                    foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerSubscribers'] ?? [] as $subscriberClass) {
-                        /** @var EventSubscriberInterface $subscriber */
-                        $subscriber = GeneralUtility::makeInstance($subscriberClass);
-                        $dispatcher->addSubscriber($subscriber);
+                ->configureListeners(static function (EventDispatcher $dispatcher) use ($serializerSubscribers): void {
+                    foreach ($serializerSubscribers as $subscriber) {
+                        if ($subscriber instanceof EventSubscriberInterface) {
+                            $dispatcher->addSubscriber($subscriber);
+                        }
                     }
                 })
                 ->addDefaultHandlers()
@@ -124,10 +130,7 @@ class SerializerService implements SingletonInterface
                 ->setMetadataDriverFactory($this->getDriverFactory())
                 ->setMetadataCache(self::getMetadataCache())
                 ->addMetadataDirs(self::getMetadataDirs())
-                ->setObjectConstructor(GeneralUtility::makeInstance(
-                    ObjectConstructorChain::class,
-                    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerObjectConstructors']
-                ))
+                ->setObjectConstructor(GeneralUtility::makeInstance(ObjectConstructorChain::class))
                 ->setExpressionEvaluator(self::getExpressionEvaluator());
         }
 

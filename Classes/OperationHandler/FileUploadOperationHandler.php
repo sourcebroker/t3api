@@ -6,6 +6,7 @@ namespace SourceBroker\T3api\OperationHandler;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
+use SourceBroker\T3api\Attribute\AsOperationHandler;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Resource\Exception;
 use TYPO3\CMS\Extbase\Domain\Model\File;
 
+#[AsOperationHandler(priority: -400)]
 class FileUploadOperationHandler extends AbstractCollectionOperationHandler
 {
     protected FileUploadService $fileUploadService;

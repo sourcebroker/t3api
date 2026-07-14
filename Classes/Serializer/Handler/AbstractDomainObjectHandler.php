@@ -8,6 +8,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use SourceBroker\T3api\Annotation\ORM\Cascade;
+use SourceBroker\T3api\Attribute\AsSerializerHandler;
 use SourceBroker\T3api\Service\PropertyInfoService;
 use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
@@ -15,6 +16,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
+#[AsSerializerHandler]
 class AbstractDomainObjectHandler extends AbstractHandler implements DeserializeHandlerInterface
 {
     /**

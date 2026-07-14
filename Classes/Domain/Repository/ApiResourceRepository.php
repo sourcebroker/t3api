@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Domain\Repository;
 
-use SourceBroker\T3api\Configuration\Configuration;
 use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Factory\ApiResourceFactory;
+use SourceBroker\T3api\Factory\ApiResourcePathProviderCollectionFactory;
 use SourceBroker\T3api\Service\ReflectionService;
 use SourceBroker\T3api\Service\RouteService;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -20,7 +20,8 @@ class ApiResourceRepository
     public function __construct(
         protected readonly CacheManager $cacheManager,
         protected readonly ReflectionService $reflectionService,
-        protected readonly ApiResourceFactory $apiResourceFactory
+        protected readonly ApiResourceFactory $apiResourceFactory,
+        protected readonly ApiResourcePathProviderCollectionFactory $apiResourcePathProviderCollectionFactory
     ) {
         $this->cache = $cacheManager->getCache('t3api');
     }
@@ -81,7 +82,7 @@ class ApiResourceRepository
      */
     protected function getAllDomainModelClassNames(): iterable
     {
-        foreach (Configuration::getApiResourcePathProviders() as $apiResourcePathProvider) {
+        foreach ($this->apiResourcePathProviderCollectionFactory->get() as $apiResourcePathProvider) {
             foreach ($apiResourcePathProvider->getAll() as $domainModelClassFile) {
                 $className = $this->reflectionService->getClassNameFromFile($domainModelClassFile);
                 if ($className !== null && $className !== '') {

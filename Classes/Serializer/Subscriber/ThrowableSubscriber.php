@@ -9,8 +9,10 @@ use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
+use SourceBroker\T3api\Attribute\AsSerializerSubscriber;
 use SourceBroker\T3api\Service\SerializerService;
 
+#[AsSerializerSubscriber]
 class ThrowableSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array

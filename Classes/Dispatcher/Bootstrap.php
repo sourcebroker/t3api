@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Dispatcher;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Exception\ExceptionInterface;
-use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
-use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Service\RouteService;
-use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -29,20 +24,8 @@ class Bootstrap extends AbstractDispatcher
 
     protected HttpFoundationFactory $httpFoundationFactory;
 
-    public function __construct(
-        SerializerService $serializerService,
-        ApiResourceRepository $apiResourceRepository,
-        SerializationContextBuilder $serializationContextBuilder,
-        DeserializationContextBuilder $deserializationContextBuilder,
-        EventDispatcherInterface $eventDispatcherInterface
-    ) {
-        parent::__construct(
-            $serializerService,
-            $apiResourceRepository,
-            $serializationContextBuilder,
-            $deserializationContextBuilder,
-            $eventDispatcherInterface,
-        );
+    protected function init(): void
+    {
         $this->response = new Response('php://temp', 200, ['Content-Type' => 'application/ld+json']);
         $this->httpFoundationFactory = GeneralUtility::makeInstance(HttpFoundationFactory::class);
     }

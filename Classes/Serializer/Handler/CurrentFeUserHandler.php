@@ -6,9 +6,11 @@ namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use SourceBroker\T3api\Attribute\AsSerializerHandler;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
+#[AsSerializerHandler]
 class CurrentFeUserHandler extends AbstractHandler implements DeserializeHandlerInterface
 {
     /**

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Processor;
 
 use Psr\Http\Message\ResponseInterface;
+use SourceBroker\T3api\Attribute\AsProcessor;
 use SourceBroker\T3api\Service\CorsService;
 use Symfony\Component\HttpFoundation\Request;
 
+#[AsProcessor(priority: 100)]
 class CorsProcessor implements ProcessorInterface
 {
     public function __construct(private readonly ?CorsService $corsService) {}

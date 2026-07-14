@@ -8,11 +8,13 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use SourceBroker\T3api\Attribute\AsSerializerObjectConstructor;
 
 /**
  * Object constructor that allows deserialization into already constructed
  * objects passed through the deserialization context
  */
+#[AsSerializerObjectConstructor(priority: 500)]
 class InitializedObjectConstructor implements ObjectConstructorInterface
 {
     /**
