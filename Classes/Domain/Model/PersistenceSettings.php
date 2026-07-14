@@ -15,10 +15,6 @@ class PersistenceSettings extends AbstractOperationResourceSettings
 
     protected int $recursionLevel = 0;
 
-    /**
-     * @param PersistenceSettings|null $persistenceSettings
-     * @return PersistenceSettings
-     */
     public static function create(
         array $attributes = [],
         ?AbstractOperationResourceSettings $persistenceSettings = null

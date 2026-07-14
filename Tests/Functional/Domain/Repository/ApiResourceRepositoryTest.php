@@ -11,13 +11,6 @@ use SourceBroker\T3api\Service\ReflectionService;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-/**
- * TODO: rework to the fixture-extension approach established by ResponseCacheDispatcherTest -
- * load a dedicated test extension from Tests/Functional/Fixtures/Extensions/ via
- * $testExtensionsToLoad and assert against the domain models it provides, instead of mocking
- * every collaborator and invoking a protected method via reflection only to assert an empty
- * result on a bare install. Follow that pattern for any new functional test.
- */
 class ApiResourceRepositoryTest extends FunctionalTestCase
 {
     protected array $testExtensionsToLoad = ['typo3conf/ext/t3api'];

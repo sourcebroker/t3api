@@ -32,10 +32,6 @@ abstract class AbstractOperation implements OperationInterface
 
     protected UploadSettings $uploadSettings;
 
-    protected ResponseCacheSettings $responseCacheSettings;
-
-    protected CacheInvalidationSettings $cacheInvalidationSettings;
-
     public function __construct(string $key, ApiResource $apiResource, array $params)
     {
         $this->key = $key;
@@ -66,14 +62,6 @@ abstract class AbstractOperation implements OperationInterface
         $this->uploadSettings = UploadSettings::create(
             $params['attributes']['upload'] ?? [],
             $apiResource->getUploadSettings()
-        );
-        $this->responseCacheSettings = ResponseCacheSettings::create(
-            $params['attributes']['cache'] ?? [],
-            $apiResource->getResponseCacheSettings()
-        );
-        $this->cacheInvalidationSettings = CacheInvalidationSettings::create(
-            $params['attributes']['cacheInvalidation'] ?? [],
-            $apiResource->getCacheInvalidationSettings()
         );
     }
 
@@ -155,15 +143,5 @@ abstract class AbstractOperation implements OperationInterface
     public function getUploadSettings(): UploadSettings
     {
         return $this->uploadSettings;
-    }
-
-    public function getResponseCacheSettings(): ResponseCacheSettings
-    {
-        return $this->responseCacheSettings;
-    }
-
-    public function getCacheInvalidationSettings(): CacheInvalidationSettings
-    {
-        return $this->cacheInvalidationSettings;
     }
 }

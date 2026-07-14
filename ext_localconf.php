@@ -55,7 +55,6 @@ call_user_func(
             \SourceBroker\T3api\Serializer\Subscriber\AbstractEntitySubscriber::class,
             \SourceBroker\T3api\Serializer\Subscriber\ThrowableSubscriber::class,
             \SourceBroker\T3api\Serializer\Subscriber\CurrentFeUserSubscriber::class,
-            \SourceBroker\T3api\Serializer\Subscriber\CacheTagSubscriber::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerMetadataDirs'] = [
@@ -108,8 +107,6 @@ call_user_func(
             ];
         }
 
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['t3api_response'] ??= [];
-
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializer']['exclusionForExceptionsInAccessorStrategyGetValue'] = [
             TYPO3\CMS\Core\Resource\FileReference::class => [
                 \TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException::class,
@@ -123,13 +120,6 @@ call_user_func(
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['t3api_clearcache'] =
             \SourceBroker\T3api\Service\SerializerService::class . '->clearCache';
-
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['t3api_response_cache'] =
-            \SourceBroker\T3api\Service\ResponseCacheService::class . '->clearCachePostProc';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['t3api'] =
-            \SourceBroker\T3api\Hook\ResponseCacheDataHandlerHook::class;
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['t3api'] =
-            \SourceBroker\T3api\Hook\ResponseCacheDataHandlerHook::class;
 
         if ((new Typo3Version())->getMajorVersion() < 13) {
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['createHashBase']['t3api']

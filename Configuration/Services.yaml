@@ -115,9 +115,6 @@ services:
   SourceBroker\T3api\Serializer\Subscriber\CurrentFeUserSubscriber:
     public: true
 
-  SourceBroker\T3api\Serializer\Subscriber\CacheTagSubscriber:
-    public: true
-
   SourceBroker\T3api\Response\HydraCollectionResponse:
     public: true
 
@@ -143,48 +140,3 @@ services:
       - name: event.listener
         identifier: 't3api/EnrichPageCacheIdentifierParametersEventListener'
         event: TYPO3\CMS\Frontend\Event\BeforePageCacheIdentifierIsHashedEvent
-
-  cache.t3api_response:
-    class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
-    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
-    arguments: ['t3api_response']
-
-  SourceBroker\T3api\Service\ResponseCacheService:
-    public: true
-    arguments:
-      $cache: '@cache.t3api_response'
-
-  SourceBroker\T3api\Hook\ResponseCacheDataHandlerHook:
-    public: true
-
-  SourceBroker\T3api\EventListener\FlushCacheAfterSaveListener:
-    arguments:
-      $cache: '@cache.t3api_response'
-    tags:
-      - name: event.listener
-        identifier: 't3api/FlushCacheAfterSaveListenerAfterUpdated'
-        event: SourceBroker\T3api\Event\RecordUpdatedEvent
-        method: afterUpdated
-      - name: event.listener
-        identifier: 't3api/FlushCacheAfterSaveListenerAfterDeleted'
-        event: SourceBroker\T3api\Event\RecordDeletedEvent
-        method: afterDeleted
-
-  SourceBroker\T3api\Command\InvalidateExpiredResponseCacheCommand:
-    arguments:
-      $cache: '@cache.t3api_response'
-
-  SourceBroker\T3api\EventListener\PersistenceEventListener:
-    tags:
-      - name: event.listener
-        identifier: 't3api/PersistenceEventListenerEntityAdded'
-        event: TYPO3\CMS\Extbase\Event\Persistence\EntityAddedToPersistenceEvent
-        method: entityAdded
-      - name: event.listener
-        identifier: 't3api/PersistenceEventListenerEntityUpdated'
-        event: TYPO3\CMS\Extbase\Event\Persistence\EntityUpdatedInPersistenceEvent
-        method: entityUpdated
-      - name: event.listener
-        identifier: 't3api/PersistenceEventListenerEntityRemoved'
-        event: TYPO3\CMS\Extbase\Event\Persistence\EntityRemovedFromPersistenceEvent
-        method: entityRemoved

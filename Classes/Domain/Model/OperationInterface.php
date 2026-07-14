@@ -28,10 +28,6 @@ interface OperationInterface
 
     public function getPersistenceSettings(): PersistenceSettings;
 
-    public function getResponseCacheSettings(): ResponseCacheSettings;
-
-    public function getCacheInvalidationSettings(): CacheInvalidationSettings;
-
     public function isMethodGet(): bool;
 
     public function isMethodPut(): bool;
