@@ -28,6 +28,11 @@ class Pagination extends AbstractOperationResourceSettings
 
     protected array $parameters = [];
 
+    /**
+     * @param array $attributes
+     * @param Pagination|null $pagination
+     * @return Pagination
+     */
     public static function create(
         array $attributes = [],
         ?AbstractOperationResourceSettings $pagination = null

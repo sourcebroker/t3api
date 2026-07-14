@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  T3apiTests\ResponseCacheTest\:
+    resource: '../Classes/*'
+
+  SourceBroker\T3api\Dispatcher\Bootstrap:
+    public: true

@@ -17,6 +17,7 @@ Features
 - Configuration with classes, properties and methods annotations.
 - Build-in filters: boolean, numeric, order, range and text (partial, match against and exact strategies).
 - Build-in pagination.
+- Opt-in response caching with automatic tag-based invalidation.
 - Support for typolinks.
 - Support for image processing.
 - Support for file uploads (FAL).

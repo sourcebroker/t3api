@@ -11,6 +11,7 @@ use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Exception\ExceptionInterface;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
+use SourceBroker\T3api\Service\OperationResponseCache;
 use SourceBroker\T3api\Service\RouteService;
 use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -34,7 +35,8 @@ class Bootstrap extends AbstractDispatcher
         ApiResourceRepository $apiResourceRepository,
         SerializationContextBuilder $serializationContextBuilder,
         DeserializationContextBuilder $deserializationContextBuilder,
-        EventDispatcherInterface $eventDispatcherInterface
+        EventDispatcherInterface $eventDispatcherInterface,
+        OperationResponseCache $operationResponseCache
     ) {
         parent::__construct(
             $serializerService,
@@ -42,6 +44,7 @@ class Bootstrap extends AbstractDispatcher
             $serializationContextBuilder,
             $deserializationContextBuilder,
             $eventDispatcherInterface,
+            $operationResponseCache,
         );
         $this->response = new Response('php://temp', 200, ['Content-Type' => 'application/ld+json']);
         $this->httpFoundationFactory = GeneralUtility::makeInstance(HttpFoundationFactory::class);

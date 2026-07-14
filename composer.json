@@ -54,7 +54,8 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"SourceBroker\\T3api\\Tests\\": "Tests"
+			"SourceBroker\\T3api\\Tests\\": "Tests",
+			"T3apiTests\\ResponseCacheTest\\": "Tests/Functional/Fixtures/Extensions/t3api_response_cache_test/Classes"
 		}
 	},
 	"config": {
