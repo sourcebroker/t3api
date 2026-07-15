@@ -24,15 +24,7 @@ use SourceBroker\T3api\Service\ResponseCacheDebugHeaders;
 use SourceBroker\T3api\Service\ResponseCacheService;
 use SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\PlainBook;
 use Symfony\Component\HttpFoundation\Request;
-use TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
-use TYPO3\CMS\Core\Localization\Locale;
-use TYPO3\CMS\Core\Localization\Locales;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMap;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
@@ -42,9 +34,11 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 class OperationResponseCacheTest extends UnitTestCase
 {
     /**
-     * `OperationNotAllowedException` translates its title/description via TYPO3's
-     * `LanguageService`, which the fake translation registered by
-     * `registerFakeTranslation()` needs to survive a singleton reset between tests.
+     * `securedCollectionOperationDeniedThrowsAndNeverTouchesCache()` lets the real, unmocked
+     * `LocalizationUtility::translate()` attempt to run (see `AbstractException::translate()`'s
+     * fail-soft fallback) - without a full TYPO3 boot it fails, but not before registering a real
+     * `Locales` singleton via `GeneralUtility::makeInstance()`, which would otherwise leak into
+     * later tests.
      */
     protected bool $resetSingletonInstances = true;
 
@@ -942,10 +936,15 @@ class OperationResponseCacheTest extends UnitTestCase
         self::assertFalse($processorCalled);
     }
 
+    /**
+     * `OperationNotAllowedException` translates its title/description via TYPO3's `LanguageService`
+     * - `AbstractException::translate()` falls back to the raw key when that fails, so this needs
+     * no TYPO3 translation machinery faked at all, and stays correct across the whole supported
+     * TYPO3/PHPUnit version range.
+     */
     #[Test]
     public function securedCollectionOperationDeniedThrowsAndNeverTouchesCache(): void
     {
-        $this->registerFakeTranslation();
         $this->responseCacheService->method('buildEntryIdentifier')->willReturn('entry-id');
         $this->responseCacheService->expects(self::never())->method('get');
         $this->responseCacheService->expects(self::never())->method('store');
@@ -1225,53 +1224,5 @@ class OperationResponseCacheTest extends UnitTestCase
         );
 
         return $operation;
-    }
-
-    /**
-     * `OperationNotAllowedException` translates its title/description via
-     * `LocalizationUtility::translate()`, which needs a real TYPO3 `LanguageService`
-     * - fake the two collaborators it pulls through `GeneralUtility::makeInstance()`
-     * so construction does not require a full TYPO3 boot.
-     * `LocalizationUtility::translate()` calls a different `LanguageService` method
-     * depending on the TYPO3 version (`sL()` on 12/13, `translate()` on 14) - `createMock()`
-     * throws if asked to configure a method the installed version's class does not declare,
-     * so only the method(s) that actually exist here are stubbed. On 12/13 it also caches the
-     * built `LanguageService` in the `runtime` cache via `GeneralUtility::makeInstance(CacheManager::class)`
-     * - unlike a real, fully-bootstrapped request, a unit test never runs the bootstrap code that
-     * calls `CacheManager::setCacheConfigurations()`, so a fresh `CacheManager` singleton knows no
-     * caches at all. Registering one configured with an in-memory backend satisfies the round-trip
-     * without touching the filesystem or a database; `resetSingletonInstances = true` on this class
-     * (see above) restores the real singleton for the next test.
-     */
-    private function registerFakeTranslation(): void
-    {
-        $cacheManager = new CacheManager();
-        $cacheManager->setCacheConfigurations([
-            'runtime' => [
-                'frontend' => VariableFrontend::class,
-                'backend' => TransientMemoryBackend::class,
-            ],
-        ]);
-        GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager);
-
-        $languageService = $this->createMock(LanguageService::class);
-        if (method_exists(LanguageService::class, 'translate')) {
-            $languageService->method('translate')->willReturn('translated');
-        }
-        if (method_exists(LanguageService::class, 'sL')) {
-            $languageService->method('sL')->willReturn('translated');
-        }
-
-        $languageServiceFactory = $this->createMock(LanguageServiceFactory::class);
-        $languageServiceFactory->method('create')->willReturn($languageService);
-        // `buildLanguageService()` caches by language file path, and title/description both
-        // resolve the same `t3api` extension path - only the first `translate()` call actually
-        // builds (and thereby consumes) a `LanguageServiceFactory` instance, the second is served
-        // from the now-working `runtime` cache.
-        GeneralUtility::addInstance(LanguageServiceFactory::class, $languageServiceFactory);
-
-        $locales = $this->createMock(Locales::class);
-        $locales->method('createLocaleFromRequest')->willReturn(new Locale('en'));
-        GeneralUtility::setSingletonInstance(Locales::class, $locales);
     }
 }

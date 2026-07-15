@@ -20,9 +20,19 @@ abstract class AbstractException extends \Exception implements ExceptionInterfac
      */
     protected string $title;
 
+    /**
+     * Falls back to the raw, untranslated `$key` when the translation layer itself fails - an
+     * exception reporting a real failure (e.g. access denied) must still construct successfully
+     * even if TYPO3's language service is unavailable or misconfigured, rather than obscuring the
+     * original problem behind an unrelated translation error.
+     */
     protected static function translate(string $key, ?array $arguments = null): ?string
     {
-        return LocalizationUtility::translate($key, 't3api', $arguments);
+        try {
+            return LocalizationUtility::translate($key, 't3api', $arguments) ?? $key;
+        } catch (\Throwable) {
+            return $key;
+        }
     }
 
     public static function getOpenApiResponse(): OpenApiResponse
