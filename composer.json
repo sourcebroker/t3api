@@ -27,9 +27,9 @@
 		"symfony/property-info": "^6.4 || ^7.0",
 		"symfony/psr-http-message-bridge": "^6.4 || ^7.0",
 		"symfony/routing": "^6.4 || ^7.0",
-		"typo3/cms-core": "^12.4.16 || ^13.3 || ^14.0",
-		"typo3/cms-extbase": "^12.4.16 || ^13.3 || ^14.0",
-		"typo3/cms-frontend": "^12.4.16 || ^13.3 || ^14.0"
+		"typo3/cms-core": "^12.4.18 || ^13.3 || ^14.0",
+		"typo3/cms-extbase": "^12.4.18 || ^13.3 || ^14.0",
+		"typo3/cms-frontend": "^12.4.18 || ^13.3 || ^14.0"
 	},
 	"require-dev": {
 		"composer/class-map-generator": "^1.7",
@@ -40,7 +40,7 @@
 		"saschaegerer/phpstan-typo3": "~1.10.2 || ^3.0",
 		"seld/jsonlint": "^1.11.0",
 		"symfony/yaml": "^6.0 || ^7.0",
-		"typo3/cms-install": "^12.4.16 || ^13.3 || ^14.0",
+		"typo3/cms-install": "^12.4.18 || ^13.3 || ^14.0",
 		"typo3/coding-standards": "^0.8",
 		"typo3/testing-framework": "^8.2.1 || ^9.5"
 	},
