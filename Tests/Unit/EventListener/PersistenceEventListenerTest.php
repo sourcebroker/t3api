@@ -84,8 +84,7 @@ class PersistenceEventListenerTest extends UnitTestCase
     {
         $dataMapFactory = $this->createMock(DataMapFactory::class);
         $dataMapFactory->method('buildDataMap')
-            ->with($object::class)
-            ->willReturn(new DataMap($object::class, $tableName));
+            ->willReturnMap([[$object::class, new DataMap($object::class, $tableName)]]);
 
         return $dataMapFactory;
     }

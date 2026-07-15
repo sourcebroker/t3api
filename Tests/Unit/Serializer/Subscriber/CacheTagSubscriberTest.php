@@ -24,7 +24,7 @@ class CacheTagSubscriberTest extends UnitTestCase
 
         $dataMap = new DataMap(PlainBook::class, 'tx_test_domain_model_plainbook');
         $dataMapper = $this->createMock(DataMapper::class);
-        $dataMapper->method('getDataMap')->with(PlainBook::class)->willReturn($dataMap);
+        $dataMapper->method('getDataMap')->willReturnMap([[PlainBook::class, $dataMap]]);
 
         $collector = new CacheTagCollector();
         $collector->start();
@@ -43,7 +43,7 @@ class CacheTagSubscriberTest extends UnitTestCase
     {
         $dataMap = new DataMap(PlainBook::class, 'tx_test_domain_model_plainbook');
         $dataMapper = $this->createMock(DataMapper::class);
-        $dataMapper->method('getDataMap')->with(PlainBook::class)->willReturn($dataMap);
+        $dataMapper->method('getDataMap')->willReturnMap([[PlainBook::class, $dataMap]]);
 
         $collector = new CacheTagCollector();
         $collector->start();

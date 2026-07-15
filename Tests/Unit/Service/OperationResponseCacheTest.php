@@ -67,7 +67,7 @@ class OperationResponseCacheTest extends UnitTestCase
     {
         $this->allowConditions();
         $this->responseCacheService->method('buildEntryIdentifier')->willReturn('entry-id');
-        $this->responseCacheService->method('get')->with('entry-id')->willReturn('{"cached":true}');
+        $this->responseCacheService->method('get')->willReturnMap([['entry-id', '{"cached":true}']]);
 
         $processorCalled = false;
         $output = $this->resolve($this->processor('{"fresh":true}', $processorCalled));
@@ -86,7 +86,7 @@ class OperationResponseCacheTest extends UnitTestCase
     {
         $this->allowConditions();
         $this->responseCacheService->method('buildEntryIdentifier')->willReturn('entry-id');
-        $this->responseCacheService->method('get')->with('entry-id')->willReturn('{"cached":true}');
+        $this->responseCacheService->method('get')->willReturnMap([['entry-id', '{"cached":true}']]);
         $this->responseCacheDebugHeaders->expects(self::once())
             ->method('hit')
             ->with(self::anything(), 'entry-id');
@@ -206,9 +206,9 @@ class OperationResponseCacheTest extends UnitTestCase
         $this->allowConditions();
         $this->responseCacheService->method('buildEntryIdentifier')->willReturn('entry-id');
         $this->responseCacheService->method('get')->willReturn(null);
-        $this->dataMapper->method('getDataMap')->with(PlainBook::class)->willReturn(
-            new DataMap(PlainBook::class, 'tx_test_domain_model_plainbook')
-        );
+        $this->dataMapper->method('getDataMap')->willReturnMap([
+            [PlainBook::class, new DataMap(PlainBook::class, 'tx_test_domain_model_plainbook')],
+        ]);
         $this->responseCacheService->expects(self::once())
             ->method('store')
             ->with(
@@ -233,9 +233,9 @@ class OperationResponseCacheTest extends UnitTestCase
         $this->allowConditions();
         $this->responseCacheService->method('buildEntryIdentifier')->willReturn('entry-id');
         $this->responseCacheService->method('get')->willReturn(null);
-        $this->dataMapper->method('getDataMap')->with(PlainBook::class)->willReturn(
-            new DataMap(PlainBook::class, 'tx_test_domain_model_plainbook')
-        );
+        $this->dataMapper->method('getDataMap')->willReturnMap([
+            [PlainBook::class, new DataMap(PlainBook::class, 'tx_test_domain_model_plainbook')],
+        ]);
         $this->responseCacheService->expects(self::once())
             ->method('store')
             ->with(
