@@ -10,6 +10,11 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 interface FilterInterface
 {
+    /**
+     * @todo v6: add a CollectionOperation parameter (as in QueryModifierInterface::modifyQuery()),
+     *       mirroring API Platform's filter contract where apply() receives the Operation.
+     *       Cannot happen within 5.x — it would break every existing custom filter implementation.
+     */
     public function filterProperty(
         string $property,
         $values,

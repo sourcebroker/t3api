@@ -1,5 +1,5 @@
 {
-    "name": "t3api/response-cache-test",
+    "name": "t3api/functional-test",
     "type": "typo3-cms-extension",
     "license": "GPL-2.0-or-later",
     "require": {
@@ -7,12 +7,12 @@
     },
     "autoload": {
         "psr-4": {
-            "T3apiTests\\ResponseCacheTest\\": "Classes/"
+            "T3apiTests\\FunctionalTest\\": "Classes/"
         }
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "t3api_response_cache_test"
+            "extension-key": "t3api_functional_test"
         }
     }
 }

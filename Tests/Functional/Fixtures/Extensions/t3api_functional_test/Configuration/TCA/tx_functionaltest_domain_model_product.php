@@ -2,7 +2,7 @@
 
 return [
     'ctrl' => [
-        'title' => 'Book',
+        'title' => 'Product',
         'label' => 'title',
         'delete' => 'deleted',
         'enablecolumns' => [
@@ -18,18 +18,17 @@ return [
                 'type' => 'input',
             ],
         ],
-        'author' => [
-            'label' => 'Author',
+        'category' => [
+            'label' => 'Category',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'foreign_table' => 'tx_responsecachetest_domain_model_author',
-                'foreign_table_where' => 'ORDER BY tx_responsecachetest_domain_model_author.name ASC',
+                'foreign_table' => 'tx_functionaltest_domain_model_category',
                 'default' => 0,
             ],
         ],
     ],
     'types' => [
-        '0' => ['showitem' => 'title, author'],
+        '0' => ['showitem' => 'title, category'],
     ],
 ];
