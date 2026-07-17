@@ -48,6 +48,7 @@ If you find an error or something is missing, please: `Report a Problem
    Operations/Index
    Filtering/Index
    Pagination/Index
+   ResponseCache/Index
    Security/Index
    Serialization/Index
    Integration/Index
