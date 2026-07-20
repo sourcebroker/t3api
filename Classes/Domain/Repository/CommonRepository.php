@@ -7,6 +7,7 @@ namespace SourceBroker\T3api\Domain\Repository;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
+use SourceBroker\T3api\Exception\MissingCollectionOperationException;
 use SourceBroker\T3api\Filter\FilterInterface;
 use SourceBroker\T3api\Filter\QueryModifierInterface;
 use SourceBroker\T3api\Security\FilterAccessChecker;
@@ -135,7 +136,7 @@ class CommonRepository
         if ($queryModifiers !== []) {
             $operation = $this->operation ?? null;
             if (!$operation instanceof CollectionOperation) {
-                throw new \RuntimeException(
+                throw new MissingCollectionOperationException(
                     sprintf(
                         'Query modifiers require a repository built for a collection operation, `%s` given.',
                         get_debug_type($operation)
