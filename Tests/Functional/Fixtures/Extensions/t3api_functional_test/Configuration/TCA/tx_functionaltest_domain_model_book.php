@@ -1,8 +1,8 @@
 <?php
 
-$buildTca = require __DIR__ . '/../TcaFixtureBase.php';
+use T3apiTests\FunctionalTest\Tca\TcaFixtureBuilder;
 
-return $buildTca(
+return TcaFixtureBuilder::build(
     'Book',
     [
         'title' => [
