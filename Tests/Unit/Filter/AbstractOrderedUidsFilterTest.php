@@ -103,7 +103,7 @@ class AbstractOrderedUidsFilterTest extends UnitTestCase
         $queryBuilder = $this->createQueryBuilderMock($doctrineQueryBuilder);
 
         $queryParser = $this->createMock(Typo3DbQueryParser::class);
-        $queryParser->method('convertQueryToDoctrineQueryBuilder')->with($query)->willReturn($queryBuilder);
+        $queryParser->method('convertQueryToDoctrineQueryBuilder')->willReturnMap([[$query, $queryBuilder]]);
         GeneralUtility::addInstance(Typo3DbQueryParser::class, $queryParser);
 
         $query->expects(self::once())->method('statement')->with($queryBuilder);
@@ -200,8 +200,7 @@ class AbstractOrderedUidsFilterTest extends UnitTestCase
         $queryBuilder = $this->createMock(QueryBuilder::class);
         $queryBuilder->method('getConcreteQueryBuilder')->willReturn($doctrineQueryBuilder);
         $queryBuilder->method('quoteIdentifier')
-            ->with('tx_foo_domain_model_item.uid')
-            ->willReturn('`tx_foo_domain_model_item`.`uid`');
+            ->willReturnMap([['tx_foo_domain_model_item.uid', '`tx_foo_domain_model_item`.`uid`']]);
 
         return $queryBuilder;
     }
