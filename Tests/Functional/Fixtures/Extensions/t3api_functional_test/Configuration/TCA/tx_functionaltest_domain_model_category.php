@@ -1,17 +1,10 @@
 <?php
 
-return [
-    'ctrl' => [
-        'title' => 'Category',
-        'label' => 'title',
-        'delete' => 'deleted',
-        'enablecolumns' => [
-            'disabled' => 'hidden',
-            'starttime' => 'starttime',
-            'endtime' => 'endtime',
-        ],
-    ],
-    'columns' => [
+$buildTca = require __DIR__ . '/../TcaFixtureBase.php';
+
+return $buildTca(
+    'Category',
+    [
         'title' => [
             'label' => 'Title',
             'config' => [
@@ -19,7 +12,5 @@ return [
             ],
         ],
     ],
-    'types' => [
-        '0' => ['showitem' => 'title'],
-    ],
-];
+    'title'
+);
