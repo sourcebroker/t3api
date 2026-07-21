@@ -384,8 +384,9 @@ Tags and invalidation
 ======================
 
 Invalidation is automatic on record create/update/delete through the TYPO3
-backend (DataHandler) and through Extbase persistence. "Flush all caches"
-clears the response cache too.
+backend (DataHandler) and through Extbase persistence. "Flush frontend
+caches" and "Flush all caches" clear the response cache too (see "Storage
+backend" below for the cache group this relies on).
 
 Tags come from three sources: the resource's own ``<table>`` tag; a scope
 tag - ``<table>--collection`` on a collection response, ``<table>--single``
@@ -1077,18 +1078,20 @@ backend). Swap the backend in ``config/system/settings.php``, e.g. to Redis:
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['t3api_response']['backend']
         = \TYPO3\CMS\Core\Cache\Backend\RedisBackend::class;
 
-The same defaults place the cache in the ``all`` cache group only: the
-backend's "Flush frontend caches" action (which flushes the ``pages``
-group) does not touch it - tag-based invalidation keeps entries fresh
-without it - while "Flush all caches" always clears it (see "Tags and
-invalidation" above). T3api only provides defaults and never overrides
-an existing ``t3api_response`` configuration, so a project that wants the
-frontend flush to cover API responses too can opt in the same way:
+By default the cache is placed in both the ``all`` and ``pages`` cache
+groups, so the backend's "Flush frontend caches" action (which flushes the
+``pages`` group) clears it alongside the page cache, and "Flush all caches"
+clears it too (see "Tags and invalidation" above) - on top of the tag-based
+invalidation that already keeps entries fresh as records change. T3api only
+sets this default and never overrides an existing ``t3api_response``
+configuration, so a project that wants API responses decoupled from the
+frontend flush (relying on tag-based invalidation and ``lifetime`` alone)
+can opt out the same way:
 
 .. code-block:: php
 
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['t3api_response']['groups']
-        = ['all', 'pages'];
+        = ['all'];
 
 Every distinct combination of declared filter and pagination parameters
 produces its own cache entry (see "Cache key" above), so a heavily
