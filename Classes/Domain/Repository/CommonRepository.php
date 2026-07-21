@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Domain\Repository;
 
 use SourceBroker\T3api\Domain\Model\ApiFilter;
+use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
+use SourceBroker\T3api\Exception\MissingCollectionOperationException;
 use SourceBroker\T3api\Filter\FilterInterface;
+use SourceBroker\T3api\Filter\QueryModifierInterface;
 use SourceBroker\T3api\Security\FilterAccessChecker;
 use SourceBroker\T3api\Service\StorageService;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,6 +92,7 @@ class CommonRepository
 
         $query = $this->createQuery();
         $constraintGroups = [];
+        $queryModifiers = [];
 
         $apiFilters = $this->filterGrantedFilters($apiFilters);
         $apiFilters = $this->filterAndSortApiFiltersByQueryParams($apiFilters, $queryParams);
@@ -111,6 +115,10 @@ class CommonRepository
                     [$constraint]
                 );
             }
+
+            if ($filter instanceof QueryModifierInterface) {
+                $queryModifiers[] = [$filter, $apiFilter];
+            }
         }
 
         $constraints = [];
@@ -120,6 +128,26 @@ class CommonRepository
 
         if ($constraints !== []) {
             $query->matching($query->logicalAnd(...$constraints));
+        }
+
+        // Let query-modifier filters adjust the fully-constrained query — e.g. apply an ORDER BY
+        // the QOM constraint model cannot express (ORDER BY FIELD(uid, ...) for a relevance
+        // ranking). Runs after matching() so the query already carries every constraint.
+        if ($queryModifiers !== []) {
+            $operation = $this->operation ?? null;
+            if (!$operation instanceof CollectionOperation) {
+                throw new MissingCollectionOperationException(
+                    sprintf(
+                        'Query modifiers require a repository built for a collection operation, `%s` given.',
+                        get_debug_type($operation)
+                    ),
+                    1784102345678
+                );
+            }
+
+            foreach ($queryModifiers as [$filter, $apiFilter]) {
+                $filter->modifyQuery($query, $apiFilter, $operation);
+            }
         }
 
         return $query;

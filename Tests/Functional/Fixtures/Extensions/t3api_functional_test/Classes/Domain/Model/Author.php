@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace T3apiTests\ResponseCacheTest\Domain\Model;
+namespace T3apiTests\FunctionalTest\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 

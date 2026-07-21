@@ -4,7 +4,7 @@ services:
     autoconfigure: true
     public: false
 
-  T3apiTests\ResponseCacheTest\:
+  T3apiTests\FunctionalTest\:
     resource: '../Classes/*'
 
   SourceBroker\T3api\Dispatcher\Bootstrap:
