@@ -31,11 +31,22 @@ class ResourceEnhancer extends AbstractEnhancer implements RoutingEnhancerInterf
      */
     public function enhanceForMatching(RouteCollection $collection): void
     {
+        try {
+            $basePath = $this->getBasePath();
+        } catch (\Throwable) {
+            // The T3api base path cannot be resolved when the current site is not
+            // determinable, e.g. in CLI sub-requests such as EXT:solr v14 page indexing
+            // where ServerRequestFactory::fromGlobals() has no valid request URL. The
+            // API routes are irrelevant for such requests, so skip enhancement instead
+            // of breaking route matching for the whole request.
+            return;
+        }
+
         /** @var Route $variant */
         $variant = clone $collection->get('default');
-        $variant->setPath($this->getBasePath() . sprintf('/{%s?}', self::PARAMETER_NAME));
+        $variant->setPath($basePath . sprintf('/{%s?}', self::PARAMETER_NAME));
         $variant->setRequirement(self::PARAMETER_NAME, '.*');
-        $collection->add('enhancer_' . $this->getBasePath() . spl_object_hash($variant), $variant);
+        $collection->add('enhancer_' . $basePath . spl_object_hash($variant), $variant);
     }
 
     /**
