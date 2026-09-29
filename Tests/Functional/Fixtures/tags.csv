@@ -1,0 +1,11 @@
+"tx_functionaltest_domain_model_tag",,,
+,"uid","pid","title"
+,1,0,"red"
+,2,0,"ruby"
+,3,0,"blue"
+"tx_functionaltest_product_tag_mm",,,,
+,"uid_local","uid_foreign","sorting","sorting_foreign"
+,1,1,1,1
+,1,2,2,1
+,2,1,1,2
+,3,3,1,1

@@ -10,6 +10,7 @@ use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Exception\MissingCollectionOperationException;
 use SourceBroker\T3api\Filter\FilterInterface;
 use SourceBroker\T3api\Filter\QueryModifierInterface;
+use SourceBroker\T3api\Filter\StatementQueryBuilderProvider;
 use SourceBroker\T3api\Security\FilterAccessChecker;
 use SourceBroker\T3api\Service\StorageService;
 use Symfony\Component\HttpFoundation\Request;
@@ -148,6 +149,8 @@ class CommonRepository
             foreach ($queryModifiers as [$filter, $apiFilter]) {
                 $filter->modifyQuery($query, $apiFilter, $operation);
             }
+
+            GeneralUtility::makeInstance(StatementQueryBuilderProvider::class)->applyDeferredOrderings($query);
         }
 
         return $query;
@@ -168,8 +171,11 @@ class CommonRepository
     }
 
     /**
-     * It may be important for some type of filters (e.g. OrderFilter) to apply in specific order.
-     * This method ensures that filters are applied in the order which they was requested in $queryParams.
+     * It may be important for some type of filters (e.g. OrderFilter, query modifiers) to apply in specific order.
+     * Filters are applied in the order of their parameters in $queryParams. Mind that $queryParams comes from
+     * Symfony's Request::getQueryString(), which sorts the top-level parameters by name with ksort() - in byte
+     * order, so digits come first, then uppercase letters, `_` and lowercase letters. The order of nested keys
+     * (e.g. `order[title]=asc&order[uid]=desc`) is the one of the request.
      *
      * @param ApiFilter[] $apiFilters
      *

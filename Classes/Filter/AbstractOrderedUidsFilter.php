@@ -10,7 +10,6 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
-use TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
@@ -23,13 +22,17 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  *  - as a QueryModifierInterface, re-applies the order as ORDER BY FIELD(uid, ...) once t3api has
  *    combined every filter's constraints (Extbase's ordering API cannot express FIELD()).
  *
- * The FIELD ordering is handed to the query as a Doctrine QueryBuilder statement; it survives
- * pagination and the count query because AbstractCollectionResponse gives the paginated query its
- * own QueryBuilder clone.
+ * The FIELD ordering is added to the query's Doctrine QueryBuilder statement shared by all query
+ * modifiers (see StatementQueryBuilderProvider); it survives pagination and the count query because
+ * AbstractCollectionResponse gives the paginated query its own QueryBuilder clone.
+ *
+ * By default the ranking precedes the orderings requested through OrderFilter (`order[...]`), which
+ * then only break its ties; the `rankingPrecedence` argument of @ApiFilter set to `afterOrderFilter`
+ * turns this around (see RankingPrecedence).
  *
  * Several such filters compose: each one's uid IN (...) constraint applies (the collection is the
- * intersection of all matches), the first modifier's ranking becomes the primary ordering and the
- * following ones are appended as tie-breakers on the already-present QueryBuilder statement.
+ * intersection of all matches) and the rankings follow the order in which the modifiers run - the
+ * sorted order of their parameter names (see CommonRepository::findFiltered()).
  */
 abstract class AbstractOrderedUidsFilter extends AbstractFilter implements QueryModifierInterface
 {
@@ -81,28 +84,44 @@ abstract class AbstractOrderedUidsFilter extends AbstractFilter implements Query
             return;
         }
 
-        $statement = $query->getStatement();
-        if ($statement !== null && $statement->getStatement() instanceof QueryBuilder) {
-            // An earlier query modifier already rewrote this query into a QueryBuilder statement.
-            // Reconverting the QOM would silently discard its work — append this ordering to the
-            // existing builder instead, as a tie-breaker after the earlier modifier's ordering.
-            $queryBuilder = $statement->getStatement();
-            $queryBuilder->getConcreteQueryBuilder()
-                ->addOrderBy($this->buildFieldOrderExpression($queryBuilder, $query, $orderedUids));
+        $queryBuilder = $this->getOrCreateStatementQueryBuilder($query);
+        $rankingExpression = $this->buildFieldOrderExpression($queryBuilder, $query, $orderedUids);
+
+        if ($this->getRankingPrecedence($apiFilter) === RankingPrecedence::AfterOrderFilter) {
+            GeneralUtility::makeInstance(StatementQueryBuilderProvider::class)
+                ->addOrderingAfterExtbaseOrderings($queryBuilder, $rankingExpression);
 
             return;
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(Typo3DbQueryParser::class)
-            ->convertQueryToDoctrineQueryBuilder($query);
+        // The concrete Doctrine builder takes the expression as is: TYPO3's facade would quote
+        // the whole FIELD() expression as an identifier.
+        $queryBuilder->getConcreteQueryBuilder()->addOrderBy($rankingExpression);
+    }
 
-        // The ordering goes to the concrete Doctrine QueryBuilder: TYPO3's facade would quote the
-        // whole FIELD() expression as an identifier, and orderBy() on the concrete builder also
-        // replaces any ordering Typo3DbQueryParser derived from the Extbase query.
-        $queryBuilder->getConcreteQueryBuilder()
-            ->orderBy($this->buildFieldOrderExpression($queryBuilder, $query, $orderedUids));
+    private function getRankingPrecedence(ApiFilter $apiFilter): RankingPrecedence
+    {
+        $configuredPrecedence = (string)($apiFilter->getArgument('rankingPrecedence')
+            ?? RankingPrecedence::BeforeOrderFilter->value);
+        $rankingPrecedence = RankingPrecedence::tryFrom($configuredPrecedence);
+        if ($rankingPrecedence === null) {
+            $supportedPrecedences = array_map(
+                static fn(RankingPrecedence $precedence): string => $precedence->value,
+                RankingPrecedence::cases()
+            );
 
-        $query->statement($queryBuilder);
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Unknown `rankingPrecedence` `%s` of filter parameter `%s`, expected one of: %s.',
+                    $configuredPrecedence,
+                    $apiFilter->getParameterName(),
+                    implode(', ', $supportedPrecedences)
+                ),
+                1790627277671
+            );
+        }
+
+        return $rankingPrecedence;
     }
 
     /**

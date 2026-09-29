@@ -16,14 +16,15 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  * This is the seam for adjustments the QOM constraint model cannot express — most notably a
  * custom ORDER BY such as ORDER BY FIELD(uid, ...) for a relevance ranking, which needs the
  * query to already carry all constraints. Filters implementing this run in a second pass, in the
- * same (request-driven) order as filterProperty().
+ * same order as filterProperty() - the sorted order of their parameter names, as Symfony's
+ * Request::getQueryString() sorts the query parameters (see CommonRepository::findFiltered()).
  *
- * Composability caveat: adjustments made through the QOM API compose across modifiers, but a
- * modifier that ends in $query->statement(...) effectively replaces the whole query — Extbase
- * executes the statement and ignores QOM-level changes made by later modifiers, and a later
- * statement(...) call overwrites an earlier one (last one wins). A statement-based modifier
- * should therefore check $query->getStatement() first and mutate the QueryBuilder already
- * present instead of reconverting, as AbstractOrderedUidsFilter does.
+ * A modifier needing a Doctrine QueryBuilder should take the one shared by all modifiers from
+ * AbstractFilter::getOrCreateStatementQueryBuilder() (see StatementQueryBuilderProvider for the
+ * composition rules) instead of calling $query->statement(...) itself: Extbase executes only the
+ * statement, so a later statement(...) call overwrites an earlier one (last one wins). For the same
+ * reason, changes made through the QOM API in modifyQuery() are ignored once any modifier created
+ * the statement - QOM changes belong to filterProperty().
  */
 interface QueryModifierInterface
 {

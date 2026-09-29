@@ -86,12 +86,13 @@ class CollectionPaginationDispatcherTest extends AbstractDispatcherTestCase
     /**
      * `fixedOrder` and `tieBreakOrder` are two declarations of the same FixedOrderFilter class
      * (one singleton instance, state keyed per declaration). Their `uid IN (...)` constraints
-     * intersect and the ranking of the first filter in the query string stays the primary
-     * ordering — the second one appends to the already-present QueryBuilder statement instead
+     * intersect and the ranking of the modifier running first - `fixedOrder`, as modifiers run in
+     * the alphabetical order of their parameter names - stays the primary ordering; the second one
+     * appends to the already-present QueryBuilder statement instead
      * of overwriting it.
      */
     #[Test]
-    public function twoOrderedUidsFiltersIntersectConstraintsAndFirstRequestedRankingStaysPrimary(): void
+    public function twoOrderedUidsFiltersIntersectConstraintsAndFirstRunningRankingStaysPrimary(): void
     {
         $response = $this->dispatchProductsGet(['fixedOrder' => '4,3,2,1', 'tieBreakOrder' => '1,2,3']);
 
@@ -102,9 +103,10 @@ class CollectionPaginationDispatcherTest extends AbstractDispatcherTestCase
     /**
      * `MaxTitleLengthFilter` contributes a WHERE condition the QOM cannot express:
      * `LENGTH(title) <= 6` keeps "Brie" (uid 2) and "Alfa" (uid 1) of the requested UIDs and
-     * drops "Hazelnut" (uid 8) and "Grapefruit" (uid 7). Declared second in the query string, it
-     * must append its condition to the QueryBuilder statement left by the ordered-UIDs filter —
-     * and the count query behind totalItems must see that condition too.
+     * drops "Hazelnut" (uid 8) and "Grapefruit" (uid 7). Modifiers run in the alphabetical order of
+     * their parameter names, so `maxTitleLength` runs after `fixedOrder` and must append its
+     * condition to the QueryBuilder statement left by the ordered-UIDs filter — and the count query
+     * behind totalItems must see that condition too.
      */
     #[Test]
     public function statementModifierAddingWhereConditionComposesWithEarlierOrderedUidsRanking(): void
@@ -116,14 +118,14 @@ class CollectionPaginationDispatcherTest extends AbstractDispatcherTestCase
     }
 
     /**
-     * Same combination with the parameter order reversed: now the WHERE-contributing modifier
-     * converts the query first and the ordered-UIDs filter appends its FIELD() ranking to the
+     * Same combination in the other hand-off direction: `charLimit` (the same filter class) sorts
+     * before `fixedOrder`, so now the WHERE-contributing modifier converts the query first and the ordered-UIDs filter appends its FIELD() ranking to the
      * already-present QueryBuilder statement. Both hand-off directions must yield the same result.
      */
     #[Test]
     public function orderedUidsRankingComposesWithEarlierStatementModifierAddingWhereCondition(): void
     {
-        $response = $this->dispatchProductsGet(['maxTitleLength' => 6, 'fixedOrder' => '8,2,7,1']);
+        $response = $this->dispatchProductsGet(['charLimit' => 6, 'fixedOrder' => '8,2,7,1']);
 
         self::assertSame([2, 1], $this->memberUids($response));
         self::assertSame(2, $response['hydra:totalItems']);

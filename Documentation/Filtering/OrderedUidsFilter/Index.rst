@@ -15,9 +15,9 @@ A concrete filter implements a single method — ``resolveOrderedUids()``. The b
 - it constrains the collection query to the resolved UIDs (``uid IN (...)``),
 - as a :ref:`query modifier <filtering_custom-filters_query-modifiers>` it applies the ordering as ``ORDER BY FIELD(uid, ...)`` after the constraints of all filters have been combined — an ordering which Extbase's query API cannot express on its own.
 
-The ordering plays well with the rest of t3api: pagination (``limit``/``offset``) is applied on top of it and ``totalItems`` is still calculated from the unpaginated query.
+The ordering plays well with the rest of t3api: pagination (``limit``/``offset``) is applied on top of it and ``totalItems`` is still calculated from the unpaginated query. Other filters, including those constraining to-many relations (e.g. ``tags.title``), can be combined with it — every record is returned and counted once.
 
-Several such filters on one resource compose as well: each filter's ``uid IN (...)`` constraint applies (the collection is the intersection of all matches), the ranking of the first filter present in the request's query string becomes the primary ordering and the following ones are appended as tie-breakers.
+Several such filters on one resource compose as well: each filter's ``uid IN (...)`` constraint applies (the collection is the intersection of all matches). Their rankings follow the order in which the query modifiers run, which is the **sorted order of the parameter names**, not their position in the URL (see :ref:`query modifiers <filtering_custom-filters_query-modifiers>`): with ``?titleSearch=b&search=a`` the ranking of ``search`` is the primary ordering. As the rankings are applied to the intersection of all matches, where every record has a distinct position in the first ranking, the following rankings do not change the result in practice.
 
 Return value contract of ``resolveOrderedUids()``:
 
@@ -76,3 +76,20 @@ Registration works the same as for any other filter:
    }
 
 A request like ``/api/recipes?search=pasta`` then returns the matching records in the order delivered by the search engine, with pagination and ``totalItems`` working as usual.
+
+Ranking and ``OrderFilter``
+===========================
+
+By default the ranking is the primary ordering and orderings requested through :ref:`OrderFilter <filtering_filters_order-filter>` (``order[...]``) only break its ties — ``?search=pasta&order[title]=asc`` returns the records in the order of the search engine. The ``rankingPrecedence`` argument turns this around per filter declaration:
+
+- ``beforeOrderFilter`` (default) — the ranking precedes ``order[...]``,
+- ``afterOrderFilter`` — ``order[...]`` is the primary ordering and the ranking breaks its ties, e.g. ``?search=pasta&order[rating]=desc`` returns the best rated matches first, records with the same rating in the order of the search engine. Without ``order[...]`` in the request the ranking still applies.
+
+.. code-block:: php
+
+   /**
+    * @T3api\ApiFilter(
+    *     RelevanceSearchFilter::class,
+    *     arguments={"parameterName"="search", "rankingPrecedence"="afterOrderFilter"}
+    * )
+    */
