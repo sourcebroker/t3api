@@ -117,6 +117,7 @@ There are few build-in filters. See the next pages.
 
    BuiltinFilters/Index
    CustomFilters/Index
+   OrderedUidsFilter/Index
    SqlInOperator/Index
    SqlOrOperator/Index
 

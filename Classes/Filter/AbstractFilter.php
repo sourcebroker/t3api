@@ -152,6 +152,17 @@ abstract class AbstractFilter implements SingletonInterface, FilterInterface
     }
 
     /**
+     * For query modifiers (QueryModifierInterface) which need what the Extbase query cannot express:
+     * returns the Doctrine QueryBuilder statement of the query, converting the query on first use.
+     * Every modifier calling this gets the same builder, so their changes compose - see
+     * StatementQueryBuilderProvider for the rules.
+     */
+    protected function getOrCreateStatementQueryBuilder(Query $query): QueryBuilder
+    {
+        return GeneralUtility::makeInstance(StatementQueryBuilderProvider::class)->getOrCreateQueryBuilder($query);
+    }
+
+    /**
      * @throws \RuntimeException
      */
     protected function getTableName(QueryInterface $query): string
