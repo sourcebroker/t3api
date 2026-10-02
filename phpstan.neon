@@ -27,3 +27,8 @@ parameters:
     -
       message: "#Call to method getPageCacheIdentifierParameters\\(\\) on an unknown class TYPO3\\\\CMS\\\\Frontend\\\\Event\\\\BeforePageCacheIdentifierIsHashedEvent#"
       reportUnmatched: false
+
+    # @todo This ignoreError can be removed when support for TYPO3 v12 is dropped
+    -
+      message: "#Call to method getRequest\\(\\) on an unknown class TYPO3\\\\CMS\\\\Frontend\\\\Event\\\\BeforePageCacheIdentifierIsHashedEvent#"
+      reportUnmatched: false

@@ -17,7 +17,9 @@ class EnrichPageCacheIdentifierParametersEventListener
 {
     public function __invoke(BeforePageCacheIdentifierIsHashedEvent $beforePageCacheIdentifierIsHashedEvent): void
     {
-        if (!RouteService::routeHasT3ApiResourceEnhancerQueryParam()) {
+        // The request of the event must be used, as $GLOBALS['TYPO3_REQUEST'] (the fallback of RouteService) is not
+        // set yet at this point since TYPO3 v14, which removed the TSFE initialization middleware
+        if (!RouteService::routeHasT3ApiResourceEnhancerQueryParam($beforePageCacheIdentifierIsHashedEvent->getRequest())) {
             return;
         }
 
