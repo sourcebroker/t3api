@@ -62,7 +62,6 @@ class ApiResourceRepositoryTest extends FunctionalTestCase
     {
         $serializerMetadataServiceReflection = new \ReflectionClass(ApiResourceRepository::class);
         $method = $serializerMetadataServiceReflection->getMethod($methodName);
-        $method->setAccessible(true);
 
         return $method->invokeArgs($object ? $object : null, $arguments);
     }
