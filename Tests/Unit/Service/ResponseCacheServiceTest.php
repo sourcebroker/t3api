@@ -468,7 +468,6 @@ class ResponseCacheServiceTest extends UnitTestCase
     {
         $service = new ResponseCacheService($this->cache, new Context());
         $reflectionMethod = new \ReflectionMethod($service, 'getConditionVariables');
-        $reflectionMethod->setAccessible(true);
 
         $variables = $reflectionMethod->invoke(
             $service,

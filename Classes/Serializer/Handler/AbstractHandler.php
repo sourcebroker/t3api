@@ -59,7 +59,6 @@ abstract class AbstractHandler implements SubscribingHandlerInterface
         try {
             $reflection = new \ReflectionClass(Context::class);
             $property = $reflection->getProperty('attributes');
-            $property->setAccessible(true);
             $contextAttributes = $property->getValue($context);
             $deserializationContext = DeserializationContext::create();
             foreach (array_merge($contextAttributes, $attributes) as $attributeName => $attributeValue) {

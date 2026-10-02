@@ -126,7 +126,6 @@ class InvalidateExpiredResponseCacheCommandTest extends FunctionalTestCase
         int $executionTimestamp
     ): bool {
         $method = (new \ReflectionClass($command))->getMethod('hasTimeBasedVisibilityChanged');
-        $method->setAccessible(true);
 
         return $method->invoke($command, $table, $lastExecutionTimestamp, $executionTimestamp);
     }
@@ -137,7 +136,6 @@ class InvalidateExpiredResponseCacheCommandTest extends FunctionalTestCase
     private function callGetTimeRestrictedTables(InvalidateExpiredResponseCacheCommand $command): array
     {
         $method = (new \ReflectionClass($command))->getMethod('getTimeRestrictedTables');
-        $method->setAccessible(true);
 
         return $method->invoke($command);
     }

@@ -461,7 +461,6 @@ class SerializerMetadataServiceTest extends UnitTestCase
     ): mixed {
         $serializerMetadataServiceReflection = new \ReflectionClass(SerializerMetadataService::class);
         $method = $serializerMetadataServiceReflection->getMethod($methodName);
-        $method->setAccessible(true);
 
         return $method->invokeArgs($object ? $object : null, $arguments);
     }
