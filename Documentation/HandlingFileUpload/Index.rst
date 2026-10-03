@@ -35,11 +35,11 @@ There is plenty configuration options which allows you to customize upload endpo
 
 - ``folder`` - destination folder (default: ``1:/user_upload/`` which means files will be uploaded into ``user_upload`` directory of file storage ID ``1``).
 
-- ``allowedFileExtensions`` - Array of allowed file extensions (default:``$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']``).
+- ``allowedFileExtensions`` - Array of allowed file extensions (default: ``$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']``). Files with PHP extensions are always rejected.
 
-- ``conflictMode`` - Value of enumeration ``\TYPO3\CMS\Core\Resource\DuplicationBehavior`` (default: ``\TYPO3\CMS\Core\Resource\DuplicationBehavior::RENAME`` which means that new file name will be changed if same file already exists).
+- ``conflictMode`` - What to do if file with the same name already exists: ``rename`` (default - new file name gets a suffix, e.g. ``image_01.jpg``), ``replace`` or ``cancel`` (values of ``\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior``).
 
-- ``filenameMask`` - Allows to change the name of the uploaded file (default: ``[filename]``; see :ref:`how to customize name of uploaded file <handling_file_upload_customize_uploaded_file_name>`).
+- ``filenameMask`` - Allows to change the name of the uploaded file (default: ``[filename][extensionWithDot]``; see :ref:`how to customize name of uploaded file <handling_file_upload_customize_uploaded_file_name>`).
 
 - ``filenameHashAlgorithm`` - (default: ``md5``; see :ref:`how to customize name of uploaded file <handling_file_upload_customize_uploaded_file_name>`).
 
@@ -64,7 +64,7 @@ There is plenty configuration options which allows you to customize upload endpo
     *          "upload"={
     *              "folder"="1:/user_upload/",
     *              "allowedFileExtensions"={"jpg", "jpeg", "png"},
-    *              "conflictMode"=DuplicationBehavior::RENAME,
+    *              "conflictMode"="rename",
     *          }
     *     }
     * )
@@ -76,82 +76,65 @@ There is plenty configuration options which allows you to customize upload endpo
 Configuring TCA
 ================
 
-It may be needed to adjust ``TCA`` configuration to correctly fill ``sys_file_reference`` columns. Correct ``TCA`` configuration contains at least 3 elements inside ``foreign_match_fields`` array - ``fieldname``, ``tablenames`` and ``table_local`` but extension builder by default creates only ``fieldname`` (at least in current version).
+Field which keeps file references has to be configured as TCA field of ``type`` ``file``. TYPO3 fills
+``fieldname`` and ``tablenames`` columns of ``sys_file_reference`` automatically for such fields.
 
 .. code-block:: php
 
-   $GLOBALS['TCA']['tx_users_domain_model_user']['columns']['photo']['config']['foreign_match_fields']['fieldname'] = 'photo';
-   $GLOBALS['TCA']['tx_users_domain_model_user']['columns']['photo']['config']['foreign_match_fields']['tablenames'] = 'tx_users_domain_model_user';
-   $GLOBALS['TCA']['tx_users_domain_model_user']['columns']['photo']['config']['foreign_match_fields']['table_local'] = 'sys_file';
-
-Appropriate ``TCA`` configuration for uploadable field may look like code below. Mind that
-``\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig`` adds element ``fieldname`` by default
-so it is needed only to take care of ``tablenames`` and ``table_local``.
-
-.. code-block:: php
-
-        'photo' => [
-            'exclude' => true,
-            'label' => 'LLL:EXT:users/Resources/Private/Language/locallang_db.xlf:tx_users_domain_model_user.photo',
-            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
-                'photo',
-                [
-                    'foreign_match_fields' => [
-                        'tablenames' => 'tx_users_domain_model_user',
-                        'table_local' => 'sys_file',
-                    ],
-                    'appearance' => [
-                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
-                    ],
-                    'foreign_types' => [
-                        '0' => [
-                            'showitem' => '
-                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
-                            --palette--;;filePalette'
-                        ],
-                        \TYPO3\CMS\Core\Resource\File::FILETYPE_TEXT => [
-                            'showitem' => '
-                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
-                            --palette--;;filePalette'
-                        ],
-                        \TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => [
-                            'showitem' => '
-                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
-                            --palette--;;filePalette'
-                        ],
-                        \TYPO3\CMS\Core\Resource\File::FILETYPE_AUDIO => [
-                            'showitem' => '
-                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
-                            --palette--;;filePalette'
-                        ],
-                        \TYPO3\CMS\Core\Resource\File::FILETYPE_VIDEO => [
-                            'showitem' => '
-                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
-                            --palette--;;filePalette'
-                        ],
-                        \TYPO3\CMS\Core\Resource\File::FILETYPE_APPLICATION => [
-                            'showitem' => '
-                            --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
-                            --palette--;;filePalette'
-                        ]
-                    ],
-                    'maxitems' => 1
-                ],
-                $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-            ),
-        ],
+   'photo' => [
+       'exclude' => true,
+       'label' => 'LLL:EXT:users/Resources/Private/Language/locallang_db.xlf:tx_users_domain_model_user.photo',
+       'config' => [
+           'type' => 'file',
+           'allowed' => 'common-image-types',
+           'maxitems' => 1,
+       ],
+   ],
 
 File upload request
 ====================
 
-@todo - write docs
+File is sent as ``multipart/form-data`` ``POST`` request to the upload endpoint. Name of the form field has to be ``originalResource``. Only one file can be uploaded in a single request - to attach multiple files upload them one by one and then :ref:`save references <handling_file_upload_save_reference>` to all of them in a single request.
 
-@todo - write docs: request with multiple files (ObjectStorage with FileReference)
+.. code-block:: bash
+
+   curl -X POST -F "originalResource=@/path/to/photo.jpg" https://example.com/_api/files
 
 File upload response
 =====================
 
-@todo - write docs
+On success the response has status ``201`` and contains created ``sys_file`` record. The most important property is ``uid`` - it is needed to create a file reference in the next request.
+
+.. code-block:: json
+
+   {
+      "publicUrl": "fileadmin/user_upload/media-export-excluded/test1_01.jpg",
+      "absolutePublicUrl": "https://14.t3api.ddev.site/fileadmin/user_upload/media-export-excluded/test1_01.jpg",
+      "properties": {
+         "size": 42520,
+         "mime_type": "image/jpeg",
+         "name": "test1_01.jpg",
+         "extension": "jpg",
+         "width": 720,
+         "height": 449,
+         "uid": 3
+      },
+      "name": "test1_01.jpg",
+      "uid": 3,
+      "identifier": "/user_upload/media-export-excluded/test1_01.jpg"
+   }
+
+(``properties`` shortened.)
+
+.. admonition:: Real examples. Run "ddev restart && ddev ci 14" and try those links below.
+
+   Testing instance has upload endpoint ``/_api/news/files`` (``EXT:t3apinews`` ``File`` resource) which accepts ``jpg``, ``jpeg`` and ``png`` files and stores them in ``1:/user_upload/media-export-excluded/``:
+
+   .. code-block:: bash
+
+      curl -k -X POST -F "originalResource=@.test/14/public/fileadmin/user_upload/test1.jpg" https://14.t3api.ddev.site/_api/news/files
+
+.. _handling_file_upload_save_reference:
 
 Save reference to new file
 ===========================
@@ -164,11 +147,11 @@ Save reference to new file
 
    {
       "photo": {
-         "uidLocal": 15,
+         "uidLocal": 15
       }
    }
 
-If you would like to save any other data inside file reference it is needed to extend ``TYPO3\CMS\Extbase\Domain\Model\FileReference`` class.
+``uidLocal`` is the ``uid`` of the file returned by upload endpoint. If you would like to save any other data inside file reference (e.g. ``showinpreview`` in ``EXT:news``) it is needed to use a class which extends ``TYPO3\CMS\Extbase\Domain\Model\FileReference`` and contains such properties.
 
 .. code-block:: json
 
@@ -185,9 +168,7 @@ If you would like to save any other data inside file reference it is needed to e
       ]
    }
 
-@todo - write docs information about handling custom class of file reference (which extends standard extbase FileReference)
-
-@todo - write docs
+Custom file reference class is handled in the same way as the default one - t3api supports every class which extends ``TYPO3\CMS\Extbase\Domain\Model\FileReference``. Make sure that the property type points to your class (in annotation or :ref:`YAML metadata <serialization_yaml-metadata>`), e.g. ``ObjectStorage<SourceBroker\T3apinews\Domain\Model\FileReference>`` for ``falMedia`` in testing instance.
 
 Removing single file reference
 ===============================
@@ -333,7 +314,7 @@ Keeping name of the file uploaded by client sometimes may not be wanted - as dev
     *          "upload"={
     *              "folder"="1:/user_upload/",
     *              "allowedFileExtensions"={"jpg", "jpeg", "png"},
-    *              "conflictMode"=DuplicationBehavior::RENAME,
+    *              "conflictMode"="rename",
     *              "filenameMask"="static-prefix-[filenameHash][extensionWithDot]",
     *          }
     *     }
@@ -372,7 +353,7 @@ It is possible to customize hash algorithm used to generate ``contentHash`` and 
     *          "upload"={
     *              "folder"="1:/user_upload/",
     *              "allowedFileExtensions"={"jpg", "jpeg", "png"},
-    *              "conflictMode"=DuplicationBehavior::RENAME,
+    *              "conflictMode"="rename",
     *              "filenameMask"="static-prefix-[filenameHash]-[contentHash][extensionWithDot]",
     *              "contentHashAlgorithm"="sha1",
     *              "filenameHashAlgorithm"="sha1",

@@ -43,7 +43,7 @@ when fetching single item.
     }
 
 .. note::
-    You can determine multiple operations of each type for every property, but keep in mind that first collection
+    You can define multiple operations of each type for every resource, but keep in mind that first collection
     operation and first item operation are treated as the main operations. It means that:
 
     - The path of the first collection operation is used in the :ref:`main endpoint <operations_main-endpoint>`.
@@ -52,7 +52,36 @@ when fetching single item.
 Supported operation methods
 =============================
 
-T3api supports all REST methods
+T3api supports all REST methods. Method of the operation is set with ``method`` attribute (default ``GET``):
+
+.. code-block:: php
+
+    /**
+     * @ApiResource(
+     *     collectionOperations={
+     *          "get"={
+     *              "path"="/items",
+     *          },
+     *          "post"={
+     *              "method"="POST",
+     *              "path"="/items",
+     *          },
+     *     },
+     *     itemOperations={
+     *          "get"={
+     *              "path"="/items/{id}",
+     *          },
+     *          "patch"={
+     *              "method"="PATCH",
+     *              "path"="/items/{id}",
+     *          },
+     *          "delete"={
+     *              "method"="DELETE",
+     *              "path"="/items/{id}",
+     *          },
+     *     },
+     * )
+     */
 
 +--------------+-----------------+-------------------+--------------------------------------+
 | HTTP Method  | Operation type  | Example URL       | Purpose                              |
@@ -76,7 +105,7 @@ T3api supports all REST methods
 Response of GET collection operation
 ========================================
 
-As mentioned in :ref:`getting-started` T3api uses `Hydra Core Vocabulary <http://www.hydra-cg.com/>`__. That's why collection
+As mentioned in :ref:`getting-started` T3api uses `Hydra Core Vocabulary <https://www.hydra-cg.com/>`__. That's why collection
 response of GET method is enriched by some additional properties:
 
 - ``hydra:member`` - contains array of matched entities.
@@ -84,7 +113,7 @@ response of GET method is enriched by some additional properties:
 - ``hydra:view`` - contains data useful for pagination (see more on :ref:`pagination`).
 - ``hydra:search`` - contains data useful for filtering (see more on :ref:`filtering`).
 
-Here is an example of basic response for collection operation. You can open it at following url: https://13.t3api.ddev.site/_api/news/news
+Here is an example of basic response for collection operation (shortened to first two items). You can open it at following url: `https://14.t3api.ddev.site/_api/news/news <https://14.t3api.ddev.site/_api/news/news>`__
 
 .. code-block:: json
 
@@ -94,27 +123,25 @@ Here is an example of basic response for collection operation. You can open it a
           "title": "[EN] Sed ut perspiciatis unde omnis iste natus error sit voluptatem folder A",
           "alternativeTitle": "",
           "teaser": "",
-          "datetime": "2020-05-28T19:20:00.000+00:00",
+          "datetime": "2020-05-28T21:20:00.000+02:00",
           "author": "",
           "authorEmail": "",
           "categories": [
             {
               "title": "[EN] Category 1A",
               "image": null,
-              "uid": 1,
-              "@id": "/_api/news/categories/1"
+              "uid": 1
             },
             {
               "title": "[EN] Category 2A",
               "image": null,
-              "uid": 2,
-              "@id": "/_api/news/categories/2"
+              "uid": 2
             }
           ],
           "type": "0",
           "falMedia": [
             {
-              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+              "url": "https://14.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
               "uid": 4,
               "file": {
                 "uid": 1,
@@ -130,18 +157,17 @@ Here is an example of basic response for collection operation. You can open it a
           "tags": [
             {
               "title": "[EN] Tag 1A",
-              "uid": 1,
-              "@id": "/_api/news/tags/1"
+              "uid": 1
             },
             {
               "title": "[EN] Tag 4A",
-              "uid": 4,
-              "@id": "/_api/news/tags/4"
+              "uid": 4
             }
           ],
-          "singleUri": "https://13.t3api.ddev.site/news/en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
-          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
-          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
+          "pathSegment": "en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
+          "singleUri": "https://14.t3api.ddev.site/news/en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
+          "imageThumbnail": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_6e0c6b2eb1.jpg",
+          "imageLarge": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_fe74a17411.jpg",
           "uid": 1,
           "@id": "/_api/news/news/1"
         },
@@ -149,21 +175,20 @@ Here is an example of basic response for collection operation. You can open it a
           "title": "[EN] Natus error sit voluptatem folder A",
           "alternativeTitle": "",
           "teaser": "",
-          "datetime": "2020-05-28T19:45:00.000+00:00",
+          "datetime": "2020-05-28T21:45:00.000+02:00",
           "author": "",
           "authorEmail": "",
           "categories": [
             {
               "title": "[EN] Category 2A",
               "image": null,
-              "uid": 2,
-              "@id": "/_api/news/categories/2"
+              "uid": 2
             }
           ],
           "type": "0",
           "falMedia": [
             {
-              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+              "url": "https://14.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
               "uid": 2,
               "file": {
                 "uid": 1,
@@ -173,7 +198,7 @@ Here is an example of basic response for collection operation. You can open it a
               }
             },
             {
-              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+              "url": "https://14.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
               "uid": 3,
               "file": {
                 "uid": 1,
@@ -189,201 +214,19 @@ Here is an example of basic response for collection operation. You can open it a
           "tags": [
             {
               "title": "[EN] Tag 1A",
-              "uid": 1,
-              "@id": "/_api/news/tags/1"
+              "uid": 1
             },
             {
               "title": "[EN] Tag 2A",
-              "uid": 2,
-              "@id": "/_api/news/tags/2"
+              "uid": 2
             }
           ],
-          "singleUri": "https://13.t3api.ddev.site/news/en-natus-error-sit-voluptatem-folder-a",
-          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
-          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
+          "pathSegment": "en-natus-error-sit-voluptatem-folder-a",
+          "singleUri": "https://14.t3api.ddev.site/news/en-natus-error-sit-voluptatem-folder-a",
+          "imageThumbnail": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_6e0c6b2eb1.jpg",
+          "imageLarge": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_fe74a17411.jpg",
           "uid": 2,
           "@id": "/_api/news/news/2"
-        },
-        {
-          "title": "[EN] Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur folder A",
-          "alternativeTitle": "",
-          "teaser": "",
-          "datetime": "2020-05-29T20:10:00.000+00:00",
-          "author": "",
-          "authorEmail": "",
-          "categories": [
-            {
-              "title": "[EN] Category 3A",
-              "image": null,
-              "uid": 3,
-              "@id": "/_api/news/categories/3"
-            },
-            {
-              "title": "[EN] Category 4A",
-              "image": null,
-              "uid": 4,
-              "@id": "/_api/news/categories/4"
-            }
-          ],
-          "type": "0",
-          "falMedia": [
-            {
-              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
-              "uid": 1,
-              "file": {
-                "uid": 1,
-                "name": "test1.jpg",
-                "mimeType": "image/jpeg",
-                "size": 42520
-              }
-            }
-          ],
-          "internalurl": "",
-          "externalurl": "",
-          "istopnews": false,
-          "tags": [
-            {
-              "title": "[EN] Tag 4A",
-              "uid": 4,
-              "@id": "/_api/news/tags/4"
-            }
-          ],
-          "singleUri": "https://13.t3api.ddev.site/news/en-ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-a",
-          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
-          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
-          "uid": 3,
-          "@id": "/_api/news/news/3"
-        },
-        {
-          "title": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem folder B",
-          "alternativeTitle": "",
-          "teaser": "",
-          "datetime": "2020-05-28T19:20:00.000+00:00",
-          "author": "",
-          "authorEmail": "",
-          "categories": [],
-          "type": "0",
-          "falMedia": [
-            {
-              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
-              "uid": 8,
-              "file": {
-                "uid": 1,
-                "name": "test1.jpg",
-                "mimeType": "image/jpeg",
-                "size": 42520
-              }
-            }
-          ],
-          "internalurl": "",
-          "externalurl": "",
-          "istopnews": false,
-          "tags": [
-            {
-              "title": "Tag 1B",
-              "uid": 6,
-              "@id": "/_api/news/tags/6"
-            },
-            {
-              "title": "Tag 4B",
-              "uid": 9,
-              "@id": "/_api/news/tags/9"
-            }
-          ],
-          "singleUri": "https://13.t3api.ddev.site/news/sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-b",
-          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
-          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
-          "uid": 5,
-          "@id": "/_api/news/news/5"
-        },
-        {
-          "title": "Natus error sit voluptatem folder B",
-          "alternativeTitle": "",
-          "teaser": "",
-          "datetime": "2020-05-28T19:45:00.000+00:00",
-          "author": "",
-          "authorEmail": "",
-          "categories": [],
-          "type": "0",
-          "falMedia": [
-            {
-              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
-              "uid": 6,
-              "file": {
-                "uid": 1,
-                "name": "test1.jpg",
-                "mimeType": "image/jpeg",
-                "size": 42520
-              }
-            },
-            {
-              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
-              "uid": 7,
-              "file": {
-                "uid": 1,
-                "name": "test1.jpg",
-                "mimeType": "image/jpeg",
-                "size": 42520
-              }
-            }
-          ],
-          "internalurl": "",
-          "externalurl": "",
-          "istopnews": false,
-          "tags": [
-            {
-              "title": "Tag 1B",
-              "uid": 6,
-              "@id": "/_api/news/tags/6"
-            },
-            {
-              "title": "Tag 2B",
-              "uid": 7,
-              "@id": "/_api/news/tags/7"
-            }
-          ],
-          "singleUri": "https://13.t3api.ddev.site/news/natus-error-sit-voluptatem-folder-b",
-          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
-          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
-          "uid": 6,
-          "@id": "/_api/news/news/6"
-        },
-        {
-          "title": "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur folder B",
-          "alternativeTitle": "",
-          "teaser": "",
-          "datetime": "2020-05-29T20:10:00.000+00:00",
-          "author": "",
-          "authorEmail": "",
-          "categories": [],
-          "type": "0",
-          "falMedia": [
-            {
-              "url": "https://13.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
-              "uid": 5,
-              "file": {
-                "uid": 1,
-                "name": "test1.jpg",
-                "mimeType": "image/jpeg",
-                "size": 42520
-              }
-            }
-          ],
-          "internalurl": "",
-          "externalurl": "",
-          "istopnews": false,
-          "tags": [
-            {
-              "title": "Tag 4B",
-              "uid": 9,
-              "@id": "/_api/news/tags/9"
-            }
-          ],
-          "singleUri": "https://13.t3api.ddev.site/news/ut-enim-ad-minima-veniam-quis-nostrum-exercitationem-ullam-corporis-suscipit-laboriosam-nisi-ut-aliquid-ex-ea-commodi-consequatur-folder-b",
-          "imageThumbnail": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_ce3d0ad685.jpg",
-          "imageLarge": "https://13.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_67bc9e165d.jpg",
-          "uid": 7,
-          "@id": "/_api/news/news/7"
         }
       ],
       "hydra:totalItems": 6,
@@ -438,17 +281,66 @@ Item operation response
 ========================
 
 In response of all item operations only object is received. Response does not contain any additional attributes
-because they are useless in single item operation context.
+because they are useless in single item operation context. Example response for `https://14.t3api.ddev.site/_api/news/news/1 <https://14.t3api.ddev.site/_api/news/news/1>`__:
 
 .. code-block:: json
 
     {
-      "@id": "/_api/news/news/1",
-      "uid": 1,
-      "title": "Lorem ipsum dolor sit amet enim",
-      "teaser": "Pellentesque facilisis. Nulla imperdiet sit amet magna.",
-      "datetime": "2019-08-30T07:30:00+00:00",
-      "bodytext": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>",
+        "title": "[EN] Sed ut perspiciatis unde omnis iste natus error sit voluptatem folder A",
+        "alternativeTitle": "",
+        "teaser": "",
+        "bodytext": "<p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>",
+        "datetime": "2020-05-28T21:20:00.000+02:00",
+        "author": "",
+        "authorEmail": "",
+        "categories": [
+            {
+                "title": "[EN] Category 1A",
+                "description": "",
+                "image": null,
+                "uid": 1
+            },
+            {
+                "title": "[EN] Category 2A",
+                "description": "",
+                "image": null,
+                "uid": 2
+            }
+        ],
+        "related": [],
+        "relatedFrom": [],
+        "type": "0",
+        "falMedia": [
+            {
+                "url": "https://14.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+                "uid": 4,
+                "file": {
+                    "uid": 1,
+                    "name": "test1.jpg",
+                    "mimeType": "image/jpeg",
+                    "size": 42520
+                }
+            }
+        ],
+        "internalurl": "",
+        "externalurl": "",
+        "istopnews": false,
+        "tags": [
+            {
+                "title": "[EN] Tag 1A",
+                "uid": 1
+            },
+            {
+                "title": "[EN] Tag 4A",
+                "uid": 4
+            }
+        ],
+        "pathSegment": "en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
+        "singleUri": "https://14.t3api.ddev.site/news/en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
+        "imageThumbnail": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_6e0c6b2eb1.jpg",
+        "imageLarge": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_fe74a17411.jpg",
+        "uid": 1,
+        "@id": "/_api/news/news/1"
     }
 
 Customizing returned properties
@@ -464,11 +356,11 @@ Main endpoint
 ================
 
 There is one special build-in endpoint which is not determined by ``@ApiResource`` annotation - Main endpoint.
-It contains list all available collection operations. It is useful for creating Postman requests collections
+It contains list of all available resources with the path of their main collection operation. It is useful for creating Postman requests collections
 or for frontend applications which avoids to use hardcoded path for the endpoints.
 Main endpoint is available under :ref:`base path <getting-started_base-path>` (default ``https://example.com/_api/``).
 
-Example response on the main endpoint for th3 t3api demo is available at: `https://13.t3api.ddev.site/_api <https://13.t3api.ddev.site/_api>`__
+Example response on the main endpoint for the t3api demo is available at: `https://14.t3api.ddev.site/_api/ <https://14.t3api.ddev.site/_api/>`__
 and looks like:
 
 .. code-block:: json

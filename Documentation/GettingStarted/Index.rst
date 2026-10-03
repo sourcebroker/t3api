@@ -20,9 +20,9 @@ which allows to build smart frontend applications with auto-discoverability capa
 Installation
 ============
 
-Run
+T3api supports TYPO3 12.4, 13 and 14 (PHP 8.1 or higher). Run
 
-.. code-block:: yaml
+.. code-block:: bash
 
     composer require sourcebroker/t3api
 
@@ -33,7 +33,7 @@ Configuration
 Route enhancer
 ++++++++++++++
 
-Import route enhancer by adding following line on bottom of your site ``config.yaml`` .
+Import route enhancer by adding following lines at the bottom of your site ``config.yaml``:
 
 .. code-block:: yaml
 
@@ -69,22 +69,53 @@ Creating API resource
 
 Next step is to make an API resource from our entity.
 To map Extbase model to API resource it is just needed to add ``@SourceBroker\T3api\Annotation\ApiResource`` annotation
-to our model class.
+to our model class and define at least one :ref:`operation <operations>` (endpoint):
 
 .. code-block:: php
 
     use SourceBroker\T3api\Annotation\ApiResource;
 
     /**
-     * @ApiResource()
+     * @ApiResource(
+     *     collectionOperations={
+     *          "get"={
+     *              "path"="/items",
+     *          },
+     *     },
+     *     itemOperations={
+     *          "get"={
+     *              "path"="/items/{id}",
+     *          }
+     *     },
+     * )
      */
     class Item extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
     }
 
+After flushing caches the items are available under ``https://example.com/_api/items`` and single item under ``https://example.com/_api/items/1``.
+
+.. note::
+    By default all properties of the entity are returned. Use :ref:`serialization context groups <serialization_context-groups>`
+    to control which properties are exposed.
+
 .. note::
     API resource can be created only from class which:
 
     - Extends ``\TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject``.
-    - Is kept in path ``EXT:{extkey}/Classes/Domain/Model``.
+    - Is kept in path ``EXT:{extkey}/Classes/Domain/Model`` (can be changed, see :ref:`customization_api-resource-path`).
     - Exists in enabled extension.
+
+.. admonition:: Real examples. Run "ddev restart && ddev ci 14" and try those links below.
+
+   Testing instance uses ``EXT:t3apinews`` which exposes ``EXT:news`` records as API resources.
+
+   * | Main endpoint with the list of all resources:
+     | `https://14.t3api.ddev.site/_api/ <https://14.t3api.ddev.site/_api/>`__
+     |
+   * | Collection of news:
+     | `https://14.t3api.ddev.site/_api/news/news <https://14.t3api.ddev.site/_api/news/news>`__
+     |
+   * | Single news:
+     | `https://14.t3api.ddev.site/_api/news/news/1 <https://14.t3api.ddev.site/_api/news/news/1>`__
+     |

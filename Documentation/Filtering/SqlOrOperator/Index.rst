@@ -35,3 +35,14 @@ By default ``AND`` conjunction is used between all applied filters but there is 
    class User extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
    {
    }
+
+.. admonition:: Real examples. Run "ddev restart && ddev ci 14" and try those links below.
+
+   News resource of testing instance has ``SearchFilter`` configured for ``title``, ``alternativeTitle``, ``bodytext`` and ``tags.title`` with common ``parameterName`` set to ``search``.
+
+   * | Get list of news where title, alternative title, bodytext **or** title of any related tag contains "minima":
+     | `https://14.t3api.ddev.site/_api/news/news?search=minima <https://14.t3api.ddev.site/_api/news/news?search=minima>`__
+     |
+   * | Get list of news where any of the fields contains "folder B":
+     | `https://14.t3api.ddev.site/_api/news/news?search=folder%20B <https://14.t3api.ddev.site/_api/news/news?search=folder%20B>`__
+     |

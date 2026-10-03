@@ -20,9 +20,9 @@ Bugs Fixing
 
 4. Install and make init test
 
-   Inside cloned repo run: :bash:`ddev ci 12`
+   Inside cloned repo run: :bash:`ddev ci 14`
 
-   This will install project locally (for TYPO3 12) and make tests to check if your
+   This will install project locally (for TYPO3 14) and make tests to check if your
    installed version is working well before you start to modify it.
 
 5. Branch
@@ -38,7 +38,7 @@ Bugs Fixing
    Open https://t3api.ddev.site to get overview on user/password to backend.
 
    Look at :folder:`.test/[T3_VERSION]/src/`.
-   Except `t3api` you have there two extensions that can be helpful for testing.
+   Except ``t3api`` you have there two extensions that can be helpful for testing.
 
    1. First extension is :folder:`site`, which is regular TYPO3 local mods extension.
 
@@ -46,10 +46,10 @@ Bugs Fixing
       extension `news` models and is supposed to have only mods for news.
       To test it open:
 
-      * https://12.t3api.ddev.site/_api
-      * https://12.t3api.ddev.site/_api/news/news
-      * https://12.t3api.ddev.site/_api/news/news/1
-      * https://12.t3api.ddev.site/_api/news/categories
+      * https://14.t3api.ddev.site/_api
+      * https://14.t3api.ddev.site/_api/news/news
+      * https://14.t3api.ddev.site/_api/news/news/1
+      * https://14.t3api.ddev.site/_api/news/categories
       * etc
 
    Sometimes you may want to flush cache for the TYPO3 located at :folder:`.test/[T3_VERSION]/`.

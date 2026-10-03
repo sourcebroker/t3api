@@ -14,7 +14,7 @@ We are not going here to explain what the CORS is. There is plenty of websites e
 
 CORS configuration in t3api is based and (almost) fully compatible with well known Symfony bundle `nelmio/cors-bundle <https://github.com/nelmio/NelmioCorsBundle>`__.
 
-In code below there is a list of all supported configuration options and their default values. If you would like to change these values to custom ones, you should use ``ext_localconf.php`` file of your extension (``typo3conf/ext/my_custom_ext/ext_localconf.php``).
+In code below there is a list of all supported configuration options and their default values. If you would like to change these values to custom ones, you should use ``ext_localconf.php`` file of your extension (``EXT:my_custom_ext/ext_localconf.php``).
 
 .. code-block:: php
 

@@ -297,17 +297,16 @@ cached response:
      * @ApiResource(
      *     attributes={
      *         "cache"={
-     *             "readCondition"="!user.isLoggedIn()",
-     *             "writeCondition"="!user.isLoggedIn()"
+     *             "readCondition"="!frontend.user.isLoggedIn",
+     *             "writeCondition"="!frontend.user.isLoggedIn"
      *         }
      *     }
      * )
      */
 
-``user`` here is not a built-in t3api variable - it is a project-provided
-expression variable, registered via a TYPO3 expression-language provider for
-the ``t3api`` namespace (see :ref:`customization_expression-language`), the
-same one used in ``security`` expressions. With both conditions in place, a
+``frontend.user`` is the built-in variable with current frontend user
+information, the same one used in ``security`` expressions (see
+:ref:`security`). With both conditions in place, a
 logged-in visitor's request is neither served from, nor stored in, the
 cache - it always runs the operation fresh - while anonymous visitors share
 the cached entry.
@@ -377,7 +376,7 @@ not handle in the first place (only ``GET`` requests are cacheable at all).
 A request bypasses the cache entirely whenever it targets a filter (see
 :ref:`filtering`) whose strategy carries a non-empty ``condition`` (evaluated
 by ``FilterAccessChecker``) - e.g. a strategy declared as
-``{"name": "partial", "condition": "is_granted('ROLE_ADMIN')"}`` - since that
+``{"name": "partial", "condition": "backend.user.isLoggedIn"}`` - since that
 check is not re-evaluated on the cache path.
 
 Tags and invalidation
@@ -599,19 +598,18 @@ invalidates its own author's cache, never anyone else's:
      *     attributes={
      *         "cache"={
      *             "tagExpressions"={
-     *                 "user.isLoggedIn() ? 'fe_user_' ~ user.getUid() : ''"
+     *                 "frontend.user.isLoggedIn ? 'fe_user_' ~ frontend.user.userId : ''"
      *             }
      *         },
      *         "cacheInvalidation"={
-     *             "tagExpressions"={"'fe_user_' ~ user.getUid()"}
+     *             "tagExpressions"={"'fe_user_' ~ frontend.user.userId"}
      *         }
      *     }
      * )
      */
 
-``user`` here is the same project-provided expression variable used in
-"Examples" above (see :ref:`response-cache-conditions`), not a built-in one.
-An anonymous visitor's ``GET`` response evaluates the ``cache`` expression to
+``frontend.user`` is the same built-in variable used in "Examples" above
+(see :ref:`response-cache-conditions`). An anonymous visitor's ``GET`` response evaluates the ``cache`` expression to
 an empty string - the documented idiom for "no tag from this expression":
 skipped silently rather than added as a literal empty tag - so anonymous
 traffic carries only the usual automatic content tags. A logged-in visitor's
@@ -632,7 +630,7 @@ response, has no way to express for more than one book at a time:
      * @ApiResource(
      *     attributes={
      *         "cache"={
-     *             "tagExpressions"={"'fe_user_' ~ user.getUid()"},
+     *             "tagExpressions"={"'fe_user_' ~ frontend.user.userId"},
      *             "memberTagExpressions"={"'author_' ~ object.getAuthor().getUid()"}
      *         }
      *     }
@@ -640,7 +638,7 @@ response, has no way to express for more than one book at a time:
      */
 
 ``tagExpressions`` still evaluates once per response, exactly as above -
-``user`` does not change depending on which book is being looked at.
+the current user does not change depending on which book is being looked at.
 ``memberTagExpressions`` evaluates once per book in the collection, each time
 with ``object`` bound to that one ``Book``: a two-book response ends up
 tagged with (among others) both ``author_1`` and ``author_2``. Editing either
