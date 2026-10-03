@@ -1,0 +1,11 @@
+{
+	"name": "sourcebroker/t3api-rector",
+	"description": "Isolated Rector install because of nikic/php-parser conflict with TYPO3 12. See README.md. Move to root composer.json when TYPO3 12 support is dropped.",
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"ssch/typo3-rector": "^3.16"
+	},
+	"config": {
+		"sort-packages": true
+	}
+}
