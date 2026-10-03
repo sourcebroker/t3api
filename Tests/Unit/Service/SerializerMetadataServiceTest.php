@@ -212,7 +212,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Category>',
                     ],
                     'address' => [
-                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\\Address',
+                        'type' => \SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Address::class,
                     ],
                     'firstName' => [
                         'type' => 'string',
@@ -258,7 +258,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         'type' => 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Category>',
                     ],
                     'address' => [
-                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\\Address',
+                        'type' => \SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Address::class,
                     ],
                     'bankAccountNumber' => [
                         'type' => 'string',
@@ -267,7 +267,7 @@ class SerializerMetadataServiceTest extends UnitTestCase
                         ],
                     ],
                     'invoiceAddress' => [
-                        'type' => 'SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\\Address',
+                        'type' => \SourceBroker\T3api\Tests\Unit\Fixtures\Domain\Model\Address::class,
                     ],
                     'hidden' => [
                         'type' => 'bool',
