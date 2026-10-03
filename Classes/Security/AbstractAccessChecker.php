@@ -16,25 +16,22 @@ class AbstractAccessChecker
         protected readonly EventDispatcherInterface $eventDispatcher
     ) {}
 
-    protected function getExpressionLanguageResolver(array $additionalExpressionLanguageVariables = []): Resolver
+    /**
+     * Built once per checker without any variables - variables differ for every check (`object`,
+     * `t3apiOperation`, `t3apiFilter`, event-provided ones) and are passed to each evaluation.
+     */
+    protected ?Resolver $expressionLanguageResolver = null;
+
+    protected function evaluateExpression(string $expression, array $additionalExpressionLanguageVariables = []): bool
     {
-        static $expressionLanguageResolver;
+        $this->expressionLanguageResolver ??= GeneralUtility::makeInstance(Resolver::class, 't3api', []);
 
-        if ($expressionLanguageResolver === null) {
-            $context = GeneralUtility::makeInstance(Context::class);
-
-            $variables = array_merge(
-                ExpressionLanguageService::getUserVariables($context),
+        return (bool)$this->expressionLanguageResolver->evaluate(
+            $expression,
+            array_merge(
+                ExpressionLanguageService::getUserVariables(GeneralUtility::makeInstance(Context::class)),
                 $additionalExpressionLanguageVariables
-            );
-
-            $expressionLanguageResolver = GeneralUtility::makeInstance(
-                Resolver::class,
-                't3api',
-                $variables
-            );
-        }
-
-        return $expressionLanguageResolver;
+            )
+        );
     }
 }

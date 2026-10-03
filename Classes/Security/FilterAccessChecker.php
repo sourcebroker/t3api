@@ -24,6 +24,6 @@ class FilterAccessChecker extends AbstractAccessChecker
 
         $variables = array_merge($expressionLanguageVariables, ['t3apiFilter' => $filter]);
 
-        return $this->getExpressionLanguageResolver($variables)->evaluate($filter->getStrategy()->getCondition());
+        return $this->evaluateExpression($filter->getStrategy()->getCondition(), $variables);
     }
 }
