@@ -25,7 +25,7 @@ class OperationAccessChecker extends AbstractAccessChecker
 
         $variables = array_merge($expressionLanguageVariables, ['t3apiOperation' => $operation]);
 
-        return $this->getExpressionLanguageResolver($variables)->evaluate($operation->getSecurity());
+        return $this->evaluateExpression($operation->getSecurity(), $variables);
     }
 
     public function isGrantedPostDenormalize(
@@ -45,6 +45,6 @@ class OperationAccessChecker extends AbstractAccessChecker
 
         $variables = array_merge($expressionLanguageVariables, ['t3apiOperation' => $operation]);
 
-        return $this->getExpressionLanguageResolver($variables)->evaluate($operation->getSecurityPostDenormalize());
+        return $this->evaluateExpression($operation->getSecurityPostDenormalize(), $variables);
     }
 }
