@@ -8,11 +8,11 @@ $EM_CONF[$_EXTKEY] = [
     'author' => 'Inscript Team',
     'author_email' => 'office@inscript.dev',
     'state' => 'stable',
-    'version' => '4.1.3',
+    'version' => '5.0.0',
     'constraints' => [
         'depends' => [
             'php' => '8.1.0-8.5.99',
-            'typo3' => '12.4.00-13.4.99',
+            'typo3' => '12.4.18-14.4.99',
         ],
         'conflicts' => [],
         'suggests' => [],

@@ -14,8 +14,6 @@ use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -25,11 +23,9 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 class AdministrationController
 {
     public function __construct(
-        protected readonly FlashMessageService $flashMessage,
         protected readonly UriBuilder $uriBuilder,
         protected readonly ModuleTemplateFactory $moduleTemplateFactory,
         protected readonly SiteFinder $siteFinder,
-        protected readonly FlashMessageService $flashMessageService,
         protected readonly PageRenderer $pageRenderer
     ) {}
 
@@ -39,16 +35,22 @@ class AdministrationController
     public function documentationAction(ServerRequestInterface $request): ResponseInterface
     {
         $view = $this->moduleTemplateFactory->create($request);
-        $moduleData = $request->getAttribute('moduleData');
-        $siteIdentifier = $request->getQueryParams()['site'] ?? $this->getDefaultSiteIdentifier($moduleData);
         /** @var ModuleData $moduleData */
+        $moduleData = $request->getAttribute('moduleData');
         $moduleIdentifier = $request->getAttribute('module')->getIdentifier();
 
-        try {
-            $activeSite = SiteService::getByIdentifier($siteIdentifier);
-        } catch (SiteNotFoundException $e) {
-            $activeSite = null;
+        $activeSite = $this->getActiveSite($request->getQueryParams()['site'] ?? null, $moduleData);
+        if ($activeSite === null) {
+            $view->addFlashMessage(
+                'No site configuration found. T3api requires at least one site with the T3api route enhancer.',
+                'T3api',
+                ContextualFeedbackSeverity::ERROR,
+                false
+            );
+
+            return $view->renderResponse('Administration/Documentation');
         }
+        $siteIdentifier = $activeSite->getIdentifier();
 
         $moduleData->set('lastSelectedSiteIdentifier', $siteIdentifier);
         $this->getBackendUser()->pushModuleData($moduleData->getModuleIdentifier(), $moduleData->toArray());
@@ -86,15 +88,24 @@ class AdministrationController
         return $view->renderResponse('Administration/Documentation');
     }
 
-    protected function getDefaultSiteIdentifier(ModuleData $moduleData): string
+    /**
+     * Resolves the site to display: the requested one, then the last selected one, then the current one,
+     * then the first configured one. Identifiers of sites which no longer exist are ignored.
+     */
+    protected function getActiveSite(?string $requestedSiteIdentifier, ModuleData $moduleData): ?Site
     {
         $sites = SiteService::getAll();
-        $lastSelectedSiteIdentifier = $moduleData->get('lastSelectedSiteIdentifier');
-        if ($lastSelectedSiteIdentifier !== null && $sites[$lastSelectedSiteIdentifier] instanceof Site) {
-            return $sites[$lastSelectedSiteIdentifier]->getIdentifier();
+        foreach ([$requestedSiteIdentifier, $moduleData->get('lastSelectedSiteIdentifier')] as $siteIdentifier) {
+            if (is_string($siteIdentifier) && ($sites[$siteIdentifier] ?? null) instanceof Site) {
+                return $sites[$siteIdentifier];
+            }
         }
 
-        return (SiteService::getCurrent() ?? array_shift($sites))->getIdentifier();
+        try {
+            return SiteService::getCurrent();
+        } catch (\RuntimeException) {
+            return array_shift($sites);
+        }
     }
 
     /**

@@ -12,8 +12,8 @@
                interlink-shortcode="sourcebroker/t3api"
     />
     <project title="TYPO3 REST API"
-             release="4.1.3"
-             version="4.0"
+             release="5.0.0"
+             version="5.0"
              copyright="Inscript sp. z o.o."/>
     <inventory id="t3apinews" url="https://docs.typo3.org/p/sourcebroker/t3api/main/en-us/"/>
 </guides>
