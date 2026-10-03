@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Filter;
 
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
+use SourceBroker\T3api\OpenApi\Objects\Parameter;
+use SourceBroker\T3api\OpenApi\Objects\Schema;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 

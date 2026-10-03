@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Unit\Service;
 
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ResponseInterface;
@@ -16,6 +15,7 @@ use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Model\ResponseCacheSettings;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
+use SourceBroker\T3api\OpenApi\Objects\Schema;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use SourceBroker\T3api\Security\OperationAccessChecker;
 use SourceBroker\T3api\Service\CacheTagCollector;

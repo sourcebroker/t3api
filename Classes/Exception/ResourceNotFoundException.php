@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Exception;
 
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Response as OpenApiResponse;
+use SourceBroker\T3api\OpenApi\Objects\Response as OpenApiResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 

@@ -102,6 +102,8 @@ function setup_typo3() {
     $TYPO3_BIN configuration:set 'GFX/processor' 'ImageMagick'
     $TYPO3_BIN configuration:set 'GFX/processor_path' '/usr/bin/'
     ln -srf ".ddev/test/files/config/sites/main/config.yaml" "$BASE_PATH/config/sites/main/config.yaml"
+    mkdir -p "$BASE_PATH/config/sites/api"
+    sed "s/{{TYPO3_VERSION}}/$VERSION/g" ".ddev/test/files/config/sites/api/config.yaml" > "$BASE_PATH/config/sites/api/config.yaml"
 }
 
 function import_data() {

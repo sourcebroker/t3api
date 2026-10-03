@@ -72,6 +72,9 @@
 			<node index="10" type="array">
 				<uid>10</uid>
 			</node>
+			<node index="18" type="array">
+				<uid>18</uid>
+			</node>
 		</pagetree>
 		<records type="array">
 			<table index="be_users" type="array">
@@ -132,6 +135,13 @@
 				</rec>
 			</table>
 			<table index="pages" type="array">
+				<rec index="18" type="array">
+					<uid>18</uid>
+					<pid>0</pid>
+					<title>API site</title>
+					<relations index="rels" type="array"></relations>
+					<softrefs type="array"></softrefs>
+				</rec>
 				<rec index="1" type="array">
 					<uid>1</uid>
 					<pid>0</pid>
@@ -284,6 +294,19 @@
 				</rec>
 			</table>
 			<table index="sys_template" type="array">
+				<rec index="2" type="array">
+					<uid>2</uid>
+					<pid>18</pid>
+					<title>API site TypoScript</title>
+					<relations index="rels" type="array"></relations>
+					<softrefs type="array">
+						<softref_element index="include_static_file:ext_fileref:2" type="array">
+							<field>include_static_file</field>
+							<spKey>ext_fileref</spKey>
+							<matchString>EXT:t3apinews/Configuration/TypoScript</matchString>
+						</softref_element>
+					</softrefs>
+				</rec>
 				<rec index="1" type="array">
 					<uid>1</uid>
 					<pid>1</pid>
@@ -1013,6 +1036,12 @@
 					<item index="11">1</item>
 					<item index="9">1</item>
 					<item index="10">1</item>
+					<item index="18">1</item>
+				</table>
+			</page_contents>
+			<page_contents index="18" type="array">
+				<table index="sys_template" type="array">
+					<item index="2">1</item>
 				</table>
 			</page_contents>
 			<page_contents index="1" type="array">
@@ -1306,6 +1335,32 @@
 				</field>
 			</related>
 		</tablerow>
+		<tablerow index="pages:18" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">18</field>
+				<field index="pid" type="integer">0</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="starttime" type="integer">0</field>
+				<field index="endtime" type="integer">0</field>
+				<field index="sorting" type="integer">512</field>
+				<field index="sys_language_uid" type="integer">0</field>
+				<field index="l10n_parent" type="integer">0</field>
+				<field index="perms_userid" type="integer">2</field>
+				<field index="perms_groupid" type="integer">0</field>
+				<field index="perms_user" type="integer">31</field>
+				<field index="perms_group" type="integer">31</field>
+				<field index="perms_everybody" type="integer">1</field>
+				<field index="title">API site</field>
+				<field index="doktype" type="integer">1</field>
+				<field index="is_siteroot" type="integer">1</field>
+				<field index="SYS_LASTCHANGED" type="integer">1717269219</field>
+				<field index="slug">/</field>
+			</fieldlist>
+			<related index="rels" type="array"></related>
+		</tablerow>
 		<tablerow index="pages:1" type="array">
 			<fieldlist index="data" type="array">
 				<field index="uid" type="integer">1</field>
@@ -1550,6 +1605,32 @@
 					</relations>
 				</field>
 			</related>
+		</tablerow>
+		<tablerow index="sys_template:2" type="array">
+			<fieldlist index="data" type="array">
+				<field index="uid" type="integer">2</field>
+				<field index="pid" type="integer">18</field>
+				<field index="tstamp" type="integer">1717269219</field>
+				<field index="crdate" type="integer">1717269219</field>
+				<field index="deleted" type="integer">0</field>
+				<field index="hidden" type="integer">0</field>
+				<field index="starttime" type="integer">0</field>
+				<field index="endtime" type="integer">0</field>
+				<field index="sorting" type="integer">256</field>
+				<field index="title">API site TypoScript</field>
+				<field index="root" type="integer">1</field>
+				<field index="clear" type="integer">1</field>
+				<field index="include_static_file">EXT:t3apinews/Configuration/TypoScript</field>
+				<field index="constants"></field>
+				<field index="config">page = PAGE
+page.10 = TEXT
+page.10.value = API site
+</field>
+				<field index="basedOn"></field>
+				<field index="includeStaticAfterBasedOn" type="integer">0</field>
+				<field index="static_file_mode" type="integer">0</field>
+			</fieldlist>
+			<related index="rels" type="array"></related>
 		</tablerow>
 		<tablerow index="sys_template:1" type="array">
 			<fieldlist index="data" type="array">

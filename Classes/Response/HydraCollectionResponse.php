@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Response;
 
-use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
+use SourceBroker\T3api\OpenApi\Exceptions\InvalidArgumentException;
+use SourceBroker\T3api\OpenApi\Objects\Schema;
 
 class HydraCollectionResponse extends AbstractCollectionResponse
 {

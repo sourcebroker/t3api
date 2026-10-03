@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Exception;
 
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Response as OpenApiResponse;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use SourceBroker\T3api\Annotation\Serializer\Exclude;
 use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
+use SourceBroker\T3api\OpenApi\Objects\Response as OpenApiResponse;
+use SourceBroker\T3api\OpenApi\Objects\Schema;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use TYPO3\CMS\Extbase\Error\Result;
