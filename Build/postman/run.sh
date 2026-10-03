@@ -44,12 +44,13 @@ if [[ ! -d "/var/www/html/.test/$TYPO3" ]]; then
     echo_red "Can not test. Install first TYPO3 $TYPO3 with command 'ddev install $TYPO3'"
 else
     DOMAINS=("https://$TYPO3.$EXTENSION_KEY.ddev.site")
+    API_SITE_DOMAIN="https://$TYPO3.api.$EXTENSION_KEY.ddev.site"
     for DOMAIN in "${DOMAINS[@]}"; do
         if [[ -n "$TEST_FILE" ]]; then
-            ./node_modules/.bin/newman run "../../Tests/Postman/$TEST_FILE" --verbose --bail  --env-var "baseUrl=$DOMAIN"
+            ./node_modules/.bin/newman run "../../Tests/Postman/$TEST_FILE" --verbose --bail  --env-var "baseUrl=$DOMAIN" --env-var "apiSiteUrl=$API_SITE_DOMAIN"
         else
             for TEST_FILE in ../../Tests/Postman/*.json; do
-                ./node_modules/.bin/newman run "$TEST_FILE" --verbose --bail --env-var "baseUrl=$DOMAIN"
+                ./node_modules/.bin/newman run "$TEST_FILE" --verbose --bail --env-var "baseUrl=$DOMAIN" --env-var "apiSiteUrl=$API_SITE_DOMAIN"
             done
         fi
     done

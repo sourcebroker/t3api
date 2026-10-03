@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Filter;
 
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use SourceBroker\T3api\Domain\Model\ApiFilter;
+use SourceBroker\T3api\OpenApi\Objects\Parameter;
 
 interface OpenApiSupportingFilterInterface
 {

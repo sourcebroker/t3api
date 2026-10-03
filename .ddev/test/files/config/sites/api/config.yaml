@@ -1,0 +1,24 @@
+# Second site of the testing instance, used to test multi-site behaviour (site selector in the
+# backend module, OpenAPI per site, API base path per site). `{{TYPO3_VERSION}}` is replaced by
+# .ddev/test/utils-install.sh, as each TYPO3 version runs on its own *.api.t3api.ddev.site domain.
+base: 'https://{{TYPO3_VERSION}}.api.t3api.ddev.site/'
+languages:
+  -
+    title: English
+    enabled: true
+    languageId: 0
+    base: /
+    typo3Language: default
+    locale: en_US.UTF-8
+    iso-639-1: en
+    navigationTitle: English
+    hreflang: en-us
+    direction: ltr
+    flag: us
+    websiteTitle: ''
+rootPageId: 18
+websiteTitle: 'API site'
+routeEnhancers:
+  T3api:
+    type: T3apiResourceEnhancer
+    basePath: 'v1'

@@ -1,0 +1,174 @@
+{
+	"info": {
+		"_postman_id": "9bf7233c-b01f-4c21-8cfa-ebdfd5e4d188",
+		"name": "Multi-site",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Main site: endpoint list uses its own base path",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test('Resource paths use base path of main site', function () {",
+							"    pm.expect(pm.response.json().resources['SourceBroker\\\\T3apinews\\\\Domain\\\\Model\\\\News']).to.eql('/_api/news/news');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/_api/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"_api",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Main site: base path of API site is not routed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 404', function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/v1/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API site: endpoint list uses its own base path",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test('Resource paths use base path of API site', function () {",
+							"    pm.expect(pm.response.json().resources['SourceBroker\\\\T3apinews\\\\Domain\\\\Model\\\\News']).to.eql('/v1/news/news');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiSiteUrl}}/v1/",
+					"host": [
+						"{{apiSiteUrl}}"
+					],
+					"path": [
+						"v1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API site: collection endpoint returns items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test('Collection is not empty', function () {",
+							"    pm.expect(pm.response.json()['hydra:member']).to.be.an('array').that.is.not.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiSiteUrl}}/v1/news/news",
+					"host": [
+						"{{apiSiteUrl}}"
+					],
+					"path": [
+						"v1",
+						"news",
+						"news"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API site: base path of main site is not routed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 404', function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiSiteUrl}}/_api/",
+					"host": [
+						"{{apiSiteUrl}}"
+					],
+					"path": [
+						"_api",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

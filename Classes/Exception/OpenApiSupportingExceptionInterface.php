@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Exception;
 
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Response;
+use SourceBroker\T3api\OpenApi\Objects\Response;
 
 interface OpenApiSupportingExceptionInterface
 {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Response;
 
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
+use SourceBroker\T3api\OpenApi\Objects\Schema;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;

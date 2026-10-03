@@ -144,6 +144,12 @@ services:
         identifier: 't3api/EnrichPageCacheIdentifierParametersEventListener'
         event: TYPO3\CMS\Frontend\Event\BeforePageCacheIdentifierIsHashedEvent
 
+  SourceBroker\T3api\EventListener\AllowApiSitesInBackendContentSecurityPolicyEventListener:
+    tags:
+      - name: event.listener
+        identifier: 't3api/AllowApiSitesInBackendContentSecurityPolicyEventListener'
+        event: TYPO3\CMS\Core\Security\ContentSecurityPolicy\Event\PolicyMutatedEvent
+
   cache.t3api_response:
     class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Unit\Response;
 
-use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerInterface;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\Pagination;
+use SourceBroker\T3api\OpenApi\Objects\Schema;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
