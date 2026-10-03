@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
-use Psr\Http\Message\ServerRequestInterface;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
@@ -68,33 +67,14 @@ class SiteService
             ->getSiteByIdentifier($identifier);
     }
 
-    /**
-     * Prefers `$GLOBALS['TYPO3_REQUEST']` over the PHP superglobals: on internal sub-requests
-     * (e.g. EXT:solr v14 page indexing) TYPO3 provides a proper request there, while `$_SERVER`
-     * still describes the initial CLI call and `ServerRequestFactory::fromGlobals()` throws.
-     * Returns null when no request URL is available, so `getCurrent()` can fall back to the
-     * other resolution strategies.
-     */
     protected static function getResolvedByTypo3(): ?SiteInterface
     {
-        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
-
-        if ($request instanceof ServerRequestInterface) {
-            $site = $request->getAttribute('site');
-            if ($site instanceof Site) {
-                return $site;
-            }
-        } else {
-            try {
-                $request = ServerRequestFactory::fromGlobals();
-            } catch (\InvalidArgumentException) {
-                // No usable request URL in the PHP superglobals, e.g. on CLI (also covers
-                // InvalidRequestUrlOnCliException)
-                return null;
-            }
+        if (!class_exists(SiteMatcher::class)) {
+            return null;
         }
 
-        $routeResult = GeneralUtility::makeInstance(SiteMatcher::class)->matchRequest($request);
+        $routeResult = GeneralUtility::makeInstance(SiteMatcher::class)
+            ->matchRequest(ServerRequestFactory::fromGlobals());
 
         return $routeResult instanceof SiteRouteResult ? $routeResult->getSite() : null;
     }
