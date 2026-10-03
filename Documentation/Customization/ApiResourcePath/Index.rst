@@ -14,4 +14,4 @@ and registered in :file:`ext_localconf.php` like this:
             \SourceBroker\T3api\Provider\ApiResourcePath\LoadedExtensionsDomainModelApiResourcePathProvider::class,
         ];
 
-The same way you can add your own providers for additional patches.
+The same way you can add your own providers (implementing ``\SourceBroker\T3api\Provider\ApiResourcePath\ApiResourcePathProvider``) for additional paths.

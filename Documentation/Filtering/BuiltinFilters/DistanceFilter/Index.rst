@@ -3,7 +3,7 @@
 DistanceFilter
 ===============
 
-Distance filter allows to filter map points points by radius. Map points kept in the database needs to contain latitude and longitude to use this filter.
+Distance filter allows to filter map points by radius. Map points kept in the database needs to contain latitude and longitude to use this filter.
 
 Configuration for distance filter looks a little bit different than for other build-in filter. Because distance filter is not based on single field it should not contain ``properties`` definition. Instead of that it is needed to specify which model properties contain latitude and longitude in ``arguments``. Moreover, as ``properties`` is not defined, ``parameterName`` is required. Beside default values in ``arguments``, distance filter accepts also:
 
@@ -15,6 +15,7 @@ Configuration for distance filter looks a little bit different than for other bu
 
 .. code-block:: php
 
+    use SourceBroker\T3api\Annotation as T3api;
     use SourceBroker\T3api\Filter\DistanceFilter;
 
     /**
@@ -33,3 +34,12 @@ Configuration for distance filter looks a little bit different than for other bu
     {
     }
 
+Syntax: ``?<parameterName>[lat]=<float>&<parameterName>[lng]=<float>`` and optionally ``&<parameterName>[radius]=<float>``.
+
+With configuration above request ``/items?position[lat]=52.2297&position[lng]=21.0122`` returns items which are not further than 100 km from given point. Both ``lat`` and ``lng`` are required - if one of them is missing an error is returned. ``position[radius]`` is taken into account only if ``allowClientRadius`` is set to ``true``, otherwise it is ignored and ``radius`` from ``arguments`` is used.
+
+Latitude and longitude properties can also be nested (e.g. ``"latProperty"="address.latitude"``).
+
+.. note::
+
+   Distance filter only filters items - it does not order them by distance. If you need ordering by distance use a :ref:`custom filter with query modifier <filtering_custom-filters_query-modifiers>`.

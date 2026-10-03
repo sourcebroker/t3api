@@ -32,12 +32,12 @@ Syntax: ``?property=<int>`` or ``?property[]=<int>&property[]=<int>``.
     *     properties={"uid"},
     * )
     */
-    class News extends \GeorgRinger\News\Domain\Model\News
-    {
-    }
+   class News extends \GeorgRinger\News\Domain\Model\News
+   {
+   }
 
 
-.. admonition:: Real examples. Run "ddev restart && ddev ci 13" and try those links below.
+.. admonition:: Real examples. Run "ddev restart && ddev ci 14" and try those links below.
 
-   * | Get translated newses with uid 5,6,7
-     | `https://13.t3api.ddev.site/_api/news/news?uid[]=5&uid[]=6&uid[]=7 <https://13.t3api.ddev.site/_api/news/news?uid[]=5&uid[]=6&uid[]=7>`_
+   * | Get news with uid 1, 2, 3 in German - translated records are found by uid of default language record (DE translations have uids 8 and 10):
+     | `https://14.t3api.ddev.site/de/_api/news/news?uid[]=1&uid[]=2&uid[]=3 <https://14.t3api.ddev.site/de/_api/news/news?uid[]=1&uid[]=2&uid[]=3>`__

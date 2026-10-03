@@ -7,10 +7,12 @@ Should be used to filter items by boolean fields.
 
 Syntax: ``?property=<true|false|1|0>``
 
+If the parameter is passed as an array (``?property[]=true``) only the first value is used.
+
 .. code-block:: php
 
    use SourceBroker\T3api\Annotation as T3api;
-   use SourceBroker\T3api\Filter\SearchFilter;
+   use SourceBroker\T3api\Filter\BooleanFilter;
 
    /**
     * @T3api\ApiResource (
@@ -31,10 +33,10 @@ Syntax: ``?property=<true|false|1|0>``
    {
    }
 
-.. admonition:: Real examples. Run "ddev restart && ddev ci 13" and try those links below.
+.. admonition:: Real examples. Run "ddev restart && ddev ci 14" and try those links below.
 
    * | Get list of news which are "Top News":
-     | https://13.t3api.ddev.site/_api/news/news?istopnews=true
+     | `https://14.t3api.ddev.site/_api/news/news?istopnews=true <https://14.t3api.ddev.site/_api/news/news?istopnews=true>`__
      |
    * | Get list of news which are "Top News" and sort by title
-     | `https://13.t3api.ddev.site/_api/news/news?istopnews=true&order[title]=asc <https://13.t3api.ddev.site/_api/news/news?istopnews=true&order[title]=asc>`__
+     | `https://14.t3api.ddev.site/_api/news/news?istopnews=true&order[title]=asc <https://14.t3api.ddev.site/_api/news/news?istopnews=true&order[title]=asc>`__

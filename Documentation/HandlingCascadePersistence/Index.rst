@@ -1,13 +1,13 @@
 .. _handling_cascade_persistence:
 
-=======================
+============================
 Handling Cascade Persistence
-=======================
+============================
 
 Create relation to existing entity
 ===================================
 
-It is super easy to create relation to already existing entity. To do so you just need to pass ``uid`` of the related object as a value of property. It works in exactly same way for `One-To-One` and `Many-To-One` relations for whom target entity contains information about one related entity. As on example below - we want to assign ``User`` to ``Department`` assuming that ``User`` can belongs to only one ``Department``.
+It is super easy to create relation to already existing entity. To do so you just need to pass ``uid`` of the related object as a value of property. It works in exactly same way for `One-To-One` and `Many-To-One` relations for whom target entity contains information about one related entity. As on example below - we want to assign ``User`` to ``Department`` assuming that ``User`` can belong to only one ``Department``.
 
 .. code-block:: json
 
@@ -66,7 +66,7 @@ After enabling cascade persistence for ``Order.items`` property it is possible t
             "article": 14,
             "quantity": 4
         }
-      ],
+      ]
    }
 
 Cascade persistence - updating related entity in single request
@@ -105,5 +105,5 @@ Example payload below is the second request after first from previous example, w
             "article": 15,
             "quantity": 9
         }
-      ],
+      ]
    }

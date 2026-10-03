@@ -5,7 +5,7 @@ Custom filters
 ==============
 
 It is super easy to create custom filters which will match your specific requirements.
-Custom filters has to implement interface ``\SourceBroker\T3api\Filter\FilterInterface`` and contain one public method ``filterProperty``.
+Custom filters have to implement interface ``\SourceBroker\T3api\Filter\FilterInterface`` and contain one public method ``filterProperty``.
 Method ``filterProperty`` accepts 4 arguments:
 
 - $property (``string``) - Name of the property to filter by.
@@ -64,7 +64,7 @@ It may be useful, but not required, to extend class ``\SourceBroker\T3api\Filter
    }
 
 .. note::
-    Instance of your custom filter will be created using Extbase's ObjectManager, so you can inject into it any other services if you need them.
+    Instance of your custom filter is created with ``GeneralUtility::makeInstance()``, so constructor injection works if the filter is a public service (``public: true`` in ``Configuration/Services.yaml``). Filters are shared instances - do not keep request specific state in them, or reset it after use.
 
 .. _filtering_custom-filters_query-modifiers:
 

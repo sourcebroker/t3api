@@ -9,7 +9,7 @@ Getting current user is a common issue in JSON API frameworks. It is not possibl
 Firstly let's register an endpoint as we do for any *CRUD* operation.
 
 .. code-block:: php
-   :caption: typo3conf/ext/users/Classes/Domain/Model/User.php
+   :caption: EXT:users/Classes/Domain/Model/User.php
 
    declare(strict_types=1);
 
@@ -33,12 +33,12 @@ Firstly let's register an endpoint as we do for any *CRUD* operation.
 Now let's register our operation handler inside `ext_localconf.php` and create a handler class. :ref:`Here you can read more about implementing your own operation handlers <operations_customizing-operation-handler>`.
 
 .. code-block:: php
-   :caption: typo3conf/ext/users/ext_localconf.php
+   :caption: EXT:users/ext_localconf.php
 
    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['operationHandlers'][\Vendor\Users\OperationHandler\GetCurrentUserOperationHandler::class] = 500;
 
 .. code-block:: php
-   :caption: typo3conf/ext/users/Classes/OperationHandler/GetCurrentUserOperationHandler.php
+   :caption: EXT:users/Classes/OperationHandler/GetCurrentUserOperationHandler.php
 
    declare(strict_types=1);
 
@@ -49,6 +49,8 @@ Now let's register our operation handler inside `ext_localconf.php` and create a
    use SourceBroker\T3api\Domain\Model\OperationInterface;
    use SourceBroker\T3api\OperationHandler\ItemGetOperationHandler;
    use Symfony\Component\HttpFoundation\Request;
+   use TYPO3\CMS\Core\Context\Context;
+   use TYPO3\CMS\Core\Utility\GeneralUtility;
    use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
    class GetCurrentUserOperationHandler extends ItemGetOperationHandler
@@ -64,11 +66,13 @@ Now let's register our operation handler inside `ext_localconf.php` and create a
            array $route,
            ?ResponseInterface &$response
        ): AbstractDomainObject {
-           if (empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
+           $userId = (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('frontend.user', 'id', 0);
+
+           if ($userId === 0) {
                throw new \RuntimeException('Unknown current user ID. Are you logged in?', 1592570206680);
            }
 
-           $route['id'] = $GLOBALS['TSFE']->fe_user->user['uid'];
+           $route['id'] = $userId;
 
            return parent::handle($operation, $request, $route, $response);
        }

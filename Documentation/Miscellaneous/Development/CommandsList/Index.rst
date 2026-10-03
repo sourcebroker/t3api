@@ -14,7 +14,7 @@ Below is a list of commands that you can use in the development process of ext:t
 .. _development_commands_list_ddev_cache_flush:
 :bash:`ddev cache-flush`
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-This command will run :bash:`typo3 flush:cache` for all active TYPO3
+This command will run :bash:`typo3 cache:flush` for all active TYPO3
 integration testing instances.
 
 
@@ -33,6 +33,7 @@ for testing and linting.
   * :bash:`ci:php:lint`
   * :bash:`ci:php:cs-fixer`
   * :bash:`ci:php:stan`
+  * :bash:`ci:php:rector`
   * :bash:`ci:tests:unit`
   * :bash:`ci:tests:functional`
   * :bash:`ci:tests:postman`
@@ -50,8 +51,9 @@ combination in matrix tests on github actions.
 Examples:
 
 .. code-block:: bash
+
     ddev ci
-    ddev ci 12 8.3 lowest
+    ddev ci 14 8.4 lowest
     ddev ci all
 
 
@@ -70,8 +72,8 @@ need to do changes to database/files and commit this state to git.
 This command is just for that reason.
 
 All TYPO3 testing instances are using the same exported files. This means that
-there is no much difference if you make :bash:`ddev data export 13` or
-:bash:`ddev data export 12`. Important is only that you do export from the
+there is no much difference if you make :bash:`ddev data export 14` or
+:bash:`ddev data export 13`. Important is only that you do export from the
 testing instance you actually modified.
 
 
@@ -86,16 +88,15 @@ watch
     this command will run hot reload for documentation.
 
 ci
-    this command will test if docs are able to  render correctly.
-    Used in :ref:`_development_commands_list_ddev_ci` command.
+    this command will test if docs are able to render correctly.
+    Used in :ref:`development_commands_list_ddev_ci` command.
 
 
 
 .. _development_commands_list_ddev_fix:
 :bash:`ddev fix`
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-This command will run all possible automate fixes. For now it makes
-PHP CS Fixer changes and composer normalisation.
+This command will run all possible automated fixes: Rector, PHP CS Fixer and composer normalization.
 
 
 .. _development_commands_list_ddev_install:
@@ -111,8 +112,9 @@ instances for given t3api version.
 Example:
 
 .. code-block:: bash
+
     ddev install
-    ddev install 12
+    ddev install 14
     ddev install all
 
 
@@ -137,4 +139,5 @@ After all checks it outputs a command you need to run to push changes and tag to
 Example output:
 
 .. code-block:: bash
+
     git add Documentation/guides.xml ext_emconf.php && git commit -m 'Tag version 3.1.0' && git tag -a '3.1.0' -m 'Version 3.1.0' -s && git push origin main --tags

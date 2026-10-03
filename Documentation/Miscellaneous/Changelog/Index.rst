@@ -4,8 +4,74 @@
 Changelog
 =====================================
 
+5.0.0
+=====
+- [!!!] Embed ``goldspecdigital/oooas`` library (PHP 8.5 compatibility). The package is no longer a dependency, namespace ``GoldSpecDigital\ObjectOrientedOAS`` is renamed to ``SourceBroker\T3api\OpenApi``. Update imports in custom filters implementing ``OpenApiSupportingFilterInterface`` and custom :ref:`collection response classes <customization_collection-response-schema>`. [`commit <https://github.com/sourcebroker/t3api/commit/9d63ab0>`__]
+- Add TYPO3 14 support. [`commit <https://github.com/sourcebroker/t3api/commit/5de5826>`__]
+- Add PHP 8.5 support. [`commit <https://github.com/sourcebroker/t3api/commit/81878f4>`__]
+- Add tag-based :ref:`response cache <response-cache>` for GET endpoints. [`commit <https://github.com/sourcebroker/t3api/commit/c35a0ab>`__]
+- Clear API response cache when the frontend cache is flushed. [`commit <https://github.com/sourcebroker/t3api/commit/11e37c8>`__]
+- Add :ref:`query modifiers <filtering_custom-filters_query-modifiers>` and :ref:`ordered UIDs filter <filtering_ordered-uids-filter>` - return collections in externally resolved order. [`commit <https://github.com/sourcebroker/t3api/commit/ebb9d75>`__]
+- Allow API sites in backend Content Security Policy (OpenAPI view in backend module for multiple sites). [`commit <https://github.com/sourcebroker/t3api/commit/9d63ab0>`__]
+- Add TYPO3 v14 module icon, clean up backend module. [`commit <https://github.com/sourcebroker/t3api/commit/add7aa5>`__]
+- Refactor language support for TYPO3 12/13/14. [`commit <https://github.com/sourcebroker/t3api/commit/f8715d5>`__]
+- Handle upload ``conflictMode`` across TYPO3 versions. [`commit <https://github.com/sourcebroker/t3api/commit/22c680e>`__]
+- Resolve current frontend user from Context instead of TSFE. [`commit <https://github.com/sourcebroker/t3api/commit/ddaefd0>`__]
+- Return empty string for empty or unresolvable typolinks. [`commit <https://github.com/sourcebroker/t3api/commit/7bd1b14>`__]
+- Resolve current site from ``TYPO3_REQUEST``, do not throw on CLI. [`commit <https://github.com/sourcebroker/t3api/commit/be24f1b>`__]
+- Skip t3api route enhancer when current site cannot be resolved. [`commit <https://github.com/sourcebroker/t3api/commit/0bb0ce6>`__]
+- Use event request when enriching page cache identifier. [`commit <https://github.com/sourcebroker/t3api/commit/46ab141>`__]
+- Delegate to ``Typo3ConditionFunctionsProvider`` instead of extending it. [`commit <https://github.com/sourcebroker/t3api/commit/4442dce>`__]
+- Add PHPStan 2 compatibility, rector, PHPUnit attributes. [`commit <https://github.com/sourcebroker/t3api/commit/80ce99b>`__]
+- Documentation: real examples for TYPO3 14 testing instance, new pages for pagination, security, serialization, integration and file upload.
+
+4.1.3
+=====
+- Remove (for now) the new feature ``withBooleanQuery``. [`commit <https://github.com/sourcebroker/t3api/commit/a89988f>`__]
+- Trim colon from binds to prevent ``Named parameter "text_ma_xxx" does not have a bound value`` error on ``matchAgainst`` search. [`commit <https://github.com/sourcebroker/t3api/commit/5add3ae>`__]
+- Refine file reference handling for POST requests. [`commit <https://github.com/sourcebroker/t3api/commit/1051181>`__]
+
+4.1.2
+=====
+- Bring back support for random hash base in TYPO3 v12. [`commit <https://github.com/sourcebroker/t3api/commit/92359ba>`__]
+
+4.1.1
+=====
+- Resolve caching issues on TYPO3 v13. [`commit <https://github.com/sourcebroker/t3api/commit/c961fea>`__]
+
+4.1.0
+=====
+- PHP 8.4 compatibility. [`commit <https://github.com/sourcebroker/t3api/commit/fdf013c>`__]
+- Mark nullable parameters explicit. [`commit <https://github.com/sourcebroker/t3api/commit/78f2aaa>`__]
+
+4.0.3
+=====
+- Fix m:n relations filter. [`commit <https://github.com/sourcebroker/t3api/commit/2992943>`__]
+- Fix support for processors. [`commit <https://github.com/sourcebroker/t3api/commit/392b90c>`__]
+
+4.0.0
+=====
+- Add TYPO3 13 support. [`commit <https://github.com/sourcebroker/t3api/commit/f7343f4>`__]
+
+3.0.5
+=====
+- Fix "array offset on null". [`commit <https://github.com/sourcebroker/t3api/commit/c489e84>`__]
+
+3.0.4
+=====
+- Harden against undefined array key. [`commit <https://github.com/sourcebroker/t3api/commit/3d364e4>`__]
+
+3.0.3
+=====
+- Allow edge cases when ``TYPO3_REQUEST`` may be null in ``EnrichHashBase`` hook. [`commit <https://github.com/sourcebroker/t3api/commit/a2867c0>`__]
+- Fix concurrent API calls in development mode (serializer metadata writing/loading was not thread safe). [`commit <https://github.com/sourcebroker/t3api/commit/a537c1a>`__]
+
+3.0.1
+=====
+- Fix wrong usage of repository variable. [`commit <https://github.com/sourcebroker/t3api/commit/5260119>`__]
+
 3.0.0
-====
+=====
 - [!!!] Changes signal slots into PSR-14 events [`issue <https://github.com/sourcebroker/t3api/issues/67>`__]
 - Protect against "&cHash empty" error when ``cacheHash.enforceValidation`` is set to ``true`` [`issue <https://github.com/sourcebroker/t3api/issues/81>`__]
 - Add testing instance for TYPO3 12, remove testing instance for TYPO3 10. Change PHP to 8.1 for testing instances.

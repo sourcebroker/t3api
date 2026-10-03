@@ -12,7 +12,7 @@ An event that is dispatched after request payload is deserialized to objects.
 May be useful when it is needed e.g. to change datetime property to current or
 assign current TYPO3 user as an author. This event gives access to following data:
 
-- ``operation`` - instance of ``\SourceBroker\T3api\HydraCollectionResponseomain\Model\OperationInterface``
+- ``operation`` - instance of ``\SourceBroker\T3api\Domain\Model\OperationInterface``
 - ``object`` -  object deserialized from payload
 
 Example event registration in :file:`Services.yaml`:
@@ -39,7 +39,7 @@ Example implementation:
         public function __invoke(AfterDeserializeOperationEvent $event): void
         {
             $operation = $event->getOperation();
-            $object => $event->getObject();
+            $object = $event->getObject();
             ...
             $event->setObject($object);
         }
@@ -97,7 +97,7 @@ properties in API response). This event gives access to following data:
 
 - ``operation`` - instance of ``\SourceBroker\T3api\Domain\Model\OperationInterface``
 - ``request`` - instance of ``Symfony\Component\HttpFoundation\Request``
-- ``context`` - instance of ``JMS\Serializer\SerializationContext``
+- ``context`` - instance of ``JMS\Serializer\SerializationContext`` (or ``JMS\Serializer\DeserializationContext`` when context for deserialization of request payload is created)
 
 Example event registration in :file:`Services.yaml`:
 
@@ -140,7 +140,7 @@ There are 3 events dispatched before evaluation of security expressions.
 
 .. note::
 
-   Before using these events consider if `build-in TYPO3 mechanism to extend expression language <https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/SymfonyExpressionLanguage/Index.html>`__
+   Before using these events consider if `build-in TYPO3 mechanism to extend expression language <https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/SymfonyExpressionLanguage/Index.html>`__
    won't be a better solution. Keep in mind that registering variables within these
    events will make it available only in t3api context while using TYPO3 mechanism makes
    it possible to be used also in other places (e.g. TypoScript conditions).
@@ -254,3 +254,11 @@ Example implementation:
             ...
         }
     }
+
+
+Record updated / deleted
+========================
+
+``\SourceBroker\T3api\Event\RecordUpdatedEvent`` and ``\SourceBroker\T3api\Event\RecordDeletedEvent`` are used
+to invalidate the :ref:`response cache <response-cache>` when records are changed. You can also dispatch them yourself,
+e.g. after changing records with plain SQL, to flush cached API responses. See :ref:`response-cache-invalidation`.

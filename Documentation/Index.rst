@@ -40,9 +40,9 @@ If you find an error or something is missing, please: `Report a Problem
 **Table of Contents**
 
 .. toctree::
-	:maxdepth: 5
-	:titlesonly:
-	:glob:
+   :maxdepth: 5
+   :titlesonly:
+   :glob:
 
    GettingStarted/Index
    Operations/Index
