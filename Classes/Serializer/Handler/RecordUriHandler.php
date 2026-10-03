@@ -48,6 +48,11 @@ class RecordUriHandler extends AbstractHandler implements SerializeHandlerInterf
         $url = $this->contentObjectRenderer->typoLink_URL([
             'parameter' => sprintf('t3://record?identifier=%s&uid=%s', $type['params'][0], $entity->getUid()),
         ]);
+
+        if ($url === '') {
+            return '';
+        }
+
         return UrlService::forceAbsoluteUrl(
             $url,
             $context->getAttribute('TYPO3_SITE_URL')
