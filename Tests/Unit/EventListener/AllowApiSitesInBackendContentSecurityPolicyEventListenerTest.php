@@ -71,10 +71,20 @@ class AllowApiSitesInBackendContentSecurityPolicyEventListenerTest extends UnitT
             new Site('no-api', 3, ['base' => 'https://no-api.example.com/']),
         ];
 
-        $siteFinder = self::createStub(SiteFinder::class);
-        $siteFinder->method('getAllSites')->willReturn($sites);
+        // SiteFinder is a readonly class in TYPO3 13, which PHPUnit < 11 cannot double
+        $siteFinder = (new \ReflectionClass(SiteFinder::class))->newInstanceWithoutConstructor();
 
-        return new AllowApiSitesInBackendContentSecurityPolicyEventListener($siteFinder);
+        return new class ($siteFinder, $sites) extends AllowApiSitesInBackendContentSecurityPolicyEventListener {
+            public function __construct(SiteFinder $siteFinder, private readonly array $sites)
+            {
+                parent::__construct($siteFinder);
+            }
+
+            protected function getAllSites(): array
+            {
+                return $this->sites;
+            }
+        };
     }
 
     private function createEvent(Scope $scope, string $uri): PolicyMutatedEvent

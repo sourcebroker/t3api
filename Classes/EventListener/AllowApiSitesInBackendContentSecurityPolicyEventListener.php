@@ -9,6 +9,7 @@ use TYPO3\CMS\Core\Security\ContentSecurityPolicy\Directive;
 use TYPO3\CMS\Core\Security\ContentSecurityPolicy\Event\PolicyMutatedEvent;
 use TYPO3\CMS\Core\Security\ContentSecurityPolicy\Scope;
 use TYPO3\CMS\Core\Security\ContentSecurityPolicy\UriValue;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
@@ -51,7 +52,7 @@ class AllowApiSitesInBackendContentSecurityPolicyEventListener
     protected function getApiSiteOrigins(): array
     {
         $origins = [];
-        foreach ($this->siteFinder->getAllSites() as $site) {
+        foreach ($this->getAllSites() as $site) {
             if (!SiteService::hasT3apiRouteEnhancer($site)) {
                 continue;
             }
@@ -71,5 +72,13 @@ class AllowApiSitesInBackendContentSecurityPolicyEventListener
         }
 
         return $origins;
+    }
+
+    /**
+     * @return Site[]
+     */
+    protected function getAllSites(): array
+    {
+        return $this->siteFinder->getAllSites();
     }
 }
