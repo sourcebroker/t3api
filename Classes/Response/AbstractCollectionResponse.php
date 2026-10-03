@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Response;
 
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
+use SourceBroker\T3api\Exception\InvalidPaginationParameterException;
 use SourceBroker\T3api\OpenApi\Objects\Schema;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -25,17 +26,30 @@ abstract class AbstractCollectionResponse
 
     abstract public static function getOpenApiSchema(string $membersReference): Schema;
 
+    /**
+     * @throws InvalidPaginationParameterException
+     */
     public function __construct(CollectionOperation $operation, Request $request, QueryInterface $query)
     {
         $this->operation = $operation;
         $this->request = $request;
         $this->query = $query;
+
+        // Invalid pagination parameters are reported before any query is executed
+        $pagination = $this->operation->getPagination()->setParametersFromRequest($this->request);
+        if ($pagination->isEnabled()) {
+            $pagination->validate();
+        }
     }
 
     public function getMembers(): array
     {
         if ($this->membersCache === null) {
-            $this->membersCache = $this->applyPagination()->execute()->toArray();
+            $pagination = $this->operation->getPagination()->setParametersFromRequest($this->request);
+            // `itemsPerPage=0` requests only the number of all items, without any members
+            $this->membersCache = $pagination->isEnabled() && $pagination->getNumberOfItemsPerPage() === 0
+                ? []
+                : $this->applyPagination()->execute()->toArray();
         }
 
         return $this->membersCache;

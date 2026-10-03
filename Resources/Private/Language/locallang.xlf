@@ -33,6 +33,18 @@
 			<trans-unit id="exception.operation_not_allowed.description">
 				<source>You are not allowed to access operation `%s`</source>
 			</trans-unit>
+			<trans-unit id="exception.invalid_pagination_parameter.title">
+				<source>Invalid pagination parameter</source>
+			</trans-unit>
+			<trans-unit id="exception.invalid_pagination_parameter.page">
+				<source>Parameter `%s` has to be an integer greater than or equal to 1</source>
+			</trans-unit>
+			<trans-unit id="exception.invalid_pagination_parameter.items_per_page">
+				<source>Parameter `%s` has to be an integer greater than or equal to 0</source>
+			</trans-unit>
+			<trans-unit id="exception.invalid_pagination_parameter.page_with_zero_items_per_page">
+				<source>Parameter `%s` can not be greater than 1 if parameter `%s` is 0</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

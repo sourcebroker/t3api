@@ -20,7 +20,7 @@ class HydraCollectionResponse extends AbstractCollectionResponse
                 Schema::integer('hydra:totalItems')->minimum(0),
                 Schema::object('hydra:view')->properties(
                     Schema::string('hydra:first')->description('URI to first page'),
-                    Schema::string('hydra:last')->description('URI to first page'),
+                    Schema::string('hydra:last')->description('URI to last page'),
                     Schema::string('hydra:prev')->description('URI to previous page'),
                     Schema::string('hydra:next')->description('URI to next page'),
                     Schema::array('hydra:pages')->items(Schema::string())->description('URIs to all pages'),
@@ -47,7 +47,10 @@ class HydraCollectionResponse extends AbstractCollectionResponse
 
         if ($this->operation->getPagination()->isEnabled()) {
             $pagination = $this->operation->getPagination();
-            $lastPage = (int)ceil($this->getTotalItems() / $pagination->getNumberOfItemsPerPage());
+            // Empty collection and `itemsPerPage=0` (only number of all items requested) still have one page
+            $lastPage = $pagination->getNumberOfItemsPerPage() > 0
+                ? max(1, (int)ceil($this->getTotalItems() / $pagination->getNumberOfItemsPerPage()))
+                : 1;
             $viewData['hydra:first'] = $this->operation->getRoute()->getPath() . '?' .
                 $this->getCurrentQueryStringWithOverrideParams([
                     $pagination->getPageParameterName() => 1,

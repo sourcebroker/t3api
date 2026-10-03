@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Functional\Dispatcher;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use SourceBroker\T3api\Exception\InvalidPaginationParameterException;
 
 /**
  * Full-cycle functional tests for collection pagination and query modifiers, run against the
@@ -154,6 +156,73 @@ class CollectionPaginationDispatcherTest extends AbstractDispatcherTestCase
 
         self::assertSame([], $response['hydra:member']);
         self::assertSame(0, $response['hydra:totalItems']);
+    }
+
+    #[Test]
+    public function emptyCollectionHasSingleFirstPageInView(): void
+    {
+        $response = $this->dispatchProductsGet(['fixedOrder' => 'none']);
+
+        self::assertSame('/_api/products?fixedOrder=none&page=1', $response['hydra:view']['hydra:first']);
+        self::assertSame('/_api/products?fixedOrder=none&page=1', $response['hydra:view']['hydra:last']);
+        self::assertSame(['/_api/products?fixedOrder=none&page=1'], $response['hydra:view']['hydra:pages']);
+        self::assertSame(1, $response['hydra:view']['hydra:page']);
+        self::assertArrayNotHasKey('hydra:next', $response['hydra:view']);
+        self::assertArrayNotHasKey('hydra:prev', $response['hydra:view']);
+    }
+
+    public static function invalidPaginationParameters(): array
+    {
+        return [
+            'page zero' => [['page' => '0'], 1791043200],
+            'page negative' => [['page' => '-1'], 1791043200],
+            'page not a number' => [['page' => 'abc'], 1791043200],
+            'page not an integer' => [['page' => '1.5'], 1791043200],
+            'items per page negative' => [['itemsPerPage' => '-5'], 1791043201],
+            'items per page not a number' => [['itemsPerPage' => 'abc'], 1791043201],
+            'page greater than 1 with zero items per page' => [['itemsPerPage' => '0', 'page' => '2'], 1791043202],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('invalidPaginationParameters')]
+    public function invalidPaginationParameterIsRejected(array $queryParams, int $expectedExceptionCode): void
+    {
+        $this->expectException(InvalidPaginationParameterException::class);
+        $this->expectExceptionCode($expectedExceptionCode);
+
+        $this->dispatchProductsGet($queryParams);
+    }
+
+    #[Test]
+    public function zeroItemsPerPageReturnsOnlyNumberOfAllItems(): void
+    {
+        $response = $this->dispatchProductsGet(['itemsPerPage' => 0]);
+
+        self::assertSame([], $response['hydra:member']);
+        self::assertSame(300, $response['hydra:totalItems']);
+        self::assertSame(['/_api/products?itemsPerPage=0&page=1'], $response['hydra:view']['hydra:pages']);
+        self::assertArrayNotHasKey('hydra:next', $response['hydra:view']);
+    }
+
+    #[Test]
+    public function zeroItemsPerPageReturnsOnlyNumberOfAllItemsForStatementBackedQuery(): void
+    {
+        $response = $this->dispatchProductsGet(['fixedOrder' => '11,2,9,4,7,6', 'itemsPerPage' => 0]);
+
+        self::assertSame([], $response['hydra:member']);
+        self::assertSame(6, $response['hydra:totalItems']);
+    }
+
+    #[Test]
+    public function statementBackedQueryKeepsTotalItemsOnLastPage(): void
+    {
+        $response = $this->dispatchProductsGet(['fixedOrder' => '11,2,9,4,7,6', 'itemsPerPage' => 4, 'page' => 2]);
+
+        self::assertSame([7, 6], $this->memberUids($response));
+        self::assertSame(6, $response['hydra:totalItems']);
+        self::assertSame(2, $response['hydra:view']['hydra:page']);
+        self::assertStringEndsWith('page=2', $response['hydra:view']['hydra:last']);
     }
 
     private function dispatchProductsGet(array $queryParams): array

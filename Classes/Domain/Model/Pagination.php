@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Domain\Model;
 
+use SourceBroker\T3api\Exception\InvalidPaginationParameterException;
 use SourceBroker\T3api\Utility\ParameterUtility;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Http\ServerRequest as Typo3Request;
@@ -77,8 +78,30 @@ class Pagination extends AbstractOperationResourceSettings
             : $this->isServerEnabled();
     }
 
+    /**
+     * Validates client parameters the same way API Platform does: page has to be an integer >= 1,
+     * items per page an integer >= 0 (0 returns no members, only the number of all items).
+     *
+     * @throws InvalidPaginationParameterException
+     */
+    public function validate(): void
+    {
+        $this->getPage();
+
+        if ($this->getClientNumberOfItemsPerPage() === 0 && $this->getPage() > 1) {
+            throw InvalidPaginationParameterException::pageWithZeroItemsPerPage(
+                $this->pageParameterName,
+                $this->itemsPerPageParameterName
+            );
+        }
+    }
+
     public function getNumberOfItemsPerPage(): int
     {
+        if ($this->getClientNumberOfItemsPerPage() === 0) {
+            return 0;
+        }
+
         return min(array_filter(
             [$this->maximumItemsPerPage, $this->getClientNumberOfItemsPerPage() ?? $this->itemsPerPage],
             static function (?int $itemsPerPage): bool {
@@ -87,9 +110,22 @@ class Pagination extends AbstractOperationResourceSettings
         ));
     }
 
+    /**
+     * @throws InvalidPaginationParameterException
+     */
     public function getPage(): int
     {
-        return (isset($this->parameters[$this->pageParameterName])) ? (int)$this->parameters[$this->pageParameterName] : 1;
+        if (!isset($this->parameters[$this->pageParameterName])) {
+            return 1;
+        }
+
+        $page = filter_var($this->parameters[$this->pageParameterName], FILTER_VALIDATE_INT);
+
+        if ($page === false || $page < 1) {
+            throw InvalidPaginationParameterException::invalidPage($this->pageParameterName);
+        }
+
+        return $page;
     }
 
     public function getOffset(): int
@@ -132,10 +168,19 @@ class Pagination extends AbstractOperationResourceSettings
         return $this->clientEnabled;
     }
 
+    /**
+     * @throws InvalidPaginationParameterException
+     */
     protected function getClientNumberOfItemsPerPage(): ?int
     {
         if ($this->clientItemsPerPage && isset($this->parameters[$this->itemsPerPageParameterName])) {
-            return (int)$this->parameters[$this->itemsPerPageParameterName];
+            $itemsPerPage = filter_var($this->parameters[$this->itemsPerPageParameterName], FILTER_VALIDATE_INT);
+
+            if ($itemsPerPage === false || $itemsPerPage < 0) {
+                throw InvalidPaginationParameterException::invalidItemsPerPage($this->itemsPerPageParameterName);
+            }
+
+            return $itemsPerPage;
         }
 
         return null;
