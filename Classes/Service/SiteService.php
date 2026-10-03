@@ -17,30 +17,41 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SiteService
 {
+    protected static ?SiteInterface $current = null;
+
+    protected static ?array $all = null;
+
     public static function getCurrent(): Site
     {
-        static $site;
-
-        if ($site === null) {
-            $site = self::getResolvedByTypo3() ??
+        if (self::$current === null) {
+            self::$current = self::getResolvedByTypo3() ??
                 self::getFirstMatchingCurrentUrl() ??
                 self::getFirstWithWildcardDomain();
         }
 
-        if (!$site instanceof Site) {
+        if (!self::$current instanceof Site) {
             throw new \RuntimeException('Could not determine current site', 1604259480589);
         }
 
-        return $site;
+        return self::$current;
     }
 
     public static function getAll(): array
     {
-        static $allSites;
-
-        return $allSites ??
-            $allSites = GeneralUtility::makeInstance(SiteFinder::class)
+        return self::$all ??
+            self::$all = GeneralUtility::makeInstance(SiteFinder::class)
                 ->getAllSites();
+    }
+
+    /**
+     * Forgets the memoized current site and site list, so they are resolved again on next access.
+     *
+     * @internal Only for tests which resolve different sites within one PHP process.
+     */
+    public static function reset(): void
+    {
+        self::$current = null;
+        self::$all = null;
     }
 
     public static function hasT3apiRouteEnhancer(Site $site): bool

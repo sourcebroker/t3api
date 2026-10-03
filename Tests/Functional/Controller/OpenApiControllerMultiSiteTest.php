@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Tests\Functional\Controller;
 
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Test;
 use SourceBroker\T3api\Controller\OpenApiController;
+use SourceBroker\T3api\Service\SiteService;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Core\Environment;
@@ -19,11 +19,9 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  * Covers the site selector of the backend module: the OpenAPI specification must be generated
  * for the site passed in the `site` query parameter, not for the site matching the backend URL.
  *
- * `SiteService::getCurrent()` and `RouteService`'s route-enhancer lookup memoize their result
- * in function-local static variables for the lifetime of the PHP process, so every test runs in
- * a separate process to resolve its site from scratch.
+ * `SiteService` memoizes the current site and the site list for the lifetime of the PHP process,
+ * so it is reset around every test to resolve the site from scratch.
  */
-#[RunTestsInSeparateProcesses]
 class OpenApiControllerMultiSiteTest extends FunctionalTestCase
 {
     protected array $testExtensionsToLoad = [
@@ -37,6 +35,13 @@ class OpenApiControllerMultiSiteTest extends FunctionalTestCase
         $this->writeSiteConfiguration('main', 1, 'https://main.example.com/', '_api');
         $this->writeSiteConfiguration('second', 2, 'https://second.example.com/', 'v1');
         $this->flushSiteConfigurationCaches();
+        SiteService::reset();
+    }
+
+    protected function tearDown(): void
+    {
+        SiteService::reset();
+        parent::tearDown();
     }
 
     #[Test]
