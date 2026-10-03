@@ -12,6 +12,8 @@ use Metadata\ClassHierarchyMetadata;
 use Metadata\ClassMetadata;
 use Metadata\MergeableClassMetadata;
 use SourceBroker\T3api\Serializer\Handler\CurrentFeUserHandler;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CurrentFeUserSubscriber implements EventSubscriberInterface
 {
@@ -53,13 +55,16 @@ class CurrentFeUserSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $frontendUserId = (int)GeneralUtility::makeInstance(Context::class)
+            ->getPropertyFromAspect('frontend.user', 'id', 0);
+
         $data = $event->getData();
         foreach ($metadata->propertyMetadata as $propertyName => $propertyMetadata) {
             if ($propertyMetadata->type === null || $propertyMetadata->type['name'] !== CurrentFeUserHandler::TYPE) {
                 continue;
             }
 
-            $data[$propertyName] = $GLOBALS['TSFE']->fe_user->user['uid'] ?? null;
+            $data[$propertyName] = $frontendUserId > 0 ? $frontendUserId : null;
         }
 
         $event->setData($data);
