@@ -12,6 +12,7 @@ use SourceBroker\T3api\Domain\Model\ApiResource;
 use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\ItemOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
+use SourceBroker\T3api\Exception\InvalidPaginationParameterException;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Exception\ResourceNotFoundException;
 use SourceBroker\T3api\Exception\ValidationException;
@@ -291,6 +292,10 @@ class OpenApiBuilder
 
         if ($operation instanceof ItemOperation) {
             $responses[] = ResourceNotFoundException::getOpenApiResponse();
+        }
+
+        if ($operation instanceof CollectionOperation && $operation->isMethodGet()) {
+            $responses[] = InvalidPaginationParameterException::getOpenApiResponse();
         }
 
         if ($operation->isMethodPatch() || $operation->isMethodPost() || $operation->isMethodPut()) {

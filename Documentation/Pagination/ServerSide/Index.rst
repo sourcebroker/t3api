@@ -47,6 +47,17 @@ Now the third page is available under ``?p=3``.
 .. note::
 
    Requesting a page beyond the last one returns an empty ``hydra:member`` list (still with correct ``hydra:totalItems``), not an error.
+   An empty collection has one page (``hydra:first`` and ``hydra:last`` point to page 1).
+
+The page number has to be an integer greater than or equal to 1. Any other value (``?page=0``, ``?page=-1``, ``?page=abc``) results in ``400 Bad Request``:
+
+.. code-block:: json
+
+   {
+       "hydra:title": "Invalid pagination parameter",
+       "hydra:description": "Parameter `page` has to be an integer greater than or equal to 1",
+       "hydra:code": 1791043200
+   }
 
 .. admonition:: Real examples. Run "ddev restart && ddev ci 14" and try those links below.
 
@@ -55,4 +66,7 @@ Now the third page is available under ``?p=3``.
      |
    * | Get page which does not exist - ``hydra:member`` is empty:
      | `https://14.t3api.ddev.site/_api/news/news?page=5 <https://14.t3api.ddev.site/_api/news/news?page=5>`__
+     |
+   * | Invalid page number - ``400 Bad Request``:
+     | `https://14.t3api.ddev.site/_api/news/news?page=0 <https://14.t3api.ddev.site/_api/news/news?page=0>`__
      |
