@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SourceBroker\T3api\Service;
 
+use Psr\Http\Message\ServerRequestInterface;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
@@ -16,30 +17,41 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SiteService
 {
+    protected static ?SiteInterface $current = null;
+
+    protected static ?array $all = null;
+
     public static function getCurrent(): Site
     {
-        static $site;
-
-        if ($site === null) {
-            $site = self::getResolvedByTypo3() ??
+        if (self::$current === null) {
+            self::$current = self::getResolvedByTypo3() ??
                 self::getFirstMatchingCurrentUrl() ??
                 self::getFirstWithWildcardDomain();
         }
 
-        if (!$site instanceof Site) {
+        if (!self::$current instanceof Site) {
             throw new \RuntimeException('Could not determine current site', 1604259480589);
         }
 
-        return $site;
+        return self::$current;
     }
 
     public static function getAll(): array
     {
-        static $allSites;
-
-        return $allSites ??
-            $allSites = GeneralUtility::makeInstance(SiteFinder::class)
+        return self::$all ??
+            self::$all = GeneralUtility::makeInstance(SiteFinder::class)
                 ->getAllSites();
+    }
+
+    /**
+     * Forgets the memoized current site and site list, so they are resolved again on next access.
+     *
+     * @internal Only for tests which resolve different sites within one PHP process.
+     */
+    public static function reset(): void
+    {
+        self::$current = null;
+        self::$all = null;
     }
 
     public static function hasT3apiRouteEnhancer(Site $site): bool
@@ -67,14 +79,33 @@ class SiteService
             ->getSiteByIdentifier($identifier);
     }
 
+    /**
+     * Prefers `$GLOBALS['TYPO3_REQUEST']` over the PHP superglobals: on internal sub-requests
+     * (e.g. EXT:solr v14 page indexing) TYPO3 provides a proper request there, while `$_SERVER`
+     * still describes the initial CLI call and `ServerRequestFactory::fromGlobals()` throws.
+     * Returns null when no request URL is available, so `getCurrent()` can fall back to the
+     * other resolution strategies.
+     */
     protected static function getResolvedByTypo3(): ?SiteInterface
     {
-        if (!class_exists(SiteMatcher::class)) {
-            return null;
+        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
+
+        if ($request instanceof ServerRequestInterface) {
+            $site = $request->getAttribute('site');
+            if ($site instanceof Site) {
+                return $site;
+            }
+        } else {
+            try {
+                $request = ServerRequestFactory::fromGlobals();
+            } catch (\InvalidArgumentException) {
+                // No usable request URL in the PHP superglobals, e.g. on CLI (also covers
+                // InvalidRequestUrlOnCliException)
+                return null;
+            }
         }
 
-        $routeResult = GeneralUtility::makeInstance(SiteMatcher::class)
-            ->matchRequest(ServerRequestFactory::fromGlobals());
+        $routeResult = GeneralUtility::makeInstance(SiteMatcher::class)->matchRequest($request);
 
         return $routeResult instanceof SiteRouteResult ? $routeResult->getSite() : null;
     }
