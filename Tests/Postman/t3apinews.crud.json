@@ -172,7 +172,15 @@
 							");",
 							"",
 							"pm.environment.set('newsUid', response.uid);",
-							"pm.environment.set('singleNewsEndpoint', response['@id']);"
+							"pm.environment.set('singleNewsEndpoint', response['@id']);",
+							"",
+							"pm.test(",
+							"    'Path segment is generated from title',",
+							"    function() {",
+							"        pm.expect(response.pathSegment).to.eql('this-is-an-example-news');",
+							"    }",
+							");",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -190,7 +198,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"title\": \"This is an example news\",\n\t\"alternativeTitle\": \"Alt title\",\n\t\"pid\": 3,\n\t\"pathSegment\":\"this_is_an_example_news\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"bodytext\": \"Here is the body\"\n}",
+					"raw": "{\n\t\"title\": \"This is an example news\",\n\t\"alternativeTitle\": \"Alt title\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"bodytext\": \"Here is the body\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -269,6 +277,107 @@
 					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
 					"host": [
 						"{{baseUrl}}{{singleNewsEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create news with the same title",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5692cb5-afa7-4dc1-8297-13922713e550",
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(",
+							"    'Status code is 201',",
+							"    function () {",
+							"        pm.response.to.have.status(201);",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Path segment is unique',",
+							"    function() {",
+							"        pm.expect(response.pathSegment).to.eql('this-is-an-example-news-1');",
+							"    }",
+							");",
+							"",
+							"pm.environment.set('duplicatedNewsEndpoint', response['@id']);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\": \"This is an example news\",\n\t\"alternativeTitle\": \"Alt title\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"bodytext\": \"Here is the body\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{newsEndpointPath}}",
+					"host": [
+						"{{baseUrl}}{{newsEndpointPath}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete news with the same title",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e618d7f0-12a9-41e1-8028-9b003f18fa8e",
+						"exec": [
+							"pm.test(",
+							"    'Status code is 200',",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}{{duplicatedNewsEndpoint}}",
+					"host": [
+						"{{baseUrl}}{{duplicatedNewsEndpoint}}"
 					]
 				}
 			},
@@ -395,7 +504,15 @@
 							"    function() {",
 							"        pm.expect(response.categories).to.eql([]);",
 							"    }",
-							");"
+							");",
+							"",
+							"pm.test(",
+							"    'Path segment is not changed',",
+							"    function() {",
+							"        pm.expect(response.pathSegment).to.eql('this-is-an-example-news');",
+							"    }",
+							");",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -451,7 +568,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"title\": \"This is even new title\",\n\t\"pid\": 3,\n\t\"pathSegment\":\"this_is_an_example_news\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"related\": [],\n\t\"relatedFrom\": []\n}"
+					"raw": "{\n\t\"title\": \"This is even new title\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"related\": [],\n\t\"relatedFrom\": []\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
@@ -498,7 +615,15 @@
 							"    function() {",
 							"        pm.expect(response.categories[0].uid).to.eql(pm.environment.get('categoryUid'));",
 							"    }",
-							");"
+							");",
+							"",
+							"pm.test(",
+							"    'Path segment is generated from new title',",
+							"    function() {",
+							"        pm.expect(response.pathSegment).to.eql('this-is-even-new-title');",
+							"    }",
+							");",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -778,7 +903,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"title\": \"This is an example news with file reference added at once\",\n\t\"alternativeTitle\": \"Alt title\",\n\t\"pid\": 3,\n\t\"pathSegment\":\"this_is_an_example_news_with_file_reference\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"bodytext\": \"Here is the body\",\n\t\"falMedia\": [\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 1\n\t\t},\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 0\n\t\t}\n\t]\n}",
+					"raw": "{\n\t\"title\": \"This is an example news with file reference added at once\",\n\t\"alternativeTitle\": \"Alt title\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"bodytext\": \"Here is the body\",\n\t\"falMedia\": [\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 1\n\t\t},\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 0\n\t\t}\n\t]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -838,6 +963,13 @@
 							"        pm.expect(response.falMedia[1].url).to.be.a('string');",
 							"        pm.expect(response.falMedia[1].file).to.be.an('object');",
 							"        pm.expect(response.falMedia[1].file.uid).to.equal(Number(pm.environment.get('uploadedFieldUid')));",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Path segment is generated from title',",
+							"    function() {",
+							"        pm.expect(response.pathSegment).to.eql('this-is-an-example-news-with-file-reference-added-at-once');",
 							"    }",
 							");",
 							""
