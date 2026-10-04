@@ -32,7 +32,7 @@ Some handlers are used automatically (based on the class of the value), others a
      - HTML processed by ``lib.parseFunc_RTE``
    * - ``PasswordHashHandler``
      - ``@T3api\Serializer\Type\PasswordHash``, type ``PasswordHash``
-     - on deserialization: hashed password
+     - on deserialization: hashed password; on serialization: ``null`` (stored hash with ``serialize=true``)
    * - ``CurrentFeUserHandler``
      - ``@T3api\Serializer\Type\CurrentFeUser``
      - see :ref:`use-cases_current-user-assignment`
@@ -206,9 +206,27 @@ Used in deserialization only - plain password sent in the payload is hashed with
     */
    protected $password = '';
 
+On serialization ``null`` is returned, so the stored password hash is not included in API responses. If you need to read the hash (e.g. to migrate users to another system), enable it explicitly with ``serialize=true``:
+
+.. code-block:: php
+
+   /**
+    * @T3api\Serializer\Type\PasswordHash(serialize=true)
+    */
+   protected $password = '';
+
+or in :ref:`YAML metadata <serialization_yaml-metadata>`:
+
+.. code-block:: yaml
+
+   Vendor\Extension\Domain\Model\User:
+     properties:
+       password:
+         type: "PasswordHash<'serialize'>"
+
 .. warning::
 
-   Serialization returns the value as is (the hash). Never add the password property to groups used in ``normalizationContext``.
+   With ``serialize=true`` make sure the property is added only to groups of operations restricted to trusted users (see :ref:`security`).
 
 .. admonition:: Real examples. Run "ddev restart && ddev ci 14" and try those links below.
 
