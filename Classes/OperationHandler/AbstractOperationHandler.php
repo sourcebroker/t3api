@@ -12,12 +12,15 @@ use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Security\OperationAccessChecker;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Service\SerializerService;
+use SourceBroker\T3api\Service\SlugService;
 use SourceBroker\T3api\Service\ValidationService;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
 abstract class AbstractOperationHandler implements OperationHandlerInterface
 {
+    protected SlugService $slugService;
+
     public function __construct(
         protected readonly SerializerService $serializerService,
         protected readonly ValidationService $validationService,
@@ -25,6 +28,15 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
         protected readonly DeserializationContextBuilder $deserializationContextBuilder,
         protected readonly EventDispatcherInterface $eventDispatcher
     ) {}
+
+    /**
+     * Injected by method (not constructor) so that adding new dependency does not break handlers which extend this
+     * class and override the constructor.
+     */
+    public function injectSlugService(SlugService $slugService): void
+    {
+        $this->slugService = $slugService;
+    }
 
     protected function getRepositoryForOperation(OperationInterface $operation): CommonRepository
     {

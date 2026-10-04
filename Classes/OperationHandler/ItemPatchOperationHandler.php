@@ -43,6 +43,7 @@ class ItemPatchOperationHandler extends AbstractItemOperationHandler
         $this->validationService->validateObject($object);
         $repository->update($object);
         GeneralUtility::makeInstance(PersistenceManager::class)->persistAll();
+        $this->slugService->processSlugs($object);
 
         return $object;
     }

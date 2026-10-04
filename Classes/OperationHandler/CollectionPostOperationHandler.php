@@ -36,6 +36,7 @@ class CollectionPostOperationHandler extends AbstractCollectionOperationHandler
         $this->validationService->validateObject($object);
         $repository->add($object);
         GeneralUtility::makeInstance(PersistenceManager::class)->persistAll();
+        $this->slugService->processSlugs($object);
 
         $response = $response ? $response->withStatus(201) : $response;
 
