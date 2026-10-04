@@ -90,9 +90,10 @@ fi
 
 # Update files with the new version
 sed -i "s/'version' => '[0-9]\+\.[0-9]\+\.[0-9]\+'/'version' => '$NEXT_TAG'/g" ./ext_emconf.php
+sed -i -E "s/(\"version\": \")[0-9]+\.[0-9]+\.[0-9]+(\")/\1$NEXT_TAG\2/" ./composer.json
 sed -i "s/release=\"[0-9]\+\.[0-9]\+\.[0-9]\+\"/release=\"$NEXT_TAG\"/g" ./Documentation/guides.xml
 sed -i'' -E "s/(<project[^>]* version=\")[^\"]+(\")/\1$NEXT_TAG\2/" ./Documentation/guides.xml
 
 # Prepare command to tag the new version
 echo "Copy the command below and run it to tag the new version:"
-echo "zsh -e -c \"git add Documentation/guides.xml ext_emconf.php; git commit -m 'Tag version $NEXT_TAG'; git tag -a '$NEXT_TAG' -m 'Version $NEXT_TAG' -s; git push origin $DEFAULT_BRANCH '$NEXT_TAG'\""
+echo "zsh -e -c \"git add Documentation/guides.xml ext_emconf.php composer.json; git commit -m 'Tag version $NEXT_TAG'; git tag -a '$NEXT_TAG' -m 'Version $NEXT_TAG' -s; git push origin $DEFAULT_BRANCH '$NEXT_TAG'\""

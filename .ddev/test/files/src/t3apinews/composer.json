@@ -30,9 +30,13 @@
   },
   "extra": {
     "typo3/cms": {
+      "Package": {
+        "providesPackages": {}
+      },
       "extension-key": "t3apinews",
       "app-dir": ".Build",
-      "web-dir": ".Build/public"
+      "web-dir": ".Build/public",
+      "version": "1.0.0"
     }
   },
   "version": "1.0.0"
