@@ -17,18 +17,26 @@ class PasswordHashHandler extends AbstractHandler implements SerializeHandlerInt
      */
     public const TYPE = 'PasswordHash';
 
+    /**
+     * Handler parameter enabling serialization of stored password hash (`PasswordHash<'serialize'>`)
+     */
+    public const PARAM_SERIALIZE = 'serialize';
+
     protected static $supportedTypes = [self::TYPE];
 
     public function __construct(private readonly PasswordHashFactory $passwordHashFactory) {}
 
-    // serialize method has to exists to handle `PasswordHash` type and avoid error "Class PasswordHash does not exist"
+    /**
+     * The type is meant for deserialization (hashing of password sent in payload). Stored password hash
+     * is returned on serialization only if enabled with parameter `serialize`, otherwise `null`.
+     */
     public function serialize(
         SerializationVisitorInterface $visitor,
         $object,
         array $type,
         SerializationContext $context
-    ) {
-        return $object;
+    ): mixed {
+        return in_array(self::PARAM_SERIALIZE, $this->getDecodedParams($type['params'] ?? []), true) ? $object : null;
     }
 
     public function deserialize(

@@ -12,9 +12,14 @@ use SourceBroker\T3api\Serializer\Handler\PasswordHashHandler;
  */
 class PasswordHash implements TypeInterface
 {
+    /**
+     * Return stored password hash on serialization. By default `null` is returned.
+     */
+    public bool $serialize = false;
+
     public function getParams(): array
     {
-        return [];
+        return $this->serialize ? [PasswordHashHandler::PARAM_SERIALIZE] : [];
     }
 
     public function getName(): string

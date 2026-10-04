@@ -7,6 +7,7 @@ Changelog
 5.0.0
 =====
 - [!!!] Embed ``goldspecdigital/oooas`` library (PHP 8.5 compatibility). The package is no longer a dependency, namespace ``GoldSpecDigital\ObjectOrientedOAS`` is renamed to ``SourceBroker\T3api\OpenApi``. Update imports in custom filters implementing ``OpenApiSupportingFilterInterface`` and custom :ref:`collection response classes <customization_collection-response-schema>`. [`commit <https://github.com/sourcebroker/t3api/commit/9d63ab0>`__]
+- [!!!] ``@T3api\Serializer\Type\PasswordHash`` returns ``null`` on serialization instead of the stored password hash. Use ``@T3api\Serializer\Type\PasswordHash(serialize=true)`` to return the hash as before, see :ref:`serialization_handlers_password-hash`.
 - Add TYPO3 14 support. [`commit <https://github.com/sourcebroker/t3api/commit/5de5826>`__]
 - Add PHP 8.5 support. [`commit <https://github.com/sourcebroker/t3api/commit/81878f4>`__]
 - Add tag-based :ref:`response cache <response-cache>` for GET endpoints. [`commit <https://github.com/sourcebroker/t3api/commit/c35a0ab>`__]
