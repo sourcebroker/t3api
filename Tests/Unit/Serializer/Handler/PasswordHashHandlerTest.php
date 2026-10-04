@@ -11,16 +11,39 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use PHPUnit\Framework\Attributes\Test;
 use SourceBroker\T3api\Annotation\Serializer\Type\PasswordHash;
 use SourceBroker\T3api\Serializer\Handler\PasswordHashHandler;
+use TYPO3\CMS\Core\Crypto\PasswordHashing\BcryptPasswordHash;
 use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
-use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashInterface;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
+/**
+ * Real `PasswordHashFactory` is used - it is a `readonly` class since TYPO3 13 and PHPUnit versions
+ * used with lowest dependencies can not create test doubles of readonly classes.
+ */
 class PasswordHashHandlerTest extends UnitTestCase
 {
+    private array $typo3ConfVarsBackup = [];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->typo3ConfVarsBackup = $GLOBALS['TYPO3_CONF_VARS'] ?? [];
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['availablePasswordHashAlgorithms'] = [BcryptPasswordHash::class];
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['passwordHashing'] = [
+            'className' => BcryptPasswordHash::class,
+            'options' => [],
+        ];
+    }
+
+    protected function tearDown(): void
+    {
+        $GLOBALS['TYPO3_CONF_VARS'] = $this->typo3ConfVarsBackup;
+        parent::tearDown();
+    }
+
     #[Test]
     public function serializationReturnsNull(): void
     {
-        $handler = new PasswordHashHandler(self::createStub(PasswordHashFactory::class));
+        $handler = new PasswordHashHandler(new PasswordHashFactory());
 
         self::assertNull($handler->serialize(
             self::createStub(SerializationVisitorInterface::class),
@@ -33,7 +56,7 @@ class PasswordHashHandlerTest extends UnitTestCase
     #[Test]
     public function serializationReturnsStoredValueWhenEnabledWithParameter(): void
     {
-        $handler = new PasswordHashHandler(self::createStub(PasswordHashFactory::class));
+        $handler = new PasswordHashHandler(new PasswordHashFactory());
 
         self::assertSame('$argon2i$stored', $handler->serialize(
             self::createStub(SerializationVisitorInterface::class),
@@ -56,23 +79,22 @@ class PasswordHashHandlerTest extends UnitTestCase
     #[Test]
     public function deserializationHashesPassword(): void
     {
-        $passwordHash = self::createStub(PasswordHashInterface::class);
-        $passwordHash->method('getHashedPassword')->willReturnCallback(static fn(string $password): string => 'hashed:' . $password);
-        $passwordHashFactory = self::createStub(PasswordHashFactory::class);
-        $passwordHashFactory->method('getDefaultHashInstance')->willReturn($passwordHash);
+        $hash = $this->deserialize('secret');
 
-        self::assertSame('hashed:secret', $this->deserialize($passwordHashFactory, 'secret'));
+        self::assertIsString($hash);
+        self::assertNotSame('secret', $hash);
+        self::assertTrue((new BcryptPasswordHash())->checkPassword('secret', $hash));
     }
 
     #[Test]
     public function deserializationReturnsNullForNonStringValue(): void
     {
-        self::assertNull($this->deserialize(self::createStub(PasswordHashFactory::class), ['secret']));
+        self::assertNull($this->deserialize(['secret']));
     }
 
-    private function deserialize(PasswordHashFactory $passwordHashFactory, mixed $data): ?string
+    private function deserialize(mixed $data): ?string
     {
-        return (new PasswordHashHandler($passwordHashFactory))->deserialize(
+        return (new PasswordHashHandler(new PasswordHashFactory()))->deserialize(
             self::createStub(DeserializationVisitorInterface::class),
             $data,
             ['name' => PasswordHashHandler::TYPE, 'params' => []],
