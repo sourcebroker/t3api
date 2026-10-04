@@ -11,6 +11,7 @@ use SourceBroker\T3api\Event\AfterDeserializeOperationEvent;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Security\OperationAccessChecker;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
+use SourceBroker\T3api\Service\CommonDateFieldsService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\SlugService;
 use SourceBroker\T3api\Service\ValidationService;
@@ -20,6 +21,8 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 abstract class AbstractOperationHandler implements OperationHandlerInterface
 {
     protected SlugService $slugService;
+
+    protected CommonDateFieldsService $commonDateFieldsService;
 
     public function __construct(
         protected readonly SerializerService $serializerService,
@@ -36,6 +39,15 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
     public function injectSlugService(SlugService $slugService): void
     {
         $this->slugService = $slugService;
+    }
+
+    /**
+     * Injected by method (not constructor) so that adding new dependency does not break handlers which extend this
+     * class and override the constructor.
+     */
+    public function injectCommonDateFieldsService(CommonDateFieldsService $commonDateFieldsService): void
+    {
+        $this->commonDateFieldsService = $commonDateFieldsService;
     }
 
     protected function getRepositoryForOperation(OperationInterface $operation): CommonRepository

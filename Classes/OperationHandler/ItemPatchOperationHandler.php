@@ -44,6 +44,7 @@ class ItemPatchOperationHandler extends AbstractItemOperationHandler
         $repository->update($object);
         GeneralUtility::makeInstance(PersistenceManager::class)->persistAll();
         $this->slugService->processSlugs($object);
+        $this->commonDateFieldsService->applyToObject($object);
 
         return $object;
     }

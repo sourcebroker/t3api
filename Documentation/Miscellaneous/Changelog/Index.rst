@@ -14,6 +14,7 @@ Changelog
 - Validate pagination parameters like API Platform: invalid ``page`` / ``itemsPerPage`` returns ``400 Bad Request``, ``itemsPerPage=0`` returns only ``hydra:totalItems``, empty collection has one page in ``hydra:view``. See :ref:`pagination`. [`commit <https://github.com/sourcebroker/t3api/commit/50d1b28>`__]
 - Add ``@id`` to related objects when their API resource class is set as ``type`` in YAML metadata. See :ref:`integration`. [`commit <https://github.com/sourcebroker/t3api/commit/fbd795a>`__]
 - Add ``version`` and ``providesPackages`` to ``composer.json`` (TYPO3 14.3 classic mode metadata).
+- Return creation and modification date (TCA ``ctrl.crdate`` and ``ctrl.tstamp``) stored by TYPO3 in response of POST, PUT and PATCH operations. Fixes HTTP 500 after creating record without creation date when getter does not allow ``null``.
 - Add TYPO3 14 support. [`commit <https://github.com/sourcebroker/t3api/commit/5de5826>`__]
 - Add PHP 8.5 support. [`commit <https://github.com/sourcebroker/t3api/commit/81878f4>`__]
 - Add tag-based :ref:`response cache <response-cache>` for GET endpoints. [`commit <https://github.com/sourcebroker/t3api/commit/c35a0ab>`__]

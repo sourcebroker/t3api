@@ -11,7 +11,9 @@ GeorgRinger\News\Domain\Model\News:
     datetime:
       groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
     crdate:
-      groups: [api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+      groups: [api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
+    tstamp:
+      groups: [api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
     author:
       groups: [api_get_collection_t3apinews_news, api_get_item_t3apinews_news, api_post_item_t3apinews_news, api_patch_item_t3apinews_news, api_put_item_t3apinews_news]
     authorEmail:
