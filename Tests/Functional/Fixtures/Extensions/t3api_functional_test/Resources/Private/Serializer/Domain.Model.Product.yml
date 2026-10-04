@@ -1,0 +1,6 @@
+T3apiTests\FunctionalTest\Domain\Model\Product:
+  properties:
+    category:
+      type: 'T3apiTests\FunctionalTest\Domain\Model\CategoryResource'
+    tags:
+      type: 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<T3apiTests\FunctionalTest\Domain\Model\TagResource>'

@@ -243,7 +243,13 @@
 							"        pm.expect(response.categories[0].uid).to.eql(pm.environment.get('categoryUid'));",
 							"    }",
 							");",
-							""
+							"",
+							"pm.test(",
+							"    'Category has IRI of category resource',",
+							"    function() {",
+							"        pm.expect(response.categories[0]['@id']).to.eql(pm.environment.get('singleCategoryEndpoint'));",
+							"    }",
+							");"
 						],
 						"type": "text/javascript"
 					}

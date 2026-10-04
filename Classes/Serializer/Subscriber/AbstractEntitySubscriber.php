@@ -48,7 +48,7 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         $visitor = $event->getVisitor();
 
         $this->addForceEntityProperties($entity, $visitor);
-        $this->addIri($entity, $visitor);
+        $this->addIri($entity, $visitor, $event->getType()['name'] ?? '');
     }
 
     public function onPreDeserialize(PreDeserializeEvent $event): void
@@ -79,9 +79,22 @@ class AbstractEntitySubscriber implements EventSubscriberInterface
         }
     }
 
-    protected function addIri(AbstractDomainObject $entity, JsonSerializationVisitor $visitor): void
+    /**
+     * @param string $declaredType Type of the serialized value declared in serializer metadata (e.g. `type` in YAML)
+     */
+    protected function addIri(AbstractDomainObject $entity, JsonSerializationVisitor $visitor, string $declaredType = ''): void
     {
         $apiResource = $this->apiResourceRepository->getByEntity($entity);
+
+        // Related object is not an API resource, but YAML metadata declares API resource class as its `type`
+        if (
+            !$apiResource instanceof ApiResource
+            && $declaredType !== ''
+            && is_subclass_of($declaredType, get_class($entity))
+        ) {
+            $apiResource = $this->apiResourceRepository->getByEntity($declaredType);
+        }
+
         if ($apiResource instanceof ApiResource && $apiResource->getMainItemOperation() instanceof ItemOperation) {
             // @todo should be generated with symfony router
             $iri = str_replace(
