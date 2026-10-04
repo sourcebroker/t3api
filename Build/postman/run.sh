@@ -33,7 +33,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [ -z "$TYPO3" ]; then
-    TYPO3=$("../../.Build/bin/typo3" | grep -oP 'TYPO3 CMS \K[0-9]+')
+    # Read version without bootstrapping TYPO3 - running .Build/bin/typo3 creates var/ in the project root
+    TYPO3=$(php -d error_reporting=0 -d display_errors=0 -r 'require "../../.Build/vendor/autoload.php"; echo (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();')
 fi
 
 if ! check_typo3_version "$TYPO3"; then

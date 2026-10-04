@@ -69,7 +69,11 @@
 	},
 	"extra": {
 		"typo3/cms": {
+			"Package": {
+				"providesPackages": {}
+			},
 			"extension-key": "t3api",
+			"version": "5.0.0",
 			"web-dir": ".Build/public"
 		}
 	},
@@ -109,10 +113,10 @@
 			"@fix:composer:normalize"
 		],
 		"fix:composer:normalize": "@composer normalize",
+		"fix:php:cs-fixer": "PHP_CS_FIXER_IGNORE_ENV=1 .Build/bin/php-cs-fixer fix --config .php-cs-fixer.php",
 		"fix:php:rector": [
 			"@composer install --working-dir=Build/rector --no-progress --no-interaction --quiet",
 			"Build/rector/vendor/bin/rector process --config Build/rector/rector.php --no-progress-bar"
-		],
-		"fix:php:cs-fixer": "PHP_CS_FIXER_IGNORE_ENV=1 .Build/bin/php-cs-fixer fix --config .php-cs-fixer.php"
+		]
 	}
 }

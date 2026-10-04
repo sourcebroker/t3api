@@ -12,7 +12,11 @@
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "t3api_functional_test"
+            "Package": {
+                "providesPackages": {}
+            },
+            "extension-key": "t3api_functional_test",
+            "version": "1.0.0"
         }
     }
 }
