@@ -13,6 +13,9 @@
   "conflict": {},
   "extra": {
     "typo3/cms": {
+      "Package": {
+        "providesPackages": {}
+      },
       "extension-key": "site"
     }
   },
