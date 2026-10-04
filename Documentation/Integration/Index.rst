@@ -13,6 +13,15 @@ Models of other extensions (e.g. ``EXT:news``) can be exposed in the API without
 #. Map your model to the table of the original model with Extbase persistence configuration (``Configuration/Extbase/Persistence/Classes.php``). If your class should also be returned by the original repositories and relations, register it as ``subclasses`` / ``recordType`` as described in TYPO3 documentation.
 #. Configure serialization of properties of the original class with :ref:`YAML metadata <serialization_yaml-metadata>` - annotations can not be added to classes you do not own.
 
+Extbase creates related objects with the classes used in the original model (e.g. categories of a news are ``\GeorgRinger\News\Domain\Model\Category``). Declare the type of such relation with your API resource class in YAML metadata - related objects are then serialized as that API resource, including its ``@id``:
+
+.. code-block:: yaml
+
+   GeorgRinger\News\Domain\Model\News:
+     properties:
+       categories:
+         type: 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<SourceBroker\T3apinews\Domain\Model\Category>'
+
 News extension - Example integration
 ======================================
 

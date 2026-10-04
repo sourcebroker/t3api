@@ -130,12 +130,14 @@ Here is an example of basic response for collection operation (shortened to firs
             {
               "title": "[EN] Category 1A",
               "image": null,
-              "uid": 1
+              "uid": 1,
+              "@id": "/_api/news/categories/1"
             },
             {
               "title": "[EN] Category 2A",
               "image": null,
-              "uid": 2
+              "uid": 2,
+              "@id": "/_api/news/categories/2"
             }
           ],
           "type": "0",
@@ -157,17 +159,19 @@ Here is an example of basic response for collection operation (shortened to firs
           "tags": [
             {
               "title": "[EN] Tag 1A",
-              "uid": 1
+              "uid": 1,
+              "@id": "/_api/news/tags/1"
             },
             {
               "title": "[EN] Tag 4A",
-              "uid": 4
+              "uid": 4,
+              "@id": "/_api/news/tags/4"
             }
           ],
           "pathSegment": "en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
           "singleUri": "https://14.t3api.ddev.site/news/en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
-          "imageThumbnail": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_6e0c6b2eb1.jpg",
-          "imageLarge": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_fe74a17411.jpg",
+          "imageThumbnail": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_cb256deee9.jpg",
+          "imageLarge": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_f67e7c21bd.jpg",
           "uid": 1,
           "@id": "/_api/news/news/1"
         },
@@ -182,7 +186,8 @@ Here is an example of basic response for collection operation (shortened to firs
             {
               "title": "[EN] Category 2A",
               "image": null,
-              "uid": 2
+              "uid": 2,
+              "@id": "/_api/news/categories/2"
             }
           ],
           "type": "0",
@@ -214,17 +219,19 @@ Here is an example of basic response for collection operation (shortened to firs
           "tags": [
             {
               "title": "[EN] Tag 1A",
-              "uid": 1
+              "uid": 1,
+              "@id": "/_api/news/tags/1"
             },
             {
               "title": "[EN] Tag 2A",
-              "uid": 2
+              "uid": 2,
+              "@id": "/_api/news/tags/2"
             }
           ],
           "pathSegment": "en-natus-error-sit-voluptatem-folder-a",
           "singleUri": "https://14.t3api.ddev.site/news/en-natus-error-sit-voluptatem-folder-a",
-          "imageThumbnail": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_6e0c6b2eb1.jpg",
-          "imageLarge": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_fe74a17411.jpg",
+          "imageThumbnail": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_cb256deee9.jpg",
+          "imageLarge": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_f67e7c21bd.jpg",
           "uid": 2,
           "@id": "/_api/news/news/2"
         }
@@ -286,61 +293,65 @@ because they are useless in single item operation context. Example response for 
 .. code-block:: json
 
     {
-        "title": "[EN] Sed ut perspiciatis unde omnis iste natus error sit voluptatem folder A",
-        "alternativeTitle": "",
-        "teaser": "",
-        "bodytext": "<p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>",
-        "datetime": "2020-05-28T21:20:00.000+02:00",
-        "author": "",
-        "authorEmail": "",
-        "categories": [
-            {
-                "title": "[EN] Category 1A",
-                "description": "",
-                "image": null,
-                "uid": 1
-            },
-            {
-                "title": "[EN] Category 2A",
-                "description": "",
-                "image": null,
-                "uid": 2
-            }
-        ],
-        "related": [],
-        "relatedFrom": [],
-        "type": "0",
-        "falMedia": [
-            {
-                "url": "https://14.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
-                "uid": 4,
-                "file": {
-                    "uid": 1,
-                    "name": "test1.jpg",
-                    "mimeType": "image/jpeg",
-                    "size": 42520
-                }
-            }
-        ],
-        "internalurl": "",
-        "externalurl": "",
-        "istopnews": false,
-        "tags": [
-            {
-                "title": "[EN] Tag 1A",
-                "uid": 1
-            },
-            {
-                "title": "[EN] Tag 4A",
-                "uid": 4
-            }
-        ],
-        "pathSegment": "en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
-        "singleUri": "https://14.t3api.ddev.site/news/en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
-        "imageThumbnail": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_6e0c6b2eb1.jpg",
-        "imageLarge": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_fe74a17411.jpg",
-        "uid": 1,
-        "@id": "/_api/news/news/1"
+      "title": "[EN] Sed ut perspiciatis unde omnis iste natus error sit voluptatem folder A",
+      "alternativeTitle": "",
+      "teaser": "",
+      "bodytext": "<p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>",
+      "datetime": "2020-05-28T21:20:00.000+02:00",
+      "author": "",
+      "authorEmail": "",
+      "categories": [
+        {
+          "title": "[EN] Category 1A",
+          "description": "",
+          "image": null,
+          "uid": 1,
+          "@id": "/_api/news/categories/1"
+        },
+        {
+          "title": "[EN] Category 2A",
+          "description": "",
+          "image": null,
+          "uid": 2,
+          "@id": "/_api/news/categories/2"
+        }
+      ],
+      "related": [],
+      "relatedFrom": [],
+      "type": "0",
+      "falMedia": [
+        {
+          "url": "https://14.t3api.ddev.site/fileadmin/user_upload/test1.jpg",
+          "uid": 4,
+          "file": {
+            "uid": 1,
+            "name": "test1.jpg",
+            "mimeType": "image/jpeg",
+            "size": 42520
+          }
+        }
+      ],
+      "internalurl": "",
+      "externalurl": "",
+      "istopnews": false,
+      "tags": [
+        {
+          "title": "[EN] Tag 1A",
+          "uid": 1,
+          "@id": "/_api/news/tags/1"
+        },
+        {
+          "title": "[EN] Tag 4A",
+          "uid": 4,
+          "@id": "/_api/news/tags/4"
+        }
+      ],
+      "pathSegment": "en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
+      "singleUri": "https://14.t3api.ddev.site/news/en-sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-folder-a",
+      "imageThumbnail": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_cb256deee9.jpg",
+      "imageLarge": "https://14.t3api.ddev.site/fileadmin/_processed_/a/7/csm_test1_f67e7c21bd.jpg",
+      "uid": 1,
+      "@id": "/_api/news/news/1"
     }
 
 Customizing returned properties
