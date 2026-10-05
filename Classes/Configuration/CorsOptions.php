@@ -29,11 +29,17 @@ class CorsOptions
             $this->allowHeaders,
             (isset($options['simpleHeaders']) ? (array)$options['simpleHeaders'] : [])
         );
-        $this->allowHeaders = array_map('strtolower', $this->allowHeaders);
-        $this->allowMethods = isset($options['allowMethods']) ?
-            array_map('strtoupper', (array)$options['allowMethods']) : $this->allowMethods;
-        $this->exposeHeaders = isset($options['exposeHeaders']) ? (array)$options['exposeHeaders'] : $this->exposeHeaders;
+        $this->allowHeaders = $this->normalizeList($this->allowHeaders, 'strtolower');
+        $this->allowMethods = $this->normalizeList((array)($options['allowMethods'] ?? $this->allowMethods), 'strtoupper');
+        $this->exposeHeaders = $this->normalizeList((array)($options['exposeHeaders'] ?? $this->exposeHeaders), 'strtolower');
         $this->maxAge = isset($options['maxAge']) ? (int)$options['maxAge'] : $this->maxAge;
         $this->originRegex = isset($options['originRegex']) ? (bool)$options['originRegex'] : $this->originRegex;
+    }
+
+    private function normalizeList(array $values, callable $normalizeCase): array
+    {
+        $values = array_map(static fn($value): string => $normalizeCase(trim((string)$value)), $values);
+
+        return array_values(array_unique(array_filter($values, static fn(string $value): bool => $value !== '')));
     }
 }
