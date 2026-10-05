@@ -30,3 +30,7 @@ CREATE TABLE tx_functionaltest_product_tag_mm (
     KEY uid_local (uid_local),
     KEY uid_foreign (uid_foreign)
 );
+
+CREATE TABLE tx_functionaltest_domain_model_article (
+    title varchar(255) DEFAULT '' NOT NULL
+);

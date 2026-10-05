@@ -1,0 +1,10 @@
+T3apiTests\FunctionalTest\Domain\Model\Article:
+  properties:
+    uid:
+      groups: [api_article]
+    title:
+      groups: [api_article]
+    crdate:
+      groups: [api_article]
+    tstamp:
+      groups: [api_article]

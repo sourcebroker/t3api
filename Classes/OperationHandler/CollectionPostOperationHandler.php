@@ -37,6 +37,7 @@ class CollectionPostOperationHandler extends AbstractCollectionOperationHandler
         $repository->add($object);
         GeneralUtility::makeInstance(PersistenceManager::class)->persistAll();
         $this->slugService->processSlugs($object);
+        $this->commonDateFieldsService->applyToObject($object);
 
         $response = $response ? $response->withStatus(201) : $response;
 

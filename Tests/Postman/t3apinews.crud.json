@@ -171,6 +171,8 @@
 							"    }",
 							");",
 							"",
+							"pm.environment.set('newsCrdate', response.crdate);",
+							"pm.environment.set('newsTstamp', response.tstamp);",
 							"pm.environment.set('newsUid', response.uid);",
 							"pm.environment.set('singleNewsEndpoint', response['@id']);",
 							"",
@@ -180,7 +182,14 @@
 							"        pm.expect(response.pathSegment).to.eql('this-is-an-example-news');",
 							"    }",
 							");",
-							""
+							"",
+							"pm.test(",
+							"    'Creation and modification date are returned',",
+							"    function() {",
+							"        pm.expect(response.crdate).to.be.a('string');",
+							"        pm.expect(response.tstamp).to.be.a('string');",
+							"    }",
+							");"
 						],
 						"type": "text/javascript"
 					}
@@ -198,7 +207,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"title\": \"This is an example news\",\n\t\"alternativeTitle\": \"Alt title\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"bodytext\": \"Here is the body\"\n}",
+					"raw": "{\n\t\"title\": \"This is an example news\",\n\t\"alternativeTitle\": \"Alt title\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"bodytext\": \"Here is the body\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -256,6 +265,20 @@
 							"    'Category has IRI of category resource',",
 							"    function() {",
 							"        pm.expect(response.categories[0]['@id']).to.eql(pm.environment.get('singleCategoryEndpoint'));",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Creation date is same as in response of write operation',",
+							"    function() {",
+							"        pm.expect(response.crdate).to.eql(pm.environment.get('newsCrdate'));",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Modification date is same as in response of write operation',",
+							"    function() {",
+							"        pm.expect(response.tstamp).to.eql(pm.environment.get('newsTstamp'));",
 							"    }",
 							");"
 						],
@@ -440,7 +463,8 @@
 							"        pm.response.to.have.status(200);",
 							"    }",
 							");",
-							""
+							"",
+							"pm.environment.set('newsTstamp', pm.response.json().tstamp);"
 						],
 						"type": "text/javascript"
 					}
@@ -512,7 +536,20 @@
 							"        pm.expect(response.pathSegment).to.eql('this-is-an-example-news');",
 							"    }",
 							");",
-							""
+							"",
+							"pm.test(",
+							"    'Creation date is same as in response of write operation',",
+							"    function() {",
+							"        pm.expect(response.crdate).to.eql(pm.environment.get('newsCrdate'));",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Modification date is same as in response of write operation',",
+							"    function() {",
+							"        pm.expect(response.tstamp).to.eql(pm.environment.get('newsTstamp'));",
+							"    }",
+							");"
 						],
 						"type": "text/javascript"
 					}
@@ -551,7 +588,10 @@
 							"        pm.response.to.have.status(200);",
 							"    }",
 							");",
-							""
+							"",
+							"const response = pm.response.json();",
+							"pm.environment.set('newsCrdate', response.crdate);",
+							"pm.environment.set('newsTstamp', response.tstamp);"
 						],
 						"type": "text/javascript"
 					}
@@ -623,7 +663,20 @@
 							"        pm.expect(response.pathSegment).to.eql('this-is-even-new-title');",
 							"    }",
 							");",
-							""
+							"",
+							"pm.test(",
+							"    'Creation date is same as in response of write operation',",
+							"    function() {",
+							"        pm.expect(response.crdate).to.eql(pm.environment.get('newsCrdate'));",
+							"    }",
+							");",
+							"",
+							"pm.test(",
+							"    'Modification date is same as in response of write operation',",
+							"    function() {",
+							"        pm.expect(response.tstamp).to.eql(pm.environment.get('newsTstamp'));",
+							"    }",
+							");"
 						],
 						"type": "text/javascript"
 					}
