@@ -14,47 +14,25 @@ class CorsProcessor implements ProcessorInterface
 
     public function process(Request $request, ResponseInterface &$response): void
     {
-        if (
-            !$this->isCorsRequest($request)
-            || $this->isPreflightRequest($request)
-        ) {
+        if ($this->corsService === null) {
             return;
         }
 
-        $options = $this->corsService->getOptions();
-
-        $requestOrigin = $request->headers->get('Origin');
-
-        if (!$this->corsService->isAllowedOrigin($requestOrigin, $options)) {
-            $response = $response->withoutHeader('Access-Control-Allow-Origin');
+        $response = $this->corsService->addVary($response, ['Origin']);
+        if (!$this->isCorsRequest($request) || $this->isPreflightRequest($request)) {
+            return;
         }
 
-        $response = $response->withHeader(
-            'Access-Control-Allow-Origin',
-            $requestOrigin
-        );
-
-        if ($options->allowCredentials) {
-            $response = $response->withHeader('Access-Control-Allow-Credentials', 'true');
-        }
-
-        if ($options->exposeHeaders !== []) {
-            $response = $response->withHeader(
-                'Access-Control-Expose-Headers',
-                strtolower(implode(', ', $options->exposeHeaders))
-            );
-        }
+        $response = $this->corsService->applyActualResponse($request, $response);
     }
 
     protected function isCorsRequest(Request $request): bool
     {
-        return $request->headers->has('Origin')
-            && $request->headers->get('Origin')
-            !== $request->getSchemeAndHttpHost();
+        return $this->corsService->isCorsRequest($request);
     }
 
     protected function isPreflightRequest(Request $request): bool
     {
-        return $request->getMethod() === Request::METHOD_OPTIONS;
+        return $this->corsService->isPreflightRequest($request);
     }
 }
