@@ -342,7 +342,14 @@ class ResponseCacheService implements LoggerAwareInterface
             return;
         }
 
-        $tags = array_keys($params['tags'] ?? []);
+        $tags = $params['tags'] ?? [];
+        // DataHandler::clear_cache() passes the tags as keys (tag => true), clear_cacheCmd() as a plain list.
+        // Array keys of numeric tags are integers, but cache frontends accept string tags only.
+        $tags = array_is_list($tags) ? $tags : array_keys($tags);
+        $tags = array_values(array_filter(
+            array_map(strval(...), $tags),
+            static fn(string $tag): bool => $tag !== ''
+        ));
         if ($tags !== []) {
             $this->cache->flushByTags($tags);
         }

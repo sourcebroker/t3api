@@ -372,6 +372,30 @@ class ResponseCacheServiceTest extends UnitTestCase
     }
 
     #[Test]
+    public function clearCachePostProcFlushesByTagsGivenAsList(): void
+    {
+        $this->cache->expects(self::once())->method('flushByTags')->with(['pageId_5', 'pageId_7']);
+        (new ResponseCacheService($this->cache, new Context()))
+            ->clearCachePostProc(['cacheCmd' => '5', 'tags' => ['pageId_5', 'pageId_7']]);
+    }
+
+    #[Test]
+    public function clearCachePostProcPassesNumericTagKeysAsStrings(): void
+    {
+        $this->cache->expects(self::once())->method('flushByTags')->with(self::identicalTo(['123', 'tx_foo']));
+        (new ResponseCacheService($this->cache, new Context()))
+            ->clearCachePostProc(['tags' => ['123' => true, 'tx_foo' => true]]);
+    }
+
+    #[Test]
+    public function clearCachePostProcDoesNotFlushWithoutTags(): void
+    {
+        $this->cache->expects(self::never())->method('flushByTags');
+        (new ResponseCacheService($this->cache, new Context()))
+            ->clearCachePostProc(['cacheCmd' => 'pages', 'tags' => []]);
+    }
+
+    #[Test]
     public function returnsNullWhenSecuredFilterParameterIsPresentInRequest(): void
     {
         $service = new ResponseCacheService($this->cache, new Context());
