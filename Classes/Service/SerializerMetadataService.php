@@ -48,13 +48,15 @@ class SerializerMetadataService
                 self::getForClass($reflectionClass),
                 self::getMetadataFromMetadataDirs($reflectionClass->getName())
             );
+            $content = Yaml::dump([$reflectionClass->getName() => $classMergedMetadata], 99);
 
-            $tmpFile = $generatedMetadataFile . '.' . uniqid('', true);
-            file_put_contents(
-                $tmpFile,
-                Yaml::dump([$reflectionClass->getName() => $classMergedMetadata], 99)
-            );
-            rename($tmpFile, $generatedMetadataFile);
+            // Rewrite only on change: a new mtime makes jms/metadata (debug mode) treat its cache as stale
+            // and evict it, which breaks parallel requests that are just including that cache file.
+            if (!is_file($generatedMetadataFile) || file_get_contents($generatedMetadataFile) !== $content) {
+                $tmpFile = $generatedMetadataFile . '.' . uniqid('', true);
+                file_put_contents($tmpFile, $content);
+                rename($tmpFile, $generatedMetadataFile);
+            }
 
             self::$runtimeGeneratedCache[] = $generatedMetadataFile;
         }
