@@ -6,6 +6,8 @@ namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
@@ -29,7 +31,14 @@ class CurrentFeUserHandler extends AbstractHandler implements DeserializeHandler
         $data,
         array $type,
         DeserializationContext $context
-    ): AbstractDomainObject {
-        return $this->persistenceManager->getObjectByIdentifier($data, $type['params'][0]);
+    ): ?AbstractDomainObject {
+        $frontendUserId = (int)GeneralUtility::makeInstance(Context::class)
+            ->getPropertyFromAspect('frontend.user', 'id', 0);
+
+        if ($frontendUserId <= 0) {
+            return null;
+        }
+
+        return $this->persistenceManager->getObjectByIdentifier($frontendUserId, $type['params'][0]);
     }
 }

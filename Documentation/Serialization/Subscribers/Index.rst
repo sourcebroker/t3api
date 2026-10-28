@@ -49,10 +49,11 @@ CurrentFeUserSubscriber
 ========================
 
 This subscriber listens to the ``PRE_SERIALIZE`` and ``PRE_DESERIALIZE`` events.
-In the case of the ``PRE_SERIALIZE`` event, it changes the type to a custom one if the type is
-equal to ``CurrentFeUserHandler::TYPE``. In the case of the ``PRE_DESERIALIZE`` event, it adds the
-FE user identifier to the data. This identifier is later used by ``CurrentFeUserHandler`` to
-get FeUser object. It allows to securely attach info about FeUser to incoming data.
+On ``PRE_SERIALIZE``, it replaces ``CurrentFeUserHandler::TYPE`` with the configured frontend user model class.
+On ``PRE_DESERIALIZE``, it makes sure that ``CurrentFeUserHandler`` is called for every property of this type,
+so the currently logged in frontend user is attached to the incoming data.
+Serialized names defined in annotations and YAML metadata are respected, and serialization groups
+and property exclusions determine which properties are processed.
 Look for more info at :ref:`current user assignment use case <use-cases_current-user-assignment>`.
 
 .. _serialization_subscribers_file_reference_subscriber:
