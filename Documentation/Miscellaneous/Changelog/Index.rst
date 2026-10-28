@@ -6,6 +6,7 @@ Changelog
 
 5.0.0
 =====
+- Fix response cache invalidation when the page cache is cleared from the backend (cache tags passed as a list were ignored, numeric tags caused errors).
 - Refactor ``CurrentFeUser`` handling. See :ref:`current user assignment <use-cases_current-user-assignment>`.
 - [!!!] CORS refactor: unify response handling, normalize configuration lists and improve preflight and cache behavior. Origin patterns now match complete origins. Review ``allowOrigin`` configuration and custom ``OPTIONS`` response handling when upgrading. See :ref:`cors`.
 - [!!!] Embed ``goldspecdigital/oooas`` library (PHP 8.5 compatibility). The package is no longer a dependency, namespace ``GoldSpecDigital\ObjectOrientedOAS`` is renamed to ``SourceBroker\T3api\OpenApi``. Update imports in custom filters implementing ``OpenApiSupportingFilterInterface`` and custom :ref:`collection response classes <customization_collection-response-schema>`. [`commit <https://github.com/sourcebroker/t3api/commit/9d63ab0>`__]
