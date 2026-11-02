@@ -1,4 +1,4 @@
-Exception:
+Exception: &throwable
   properties:
     message:
       serialized_name: 'hydra:title'
@@ -14,3 +14,6 @@ Exception:
       exclude: true
     previous:
       exclude: true
+
+# `Error` (e.g. `TypeError`) does not extend `Exception` - without metadata it can not be serialized.
+Error: *throwable

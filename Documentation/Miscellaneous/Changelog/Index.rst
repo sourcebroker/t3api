@@ -7,6 +7,10 @@ Changelog
 5.0.0
 =====
 - Fix response cache invalidation when the page cache is cleared from the backend (cache tags passed as a list were ignored, numeric tags caused errors).
+- Log unexpected exceptions with an event ID. Outside of ``Development`` context HTTP 500 response contains a generic message with this event ID instead of the exception message. See :ref:`ThrowableSubscriber <serialization_subscribers_throwable_subscriber>`.
+- Return HTTP 500 for PHP errors (e.g. ``TypeError``) as API response with CORS headers instead of rethrowing them to TYPO3. [`issue <https://github.com/sourcebroker/t3api/issues/38>`__]
+- [!!!] Return ``400 Bad Request`` (``SourceBroker\T3api\Exception\BadRequestException``) instead of HTTP 500 for invalid client input: malformed JSON or non-object request body, invalid value of a relation, unknown order direction, missing coordinates of distance filter.
+- [!!!] Validate language header (``X-Locale``): unknown language identifier returns ``400 Bad Request`` instead of HTTP 500, non-numeric value returns ``400 Bad Request`` instead of default language. Disabled language is available only for backend users with access to it. See :ref:`multilanguage`.
 - Refactor ``CurrentFeUser`` handling. See :ref:`current user assignment <use-cases_current-user-assignment>`.
 - [!!!] CORS refactor: unify response handling, normalize configuration lists and improve preflight and cache behavior. Origin patterns now match complete origins. Review ``allowOrigin`` configuration and custom ``OPTIONS`` response handling when upgrading. See :ref:`cors`.
 - [!!!] Embed ``goldspecdigital/oooas`` library (PHP 8.5 compatibility). The package is no longer a dependency, namespace ``GoldSpecDigital\ObjectOrientedOAS`` is renamed to ``SourceBroker\T3api\OpenApi``. Update imports in custom filters implementing ``OpenApiSupportingFilterInterface`` and custom :ref:`collection response classes <customization_collection-response-schema>`. [`commit <https://github.com/sourcebroker/t3api/commit/9d63ab0>`__]

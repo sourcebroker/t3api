@@ -8,6 +8,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use SourceBroker\T3api\Annotation\ORM\Cascade;
+use SourceBroker\T3api\Exception\BadRequestException;
 use SourceBroker\T3api\Service\PropertyInfoService;
 use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
@@ -61,8 +62,9 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
                 return $this->processCascadePersistence($data, $targetObjectType, $context);
             }
 
-            throw new \InvalidArgumentException(
-                sprintf('It was not possible to deserialize %s into %s', gettype($data), AbstractDomainObject::class),
+            throw new BadRequestException(
+                'invalid_relation',
+                [gettype($data), implode('.', $context->getCurrentPath())],
                 1584866997736
             );
         }

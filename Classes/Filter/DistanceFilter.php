@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Filter;
 
 use SourceBroker\T3api\Domain\Model\ApiFilter;
+use SourceBroker\T3api\Exception\BadRequestException;
 use SourceBroker\T3api\OpenApi\Objects\Parameter;
 use SourceBroker\T3api\OpenApi\Objects\Schema;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -142,19 +143,15 @@ class DistanceFilter extends AbstractFilter implements OpenApiSupportingFilterIn
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws BadRequestException
      */
     protected function getLatLangParameterValues(array $values, ApiFilter $apiFilter): array
     {
         if (!isset($values[self::PARAMETER_LATITUDE], $values[self::PARAMETER_LONGITUDE])) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Parameters `%s[%s]` and %s[%s] are required to use distance filter',
-                    $apiFilter->getParameterName(),
-                    self::PARAMETER_LATITUDE,
-                    $apiFilter->getParameterName(),
-                    self::PARAMETER_LONGITUDE
-                )
+            throw new BadRequestException(
+                'distance_parameters',
+                [$apiFilter->getParameterName(), self::PARAMETER_LATITUDE, self::PARAMETER_LONGITUDE],
+                1793641752
             );
         }
 

@@ -36,6 +36,10 @@ from your site's ``config.yaml``.
 
    curl -H "X-Locale: 1" https://14.t3api.ddev.site/_api/news/news
 
+An empty header is ignored. A value which is not the identifier of an available language (unknown identifier,
+not a number) results in ``400 Bad Request``. A disabled language (``enabled: false``) is available only for a
+logged in backend user with access to this language - same as for the language prefix in URL.
+
 Here is a part of ``config.yaml`` used for the examples (site configuration of testing instance):
 
 .. code-block:: yaml

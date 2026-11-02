@@ -8,6 +8,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use SourceBroker\T3api\Exception\BadRequestException;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -55,13 +56,9 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
         }
 
         if (!is_array($data)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Data of type `%s` can not be converted to %s in path `%s`',
-                    gettype($data),
-                    ObjectStorage::class,
-                    implode('.', $context->getCurrentPath())
-                ),
+            throw new BadRequestException(
+                'invalid_collection',
+                [gettype($data), implode('.', $context->getCurrentPath())],
                 1570805126535
             );
         }
