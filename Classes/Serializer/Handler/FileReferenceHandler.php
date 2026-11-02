@@ -11,6 +11,7 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Service\FileReferenceService;
+use SourceBroker\T3api\Service\InlineRelationService;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\UrlService;
 use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
@@ -47,6 +48,22 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         protected readonly FileReferenceService $fileReferenceService,
         protected readonly ContentObjectRenderer $contentObjectRenderer
     ) {}
+
+    protected ?InlineRelationService $inlineRelationService = null;
+
+    /**
+     * Injected by method (not constructor) so that adding new dependency does not break handlers which extend this
+     * class and override the constructor.
+     */
+    public function injectInlineRelationService(InlineRelationService $inlineRelationService): void
+    {
+        $this->inlineRelationService = $inlineRelationService;
+    }
+
+    protected function getInlineRelationService(): InlineRelationService
+    {
+        return $this->inlineRelationService ??= GeneralUtility::makeInstance(InlineRelationService::class);
+    }
 
     /**
      * @param ExtbaseFileReference|Typo3FileReference $fileReference
@@ -155,11 +172,16 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         $uid = (int)(is_numeric($data) ? $data : $data['uid']);
 
         if ($uid > 0) {
-            return $this->persistenceManager->getObjectByIdentifier(
+            $fileReference = $this->persistenceManager->getObjectByIdentifier(
                 $uid,
                 ExtbaseFileReference::class,
                 false
             );
+            if ($fileReference instanceof AbstractDomainObject) {
+                $this->getInlineRelationService()->assertAssignable($fileReference, $context);
+            }
+
+            return $fileReference;
         }
         return null;
     }

@@ -1,0 +1,10 @@
+T3apiTests\FunctionalTest\Domain\Model\Recipe:
+  properties:
+    uid:
+      groups: [api_recipe]
+    title:
+      groups: [api_recipe, api_recipe_write]
+    steps:
+      groups: [api_recipe_write]
+    images:
+      groups: [api_recipe_write]

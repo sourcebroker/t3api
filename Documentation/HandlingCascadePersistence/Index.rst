@@ -27,6 +27,18 @@ In similar way it works also for `One-To-Many` and `Many-To-Many` relations for 
       ]
    }
 
+.. _handling_cascade_persistence_inline_relations:
+
+Relations stored in the related table
+--------------------------------------
+
+Records of relations stored in the related table - TCA ``inline`` with ``foreign_field`` and TCA ``file``
+(file references) - keep their parent record in their own row, so they can belong to one parent only.
+An existing record of such relation can be passed by ``uid`` only when it does not belong to any record yet,
+or when it already belongs to the same property of the same record (e.g. sending the current items again in
+``PATCH`` or ``PUT``). Otherwise the response is ``400 Bad Request``. To add new items, create them using
+cascade persistence described below.
+
 Cascade persistence - creating related entity in single request
 ================================================================
 

@@ -9,8 +9,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use SourceBroker\T3api\Annotation\ORM\Cascade;
 use SourceBroker\T3api\Exception\BadRequestException;
+use SourceBroker\T3api\Service\InlineRelationService;
 use SourceBroker\T3api\Service\PropertyInfoService;
 use SourceBroker\T3api\Service\SerializerService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -27,6 +29,22 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
         protected readonly PersistenceManager $persistenceManager,
         protected readonly SerializerService $serializerService
     ) {}
+
+    protected ?InlineRelationService $inlineRelationService = null;
+
+    /**
+     * Injected by method (not constructor) so that adding new dependency does not break handlers which extend this
+     * class and override the constructor.
+     */
+    public function injectInlineRelationService(InlineRelationService $inlineRelationService): void
+    {
+        $this->inlineRelationService = $inlineRelationService;
+    }
+
+    protected function getInlineRelationService(): InlineRelationService
+    {
+        return $this->inlineRelationService ??= GeneralUtility::makeInstance(InlineRelationService::class);
+    }
 
     /**
      * @var string[]
@@ -51,11 +69,16 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
             $targetObjectType = $type['params']['targetType'];
 
             if (is_numeric($data)) {
-                return $this->persistenceManager->getObjectByIdentifier(
+                $object = $this->persistenceManager->getObjectByIdentifier(
                     (int)$data,
                     $targetObjectType,
                     false
                 );
+                if ($object instanceof AbstractDomainObject) {
+                    $this->getInlineRelationService()->assertAssignable($object, $context);
+                }
+
+                return $object;
             }
 
             if (is_array($data)) {

@@ -34,3 +34,14 @@ CREATE TABLE tx_functionaltest_product_tag_mm (
 CREATE TABLE tx_functionaltest_domain_model_article (
     title varchar(255) DEFAULT '' NOT NULL
 );
+
+CREATE TABLE tx_functionaltest_domain_model_recipe (
+    title varchar(255) DEFAULT '' NOT NULL,
+    steps int(11) unsigned DEFAULT '0' NOT NULL,
+    images int(11) unsigned DEFAULT '0' NOT NULL
+);
+
+CREATE TABLE tx_functionaltest_domain_model_recipestep (
+    title varchar(255) DEFAULT '' NOT NULL,
+    recipe int(11) unsigned DEFAULT '0' NOT NULL
+);

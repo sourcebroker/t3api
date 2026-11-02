@@ -72,6 +72,9 @@ services:
   SourceBroker\T3api\Serializer\Construction\ExtbaseObjectConstructor:
     public: true
 
+  SourceBroker\T3api\Service\InlineRelationService:
+    public: true
+
   SourceBroker\T3api\Serializer\Handler\AbstractDomainObjectHandler:
     public: true
 
