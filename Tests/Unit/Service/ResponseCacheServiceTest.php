@@ -777,6 +777,227 @@ class ResponseCacheServiceTest extends UnitTestCase
         );
     }
 
+    #[Test]
+    public function identifierExpressionReturningArrayVariesByItemsButNotByTheirOrder(): void
+    {
+        $operation = $this->createOperation([
+            'identifierExpressions' => ["context.getPropertyFromAspect('frontend.user', 'groupIds', '')"],
+        ]);
+
+        self::assertNotSame(
+            $this->buildIdentifierForGroups($operation, [0, -2, 1]),
+            $this->buildIdentifierForGroups($operation, [0, -2, 3])
+        );
+        self::assertSame(
+            $this->buildIdentifierForGroups($operation, [0, -2, 1, 3]),
+            $this->buildIdentifierForGroups($operation, [3, 1, -2, 0])
+        );
+    }
+
+    #[Test]
+    public function identifierExpressionReturningAssociativeArrayDoesNotDependOnKeyOrder(): void
+    {
+        $this->registerPlainSymfonyExpressionResolver();
+        $service = new ResponseCacheService($this->cache, new Context());
+        $request = Request::create('https://example.com/_api/books', 'GET');
+
+        self::assertSame(
+            $service->buildEntryIdentifier($this->createOperation(['identifierExpressions' => ["{'a': 1, 'b': [2, 1]}"]]), [], $request),
+            $service->buildEntryIdentifier($this->createOperation(['identifierExpressions' => ["{'b': [1, 2], 'a': 1}"]]), [], $request)
+        );
+    }
+
+    #[Test]
+    public function identifierExpressionReturningArrayDoesNotCollideWithStringOfSameRepresentation(): void
+    {
+        $this->registerPlainSymfonyExpressionResolver();
+        $service = new ResponseCacheService($this->cache, new Context());
+        $request = Request::create('https://example.com/_api/books', 'GET');
+        $build = fn(string $expression): ?string => $service->buildEntryIdentifier(
+            $this->createOperation(['identifierExpressions' => [$expression]]),
+            [],
+            $request
+        );
+
+        self::assertNotSame($build("['admin']"), $build("'" . serialize(['admin']) . "'"));
+        self::assertNotSame($build("[['admin']]"), $build("['" . serialize(['admin']) . "']"));
+    }
+
+    #[Test]
+    public function identifierExpressionReturningArrayDoesNotDependOnOrderOfNumericStrings(): void
+    {
+        $this->registerPlainSymfonyExpressionResolver();
+        $service = new ResponseCacheService($this->cache, new Context());
+        $request = Request::create('https://example.com/_api/books', 'GET');
+
+        self::assertSame(
+            $service->buildEntryIdentifier($this->createOperation(['identifierExpressions' => ["['01', '1']"]]), [], $request),
+            $service->buildEntryIdentifier($this->createOperation(['identifierExpressions' => ["['1', '01']"]]), [], $request)
+        );
+    }
+
+    #[Test]
+    public function identifierExpressionReturningArrayDoesNotDependOnInsertionOrderOfNumericKeys(): void
+    {
+        $operation = $this->createOperation(['identifierExpressions' => ['value']]);
+        $request = Request::create('https://example.com/_api/books', 'GET');
+        $build = function (array $value) use ($operation, $request): ?string {
+            $this->registerPlainSymfonyExpressionResolver(['value' => $value]);
+
+            return (new ResponseCacheService($this->cache, new Context()))->buildEntryIdentifier($operation, [], $request);
+        };
+
+        self::assertSame($build([0 => 'b', 1 => 'a']), $build([1 => 'a', 0 => 'b']));
+        self::assertSame($build(range(0, 10)), $build(array_reverse(range(0, 10), true)));
+    }
+
+    #[Test]
+    public function identifierExpressionResultFailingStringConversionFailsClosedAndLogsError(): void
+    {
+        $this->registerPlainSymfonyExpressionResolver(['value' => new class () implements \Stringable {
+            public function __toString(): string
+            {
+                throw new \RuntimeException('Conversion failed', 1793650002);
+            }
+        }]);
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('error');
+
+        $service = new ResponseCacheService($this->cache, new Context());
+        $service->setLogger($logger);
+
+        self::assertNull($service->buildEntryIdentifier(
+            $this->createOperation(['identifierExpressions' => ['[value]']]),
+            [],
+            Request::create('https://example.com/_api/books', 'GET')
+        ));
+    }
+
+    #[Test]
+    public function identifierExpressionReturningObjectWithoutStringRepresentationFailsClosedAndLogsError(): void
+    {
+        $this->registerPlainSymfonyExpressionResolver();
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('error');
+
+        $service = new ResponseCacheService($this->cache, new Context());
+        $service->setLogger($logger);
+
+        self::assertNull($service->buildEntryIdentifier(
+            $this->createOperation(['identifierExpressions' => ['[t3apiOperation]']]),
+            [],
+            Request::create('https://example.com/_api/books', 'GET')
+        ));
+    }
+
+    #[Test]
+    public function identifierExpressionValuesContainingSeparatorDoNotProduceSameIdentifier(): void
+    {
+        $this->registerPlainSymfonyExpressionResolver();
+        $service = new ResponseCacheService($this->cache, new Context());
+        $request = Request::create('https://example.com/_api/books', 'GET');
+
+        self::assertNotSame(
+            $service->buildEntryIdentifier($this->createOperation(['identifierExpressions' => ["'a|b'", "'c'"]]), [], $request),
+            $service->buildEntryIdentifier($this->createOperation(['identifierExpressions' => ["'a'", "'b|c'"]]), [], $request)
+        );
+    }
+
+    #[Test]
+    public function frontendUserGroupIdsIdentifierExpressionVariesByGroupsButNotByTheirOrder(): void
+    {
+        $operation = $this->createOperation(['identifierExpressions' => ['frontend.user.userGroupIds']]);
+
+        self::assertNotSame(
+            $this->buildIdentifierForGroups($operation, [0, -1]),
+            $this->buildIdentifierForGroups($operation, [0, -2])
+        );
+        self::assertNotSame(
+            $this->buildIdentifierForGroups($operation, [0, -2, 1]),
+            $this->buildIdentifierForGroups($operation, [0, -2, 3])
+        );
+        self::assertSame(
+            $this->buildIdentifierForGroups($operation, [0, -2, 1, 3]),
+            $this->buildIdentifierForGroups($operation, [3, 1, -2, 0])
+        );
+    }
+
+    #[Test]
+    public function tagExpressionReturningArrayGivesTagPerItem(): void
+    {
+        $this->registerPlainSymfonyExpressionResolver();
+        $this->cache->method('isValidTag')->willReturn(true);
+        $service = new ResponseCacheService($this->cache, new Context());
+        $operation = $this->createOperation([]);
+        $request = Request::create('https://example.com/_api/books', 'GET');
+        $tagExpressions = ["['category_1', '', 'category_2']", "'book'"];
+
+        self::assertSame(
+            ['category_1', 'category_2', 'book'],
+            $service->evaluateStoreTagExpressions($tagExpressions, $operation, [], $request)
+        );
+        self::assertSame(
+            ['category_1', 'category_2', 'book'],
+            $service->evaluateFlushTagExpressions($tagExpressions, $operation, [], $request)
+        );
+    }
+
+    #[Test]
+    public function storeTagExpressionReturningObjectWithoutStringRepresentationFailsClosedAndLogsError(): void
+    {
+        $this->registerPlainSymfonyExpressionResolver();
+        $this->cache->method('isValidTag')->willReturn(true);
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('error');
+
+        $service = new ResponseCacheService($this->cache, new Context());
+        $service->setLogger($logger);
+
+        self::assertNull($service->evaluateStoreTagExpressions(
+            ["'book'", 't3apiOperation'],
+            $this->createOperation([]),
+            [],
+            Request::create('https://example.com/_api/books', 'GET')
+        ));
+    }
+
+    #[Test]
+    public function flushTagExpressionSkipsInvalidItemsAndExpressionsAndLogsWarning(): void
+    {
+        $this->registerPlainSymfonyExpressionResolver();
+        $this->cache->method('isValidTag')->willReturnCallback(static fn(string $tag): bool => !str_contains($tag, ' '));
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::exactly(2))->method('warning');
+
+        $service = new ResponseCacheService($this->cache, new Context());
+        $service->setLogger($logger);
+
+        self::assertSame(
+            ['category_1', 'book'],
+            $service->evaluateFlushTagExpressions(
+                ["['category_1', 'invalid tag']", 't3apiOperation', "'book'"],
+                $this->createOperation([]),
+                [],
+                Request::create('https://example.com/_api/books', 'GET')
+            )
+        );
+    }
+
+    /**
+     * @param int[] $groupIds
+     */
+    private function buildIdentifierForGroups(CollectionOperation $operation, array $groupIds): ?string
+    {
+        $context = new Context();
+        $context->setAspect('frontend.user', new UserAspect(null, $groupIds));
+        if ($operation->getResponseCacheSettings()->getIdentifierExpressions() !== []) {
+            $this->registerPlainSymfonyExpressionResolver(['context' => $context]);
+        }
+
+        return (new ResponseCacheService($this->cache, $context))
+            ->buildEntryIdentifier($operation, [], Request::create('https://example.com/_api/books', 'GET'));
+    }
+
     /**
      * Registers a `Resolver` double backed by a plain Symfony `ExpressionLanguage` (without
      * TYPO3's provider loading, which needs a booted TYPO3 instance) so the conditions are

@@ -51,7 +51,9 @@ configured separately, via the sibling
    request context beyond URL and declared filters) you **must** declare a
    suitable ``identifierExpressions`` entry (typically reading a TYPO3
    Context aspect via ``context``, see "Cache key" below) - otherwise the
-   first user's response is served to everyone.
+   first user's response is served to everyone. If the response contains
+   records restricted by ``fe_group`` (also in relations), add
+   ``frontend.user.userGroupIds`` to ``identifierExpressions``.
 
 Configuration reference
 ========================
@@ -114,6 +116,31 @@ treated the same way as a failed condition: the request is not cached, and
 the error is logged, regardless of whether the other expressions would have
 evaluated fine. Leaving the array empty (the default) leaves the identifier
 exactly as it would be without this setting.
+
+An expression may also return an array, e.g. ``groupIds`` above - the items
+are sorted, so the same items in a different order produce the same
+identifier. A result which can not be converted to a string (an object
+without ``__toString()``) is treated like a failed expression.
+
+For records restricted by ``fe_group`` add the group IDs of the current
+frontend user:
+
+.. code-block:: php
+
+    /**
+     * @ApiResource(
+     *     attributes={
+     *         "cache"={
+     *             "identifierExpressions"={"frontend.user.userGroupIds"}
+     *         }
+     *     }
+     * )
+     */
+
+Each combination of frontend user groups gets separate cache entries;
+anonymous visitors share one entry. Add it only to resources whose output
+depends on user groups - every additional combination of groups multiplies
+the number of stored entries.
 
 .. note::
    A non-empty ``cache`` block enables caching automatically - there is no
@@ -558,6 +585,10 @@ All three are evaluated by the same expression engine and variable set as
 :ref:`response-cache-conditions`), plus ``object`` where noted above - see
 "Availability of ``object``" below for the full picture across every response
 cache expression on this page.
+
+An expression returning an array adds one tag per non-empty item - e.g. a
+result ``['category_1', 'category_2']`` adds both tags. A result (or array item)
+which can not be converted to a string is treated like a failed expression.
 
 The canonical route-driven case is a write handler that bypasses
 DataHandler/Extbase persistence and must flush a tag built from a matched

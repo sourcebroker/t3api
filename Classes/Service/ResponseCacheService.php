@@ -67,8 +67,6 @@ class ResponseCacheService implements LoggerAwareInterface
             http_build_query($allowedQueryParams),
         ];
 
-        // An empty `identifierExpressions` array (the default) leaves the loop below a no-op, so
-        // entries built without this setting hash identically to before it existed.
         foreach ($responseCacheSettings->getIdentifierExpressions() as $identifierExpression) {
             $identifierExpressionValue = $this->evaluateIdentifierExpression($identifierExpression, $operation, $route, $request);
             if ($identifierExpressionValue === null) {
@@ -77,11 +75,13 @@ class ResponseCacheService implements LoggerAwareInterface
             $keyParts[] = $identifierExpressionValue;
         }
 
+        // serialize() keeps the parts apart - with a separator, a value containing it could produce
+        // the same key as different values (`a|b` + `c` and `a` + `b|c`).
         // md5() here is a non-cryptographic cache key derivation, not a security control - there is
         // no secret to protect and no adversarial value in collision resistance, since `security` is
         // still fully re-evaluated on every cache hit (see `OperationResponseCache`), so a collision
         // could not bypass access control.
-        return md5(implode('|', $keyParts)); // NOSONAR php:S4790 - weak hash algorithm, not used in a sensitive context here
+        return md5(serialize($keyParts)); // NOSONAR php:S4790 - weak hash algorithm, not used in a sensitive context here
     }
 
     /**
@@ -189,14 +189,11 @@ class ResponseCacheService implements LoggerAwareInterface
     ): ?array {
         $tags = [];
         foreach ($tagExpressions as $tagExpression) {
-            $tag = $this->evaluateStoreTagExpression($tagExpression, $operation, $route, $request, $additionalVariables);
-            if ($tag === null) {
+            $expressionTags = $this->evaluateStoreTagExpression($tagExpression, $operation, $route, $request, $additionalVariables);
+            if ($expressionTags === null) {
                 return null;
             }
-
-            if ($tag !== '') {
-                $tags[] = $tag;
-            }
+            array_push($tags, ...$expressionTags);
         }
 
         return $tags;
@@ -225,10 +222,7 @@ class ResponseCacheService implements LoggerAwareInterface
     ): array {
         $tags = [];
         foreach ($tagExpressions as $tagExpression) {
-            $tag = $this->evaluateFlushTagExpression($tagExpression, $operation, $route, $request, $additionalVariables);
-            if ($tag !== null && $tag !== '') {
-                $tags[] = $tag;
-            }
+            array_push($tags, ...$this->evaluateFlushTagExpression($tagExpression, $operation, $route, $request, $additionalVariables));
         }
 
         return array_values(array_unique($tags));
@@ -236,10 +230,11 @@ class ResponseCacheService implements LoggerAwareInterface
 
     /**
      * Store-side single-expression evaluation: logs at error level and signals "do not store"
-     * (`null`) both when the expression itself fails and when it produces a non-empty tag the
-     * cache frontend rejects.
+     * (`null`) both when the expression itself fails and when it produces a tag the cache
+     * frontend rejects.
      *
      * @param array<string, mixed> $additionalVariables
+     * @return string[]|null
      */
     private function evaluateStoreTagExpression(
         string $tagExpression,
@@ -247,9 +242,9 @@ class ResponseCacheService implements LoggerAwareInterface
         array $route,
         Request $request,
         array $additionalVariables = []
-    ): ?string {
+    ): ?array {
         try {
-            $tag = $this->evaluateTagExpression($tagExpression, $operation, $route, $request, $additionalVariables);
+            $tags = $this->evaluateTagExpression($tagExpression, $operation, $route, $request, $additionalVariables);
         } catch (\Throwable $throwable) {
             $this->logger?->error('t3api response cache tag expression evaluation failed - entry not stored', [
                 'tagExpression' => $tagExpression,
@@ -259,24 +254,26 @@ class ResponseCacheService implements LoggerAwareInterface
             return null;
         }
 
-        if ($tag !== '' && !$this->isValidTag($tag)) {
-            $this->logger?->error('t3api response cache tag expression produced an invalid tag - entry not stored', [
-                'tagExpression' => $tagExpression,
-                'tag' => $tag,
-            ]);
+        foreach ($tags as $tag) {
+            if (!$this->isValidTag($tag)) {
+                $this->logger?->error('t3api response cache tag expression produced an invalid tag - entry not stored', [
+                    'tagExpression' => $tagExpression,
+                    'tag' => $tag,
+                ]);
 
-            return null;
+                return null;
+            }
         }
 
-        return $tag;
+        return $tags;
     }
 
     /**
-     * Flush-side single-expression evaluation: logs at warning level and signals "skip this tag"
-     * (`null`) both when the expression itself fails and when it produces a non-empty tag the
-     * cache frontend rejects - the other declared tags still flush.
+     * Flush-side single-expression evaluation: logs at warning level and skips the whole expression
+     * when it fails, or a single tag the cache frontend rejects - the other declared tags still flush.
      *
      * @param array<string, mixed> $additionalVariables
+     * @return string[]
      */
     private function evaluateFlushTagExpression(
         string $tagExpression,
@@ -284,28 +281,29 @@ class ResponseCacheService implements LoggerAwareInterface
         array $route,
         Request $request,
         array $additionalVariables = []
-    ): ?string {
+    ): array {
         try {
-            $tag = $this->evaluateTagExpression($tagExpression, $operation, $route, $request, $additionalVariables);
+            $tags = $this->evaluateTagExpression($tagExpression, $operation, $route, $request, $additionalVariables);
         } catch (\Throwable $throwable) {
             $this->logger?->warning('t3api response cache tag expression evaluation failed - skipped', [
                 'tagExpression' => $tagExpression,
                 'exception' => $throwable,
             ]);
 
-            return null;
+            return [];
         }
 
-        if ($tag !== '' && !$this->isValidTag($tag)) {
+        return array_values(array_filter($tags, function (string $tag) use ($tagExpression): bool {
+            if ($this->isValidTag($tag)) {
+                return true;
+            }
             $this->logger?->warning('t3api response cache tag expression produced an invalid tag - skipped', [
                 'tagExpression' => $tagExpression,
                 'tag' => $tag,
             ]);
 
-            return null;
-        }
-
-        return $tag;
+            return false;
+        }));
     }
 
     /**
@@ -315,7 +313,11 @@ class ResponseCacheService implements LoggerAwareInterface
      * evaluation failure - the store and flush sides apply their own failure policy (see
      * `evaluateStoreTagExpression()` and `evaluateFlushTagExpression()`).
      *
+     * An array result gives one tag per item (e.g. UIDs of related records). Empty strings give no tag.
+     *
      * @param array<string, mixed> $additionalVariables
+     * @return string[]
+     * @throws \UnexpectedValueException when the result or an array item can not be converted to a string
      */
     private function evaluateTagExpression(
         string $tagExpression,
@@ -323,11 +325,26 @@ class ResponseCacheService implements LoggerAwareInterface
         array $route,
         Request $request,
         array $additionalVariables = []
-    ): string {
-        return (string)$this->getConditionResolver()->evaluate(
+    ): array {
+        $result = $this->getConditionResolver()->evaluate(
             $tagExpression,
             $this->getConditionVariables($operation, $route, $request, $additionalVariables)
         );
+
+        $tags = [];
+        foreach (is_array($result) ? $result : [$result] as $value) {
+            if (!($value === null || is_scalar($value) || $value instanceof \Stringable)) {
+                throw new \UnexpectedValueException(
+                    sprintf('Value of type `%s` can not be converted to a cache tag', get_debug_type($value)),
+                    1793650001
+                );
+            }
+            if ((string)$value !== '') {
+                $tags[] = (string)$value;
+            }
+        }
+
+        return $tags;
     }
 
     /**
@@ -401,18 +418,21 @@ class ResponseCacheService implements LoggerAwareInterface
      * shared with requests it was meant to be kept separate from, so `null` here means "do not
      * cache this request" rather than "treat as empty". A null/false expression result, on the
      * other hand, casts to `''` and is a perfectly valid - if unhelpful - identifier contribution.
+     * A result which can not be converted to a string (see `normalizeIdentifierValue()`) fails
+     * closed the same way.
      */
     protected function evaluateIdentifierExpression(
         string $identifierExpression,
         OperationInterface $operation,
         array $route,
         Request $request
-    ): ?string {
+    ): string|array|null {
         try {
-            return (string)$this->getConditionResolver()->evaluate(
+            $value = $this->getConditionResolver()->evaluate(
                 $identifierExpression,
                 $this->getConditionVariables($operation, $route, $request)
             );
+            $identifierValue = $this->normalizeIdentifierValue($value);
         } catch (\Throwable $throwable) {
             $this->logger?->error('t3api response cache identifier expression evaluation failed', [
                 'identifierExpression' => $identifierExpression,
@@ -421,6 +441,55 @@ class ResponseCacheService implements LoggerAwareInterface
 
             return null;
         }
+
+        if ($identifierValue === null) {
+            $this->logger?->error('t3api response cache identifier expression result can not be converted to a string', [
+                'identifierExpression' => $identifierExpression,
+                'type' => get_debug_type($value),
+            ]);
+        }
+
+        return $identifierValue;
+    }
+
+    /**
+     * Scalars and `Stringable` objects are converted to strings. Arrays (e.g. `frontend.user.userGroupIds`)
+     * stay arrays - so they never produce the same identifier as a string - with normalized and sorted
+     * items, so the order of items does not change the identifier. Returns null for values which can not
+     * be converted to a string (objects without `__toString()`, also inside arrays).
+     *
+     * @return string|array<mixed>|null
+     */
+    protected function normalizeIdentifierValue(mixed $value): string|array|null
+    {
+        if (is_array($value)) {
+            $items = [];
+            foreach ($value as $key => $item) {
+                $normalizedItem = $this->normalizeIdentifierValue($item);
+                if ($normalizedItem === null) {
+                    return null;
+                }
+                $items[$key] = $normalizedItem;
+            }
+            // Sorted by keys first, so a list is detected regardless of the insertion order of its keys
+            // (`[1 => 'a', 0 => 'b']`). Default flags: `SORT_STRING` would put key 10 before key 2.
+            ksort($items);
+            if (array_is_list($items)) {
+                // Compares the unambiguous representation - a numeric comparison treats e.g. `01` and `1`
+                // as equal, which would keep their original order.
+                usort($items, static fn(string|array $a, string|array $b): int => strcmp(serialize($a), serialize($b)));
+            } else {
+                ksort($items, SORT_STRING);
+            }
+
+            return $items;
+        }
+
+        if ($value === null || is_scalar($value) || $value instanceof \Stringable) {
+            return (string)$value;
+        }
+
+        return null;
     }
 
     /**
