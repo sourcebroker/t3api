@@ -6,6 +6,7 @@ Changelog
 
 5.0.0
 =====
+- [!!!] Validate origin and content type of requests changing data: requests from another origin not allowed by CORS ``allowOrigin`` return ``403 Forbidden``, JSON body without JSON ``Content-Type`` returns ``415 Unsupported Media Type``. Add origins of frontend applications to ``allowOrigin`` and send ``Content-Type: application/json``. See :ref:`cors_write_requests`.
 - Fix response cache invalidation when the page cache is cleared from the backend (cache tags passed as a list were ignored, numeric tags caused errors).
 - Log unexpected exceptions with an event ID. Outside of ``Development`` context HTTP 500 response contains a generic message with this event ID instead of the exception message. See :ref:`ThrowableSubscriber <serialization_subscribers_throwable_subscriber>`.
 - Return HTTP 500 for PHP errors (e.g. ``TypeError``) as API response with CORS headers instead of rethrowing them to TYPO3. [`issue <https://github.com/sourcebroker/t3api/issues/38>`__]

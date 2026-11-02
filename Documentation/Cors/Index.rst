@@ -70,8 +70,32 @@ Existing ``Vary`` values are preserved. These headers tell HTTP caches which req
 as described in the `Fetch specification <https://fetch.spec.whatwg.org/#cors-protocol-and-http-caches>`__.
 t3api's response cache stores the serialized content; CORS headers are evaluated for each request.
 
-CORS controls whether a browser can read a response. It does not authorize an operation or provide CSRF
-protection for writes authenticated with cookies. Configure operation access rules and CSRF protection separately.
+.. _cors_write_requests:
+
+Write requests from other origins
+=================================
+
+CORS controls whether a browser can read a response. Additionally t3api validates requests changing data
+(all methods except ``GET``, ``HEAD``, ``OPTIONS`` and ``TRACE``) and rejects requests which:
+
+- are sent from another origin (``Origin`` header differs from the API origin) not allowed by ``allowOrigin`` -
+  response ``403 Forbidden``. Requests without ``Origin`` header (e.g. server-to-server requests) are not affected,
+  browsers send this header with every such request,
+- contain a JSON body without JSON content type (``application/json``, ``application/ld+json`` or other
+  ``application/*+json``) - response ``415 Unsupported Media Type``.
+
+To allow write requests from another origin (e.g. frontend application on a different domain), add it to
+``allowOrigin``. Setting ``allowOrigin`` to ``*`` allows write requests from every origin.
+
+The origin check is done by ``SourceBroker\T3api\Processor\OriginValidationProcessor``. If you need to accept
+write requests from any origin without allowing them to read responses, remove the processor in ``ext_localconf.php``
+of your extension:
+
+.. code-block:: php
+
+   unset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['processors'][\SourceBroker\T3api\Processor\OriginValidationProcessor::class]);
+
+CORS does not authorize an operation - configure operation access rules separately, see :ref:`security`.
 
 Customizing CORS handling
 =========================
