@@ -46,6 +46,8 @@ if ((new Typo3Version())->getMajorVersion() < 13) {
         'target' => \SourceBroker\T3api\Middleware\T3apiRequestLanguageResolver::class,
         'after' => [
             'typo3/cms-frontend/site',
+            // `$GLOBALS['BE_USER']` is needed to allow disabled languages for backend users
+            'typo3/cms-frontend/backend-user-authentication',
         ],
         'before' => [
             'typo3/cms-frontend/tsfe',

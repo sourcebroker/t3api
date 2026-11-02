@@ -7,11 +7,16 @@ namespace SourceBroker\T3api\Dispatcher;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
+use SourceBroker\T3api\Exception\BadRequestException;
 use SourceBroker\T3api\Exception\ExceptionInterface;
+use SourceBroker\T3api\Exception\InternalServerErrorException;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
 use SourceBroker\T3api\Service\OperationResponseCache;
+use SourceBroker\T3api\Service\RequestLanguageService;
 use SourceBroker\T3api\Service\RouteService;
 use SourceBroker\T3api\Service\SerializerService;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -24,8 +29,10 @@ use Symfony\Component\Routing\RouteCollection;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Bootstrap extends AbstractDispatcher
+class Bootstrap extends AbstractDispatcher implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected ResponseInterface $response;
 
     protected HttpFoundationFactory $httpFoundationFactory;
@@ -59,6 +66,10 @@ class Bootstrap extends AbstractDispatcher
             $request = $this->httpFoundationFactory->createRequest($inputRequest);
             $context = (new RequestContext())->fromRequest($request);
             $this->callProcessors($request, $this->response);
+            $languageHeaderException = $inputRequest->getAttribute(RequestLanguageService::ATTRIBUTE_LANGUAGE_HEADER_EXCEPTION);
+            if ($languageHeaderException instanceof BadRequestException) {
+                throw $languageHeaderException;
+            }
             if ($this->isMainEndpointResponseClassDefined() && $this->isContextMatchingMainEndpointRoute($context)) {
                 $output = $this->processMainEndpoint();
             } else {
@@ -68,8 +79,16 @@ class Bootstrap extends AbstractDispatcher
             $output = $this->serializerService->serialize($exception);
             $this->response = $this->response->withStatus($exception->getStatusCode(), $exception->getTitle());
         } catch (\Throwable $throwable) {
+            $eventId = bin2hex(random_bytes(8));
+            $this->logger?->error(
+                't3api: unexpected exception, event ID {eventId}',
+                ['eventId' => $eventId, 'exception' => $throwable]
+            );
             try {
-                $output = $this->serializerService->serialize($throwable);
+                // The message of an unexpected exception may contain paths, database details etc.
+                $output = $this->serializerService->serialize(
+                    SerializerService::isDebugMode() ? $throwable : new InternalServerErrorException($eventId)
+                );
                 $this->response = $this->response->withStatus(
                     SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR,
                     SymfonyResponse::$statusTexts[SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR]

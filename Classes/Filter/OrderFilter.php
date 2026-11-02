@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\Filter;
 
 use SourceBroker\T3api\Domain\Model\ApiFilter;
+use SourceBroker\T3api\Exception\BadRequestException;
 use SourceBroker\T3api\OpenApi\Objects\Parameter;
 use SourceBroker\T3api\OpenApi\Objects\Schema;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
@@ -45,6 +46,10 @@ class OrderFilter extends AbstractFilter implements OpenApiSupportingFilterInter
             return null;
         }
 
+        if (!is_string($values[$property])) {
+            throw new BadRequestException('order_direction', [gettype($values[$property])], 1560890654236);
+        }
+
         $defaultDirection = $apiFilter->getStrategy()->getName();
         $direction = strtoupper($values[$property] !== '' ? $values[$property] : $defaultDirection);
 
@@ -53,7 +58,7 @@ class OrderFilter extends AbstractFilter implements OpenApiSupportingFilterInter
         }
 
         if (!in_array($direction, [QueryInterface::ORDER_ASCENDING, QueryInterface::ORDER_DESCENDING], true)) {
-            throw new \InvalidArgumentException(sprintf('Unknown order direction `%s`', $direction), 1560890654236);
+            throw new BadRequestException('order_direction', [$values[$property]], 1560890654236);
         }
 
         $query->setOrderings(array_merge($query->getOrderings(), [$property => $direction]));

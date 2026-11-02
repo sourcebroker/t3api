@@ -8,6 +8,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\Domain\Repository\CommonRepository;
 use SourceBroker\T3api\Event\AfterDeserializeOperationEvent;
+use SourceBroker\T3api\Exception\BadRequestException;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
 use SourceBroker\T3api\Security\OperationAccessChecker;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
@@ -56,6 +57,7 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
     }
 
     /**
+     * @throws BadRequestException
      * @throws OperationNotAllowedException
      */
     protected function deserializeOperation(
@@ -63,8 +65,11 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
         Request $request,
         ?AbstractDomainObject $targetObject = null
     ): AbstractDomainObject {
+        $content = $request->getContent();
+        $this->assertJsonObject($content);
+
         $object = $this->serializerService->deserialize(
-            $request->getContent(),
+            $content,
             $operation->getApiResource()->getEntity(),
             $this->deserializationContextBuilder->createFromOperation($operation, $request, $targetObject)
         );
@@ -80,5 +85,23 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
         $this->eventDispatcher->dispatch($afterDeserializeOperationEvent);
 
         return $afterDeserializeOperationEvent->getObject();
+    }
+
+    /**
+     * Checked before deserialization, as the serializer reports malformed JSON with a generic runtime exception.
+     *
+     * @throws BadRequestException
+     */
+    protected function assertJsonObject(string $content): void
+    {
+        try {
+            $data = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
+            throw new BadRequestException('invalid_json', [$exception->getMessage()], 1793641753);
+        }
+
+        if (!$data instanceof \stdClass) {
+            throw new BadRequestException('json_object', [], 1793641755);
+        }
     }
 }

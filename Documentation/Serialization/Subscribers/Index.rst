@@ -98,3 +98,8 @@ ThrowableSubscriber
 This subscriber listens to the ``POST_SERIALIZE`` event. If the object is an instance of ``Throwable``, it adds
 ``hydra:description`` (exception message) and - in ``Development`` application context only - ``hydra:debug`` (stack trace)
 to the serialized object.
+
+Unexpected exceptions (not implementing ``SourceBroker\T3api\Exception\ExceptionInterface``) are logged with an event ID
+and result in HTTP 500. Outside of ``Development`` application context the response contains a generic
+``SourceBroker\T3api\Exception\InternalServerErrorException`` with this event ID instead of the original exception, so its
+message is not returned to the client. Use the event ID to find the original exception in the TYPO3 log.
