@@ -57,6 +57,9 @@ services:
   SourceBroker\T3api\Processor\CorsProcessor:
     public: true
 
+  SourceBroker\T3api\Processor\OriginValidationProcessor:
+    public: true
+
   SourceBroker\T3api\Processor\LanguageProcessor:
     public: true
 

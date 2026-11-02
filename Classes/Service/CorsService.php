@@ -19,9 +19,24 @@ class CorsService
 
     public function isCorsRequest(Request $request): bool
     {
-        $origin = $request->headers->get('Origin');
+        $origin = (string)$request->headers->get('Origin');
 
-        return $origin !== null && $origin !== '' && $origin !== $request->getSchemeAndHttpHost();
+        return $origin !== '' && !$this->isSameOrigin($request, $origin);
+    }
+
+    /**
+     * Besides the `Host` header, the origin is compared with the request URL normalized by TYPO3 (respecting
+     * reverse proxy configuration), which is the source of `SERVER_NAME`, `SERVER_PORT` and `HTTPS` in requests
+     * converted from PSR-7. Behind a reverse proxy the `Host` header may contain an internal host name.
+     */
+    public function isSameOrigin(Request $request, string $origin): bool
+    {
+        $scheme = $request->isSecure() ? 'https' : 'http';
+        $port = (int)$request->server->get('SERVER_PORT');
+        $normalizedOrigin = $scheme . '://' . $request->server->get('SERVER_NAME')
+            . ($port === 0 || $port === ($scheme === 'https' ? 443 : 80) ? '' : ':' . $port);
+
+        return in_array(strtolower($origin), [strtolower($request->getSchemeAndHttpHost()), strtolower($normalizedOrigin)], true);
     }
 
     public function isPreflightRequest(Request $request): bool

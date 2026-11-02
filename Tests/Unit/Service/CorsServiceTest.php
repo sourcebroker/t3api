@@ -27,6 +27,39 @@ class CorsServiceTest extends UnitTestCase
     }
 
     #[Test]
+    #[DataProvider('sameOriginProvider')]
+    public function sameOriginIsDetectedAlsoBehindReverseProxy(string $origin, ?string $hostHeader, bool $sameOrigin): void
+    {
+        $request = Request::create('https://api.example/items', 'POST');
+        if ($hostHeader !== null) {
+            $request->headers->set('Host', $hostHeader);
+        }
+
+        self::assertSame($sameOrigin, (new CorsService())->isSameOrigin($request, $origin));
+        self::assertSame(!$sameOrigin, (new CorsService())->isCorsRequest(self::withOrigin($request, $origin)));
+    }
+
+    public static function sameOriginProvider(): array
+    {
+        return [
+            'same origin' => ['https://api.example', null, true],
+            'case insensitive' => ['https://API.example', null, true],
+            'internal host header' => ['https://api.example', 'backend.internal:8080', true],
+            'other host' => ['https://client.example', null, false],
+            'other scheme' => ['http://api.example', null, false],
+            'other port' => ['https://api.example:8443', null, false],
+        ];
+    }
+
+    private static function withOrigin(Request $request, string $origin): Request
+    {
+        $request = clone $request;
+        $request->headers->set('Origin', $origin);
+
+        return $request;
+    }
+
+    #[Test]
     #[DataProvider('actualRequestProvider')]
     public function actualResponsesFollowOriginPolicy(array $configuration, ?string $origin, bool $allowed): void
     {

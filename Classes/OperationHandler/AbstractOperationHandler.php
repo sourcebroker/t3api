@@ -10,6 +10,7 @@ use SourceBroker\T3api\Domain\Repository\CommonRepository;
 use SourceBroker\T3api\Event\AfterDeserializeOperationEvent;
 use SourceBroker\T3api\Exception\BadRequestException;
 use SourceBroker\T3api\Exception\OperationNotAllowedException;
+use SourceBroker\T3api\Exception\UnsupportedMediaTypeException;
 use SourceBroker\T3api\Security\OperationAccessChecker;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Service\CommonDateFieldsService;
@@ -59,12 +60,14 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
     /**
      * @throws BadRequestException
      * @throws OperationNotAllowedException
+     * @throws UnsupportedMediaTypeException
      */
     protected function deserializeOperation(
         OperationInterface $operation,
         Request $request,
         ?AbstractDomainObject $targetObject = null
     ): AbstractDomainObject {
+        $this->assertJsonContentType($request);
         $content = $request->getContent();
         $this->assertJsonObject($content);
 
@@ -85,6 +88,21 @@ abstract class AbstractOperationHandler implements OperationHandlerInterface
         $this->eventDispatcher->dispatch($afterDeserializeOperationEvent);
 
         return $afterDeserializeOperationEvent->getObject();
+    }
+
+    /**
+     * Accepts `application/json`, `application/ld+json` and other `application/*+json` types.
+     *
+     * @throws UnsupportedMediaTypeException
+     */
+    protected function assertJsonContentType(Request $request): void
+    {
+        $contentType = trim((string)$request->headers->get('Content-Type'));
+        $mediaType = strtolower(trim(explode(';', $contentType)[0]));
+
+        if ($mediaType !== 'application/json' && preg_match('#^application/[a-z0-9.+-]+\+json$#', $mediaType) !== 1) {
+            throw new UnsupportedMediaTypeException($contentType, 1793646772);
+        }
     }
 
     /**

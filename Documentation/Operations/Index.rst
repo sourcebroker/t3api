@@ -102,6 +102,12 @@ T3api supports all REST methods. Method of the operation is set with ``method`` 
 .. important::
     Notice that ``POST`` operation is a type of collection operations
 
+``POST``, ``PUT`` and ``PATCH`` operations expect a JSON object in the request body sent with header
+``Content-Type: application/json`` (``application/ld+json`` and other ``application/*+json`` types are accepted too).
+A missing or other content type returns ``415 Unsupported Media Type``, malformed JSON returns ``400 Bad Request``.
+File upload operations use ``multipart/form-data`` instead. Write requests sent by a browser from another origin
+have to be allowed by the CORS configuration, see :ref:`cors_write_requests`.
+
 .. _operations_slugs:
 
 Slug fields

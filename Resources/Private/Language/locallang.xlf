@@ -69,6 +69,21 @@
 			<trans-unit id="exception.bad_request.language_header">
 				<source>Header `%s` has to contain the ID of an available language, `%s` given</source>
 			</trans-unit>
+			<trans-unit id="exception.origin_not_allowed.title">
+				<source>Origin not allowed</source>
+			</trans-unit>
+			<trans-unit id="exception.origin_not_allowed.description">
+				<source>Origin `%s` is not allowed to send `%s` requests</source>
+			</trans-unit>
+			<trans-unit id="exception.unsupported_media_type.title">
+				<source>Unsupported media type</source>
+			</trans-unit>
+			<trans-unit id="exception.unsupported_media_type.description">
+				<source>Content type `%s` is not supported, use `application/json`</source>
+			</trans-unit>
+			<trans-unit id="exception.unsupported_media_type.missing">
+				<source>Header `Content-Type` is required, use `application/json`</source>
+			</trans-unit>
 			<trans-unit id="exception.internal_server_error.title">
 				<source>Internal Server Error</source>
 			</trans-unit>
