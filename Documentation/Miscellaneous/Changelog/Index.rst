@@ -6,6 +6,7 @@ Changelog
 
 5.0.0
 =====
+- OpenAPI specification documents ``403 Forbidden`` (instead of ``404 Not Found``) for operations with ``security`` or ``security_post_denormalize``, the same status as returned by the API.
 - [!!!] A new file reference created by ``uidLocal`` requires ``fileToken`` returned for the file by the API, otherwise ``400 Bad Request`` is returned. The same applies to a new file of a property of type ``File`` or a class extending it (``{"uid": 101, "fileToken": "..."}``). The token is returned in the response of upload endpoints and of operations with ``"fileTokens"=true`` in ``normalizationContext`` (files offered for selection, ``file.fileToken`` for file references). Pass ``fileToken`` when saving a reference. Custom upload code has to grant tokens with ``FileTokenService::grant()``. See :ref:`handling_file_upload_file_token`.
 - Invalid values of file and file reference properties (e.g. a text or a boolean instead of an identifier or an object) return ``400 Bad Request`` instead of HTTP 500 or clearing the property.
 - Files (classes extending Extbase's ``File``) nested in a response (e.g. members of a collection) are serialized like other objects, the same as in an item response, instead of the file reference output.
