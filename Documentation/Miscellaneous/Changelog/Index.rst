@@ -50,6 +50,7 @@ Changelog
 - Use event request when enriching page cache identifier. [`commit <https://github.com/sourcebroker/t3api/commit/46ab141>`__]
 - Delegate to ``Typo3ConditionFunctionsProvider`` instead of extending it. [`commit <https://github.com/sourcebroker/t3api/commit/4442dce>`__]
 - Add PHPStan 2 compatibility, rector, PHPUnit attributes. [`commit <https://github.com/sourcebroker/t3api/commit/80ce99b>`__]
+- Documentation: ``storagePid`` limits only collection operations, item operations need ``security``. See :ref:`storage pages <security_storage-pid>`.
 - Documentation: real examples for TYPO3 14 testing instance, new pages for pagination, security, serialization, integration and file upload.
 
 4.1.3

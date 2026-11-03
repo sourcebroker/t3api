@@ -62,6 +62,58 @@ If an expression returns ``false``, the operation is not processed and the respo
 
    ``object`` exists only in item operations and in ``security_post_denormalize``. Collection operations (``GET`` and ``POST`` on a collection) do not have it in ``security`` - for collection ``GET`` use filters or your own repository constraints to limit records, for ``POST`` use ``security_post_denormalize``.
 
+.. _security_storage-pid:
+
+Storage pages
+==============
+
+``storagePid`` in ``persistence`` attributes limits records of collection ``GET`` operations and is the page where new records are stored. It does **not** limit item operations: ``GET``, ``PATCH``, ``PUT`` and ``DELETE`` on ``/{id}`` load the record by its UID from any page, the same as ``findByUid()`` in Extbase. Hidden records, start and end time and frontend user groups are still respected.
+
+When records must be available only on the storage pages of the resource (e.g. one resource per site or client), check the page of the record in ``security`` of every item operation. ``security`` gets the record as stored in the database, also for ``PATCH`` and ``PUT``.
+
+Do not allow to write ``pid``: when an operation sets ``denormalizationContext`` groups, properties without groups (``pid`` too) are not deserialized. A new record is then stored on the first page from ``storagePid``, and ``PATCH`` / ``PUT`` cannot change the page of a record.
+
+.. code-block:: php
+
+   /**
+    * @T3api\ApiResource (
+    *     attributes={
+    *          "persistence"={"storagePid"="3"}
+    *     },
+    *     collectionOperations={
+    *          "get"={"path"="/products"},
+    *          "post"={
+    *              "method"="POST",
+    *              "path"="/products",
+    *              "denormalizationContext"={"groups"={"api_write_product"}},
+    *          },
+    *     },
+    *     itemOperations={
+    *          "get"={
+    *              "path"="/products/{id}",
+    *              "security"="object.getPid() in t3apiOperation.getPersistenceSettings().getStoragePids()",
+    *          },
+    *          "patch"={
+    *              "method"="PATCH",
+    *              "path"="/products/{id}",
+    *              "security"="object.getPid() in t3apiOperation.getPersistenceSettings().getStoragePids()",
+    *              "denormalizationContext"={"groups"={"api_write_product"}},
+    *          },
+    *          "delete"={
+    *              "method"="DELETE",
+    *              "path"="/products/{id}",
+    *              "security"="object.getPid() in t3apiOperation.getPersistenceSettings().getStoragePids()",
+    *          },
+    *     },
+    * )
+    */
+
+``t3apiOperation.getPersistenceSettings().getStoragePids()`` contains the pages from ``storagePid`` only, without subpages of ``recursive`` - list the pages in the expression when you use ``recursive``.
+
+.. important::
+
+   ``security_post_denormalize`` alone does not limit item operations to the storage pages, as it checks the record with the data from the request. If ``pid`` is writable, check it there in addition to ``security`` and allow ``null``: ``pid`` of a new record (``POST``) and of a replaced record (``PUT``) is ``null`` until the record is stored, unless the request sends it, e.g. ``object.getPid() === null or object.getPid() in [3]``.
+
 Filter security
 ================
 

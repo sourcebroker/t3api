@@ -3,51 +3,111 @@
 [![Latest Stable Version](https://poser.pugx.org/sourcebroker/t3api/v/stable)](https://extensions.typo3.org/extension/t3api/)
 [![Tests](https://img.shields.io/github/actions/workflow/status/sourcebroker/t3api/tests.yml?branch=main&label=Tests&logo=github)](https://github.com/sourcebroker/t3api/actions/workflows/tests.yml)
 
-Supports TYPO3 12.4, 13.4 and 14 on PHP 8.1 - 8.5.
+REST API for Extbase models. Resources, operations and filters are configured with annotations on the model class
+(or on a class extending a model of another extension), output with serializer metadata in annotations or YAML.
+Configuration options follow [API Platform](https://api-platform.com), responses use [JSON-LD](https://json-ld.org/) /
+[Hydra](https://www.hydra-cg.com/) format.
+
+| TYPO3 | PHP       |
+|-------|-----------|
+| 12.4  | 8.1 - 8.4 |
+| 13.4  | 8.2 - 8.5 |
+| 14    | 8.2 - 8.5 |
 
 ## Features
 
-- Support for Extbase models with GET, POST, PATCH, PUT, DELETE operations.
-- Configuration with classes, properties and methods annotations.
-- Built-in filters: boolean, numeric, uid, contain, order, range, distance and text (partial, match against and exact strategies).
-- Ordered UIDs filter and query modifiers - return collections in externally resolved order (e.g. from search engine).
-- Built-in pagination.
-- Opt-in response caching with automatic tag-based invalidation.
-- Support for typolinks.
-- Support for image processing.
-- Support for file uploads (FAL).
-- Configurable routing.
-- Responses in [Hydra](https://www.hydra-cg.com/) / [JSON-LD](https://json-ld.org/) format.
-- Serialization contexts - customizable output depending on routing.
-- Easy customizable serialization handlers and subscribers.
-- Backend module with Swagger for documentation and real testing.
+**Resources and operations**
+
+- `GET`, `POST`, `PATCH`, `PUT` and `DELETE` operations for Extbase models.
+- Configurable routing and base path of the API.
+- Cascade persistence of relations, including inline (IRRE) relations.
+- Slug fields generated according to TCA configuration.
+- Multilanguage support (language prefix in URL or `X-Locale` header).
+
+**Collections**
+
+- Built-in filters: boolean, numeric, uid, contain, order, range, distance and search (partial, match against and exact strategies).
+- Ordered UIDs filter and query modifiers - collections in externally resolved order (e.g. from a search engine).
+- Pagination.
+
+**Output**
+
+- Serialization contexts (groups) - different output for every operation.
+- Serializer metadata in annotations or YAML, custom handlers and subscribers.
+- Typolinks, processed images and file references.
+- File upload to FAL.
+
+**Access and HTTP**
+
+- Access control of operations and filters with expressions (`security`, `security_post_denormalize`).
+- CORS configuration.
+- Opt-in response cache with automatic tag-based invalidation.
+
+**Developer tools**
+
+- OpenAPI specification and backend module with Swagger UI for documentation and testing of the API.
+- Events to customize processing of operations.
+
+## Quick start
+
+```bash
+composer require sourcebroker/t3api
+```
+
+Add the route enhancer to the `config.yaml` of your site:
+
+```yaml
+imports:
+  - { resource: "EXT:t3api/Configuration/Routing/config.yaml" }
+```
+
+Make an API resource from an Extbase model:
+
+```php
+use SourceBroker\T3api\Annotation\ApiResource;
+
+/**
+ * @ApiResource(
+ *     collectionOperations={
+ *         "get"={"path"="/items"},
+ *     },
+ *     itemOperations={
+ *         "get"={"path"="/items/{id}"},
+ *     },
+ * )
+ */
+class Item extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
+}
+```
+
+After flushing caches the items are available under `https://example.com/_api/items` and
+`https://example.com/_api/items/1`.
 
 ## Documentation
 
-Read the docs at https://docs.typo3.org/p/sourcebroker/t3api/main/en-us/
+https://docs.typo3.org/p/sourcebroker/t3api/main/en-us/
 
-## Take a look and test
+## Local test instance
 
-After cloning repo you can run:
+After cloning the repository run:
 
 ```bash
 ddev restart && ddev composer install
 ddev ci 14
 ```
 
-to install local integration test instance. Local instance is available at https://14.t3api.ddev.site/
-(login to backend with `admin` / `Password1!` credentials).
+It installs a TYPO3 14 instance at https://14.t3api.ddev.site/ (backend login `admin` / `Password1!`) with
+`EXT:news` records exposed as API resources, e.g.:
 
-At frontend part you can at once test REST API responses for ext news:
-
+- https://14.t3api.ddev.site/_api/
 - https://14.t3api.ddev.site/_api/news/news
 - https://14.t3api.ddev.site/_api/news/news/1
 - https://14.t3api.ddev.site/_api/news/categories
-- etc
 
-You can also run Postman test with `ddev composer ci:tests:postman` command or full test suite with `ddev composer ci`.
-Postman is doing full CRUD test with category and news (with image).
+Run the Postman tests (full CRUD of news and categories, including image upload) with
+`ddev composer ci:tests:postman`, or the full test suite with `ddev composer ci`.
 
 ## Development
 
-If you want to help with development take a look at https://docs.typo3.org/p/sourcebroker/t3api/main/en-us/Miscellaneous/Development/Index.html
+See https://docs.typo3.org/p/sourcebroker/t3api/main/en-us/Miscellaneous/Development/Index.html
