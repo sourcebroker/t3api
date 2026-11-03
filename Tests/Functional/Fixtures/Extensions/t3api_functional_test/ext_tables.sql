@@ -35,12 +35,13 @@ CREATE TABLE tx_functionaltest_domain_model_article (
     title varchar(255) DEFAULT '' NOT NULL
 );
 
+-- `category` and `image` allow NULL: Extbase in TYPO3 12 writes NULL for an empty single relation (PUT, value 0)
 CREATE TABLE tx_functionaltest_domain_model_recipe (
     title varchar(255) DEFAULT '' NOT NULL,
     steps int(11) unsigned DEFAULT '0' NOT NULL,
-    category int(11) unsigned DEFAULT '0' NOT NULL,
+    category int(11) unsigned DEFAULT NULL,
     tags int(11) unsigned DEFAULT '0' NOT NULL,
-    image int(11) unsigned DEFAULT '0' NOT NULL,
+    image int(11) unsigned DEFAULT NULL,
     images int(11) unsigned DEFAULT '0' NOT NULL
 );
 
