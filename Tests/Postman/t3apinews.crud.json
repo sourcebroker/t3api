@@ -728,6 +728,14 @@
 							");",
 							"",
 							"pm.environment.set('uploadedFieldUid', response.properties.uid);",
+							"pm.environment.set('uploadedFileToken', response.fileToken);",
+							"",
+							"pm.test(",
+							"    'File token is returned',",
+							"    function () {",
+							"        pm.expect(response.fileToken).to.be.a('string');",
+							"    }",
+							");",
 							""
 						],
 						"type": "text/javascript"
@@ -835,7 +843,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"title\": \"This is title of the news with new image\",\n\t\"falMedia\": [\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 1\n\t\t},\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 0\n\t\t}\n\t]\n}"
+					"raw": "{\n\t\"title\": \"This is title of the news with new image\",\n\t\"falMedia\": [\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"fileToken\": \"{{uploadedFileToken}}\",\n\t\t\t\"showinpreview\": 1\n\t\t},\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"fileToken\": \"{{uploadedFileToken}}\",\n\t\t\t\"showinpreview\": 0\n\t\t}\n\t]\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}{{singleNewsEndpoint}}",
@@ -965,7 +973,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"title\": \"This is an example news with file reference added at once\",\n\t\"alternativeTitle\": \"Alt title\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"bodytext\": \"Here is the body\",\n\t\"falMedia\": [\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 1\n\t\t},\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"showinpreview\": 0\n\t\t}\n\t]\n}",
+					"raw": "{\n\t\"title\": \"This is an example news with file reference added at once\",\n\t\"alternativeTitle\": \"Alt title\",\n\t\"crdate\": \"2019-12-27T16:58:23.063Z\",\n\t\"datetime\": \"2019-12-27T16:58:23.063Z\",\n\t\"categories\": [{{categoryUid}}],\n\t\"bodytext\": \"Here is the body\",\n\t\"falMedia\": [\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"fileToken\": \"{{uploadedFileToken}}\",\n\t\t\t\"showinpreview\": 1\n\t\t},\n\t\t{\n\t\t\t\"uidLocal\": {{uploadedFieldUid}},\n\t\t\t\"fileToken\": \"{{uploadedFileToken}}\",\n\t\t\t\"showinpreview\": 0\n\t\t}\n\t]\n}",
 					"options": {
 						"raw": {
 							"language": "json"

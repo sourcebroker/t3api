@@ -15,6 +15,7 @@ use SourceBroker\T3api\Exception\ExceptionInterface;
 use SourceBroker\T3api\Exception\InternalServerErrorException;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
+use SourceBroker\T3api\Service\FileTokenServiceTrait;
 use SourceBroker\T3api\Service\OperationResponseCache;
 use SourceBroker\T3api\Service\RequestLanguageService;
 use SourceBroker\T3api\Service\RouteService;
@@ -32,6 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Bootstrap extends AbstractDispatcher implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
+    use FileTokenServiceTrait;
 
     protected ResponseInterface $response;
 
@@ -61,6 +63,20 @@ class Bootstrap extends AbstractDispatcher implements LoggerAwareInterface
      * @throws \Throwable
      */
     public function process(ServerRequestInterface $inputRequest): ResponseInterface
+    {
+        // Granted files and issued file tokens belong to one request (also when PHP process serves many requests)
+        $this->getFileTokenService()->reset();
+        try {
+            return $this->processRequest($inputRequest);
+        } finally {
+            $this->getFileTokenService()->reset();
+        }
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    protected function processRequest(ServerRequestInterface $inputRequest): ResponseInterface
     {
         try {
             $request = $this->httpFoundationFactory->createRequest($inputRequest);

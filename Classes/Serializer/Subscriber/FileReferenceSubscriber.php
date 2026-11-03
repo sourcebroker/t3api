@@ -38,6 +38,12 @@ class FileReferenceSubscriber implements EventSubscriberInterface
      */
     public function onPreSerialize(PreSerializeEvent $event): void
     {
+        // A file (not a reference) is serialized like any other object, also in collections and relations - the same
+        // output as for an item operation, with `fileToken` added by `FileTokenSubscriber`.
+        if (is_a($event->getType()['name'], File::class, true)) {
+            return;
+        }
+
         $this->changeTypeToHandleAllFileReferenceExtendingClasses($event);
     }
 
@@ -54,7 +60,7 @@ class FileReferenceSubscriber implements EventSubscriberInterface
         if (
             (
                 is_subclass_of($event->getType()['name'], Folder::class)
-                || is_subclass_of($event->getType()['name'], File::class)
+                || is_a($event->getType()['name'], File::class, true)
                 || is_subclass_of($event->getType()['name'], FileReference::class)
             )
             && $event->getContext()->getDepth() > 1

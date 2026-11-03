@@ -57,6 +57,7 @@ call_user_func(
             \SourceBroker\T3api\Serializer\Subscriber\ThrowableSubscriber::class,
             \SourceBroker\T3api\Serializer\Subscriber\CurrentFeUserSubscriber::class,
             \SourceBroker\T3api\Serializer\Subscriber\CacheTagSubscriber::class,
+            \SourceBroker\T3api\Serializer\Subscriber\FileTokenSubscriber::class,
         ];
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['serializerMetadataDirs'] = [

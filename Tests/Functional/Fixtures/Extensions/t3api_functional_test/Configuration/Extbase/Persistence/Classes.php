@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use T3apiTests\FunctionalTest\Domain\Model\CategoryResource;
+use T3apiTests\FunctionalTest\Domain\Model\File;
 use T3apiTests\FunctionalTest\Domain\Model\FileReference;
 use T3apiTests\FunctionalTest\Domain\Model\TagResource;
 
@@ -15,5 +16,8 @@ return [
     ],
     FileReference::class => [
         'tableName' => 'sys_file_reference',
+    ],
+    File::class => [
+        'tableName' => 'sys_file',
     ],
 ];

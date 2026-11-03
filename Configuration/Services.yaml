@@ -124,6 +124,12 @@ services:
   SourceBroker\T3api\Serializer\Subscriber\CacheTagSubscriber:
     public: true
 
+  SourceBroker\T3api\Serializer\Subscriber\FileTokenSubscriber:
+    public: true
+
+  SourceBroker\T3api\Service\FileTokenService:
+    public: true
+
   SourceBroker\T3api\Response\HydraCollectionResponse:
     public: true
 

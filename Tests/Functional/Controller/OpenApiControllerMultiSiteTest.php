@@ -56,6 +56,30 @@ class OpenApiControllerMultiSiteTest extends FunctionalTestCase
         self::assertSame('https://second.example.com/v1', $this->getSpecificationForSite('second')['servers'][0]['url']);
     }
 
+    #[Test]
+    public function specificationDocumentsFileToken(): void
+    {
+        $schemas = $this->getSpecificationForSite('main')['components']['schemas'] ?? [];
+        $readFileSchemas = array_filter($schemas, static fn(array $schema): bool => isset($schema['properties']['fileToken']));
+        $writeReferenceSchemas = array_filter(
+            $schemas,
+            static fn(array $schema): bool => isset($schema['properties']['images']['items']['properties']['fileToken'])
+                && isset($schema['properties']['images']['items']['properties']['uidLocal'])
+                && isset($schema['properties']['images']['items']['properties']['uid'])
+        );
+        $writeFileSchemas = array_filter(
+            $schemas,
+            static fn(array $schema): bool => isset($schema['properties']['logo']['properties']['fileToken'])
+                && isset($schema['properties']['logo']['properties']['uid'])
+                // Extbase's `File` class itself
+                && isset($schema['properties']['logos']['items']['properties']['fileToken'])
+        );
+
+        self::assertNotEmpty($readFileSchemas, 'File resource does not document `fileToken`');
+        self::assertNotEmpty($writeReferenceSchemas, 'File references do not document `uid`, `uidLocal` and `fileToken`');
+        self::assertNotEmpty($writeFileSchemas, 'File properties do not document `uid` and `fileToken`');
+    }
+
     private function getSpecificationForSite(string $siteIdentifier): array
     {
         // The backend request is served on the main site's domain, so the selected site can only

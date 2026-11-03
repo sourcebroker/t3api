@@ -52,6 +52,24 @@ return TcaFixtureBuilder::build(
                 'allowed' => 'common-image-types',
             ],
         ],
+        'logo' => [
+            'label' => 'Logo',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'sys_file',
+                'default' => 0,
+            ],
+        ],
+        'logos' => [
+            'label' => 'Logos',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectMultipleSideBySide',
+                'foreign_table' => 'sys_file',
+                'MM' => 'tx_functionaltest_recipe_logo_mm',
+            ],
+        ],
     ],
-    'title, steps, category, tags, image, images'
+    'title, steps, category, tags, image, images, logo, logos'
 );

@@ -12,9 +12,7 @@ use SourceBroker\T3api\Exception\BadRequestException;
 use SourceBroker\T3api\Service\PropertyInfoService;
 use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class AbstractDomainObjectHandler extends AbstractHandler implements DeserializeHandlerInterface
 {
@@ -203,25 +201,10 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
             return $assignable;
         }
 
-        $property = $parentObject->_getCleanProperty($propertyMetadata->name);
-
-        // Compared by UID - the related object may be an instance of another class (e.g. an API resource class
-        // declared as `type` in YAML metadata) than the one in the relation.
-        if ($property instanceof ObjectStorage) {
-            foreach ($property as $relatedObject) {
-                if ($relatedObject instanceof AbstractDomainObject && $relatedObject->getUid() === $object->getUid()) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        // `LazyLoadingProxy::getUid()` does not load the related object.
-        if ($property instanceof AbstractDomainObject || $property instanceof LazyLoadingProxy) {
-            return $object->getUid() === $property->getUid();
-        }
-
-        return false;
+        return in_array(
+            (int)$object->getUid(),
+            $this->getInlineRelationService()->getCleanRelationUids($parentObject, $propertyMetadata->name),
+            true
+        );
     }
 }

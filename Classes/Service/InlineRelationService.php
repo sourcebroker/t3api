@@ -11,10 +11,12 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
+use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap\Relation;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMap;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Records of relations stored in the related table (TCA `inline` with `foreign_field`, TCA `file`) keep the parent
@@ -78,6 +80,29 @@ class InlineRelationService
         return $columnMap === null
             ? null
             : $this->belongsToParent($parent, $parentDataMap->getTableName(), $columnMap, $record);
+    }
+
+    /**
+     * UIDs of the related objects of property `$propertyName` of `$parent` as loaded from the database (clean state) -
+     * the current value may be already reset (PUT). Compared by UID, as the related object may be an instance of
+     * another class (e.g. an API resource class declared as `type` in YAML metadata) than the one in the relation.
+     *
+     * @return int[]
+     */
+    public function getCleanRelationUids(AbstractDomainObject $parent, string $propertyName): array
+    {
+        $property = $parent->_getCleanProperty($propertyName);
+        $relatedObjects = $property instanceof ObjectStorage ? $property : [$property];
+
+        $uids = [];
+        foreach ($relatedObjects as $relatedObject) {
+            // `LazyLoadingProxy::getUid()` does not load the related object.
+            if ($relatedObject instanceof AbstractDomainObject || $relatedObject instanceof LazyLoadingProxy) {
+                $uids[] = (int)$relatedObject->getUid();
+            }
+        }
+
+        return $uids;
     }
 
     public function isStoredInRelatedTable(AbstractDomainObject $parent, string $propertyName): bool

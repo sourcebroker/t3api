@@ -16,3 +16,7 @@ T3apiTests\FunctionalTest\Domain\Model\Recipe:
       groups: [api_recipe_write]
     image:
       groups: [api_recipe_write]
+    logo:
+      groups: [api_recipe_write]
+    logos:
+      groups: [api_recipe_write]

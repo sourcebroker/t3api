@@ -32,6 +32,8 @@ use SourceBroker\T3api\OpenApi\Objects\Tag;
 use SourceBroker\T3api\OpenApi\OpenApi;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\File as ExtbaseFile;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class OpenApiBuilder
@@ -391,6 +393,12 @@ class OpenApiBuilder
             $properties[] = Schema::string('@id');
         }
 
+        if ($mode === 'READ' && is_a($class, ExtbaseFile::class, true)) {
+            $properties[] = Schema::string('fileToken')->description(
+                'Token required to reference the file by `uidLocal`. Returned for uploaded files and in responses of operations with `fileTokens`.'
+            );
+        }
+
         $schemas = self::$components->schemas ?? [];
         $schemas[] = Schema::object($name)
             ->properties(...$properties);
@@ -440,6 +448,15 @@ class OpenApiBuilder
             } catch (\Exception $e) {
                 // no chance exception will occur - catch it only to avoid IDE's complaints
             }
+        } elseif ($mode === 'WRITE' && is_subclass_of($type, ExtbaseFileReference::class)) {
+            $schema = self::getFileReferenceWriteSchema($type);
+        } elseif ($mode === 'WRITE' && is_a($type, ExtbaseFile::class, true)) {
+            $schema = Schema::object()
+                ->description('File with the token returned for it by the API. The current file of the property can be passed by its UID (integer) instead.')
+                ->properties(
+                    Schema::integer('uid')->description('UID of the file'),
+                    Schema::string('fileToken')->description('Token returned for the file by the API')
+                );
         } elseif (class_exists($type)) {
             if ($mode === 'WRITE') {
                 $schema = Schema::number()->example(rand(1, 100));
@@ -459,6 +476,32 @@ class OpenApiBuilder
         }
 
         return $schema ?? Schema::string();
+    }
+
+    /**
+     * Handled by `FileReferenceHandler`: a new reference is created by `uidLocal` and `fileToken` (with properties of
+     * the custom reference class), an existing reference of the property is passed by `uid` or as its UID (integer).
+     */
+    protected static function getFileReferenceWriteSchema(string $type): Schema
+    {
+        $properties = [
+            Schema::integer('uid')->description('UID of an existing reference of the property - omit to create a new reference'),
+            Schema::integer('uidLocal')->description('UID of the file of a new reference'),
+            Schema::string('fileToken')->description('Token returned for the file by the API (e.g. upload response) - required with `uidLocal`'),
+        ];
+
+        SerializerMetadataService::generateAutoloadForClass($type);
+        $metadata = self::getMetadataFactory()->getMetadataForClass($type);
+        /** @var PropertyMetadata $propertyMetadata */
+        foreach ($metadata?->propertyMetadata ?? [] as $propertyMetadata) {
+            if (is_subclass_of($propertyMetadata->class, ExtbaseFileReference::class)) {
+                $properties[] = self::getPropertySchemaFromPropertyMetadata($propertyMetadata, 'WRITE');
+            }
+        }
+
+        return Schema::object()
+            ->description('File reference')
+            ->properties(...$properties);
     }
 
     protected static function isApiResourceClass(string $className): bool

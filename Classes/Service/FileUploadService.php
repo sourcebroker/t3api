@@ -25,6 +25,8 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 
 class FileUploadService implements SingletonInterface
 {
+    use FileTokenServiceTrait;
+
     public function __construct(
         protected readonly ResourceFactory $resourceFactory,
         protected readonly StorageRepository $storageRepository
@@ -47,7 +49,7 @@ class FileUploadService implements SingletonInterface
             $conflictMode = \TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior::from($conflictMode);
         }
 
-        return $this->getUploadFolder($uploadSettings)
+        $file = $this->getUploadFolder($uploadSettings)
             ->addUploadedFile(
                 [
                     'error' => $uploadedFile->getError(),
@@ -58,6 +60,11 @@ class FileUploadService implements SingletonInterface
                 ],
                 $conflictMode
             );
+
+        // The response of the upload contains the token required to reference the file
+        $this->getFileTokenService()->grant((int)$file->getProperty('uid'));
+
+        return $file;
     }
 
     /**

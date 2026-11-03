@@ -16,7 +16,8 @@ Some handlers are used automatically (based on the class of the value), others a
      - Activated by
      - Output
    * - ``FileReferenceHandler``
-     - automatically for classes extending Extbase's ``FileReference``, ``File`` or ``Folder`` nested in an entity
+     - automatically for classes extending Extbase's ``FileReference`` or ``Folder`` nested in an entity (on
+       deserialization also ``File`` and its subclasses)
      - object with ``url``, ``uid`` and ``file`` data
    * - ``ImageHandler``
      - ``@T3api\Serializer\Type\Image``, type ``Image<...>``
@@ -42,7 +43,7 @@ Some handlers are used automatically (based on the class of the value), others a
 FileReference
 ===============
 
-Objects of classes extending Extbase's ``\TYPO3\CMS\Extbase\Domain\Model\FileReference``, ``File`` or ``Folder`` (e.g. ``\GeorgRinger\News\Domain\Model\FileReference`` or your own file reference class) nested in an entity are serialized automatically, there is nothing to configure. Example of ``falMedia`` property of news:
+Objects of classes extending Extbase's ``\TYPO3\CMS\Extbase\Domain\Model\FileReference`` or ``Folder`` (e.g. ``\GeorgRinger\News\Domain\Model\FileReference`` or your own file reference class) nested in an entity are serialized automatically, there is nothing to configure. Objects of classes extending ``File`` are serialized like other objects. Example of ``falMedia`` property of news:
 
 .. code-block:: json
 
@@ -61,12 +62,13 @@ Objects of classes extending Extbase's ``\TYPO3\CMS\Extbase\Domain\Model\FileRef
 
 - ``url`` - absolute URL of the original file.
 - ``uid`` - uid of the file reference (``sys_file_reference``).
-- ``file`` - data of the original file (``sys_file``).
+- ``file`` - data of the original file (``sys_file``). Contains ``fileToken`` when the token is returned for the file,
+  see :ref:`handling_file_upload_file_token`.
 - ``urlEmbed`` - only for videos (e.g. YouTube, Vimeo) - URL which can be used in ``<iframe>``.
 
 The structure of the output is fixed - other properties of the file reference (``title``, ``alternative``, ``link``...) are **not** added to it, even if they are configured in serialization metadata. If you need them in the response, expose them with a virtual property of the parent entity or with a :ref:`custom handler <serialization_handlers_custom>`.
 
-The same handler is used for deserialization - see :ref:`handling_file_upload` how to attach files in ``POST`` / ``PATCH`` payload.
+The same handler is used for deserialization, also of properties of type ``File`` or a class extending it - see :ref:`handling_file_upload` how to attach files in ``POST`` / ``PATCH`` payload.
 
 .. _serialization_handlers_image:
 
