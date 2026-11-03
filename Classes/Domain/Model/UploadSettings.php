@@ -31,10 +31,16 @@ class UploadSettings extends AbstractOperationResourceSettings
         array $attributes = [],
         ?AbstractOperationResourceSettings $uploadSettings = null
     ): AbstractOperationResourceSettings {
-        $uploadSettings = parent::create($attributes, $uploadSettings);
+        $base = $uploadSettings;
+        $uploadSettings = parent::create($attributes, $base);
         $uploadSettings->folder = $attributes['folder'] ?? $uploadSettings->folder;
-        $uploadSettings->allowedFileExtensions = $attributes['allowedFileExtensions'] ??
-            GeneralUtility::trimExplode(',', $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']);
+        // Lowercase, as the extension of the uploaded file is compared in lowercase
+        $uploadSettings->allowedFileExtensions = array_map(
+            static fn(mixed $extension): string => strtolower((string)$extension),
+            $attributes['allowedFileExtensions']
+                ?? $base?->allowedFileExtensions
+                ?? GeneralUtility::trimExplode(',', $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'])
+        );
         $uploadSettings->conflictMode = $attributes['conflictMode'] ?? $uploadSettings->conflictMode;
         $uploadSettings->filenameHashAlgorithm = $attributes['filenameHashAlgorithm'] ?? $uploadSettings->filenameHashAlgorithm;
         $uploadSettings->contentHashAlgorithm = $attributes['contentHashAlgorithm'] ?? $uploadSettings->contentHashAlgorithm;

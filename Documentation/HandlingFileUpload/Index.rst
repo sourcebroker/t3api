@@ -35,7 +35,7 @@ There is plenty configuration options which allows you to customize upload endpo
 
 - ``folder`` - destination folder (default: ``1:/user_upload/`` which means files will be uploaded into ``user_upload`` directory of file storage ID ``1``).
 
-- ``allowedFileExtensions`` - Array of allowed file extensions (default: ``$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']``). Files with PHP extensions are always rejected.
+- ``allowedFileExtensions`` - Array of allowed file extensions, case-insensitive (default: ``$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']``). An empty array allows all extensions. Files with PHP extensions are always rejected.
 
 - ``conflictMode`` - What to do if file with the same name already exists: ``rename`` (default - new file name gets a suffix, e.g. ``image_01.jpg``), ``replace`` or ``cancel`` (values of ``\TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior``).
 
@@ -72,6 +72,8 @@ There is plenty configuration options which allows you to customize upload endpo
    class File extends \TYPO3\CMS\Extbase\Domain\Model\File
    {
    }
+
+Settings of the resource apply to all its operations. An operation can override single settings in its own ``attributes={"upload"={...}}``.
 
 Configuring TCA
 ================
