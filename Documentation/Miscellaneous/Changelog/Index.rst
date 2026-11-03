@@ -40,6 +40,7 @@ Changelog
 - Add :ref:`query modifiers <filtering_custom-filters_query-modifiers>` and :ref:`ordered UIDs filter <filtering_ordered-uids-filter>` - return collections in externally resolved order. [`commit <https://github.com/sourcebroker/t3api/commit/ebb9d75>`__]
 - Allow API sites in backend Content Security Policy (OpenAPI view in backend module for multiple sites). [`commit <https://github.com/sourcebroker/t3api/commit/9d63ab0>`__]
 - Add TYPO3 v14 module icon, clean up backend module. [`commit <https://github.com/sourcebroker/t3api/commit/add7aa5>`__]
+- Swagger UI in the backend module does not use the online validator of swagger.io.
 - Refactor language support for TYPO3 12/13/14. [`commit <https://github.com/sourcebroker/t3api/commit/f8715d5>`__]
 - Handle upload ``conflictMode`` across TYPO3 versions. [`commit <https://github.com/sourcebroker/t3api/commit/22c680e>`__]
 - Resolve current frontend user from Context instead of TSFE. [`commit <https://github.com/sourcebroker/t3api/commit/ddaefd0>`__]
