@@ -28,6 +28,7 @@ use SourceBroker\T3api\Serializer\Accessor\AccessorStrategy;
 use SourceBroker\T3api\Serializer\Construction\ObjectConstructorChain;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
+use SourceBroker\T3api\Serializer\Metadata\WithoutDefaultValuesDriverFactory;
 use SourceBroker\T3api\Utility\FileUtility;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use TYPO3\CMS\Core\Core\Environment;
@@ -36,6 +37,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SerializerService implements SingletonInterface
 {
+    /**
+     * Part of the metadata cache directory - change it when cached metadata changes without changes of the classes
+     * (e.g. metadata drivers), so metadata cached by a previous version is not used.
+     */
+    private const METADATA_CACHE_VERSION = 2;
+
     private ?SerializerBuilder $serializerBuilder = null;
 
     public function __construct(
@@ -60,7 +67,9 @@ class SerializerService implements SingletonInterface
 
     public static function getMetadataCache(): FileCache
     {
-        return new FileCache(FileUtility::createWritableDirectory(self::getSerializerCacheDirectory() . '/metadata'));
+        return new FileCache(FileUtility::createWritableDirectory(
+            self::getSerializerCacheDirectory() . '/metadata-' . self::METADATA_CACHE_VERSION
+        ));
     }
 
     public static function clearCache(array $params): void
@@ -121,7 +130,7 @@ class SerializerService implements SingletonInterface
                 ->setAccessorStrategy(GeneralUtility::makeInstance(AccessorStrategy::class))
                 ->setPropertyNamingStrategy($this->getPropertyNamingStrategy())
                 ->setAnnotationReader(self::getAnnotationReader())
-                ->setMetadataDriverFactory($this->getDriverFactory())
+                ->setMetadataDriverFactory(new WithoutDefaultValuesDriverFactory($this->getDriverFactory()))
                 ->setMetadataCache(self::getMetadataCache())
                 ->addMetadataDirs(self::getMetadataDirs())
                 ->setObjectConstructor(GeneralUtility::makeInstance(
@@ -136,7 +145,7 @@ class SerializerService implements SingletonInterface
 
     public function getMetadataFactory(): MetadataFactoryInterface
     {
-        $metadataDriver = $this->getDriverFactory()
+        $metadataDriver = (new WithoutDefaultValuesDriverFactory($this->getDriverFactory()))
             ->createDriver(self::getMetadataDirs(), self::getAnnotationReader());
         $metadataFactory = new MetadataFactory($metadataDriver, null, self::isDebugMode());
         $metadataFactory->setCache(self::getMetadataCache());

@@ -464,7 +464,16 @@
 							"    }",
 							");",
 							"",
-							"pm.environment.set('newsTstamp', pm.response.json().tstamp);"
+							"pm.environment.set('newsTstamp', pm.response.json().tstamp);",
+							"",
+							"pm.test(",
+							"    'Properties not sent in the request keep their values',",
+							"    function () {",
+							"        const response = pm.response.json();",
+							"        pm.expect(response.alternativeTitle).to.eql('Alt title');",
+							"        pm.expect(response.bodytext).to.eql('Here is the body');",
+							"    }",
+							");"
 						],
 						"type": "text/javascript"
 					}

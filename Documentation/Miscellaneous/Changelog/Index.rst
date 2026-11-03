@@ -6,6 +6,7 @@ Changelog
 
 5.0.0
 =====
+- Keep properties missing in the request body when an existing record is updated (``PATCH``, cascade update of a related record). Newer versions of JMS serializer set the declared default value of such properties (e.g. ``protected string $title = ''``), so all properties which were not sent were reset.
 - Fix response cache identifier for ``identifierExpressions`` returning an array (e.g. ``frontend.user.userGroupIds``) - array items are part of the identifier now. Tag expressions returning an array add a tag per item. See :ref:`response-cache`.
 - [!!!] Validate origin and content type of requests changing data: requests from another origin not allowed by CORS ``allowOrigin`` return ``403 Forbidden``, JSON body without JSON ``Content-Type`` returns ``415 Unsupported Media Type``. Add origins of frontend applications to ``allowOrigin`` and send ``Content-Type: application/json``. See :ref:`cors_write_requests`.
 - Fix response cache invalidation when the page cache is cleared from the backend (cache tags passed as a list were ignored, numeric tags caused errors).
