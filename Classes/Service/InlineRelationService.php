@@ -13,17 +13,19 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap\Relation;
-use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMap;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
 
 /**
  * Records of relations stored in the related table (TCA `inline` with `foreign_field`, TCA `file`) keep the parent
- * record in their own row. Assigning such an existing record to a property moves it to the new parent, so it is
- * allowed only for records without parent and for records which already belong to the same parent property.
+ * record in their own row and belong to this parent only. An existing record of such relation can be assigned
+ * (or updated by cascade persistence) only by the parent property it already belongs to. New records are created
+ * without `uid`.
  */
 class InlineRelationService
 {
     public function __construct(
-        private readonly DataMapper $dataMapper,
+        private readonly DataMapFactory $dataMapFactory,
         private readonly ConnectionPool $connectionPool
     ) {}
 
@@ -33,60 +35,110 @@ class InlineRelationService
      *
      * @throws BadRequestException
      */
-    public function assertAssignable(AbstractDomainObject $record, DeserializationContext $context): void
+    public function assertAssignable(AbstractDomainObject $record, DeserializationContext $context, int $code): void
     {
-        $visitor = $context->getVisitor();
-        $parent = method_exists($visitor, 'getCurrentObject') ? $visitor->getCurrentObject() : null;
+        $parent = $this->getContextParent($context);
         $metadataStack = $context->getMetadataStack();
         $propertyMetadata = $metadataStack->isEmpty() ? null : $metadataStack->top();
 
         if (
-            $parent instanceof AbstractDomainObject
+            $parent !== null
             && $propertyMetadata instanceof PropertyMetadata
-            && !$this->isAssignable($parent, $propertyMetadata->name, $record)
+            && $this->checkAssignable($parent, $propertyMetadata->name, $record) === false
         ) {
             throw new BadRequestException(
                 'relation_not_assignable',
                 [(string)$record->getUid(), implode('.', $context->getCurrentPath())],
-                1793660001
+                $code
             );
         }
     }
 
+    /**
+     * The object which is currently deserialized - the parent of the relation which is deserialized.
+     */
+    public function getContextParent(DeserializationContext $context): ?AbstractDomainObject
+    {
+        $visitor = $context->getVisitor();
+        $parent = method_exists($visitor, 'getCurrentObject') ? $visitor->getCurrentObject() : null;
+
+        return $parent instanceof AbstractDomainObject ? $parent : null;
+    }
+
+    /**
+     * Whether `$record` already belongs to property `$propertyName` of `$parent` - checked in the database, as the
+     * property of `$parent` may be reset before deserialization (PUT). Null when the relation is not stored in the
+     * related table.
+     */
+    public function checkAssignable(AbstractDomainObject $parent, string $propertyName, AbstractDomainObject $record): ?bool
+    {
+        $parentDataMap = $this->dataMapFactory->buildDataMap(get_class($parent));
+        $columnMap = $this->getRelatedTableColumnMap($parentDataMap, $propertyName);
+
+        return $columnMap === null
+            ? null
+            : $this->belongsToParent($parent, $parentDataMap->getTableName(), $columnMap, $record);
+    }
+
+    public function isStoredInRelatedTable(AbstractDomainObject $parent, string $propertyName): bool
+    {
+        return $this->getRelatedTableColumnMap(
+            $this->dataMapFactory->buildDataMap(get_class($parent)),
+            $propertyName
+        ) !== null;
+    }
+
     public function isAssignable(AbstractDomainObject $parent, string $propertyName, AbstractDomainObject $record): bool
     {
-        $columnMap = $this->dataMapper->getDataMap(get_class($parent))->getColumnMap($propertyName);
-        if ($columnMap === null || !$this->isStoredInRelatedTable($columnMap)) {
-            return true;
-        }
+        return $this->checkAssignable($parent, $propertyName, $record) === true;
+    }
 
+    private function getRelatedTableColumnMap(DataMap $parentDataMap, string $propertyName): ?ColumnMap
+    {
+        $columnMap = $parentDataMap->getColumnMap($propertyName);
+
+        return $columnMap !== null
+            && in_array($columnMap->getTypeOfRelation(), [Relation::HAS_ONE, Relation::HAS_MANY], true)
+            && (string)$columnMap->getParentKeyFieldName() !== ''
+            && (string)$columnMap->getChildTableName() !== ''
+                ? $columnMap
+                : null;
+    }
+
+    private function belongsToParent(
+        AbstractDomainObject $parent,
+        string $parentTable,
+        ColumnMap $columnMap,
+        AbstractDomainObject $record
+    ): bool {
         $parentKeyField = (string)$columnMap->getParentKeyFieldName();
         $parentTableField = (string)$columnMap->getParentTableFieldName();
         $matchFields = $columnMap->getRelationTableMatchFields() ?? [];
 
+        // The row Extbase updates when persisting the record: the translation for a translated record.
+        $recordUid = (int)($record->_getProperty(AbstractDomainObject::PROPERTY_LOCALIZED_UID) ?: $record->getUid());
         $row = $this->fetchParentFields(
             (string)$columnMap->getChildTableName(),
-            (int)$record->getUid(),
+            $recordUid,
             array_filter([$parentKeyField, $parentTableField, ...array_keys($matchFields)])
         );
         if ($row === null) {
             return false;
         }
 
-        if ((int)$row[$parentKeyField] === 0) {
-            return true;
-        }
-
-        // Same value as written by Extbase persistence - a translated parent is stored with its localized UID.
-        $parentUid = (int)($parent->_getProperty(AbstractDomainObject::PROPERTY_LOCALIZED_UID) ?: $parent->getUid());
-        if ($parentUid === 0 || (int)$row[$parentKeyField] !== $parentUid) {
+        // The parent key Extbase writes: for records of a collection the localized UID of a translated parent, so
+        // a record stored with another value would be moved. A record of a single relation keeps its parent key,
+        // which is the default language UID of the parent when the record was inserted.
+        $localizedParentUid = (int)($parent->_getProperty(AbstractDomainObject::PROPERTY_LOCALIZED_UID) ?: $parent->getUid());
+        $parentUids = $columnMap->getTypeOfRelation() === Relation::HAS_MANY
+            ? [$localizedParentUid]
+            : [$localizedParentUid, (int)$parent->getUid()];
+        $parentUids = array_filter($parentUids);
+        if (!in_array((int)$row[$parentKeyField], $parentUids, true)) {
             return false;
         }
 
-        if (
-            $parentTableField !== ''
-            && (string)$row[$parentTableField] !== $this->dataMapper->getDataMap(get_class($parent))->getTableName()
-        ) {
+        if ($parentTableField !== '' && (string)$row[$parentTableField] !== $parentTable) {
             return false;
         }
 
@@ -97,13 +149,6 @@ class InlineRelationService
         }
 
         return true;
-    }
-
-    private function isStoredInRelatedTable(ColumnMap $columnMap): bool
-    {
-        return in_array($columnMap->getTypeOfRelation(), [Relation::HAS_ONE, Relation::HAS_MANY], true)
-            && (string)$columnMap->getParentKeyFieldName() !== ''
-            && (string)$columnMap->getChildTableName() !== '';
     }
 
     /**

@@ -33,11 +33,55 @@ Relations stored in the related table
 --------------------------------------
 
 Records of relations stored in the related table - TCA ``inline`` with ``foreign_field`` and TCA ``file``
-(file references) - keep their parent record in their own row, so they can belong to one parent only.
-An existing record of such relation can be passed by ``uid`` only when it does not belong to any record yet,
-or when it already belongs to the same property of the same record (e.g. sending the current items again in
-``PATCH`` or ``PUT``). Otherwise the response is ``400 Bad Request``. To add new items, create them using
-cascade persistence described below.
+(file references) - keep their parent record in their own row and belong to this parent only. An existing record
+of such relation can be passed by ``uid`` (also to update it, see below) only when it already belongs to the same
+property of the same record, e.g. when sending the current items again in ``PATCH`` or ``PUT``. Otherwise the
+response is ``400 Bad Request``. New items are created in the same request - pass them without ``uid`` using
+cascade persistence described below, file references with ``uidLocal`` (see :ref:`handling_file_upload`).
+
+.. code-block:: json
+
+   {
+      "steps": [
+         1,
+         {"uid": 2, "title": "Changed title of existing step"},
+         {"title": "New step"}
+      ]
+   }
+
+The collection sent in the request replaces the current one. Extbase does not delete an item removed from the
+collection, it only clears its relation to the parent. To delete removed items, add the Extbase ``Cascade``
+attribute to the property. TYPO3 14 reads Extbase annotations only from PHP attributes, not from doc comments.
+The form below works in TYPO3 12, 13 and 14 (in TYPO3 14 you can use
+``#[\TYPO3\CMS\Extbase\Attribute\ORM\Cascade('remove')]`` instead):
+
+.. code-block:: php
+
+   use SourceBroker\T3api\Annotation as T3api;
+   use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
+
+   /**
+    * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Vendor\Ext\Domain\Model\Step>
+    * @T3api\ORM\Cascade("persist")
+    */
+   #[Cascade(['value' => 'remove'])]
+   protected ObjectStorage $steps;
+
+An existing record which can not be found (also a hidden one) returns ``400 Bad Request``. A record passed with
+``"uid": 0`` is created as a new one. Value ``0`` clears a single relation; in a collection it returns
+``400 Bad Request``.
+
+.. note::
+   For a translated record Extbase stores the translated record as the parent of items of such relation. An item
+   of the default language shown for the translation (language fallback) is therefore rejected when sent again -
+   saving it would move it from the default language record to the translation.
+
+   Do not expose the field which stores the parent (``foreign_field``, e.g. ``recipe`` of a recipe step) in the
+   denormalization groups - otherwise a record can be moved to another parent by updating it.
+
+If records of your relations are owned by users and should be checked by their owner, add a rule for it in
+``security_post_denormalize`` of the operation, e.g. a method of the model which checks all items, see
+:ref:`security`.
 
 Cascade persistence - creating related entity in single request
 ================================================================

@@ -8,3 +8,11 @@ T3apiTests\FunctionalTest\Domain\Model\Recipe:
       groups: [api_recipe_write]
     images:
       groups: [api_recipe_write]
+    category:
+      groups: [api_recipe_write]
+    tags:
+      # API resource subclass of the related class - related records are compared by UID, not by instance
+      type: 'TYPO3\CMS\Extbase\Persistence\ObjectStorage<T3apiTests\FunctionalTest\Domain\Model\TagResource>'
+      groups: [api_recipe_write]
+    image:
+      groups: [api_recipe_write]

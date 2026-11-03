@@ -1,0 +1,4 @@
+T3apiTests\FunctionalTest\Domain\Model\RecipeStep:
+  properties:
+    title:
+      groups: [api_recipe_write]

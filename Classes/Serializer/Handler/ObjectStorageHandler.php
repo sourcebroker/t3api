@@ -68,6 +68,14 @@ class ObjectStorageHandler extends AbstractHandler implements SerializeHandlerIn
         $items = $visitor->visitArray($data, $type);
 
         foreach ($items as $item) {
+            // `null` or `0` (which clears a single relation) can not be an item of a collection
+            if ($item === null) {
+                throw new BadRequestException(
+                    'empty_collection_item',
+                    [implode('.', $context->getCurrentPath())],
+                    1793680001
+                );
+            }
             $objectStorage->attach($item);
         }
 

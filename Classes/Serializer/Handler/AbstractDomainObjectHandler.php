@@ -9,17 +9,17 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use SourceBroker\T3api\Annotation\ORM\Cascade;
 use SourceBroker\T3api\Exception\BadRequestException;
-use SourceBroker\T3api\Service\InlineRelationService;
 use SourceBroker\T3api\Service\PropertyInfoService;
 use SourceBroker\T3api\Service\SerializerService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
+use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 class AbstractDomainObjectHandler extends AbstractHandler implements DeserializeHandlerInterface
 {
+    use InlineRelationServiceTrait;
+
     /**
      * @var string
      */
@@ -29,22 +29,6 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
         protected readonly PersistenceManager $persistenceManager,
         protected readonly SerializerService $serializerService
     ) {}
-
-    protected ?InlineRelationService $inlineRelationService = null;
-
-    /**
-     * Injected by method (not constructor) so that adding new dependency does not break handlers which extend this
-     * class and override the constructor.
-     */
-    public function injectInlineRelationService(InlineRelationService $inlineRelationService): void
-    {
-        $this->inlineRelationService = $inlineRelationService;
-    }
-
-    protected function getInlineRelationService(): InlineRelationService
-    {
-        return $this->inlineRelationService ??= GeneralUtility::makeInstance(InlineRelationService::class);
-    }
 
     /**
      * @var string[]
@@ -69,14 +53,24 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
             $targetObjectType = $type['params']['targetType'];
 
             if (is_numeric($data)) {
+                // `0` clears a single relation (in a collection it is rejected by `ObjectStorageHandler`).
+                if ((int)$data === 0) {
+                    return null;
+                }
+
                 $object = $this->persistenceManager->getObjectByIdentifier(
                     (int)$data,
                     $targetObjectType,
                     false
                 );
-                if ($object instanceof AbstractDomainObject) {
-                    $this->getInlineRelationService()->assertAssignable($object, $context);
+                if (!$object instanceof AbstractDomainObject) {
+                    throw new BadRequestException(
+                        'relation_not_found',
+                        [(string)$data, implode('.', $context->getCurrentPath())],
+                        1793670001
+                    );
                 }
+                $this->getInlineRelationService()->assertAssignable($object, $context, 1793660001);
 
                 return $object;
             }
@@ -126,7 +120,8 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
             );
         }
 
-        if (isset($data['uid'])) {
+        // UID `0` is a new record as well, same as in `FileReferenceHandler`.
+        if (!empty($data['uid'])) {
             return $this->processCascadeUpdate(
                 (int)$data['uid'],
                 $targetObjectType,
@@ -164,24 +159,18 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
     ) {
         $object = $this->persistenceManager->getObjectByIdentifier($uid, $targetObjectType, false);
 
-        if ($object === null) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Path `%s`: Entity of type `%s` with UID `%s` could not be found',
-                    implode('.', $context->getCurrentPath()),
-                    $targetObjectType,
-                    $uid
-                ),
+        if (!$object instanceof AbstractDomainObject) {
+            throw new BadRequestException(
+                'relation_not_found',
+                [(string)$uid, implode('.', $context->getCurrentPath())],
                 1588278656829
             );
         }
 
         if (!$this->isObjectInContextScope($context, $propertyMetadata, $object)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Object in path `%s` is out of scope. You can not update objects which are not related already. To create new object pass it without `uid` property.',
-                    implode('.', $context->getCurrentPath())
-                ),
+            throw new BadRequestException(
+                'relation_not_assignable',
+                [(string)$uid, implode('.', $context->getCurrentPath())],
                 1589811402076
             );
         }
@@ -195,33 +184,44 @@ class AbstractDomainObjectHandler extends AbstractHandler implements Deserialize
         );
     }
 
+    /**
+     * Relations stored in the related table are checked by `InlineRelationService`. Other relations are compared with
+     * the state loaded from the database (clean state) - the current value may be already reset (PUT).
+     */
     private function isObjectInContextScope(
         DeserializationContext $context,
         PropertyMetadata $propertyMetadata,
-        $object
+        AbstractDomainObject $object
     ): bool {
-        $parentObject = $context->getAttribute('target');
-
-        if (empty($parentObject)) {
-            throw new \RuntimeException(
-                'It is not possible to check if object is in context scope without parent object. This message should never be thrown',
-                1589811502043
-            );
+        $parentObject = $this->getInlineRelationService()->getContextParent($context);
+        if ($parentObject === null) {
+            return false;
         }
 
-        $property = ObjectAccess::getProperty($parentObject, $propertyMetadata->name);
-
-        if (
-            $propertyMetadata->type['name'] === ObjectStorage::class
-            || is_subclass_of($propertyMetadata->type['name'], ObjectStorage::class)
-        ) {
-            return $property->contains($object);
+        $assignable = $this->getInlineRelationService()->checkAssignable($parentObject, $propertyMetadata->name, $object);
+        if ($assignable !== null) {
+            return $assignable;
         }
 
-        if ($property instanceof AbstractDomainObject) {
+        $property = $parentObject->_getCleanProperty($propertyMetadata->name);
+
+        // Compared by UID - the related object may be an instance of another class (e.g. an API resource class
+        // declared as `type` in YAML metadata) than the one in the relation.
+        if ($property instanceof ObjectStorage) {
+            foreach ($property as $relatedObject) {
+                if ($relatedObject instanceof AbstractDomainObject && $relatedObject->getUid() === $object->getUid()) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // `LazyLoadingProxy::getUid()` does not load the related object.
+        if ($property instanceof AbstractDomainObject || $property instanceof LazyLoadingProxy) {
             return $object->getUid() === $property->getUid();
         }
 
-        throw new \RuntimeException('Unsupported object type', 1589811431286);
+        return false;
     }
 }

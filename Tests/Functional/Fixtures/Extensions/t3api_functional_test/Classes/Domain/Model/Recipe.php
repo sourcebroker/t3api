@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace T3apiTests\FunctionalTest\Domain\Model;
 
 use SourceBroker\T3api\Annotation\ApiResource;
+use SourceBroker\T3api\Annotation as T3api;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -63,8 +64,22 @@ class Recipe extends AbstractEntity
 
     /**
      * @var ObjectStorage<RecipeStep>
+     * @T3api\ORM\Cascade("persist")
      */
     protected ObjectStorage $steps;
+
+    /**
+     * @T3api\ORM\Cascade("persist")
+     */
+    protected ?Category $category = null;
+
+    /**
+     * @var ObjectStorage<Tag>
+     * @T3api\ORM\Cascade("persist")
+     */
+    protected ObjectStorage $tags;
+
+    protected ?FileReference $image = null;
 
     /**
      * @var ObjectStorage<FileReference>
@@ -74,6 +89,7 @@ class Recipe extends AbstractEntity
     public function __construct()
     {
         $this->steps = new ObjectStorage();
+        $this->tags = new ObjectStorage();
         $this->images = new ObjectStorage();
     }
 
@@ -101,6 +117,42 @@ class Recipe extends AbstractEntity
     public function setSteps(ObjectStorage $steps): void
     {
         $this->steps = $steps;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): void
+    {
+        $this->category = $category;
+    }
+
+    /**
+     * @return ObjectStorage<Tag>
+     */
+    public function getTags(): ObjectStorage
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param ObjectStorage<Tag> $tags
+     */
+    public function setTags(ObjectStorage $tags): void
+    {
+        $this->tags = $tags;
+    }
+
+    public function getImage(): ?FileReference
+    {
+        return $this->image;
+    }
+
+    public function setImage(?FileReference $image): void
+    {
+        $this->image = $image;
     }
 
     /**
