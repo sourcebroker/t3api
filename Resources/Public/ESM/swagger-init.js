@@ -5,6 +5,8 @@ let checkExist = setInterval(function() {
     window.ui = SwaggerUIBundle({
       url: element.dataset.specUrl,
       dom_id: '#t3api-swagger-ui',
+      // Do not send the specification URL to the online validator of swagger.io (default of Swagger UI)
+      validatorUrl: null,
       deepLinking: true,
       presets: [
         SwaggerUIBundle.presets.apis,
