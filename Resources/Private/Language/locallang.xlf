@@ -60,6 +60,15 @@
 			<trans-unit id="exception.bad_request.invalid_collection">
 				<source>Value of type `%s` in path `%s` has to be an array</source>
 			</trans-unit>
+			<trans-unit id="exception.bad_request.empty_collection_item">
+				<source>Collection in path `%s` can not contain an empty value</source>
+			</trans-unit>
+			<trans-unit id="exception.bad_request.relation_not_found">
+				<source>Record `%s` in path `%s` not found</source>
+			</trans-unit>
+			<trans-unit id="exception.bad_request.relation_not_assignable">
+				<source>Record `%s` in path `%s` does not belong to this record. Pass new records without `uid`</source>
+			</trans-unit>
 			<trans-unit id="exception.bad_request.order_direction">
 				<source>Unknown order direction `%s`, expected `asc` or `desc`</source>
 			</trans-unit>

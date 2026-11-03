@@ -9,6 +9,7 @@ use JMS\Serializer\JsonDeserializationVisitor;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use SourceBroker\T3api\Exception\BadRequestException;
 use SourceBroker\T3api\Exception\ValidationException;
 use SourceBroker\T3api\Service\FileReferenceService;
 use SourceBroker\T3api\Service\SerializerService;
@@ -30,6 +31,8 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class FileReferenceHandler extends AbstractHandler implements SerializeHandlerInterface, DeserializeHandlerInterface
 {
+    use InlineRelationServiceTrait;
+
     /**
      * @var string
      */
@@ -140,7 +143,8 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
             );
         }
 
-        if ($data === 0) {
+        // `0` (also as string) removes the reference of a single file property
+        if (is_numeric($data) && (int)$data === 0) {
             $this->removeExistingFileReference($context);
 
             return null;
@@ -155,11 +159,25 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         $uid = (int)(is_numeric($data) ? $data : $data['uid']);
 
         if ($uid > 0) {
-            return $this->persistenceManager->getObjectByIdentifier(
+            $fileReference = $this->persistenceManager->getObjectByIdentifier(
                 $uid,
                 ExtbaseFileReference::class,
                 false
             );
+            // @todo `File` and `Folder` properties are looked up as file references as well - kept unchanged here
+            if (!is_subclass_of($type['params']['targetType'], FileReference::class)) {
+                return $fileReference;
+            }
+            if (!$fileReference instanceof AbstractDomainObject) {
+                throw new BadRequestException(
+                    'relation_not_found',
+                    [(string)$uid, implode('.', $context->getCurrentPath())],
+                    1793670002
+                );
+            }
+            $this->getInlineRelationService()->assertAssignable($fileReference, $context, 1793660002);
+
+            return $fileReference;
         }
         return null;
     }

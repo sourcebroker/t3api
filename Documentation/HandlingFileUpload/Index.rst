@@ -141,7 +141,8 @@ Save reference to new file
 
 .. important::
     It is not (yet) possible to update existing file reference within T3api request - it is possible only to create
-    new reference.
+    new reference. An existing file reference can be passed by ``uid`` only when it already belongs to the same
+    property of the same record, see :ref:`handling_cascade_persistence_inline_relations`.
 
 .. code-block:: json
 

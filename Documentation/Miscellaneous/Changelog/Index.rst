@@ -6,6 +6,7 @@ Changelog
 
 5.0.0
 =====
+- [!!!] Existing records of relations stored in the related table (TCA ``inline`` with ``foreign_field``, TCA ``file``) can be assigned or updated by ``uid`` only when they already belong to the same property of the same record, otherwise ``400 Bad Request`` is returned. New records are passed without ``uid``. Fixes cascade update in ``PUT`` requests (all relation types). A not existing record passed by ``uid`` returns ``400 Bad Request`` instead of HTTP 500. See :ref:`handling_cascade_persistence_inline_relations`.
 - Keep properties missing in the request body when an existing record is updated (``PATCH``, cascade update of a related record). Newer versions of JMS serializer set the declared default value of such properties (e.g. ``protected string $title = ''``), so all properties which were not sent were reset.
 - Fix response cache identifier for ``identifierExpressions`` returning an array (e.g. ``frontend.user.userGroupIds``) - array items are part of the identifier now. Tag expressions returning an array add a tag per item. See :ref:`response-cache`.
 - [!!!] Validate origin and content type of requests changing data: requests from another origin not allowed by CORS ``allowOrigin`` return ``403 Forbidden``, JSON body without JSON ``Content-Type`` returns ``415 Unsupported Media Type``. Add origins of frontend applications to ``allowOrigin`` and send ``Content-Type: application/json``. See :ref:`cors_write_requests`.
