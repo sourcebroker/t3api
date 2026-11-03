@@ -19,6 +19,7 @@ use SourceBroker\T3api\OpenApi\Objects\Schema;
 use SourceBroker\T3api\Response\AbstractCollectionResponse;
 use SourceBroker\T3api\Security\OperationAccessChecker;
 use SourceBroker\T3api\Service\CacheTagCollector;
+use SourceBroker\T3api\Service\FileTokenService;
 use SourceBroker\T3api\Service\OperationResponseCache;
 use SourceBroker\T3api\Service\ResponseCacheDebugHeaders;
 use SourceBroker\T3api\Service\ResponseCacheService;
@@ -197,6 +198,32 @@ class OperationResponseCacheTest extends UnitTestCase
         $output = $this->resolve($this->processor('{"fresh":true}', $processorCalled));
 
         self::assertSame('{"fresh":true}', $output);
+        self::assertTrue($processorCalled);
+    }
+
+    #[Test]
+    public function outputWithIssuedFileTokensIsNotStored(): void
+    {
+        $this->allowConditions();
+        $this->responseCacheService->method('buildEntryIdentifier')->willReturn('entry-id');
+        $this->responseCacheService->method('get')->willReturn(null);
+        $this->responseCacheService->expects(self::never())->method('store');
+        $fileTokenService = self::createStub(FileTokenService::class);
+        $fileTokenService->method('hasIssuedTokens')->willReturn(true);
+        $operationResponseCache = $this->createOperationResponseCache();
+        $operationResponseCache->injectFileTokenService($fileTokenService);
+
+        $processorCalled = false;
+        $response = new Response();
+        $output = $operationResponseCache->resolve(
+            $this->createOperation(),
+            [],
+            Request::create('https://example.com/_api/books', 'GET'),
+            $this->processor('{"fileToken":"x"}', $processorCalled),
+            $response
+        );
+
+        self::assertSame('{"fileToken":"x"}', $output);
         self::assertTrue($processorCalled);
     }
 

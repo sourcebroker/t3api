@@ -11,6 +11,7 @@ use SourceBroker\T3api\Domain\Model\CollectionOperation;
 use SourceBroker\T3api\Domain\Model\OperationInterface;
 use SourceBroker\T3api\ExpressionLanguage\Resolver;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
+use SourceBroker\T3api\Serializer\Subscriber\FileTokenSubscriber;
 use Symfony\Component\HttpFoundation\Request;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Context\Context;
@@ -41,6 +42,11 @@ class ResponseCacheService implements LoggerAwareInterface
 
         $responseCacheSettings = $operation->getResponseCacheSettings();
         if (!$responseCacheSettings->isEnabled()) {
+            return null;
+        }
+
+        // File tokens are created per user and expire - a cached response would serve them to other users.
+        if (!empty($operation->getNormalizationContext()[FileTokenSubscriber::CONTEXT_ATTRIBUTE])) {
             return null;
         }
 

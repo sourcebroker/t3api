@@ -56,6 +56,18 @@ class ResponseCacheServiceTest extends UnitTestCase
     }
 
     #[Test]
+    public function returnsNullForOperationWithFileTokens(): void
+    {
+        $operation = self::createStub(CollectionOperation::class);
+        $operation->method('getResponseCacheSettings')->willReturn(ResponseCacheSettings::create(['enabled' => true]));
+        $operation->method('getNormalizationContext')->willReturn(['fileTokens' => true]);
+
+        $service = new ResponseCacheService($this->cache, new Context());
+
+        self::assertNull($service->buildEntryIdentifier($operation, [], Request::create('https://example.com/_api/avatars', 'GET')));
+    }
+
+    #[Test]
     public function returnsNullWhenCacheIsDisabled(): void
     {
         $service = new ResponseCacheService($this->cache, new Context());

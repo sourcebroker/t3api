@@ -103,7 +103,7 @@ File is sent as ``multipart/form-data`` ``POST`` request to the upload endpoint.
 File upload response
 =====================
 
-On success the response has status ``201`` and contains created ``sys_file`` record. The most important property is ``uid`` - it is needed to create a file reference in the next request.
+On success the response has status ``201`` and contains created ``sys_file`` record. The most important properties are ``uid`` and ``fileToken`` - both are needed to create a file reference in the next request, see :ref:`handling_file_upload_file_token`.
 
 .. code-block:: json
 
@@ -121,7 +121,8 @@ On success the response has status ``201`` and contains created ``sys_file`` rec
       },
       "name": "test1_01.jpg",
       "uid": 3,
-      "identifier": "/user_upload/media-export-excluded/test1_01.jpg"
+      "identifier": "/user_upload/media-export-excluded/test1_01.jpg",
+      "fileToken": "1793900000.4f9c2b..."
    }
 
 (``properties`` shortened.)
@@ -148,11 +149,13 @@ Save reference to new file
 
    {
       "photo": {
-         "uidLocal": 15
+         "uidLocal": 15,
+         "fileToken": "1793900000.4f9c2b..."
       }
    }
 
-``uidLocal`` is the ``uid`` of the file returned by upload endpoint. If you would like to save any other data inside file reference (e.g. ``showinpreview`` in ``EXT:news``) it is needed to use a class which extends ``TYPO3\CMS\Extbase\Domain\Model\FileReference`` and contains such properties.
+``uidLocal`` is the ``uid`` of the file returned by upload endpoint, ``fileToken`` is the token returned together with
+it, see :ref:`handling_file_upload_file_token`. If you would like to save any other data inside file reference (e.g. ``showinpreview`` in ``EXT:news``) it is needed to use a class which extends ``TYPO3\CMS\Extbase\Domain\Model\FileReference`` and contains such properties.
 
 .. code-block:: json
 
@@ -160,16 +163,149 @@ Save reference to new file
       "falMedia": [
          {
             "uidLocal": 15,
+            "fileToken": "1793900000.4f9c2b...",
             "showinpreview": 1
          },
          {
             "uidLocal": 16,
+            "fileToken": "1793900000.8a71de...",
             "showinpreview": 0
          }
       ]
    }
 
 Custom file reference class is handled in the same way as the default one - t3api supports every class which extends ``TYPO3\CMS\Extbase\Domain\Model\FileReference``. Make sure that the property type points to your class (in annotation or :ref:`YAML metadata <serialization_yaml-metadata>`), e.g. ``ObjectStorage<SourceBroker\T3apinews\Domain\Model\FileReference>`` for ``falMedia`` in testing instance.
+
+.. _handling_file_upload_file_token:
+
+File token
+-----------
+
+A new file reference is created only with ``fileToken`` returned for the file in ``uidLocal`` by the API. Without a
+valid token the response is ``400 Bad Request`` with a violation of property ``fileToken``. Existing file references
+passed by ``uid`` do not need a token. The same applies to properties holding a file directly, see
+:ref:`handling_file_upload_file_property`.
+
+The token is returned:
+
+- in the response of the upload request (see above),
+- for every file in the response of an operation with ``"fileTokens"=true`` in its ``normalizationContext`` - see
+  :ref:`handling_file_upload_file_selection`. For file references it is ``file.fileToken``,
+- for files granted by custom code, see below.
+
+Rules:
+
+- A token returned to a logged in frontend user is valid only for this user.
+- A token returned without login (e.g. for an attachment of an application form) is valid for everybody who has it -
+  it is returned only in the response for this user. Such token can also be used after login.
+- A token is valid for 24 hours by default. Change it in system settings (e.g. ``config/system/additional.php``) or in
+  ``ext_localconf.php`` of your extension:
+
+.. code-block:: php
+
+   $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3api']['fileToken']['lifetime'] = 3600;
+
+Custom code returning files which can be referenced (e.g. a custom upload handler) grants tokens for them - the token
+is added to the file when the response is serialized:
+
+.. code-block:: php
+
+   GeneralUtility::makeInstance(\SourceBroker\T3api\Service\FileTokenService::class)->grant($file->getUid());
+
+.. _handling_file_upload_file_selection:
+
+Offering files for selection
+-----------------------------
+
+To let users choose a file which was not uploaded by them (e.g. an avatar from a predefined set), create an operation
+returning the files which can be chosen and add ``"fileTokens"=true`` to its ``normalizationContext``. Which files are
+returned is decided by the operation (filters, custom handler) and who can call it by its ``security``.
+
+.. code-block:: php
+
+   /**
+    * @T3api\ApiResource (
+    *     collectionOperations={
+    *          "get"={
+    *              "path"="/avatars",
+    *              "normalizationContext"={
+    *                  "fileTokens"=true
+    *              }
+    *          },
+    *     }
+    * )
+    */
+   class Avatar extends \TYPO3\CMS\Extbase\Domain\Model\File
+   {
+       /**
+        * @T3api\Serializer\VirtualProperty("url")
+        */
+       public function getUrl(): ?string
+       {
+           return $this->getOriginalResource()->getPublicUrl();
+       }
+
+       /**
+        * @T3api\Serializer\VirtualProperty("name")
+        */
+       public function getName(): string
+       {
+           return $this->getOriginalResource()->getName();
+       }
+   }
+
+Virtual properties ``url`` and ``name`` give the client what it needs to show the files. The object of Extbase's
+``File`` contains ``uid`` and ``pid`` only - TYPO3 13 and newer add ``originalResource`` with all data of the file.
+
+Map the class to table ``sys_file`` in :file:`Configuration/Extbase/Persistence/Classes.php` of your extension:
+
+.. code-block:: php
+
+   return [
+       \Vendor\Users\Domain\Model\Avatar::class => [
+           'tableName' => 'sys_file',
+       ],
+   ];
+
+Every file in the response contains ``fileToken``, which is sent together with ``uidLocal`` of the chosen file:
+
+.. code-block:: json
+
+   {
+      "avatar": {
+         "uidLocal": 101,
+         "fileToken": "1793900000.4f9c2b..."
+      }
+   }
+
+Responses of operations with ``fileTokens`` are not stored in the :ref:`response cache <response-cache>`, as tokens
+are created for the current user.
+
+.. warning::
+
+   ``fileTokens`` adds a token to **every** file in the response of the operation - also to files of file references
+   of returned records (``file.fileToken``). Enable it only for operations returning files meant to be chosen, and
+   make sure that filters and custom handlers of the operation can not return other files.
+
+.. _handling_file_upload_file_property:
+
+Property with a file
+---------------------
+
+A property of type ``\TYPO3\CMS\Extbase\Domain\Model\File`` or a class extending it (e.g. TCA ``select`` with
+``foreign_table`` ``sys_file``) stores the file itself, without a file reference. Another file is set with the token returned for it:
+
+.. code-block:: json
+
+   {
+      "avatar": {
+         "uid": 101,
+         "fileToken": "1793900000.4f9c2b..."
+      }
+   }
+
+The current file of the property can be sent by its ``uid`` without a token (e.g. ``"avatar": 101`` in ``PUT``
+request). ``0`` clears the property.
 
 Removing single file reference
 ===============================

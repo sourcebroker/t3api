@@ -62,8 +62,16 @@ FileReferenceSubscriber
 ========================
 
 This subscriber listens to the ``PRE_SERIALIZE`` and ``PRE_DESERIALIZE`` events.
-In both cases, if the type is a subclass of ``FileReference``, ``File`` or ``Folder`` (and it is nested in another object), it changes the type to a custom one
+In both cases, if the type is a subclass of ``FileReference`` or ``Folder`` (on deserialization also ``File`` and its subclasses) and it is nested in another object, it changes the type to a custom one
 to enable data handling with ``FileReferenceHandler`` (see :ref:`serialization_handlers_file-reference`).
+
+.. _serialization_subscribers_file_token_subscriber:
+
+FileTokenSubscriber
+====================
+
+This subscriber listens to the ``POST_SERIALIZE`` event. It adds ``fileToken`` to files (``sys_file``) which can be
+referenced in the next request, see :ref:`handling_file_upload_file_token`.
 
 .. _serialization_subscribers_generate_metadata_subscriber:
 

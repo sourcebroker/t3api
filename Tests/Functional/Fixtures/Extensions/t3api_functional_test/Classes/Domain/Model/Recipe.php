@@ -10,7 +10,8 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
- * Resource with relations stored in the related table: inline `steps` (`foreign_field`) and `images` (TCA `file`).
+ * Resource with relations stored in the related table: inline `steps` (`foreign_field`) and `images` (TCA `file`),
+ * and with files (`sys_file`, not references) in `logo` (API resource class) and `logos` (Extbase's `File` class).
  *
  * @ApiResource(
  *     collectionOperations={
@@ -86,11 +87,19 @@ class Recipe extends AbstractEntity
      */
     protected ObjectStorage $images;
 
+    protected ?File $logo = null;
+
+    /**
+     * @var ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\File>
+     */
+    protected ObjectStorage $logos;
+
     public function __construct()
     {
         $this->steps = new ObjectStorage();
         $this->tags = new ObjectStorage();
         $this->images = new ObjectStorage();
+        $this->logos = new ObjectStorage();
     }
 
     public function getTitle(): string
@@ -169,5 +178,31 @@ class Recipe extends AbstractEntity
     public function setImages(ObjectStorage $images): void
     {
         $this->images = $images;
+    }
+
+    public function getLogo(): ?File
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(?File $logo): void
+    {
+        $this->logo = $logo;
+    }
+
+    /**
+     * @return ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\File>
+     */
+    public function getLogos(): ObjectStorage
+    {
+        return $this->logos;
+    }
+
+    /**
+     * @param ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\File> $logos
+     */
+    public function setLogos(ObjectStorage $logos): void
+    {
+        $this->logos = $logos;
     }
 }

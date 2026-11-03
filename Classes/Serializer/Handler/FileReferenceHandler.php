@@ -6,12 +6,15 @@ namespace SourceBroker\T3api\Serializer\Handler;
 
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\JsonDeserializationVisitor;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use SourceBroker\T3api\Exception\BadRequestException;
 use SourceBroker\T3api\Exception\ValidationException;
+use SourceBroker\T3api\Serializer\Subscriber\FileTokenSubscriber;
 use SourceBroker\T3api\Service\FileReferenceService;
+use SourceBroker\T3api\Service\FileTokenServiceTrait;
 use SourceBroker\T3api\Service\SerializerService;
 use SourceBroker\T3api\Service\UrlService;
 use TYPO3\CMS\Core\Resource\FileReference as Typo3FileReference;
@@ -32,6 +35,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class FileReferenceHandler extends AbstractHandler implements SerializeHandlerInterface, DeserializeHandlerInterface
 {
     use InlineRelationServiceTrait;
+    use FileTokenServiceTrait;
 
     /**
      * @var string
@@ -77,6 +81,11 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
             $out['file']['name'] = $originalFile->getName();
             $out['file']['mimeType'] = $originalFile->getMimeType();
             $out['file']['size'] = $originalFile->getSize();
+            $fileToken = $this->getFileTokenService()
+                ->getTokenForResponse((int)$originalFile->getUid(), FileTokenSubscriber::isEnabledForAllFiles($context));
+            if ($fileToken !== null) {
+                $out['file']['fileToken'] = $fileToken;
+            }
 
             if (preg_match('#video/.*#', $originalFile->getMimeType())) {
                 $fileRenderer = GeneralUtility::makeInstance(RendererRegistry::class)->getRenderer($originalFile);
@@ -127,7 +136,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
 
         if (
             !is_subclass_of($type['params']['targetType'], Folder::class)
-            && !is_subclass_of($type['params']['targetType'], File::class)
+            && !is_a($type['params']['targetType'], File::class, true)
             && !is_subclass_of($type['params']['targetType'], FileReference::class)
         ) {
             throw new \RuntimeException(
@@ -150,13 +159,27 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
             return null;
         }
 
+        // Also Extbase's `File` itself - it is mapped to `sys_file` as well
+        if (is_a($type['params']['targetType'], File::class, true)) {
+            return $this->deserializeFile($data, $type['params']['targetType'], $context);
+        }
+
+        if (!is_numeric($data) && !is_array($data)) {
+            throw $this->createInvalidRelationException($data, $context, 1793700006);
+        }
+
         $isNew = is_array($data) && empty($data['uid']);
 
         if ($isNew) {
+            // Checked here, not in `createSysFileReference()`, so the check is kept when the method is overridden
+            if (!empty($data['uidLocal'])) {
+                $this->assertFileToken((int)$data['uidLocal'], $data['fileToken'] ?? null);
+            }
+
             return $this->createSysFileReference($data, $type['params']['targetType'], $context);
         }
 
-        $uid = (int)(is_numeric($data) ? $data : $data['uid']);
+        $uid = is_numeric($data) ? (int)$data : (is_numeric($data['uid']) ? (int)$data['uid'] : 0);
 
         if ($uid > 0) {
             $fileReference = $this->persistenceManager->getObjectByIdentifier(
@@ -164,7 +187,7 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
                 ExtbaseFileReference::class,
                 false
             );
-            // @todo `File` and `Folder` properties are looked up as file references as well - kept unchanged here
+            // @todo `Folder` properties are looked up as file references as well - kept unchanged here
             if (!is_subclass_of($type['params']['targetType'], FileReference::class)) {
                 return $fileReference;
             }
@@ -179,7 +202,67 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
 
             return $fileReference;
         }
-        return null;
+
+        throw $this->createInvalidRelationException($data, $context, 1793700007);
+    }
+
+    /**
+     * A property with a file (`sys_file`, not a reference) keeps its current file(s); another file can be set only
+     * with the token returned for it by the API: `{"uid": 15, "fileToken": "..."}`.
+     *
+     * @throws ValidationException
+     * @throws BadRequestException
+     */
+    protected function deserializeFile(mixed $data, string $targetType, DeserializationContext $context): File
+    {
+        $fileUid = match (true) {
+            is_numeric($data) => (int)$data,
+            is_array($data) && is_numeric($data['uid'] ?? null) => (int)$data['uid'],
+            default => 0,
+        };
+        if ($fileUid <= 0) {
+            throw $this->createInvalidRelationException($data, $context, 1793700005);
+        }
+
+        if (!in_array($fileUid, $this->getCurrentFileUids($context), true)) {
+            $this->assertFileToken($fileUid, is_array($data) ? ($data['fileToken'] ?? null) : null);
+        }
+
+        $file = $this->persistenceManager->getObjectByIdentifier($fileUid, $targetType, false);
+        if (!$file instanceof File) {
+            throw new BadRequestException(
+                'relation_not_found',
+                [(string)$fileUid, implode('.', $context->getCurrentPath())],
+                1793700004
+            );
+        }
+
+        return $file;
+    }
+
+    /**
+     * UIDs of the files of the deserialized property as loaded from the database.
+     *
+     * @return int[]
+     */
+    protected function getCurrentFileUids(DeserializationContext $context): array
+    {
+        $parent = $this->getInlineRelationService()->getContextParent($context);
+        $metadataStack = $context->getMetadataStack();
+        $propertyMetadata = $metadataStack->isEmpty() ? null : $metadataStack->top();
+
+        return $parent !== null && $propertyMetadata instanceof PropertyMetadata
+            ? $this->getInlineRelationService()->getCleanRelationUids($parent, $propertyMetadata->name)
+            : [];
+    }
+
+    protected function createInvalidRelationException(mixed $data, DeserializationContext $context, int $code): BadRequestException
+    {
+        return new BadRequestException(
+            'invalid_relation',
+            [gettype($data), implode('.', $context->getCurrentPath())],
+            $code
+        );
     }
 
     /**
@@ -228,6 +311,26 @@ class FileReferenceHandler extends AbstractHandler implements SerializeHandlerIn
         }
 
         return $fileReference;
+    }
+
+    /**
+     * A new reference requires the token returned for the file by the API (upload response, operation offering files
+     * with `fileTokens`).
+     *
+     * @throws ValidationException
+     */
+    protected function assertFileToken(int $fileUid, mixed $fileToken): void
+    {
+        if (is_string($fileToken) && $fileToken !== '' && $this->getFileTokenService()->isValidToken($fileToken, $fileUid)) {
+            return;
+        }
+
+        $result = new Result();
+        $result->forProperty('fileToken')->addError(
+            new Error('Property `fileToken` is missing or invalid - use the token returned for the file by the API', 1793700002)
+        );
+
+        throw new ValidationException($result, 1793700003);
     }
 
     /**

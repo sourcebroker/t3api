@@ -27,6 +27,8 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
  */
 class OperationResponseCache implements LoggerAwareInterface
 {
+    use FileTokenServiceTrait;
+
     use LoggerAwareTrait;
 
     public function __construct(
@@ -140,6 +142,8 @@ class OperationResponseCache implements LoggerAwareInterface
 
         if (
             ($response === null || $response->getStatusCode() === 200)
+            // File tokens are created for the current user and expire
+            && !$this->getFileTokenService()->hasIssuedTokens()
             && $this->responseCacheService->isWriteAllowed($operation, $route, $request)
         ) {
             $this->storeWithTags($operation, $route, $request, $cacheEntryIdentifier, $output, $cacheTags, $result, $response);

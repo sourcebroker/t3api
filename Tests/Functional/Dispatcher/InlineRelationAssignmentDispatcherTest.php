@@ -12,6 +12,7 @@ use SourceBroker\T3api\Dispatcher\Bootstrap;
 use SourceBroker\T3api\Domain\Repository\ApiResourceRepository;
 use SourceBroker\T3api\Serializer\ContextBuilder\DeserializationContextBuilder;
 use SourceBroker\T3api\Serializer\ContextBuilder\SerializationContextBuilder;
+use SourceBroker\T3api\Service\FileTokenService;
 use SourceBroker\T3api\Service\OperationResponseCache;
 use SourceBroker\T3api\Service\SerializerService;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -187,7 +188,8 @@ class InlineRelationAssignmentDispatcherTest extends AbstractDispatcherTestCase
             'name' => 'uploaded.jpg',
         ]);
 
-        $response = $this->dispatch('PATCH', '/_api/recipes/1', ['images' => [11, ['uidLocal' => 21]]]);
+        $fileToken = $this->get(FileTokenService::class)->createToken(21);
+        $response = $this->dispatch('PATCH', '/_api/recipes/1', ['images' => [11, ['uidLocal' => 21, 'fileToken' => $fileToken]]]);
 
         self::assertSame(200, $response->getStatusCode(), (string)$response->getBody());
         self::assertSame(1, $this->fetchField('sys_file_reference', 11, 'uid_foreign'));
