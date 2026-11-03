@@ -6,6 +6,7 @@ Changelog
 
 5.0.0
 =====
+- Read ``TYPO3_*`` attributes of the serialization context from ``NormalizedParams`` of the current request instead of ``GeneralUtility::getIndpEnv()`` (deprecated since TYPO3 14.3). ``TYPO3_PROXY`` contains whether the request comes through a configured reverse proxy (before it was always empty). See :ref:`serialization_expression-language`.
 - [!!!] Apply ``allowedFileExtensions`` of the resource ``upload`` settings to its operations. Before, an operation without its own ``allowedFileExtensions`` used ``$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']``. Review the list when you rely on the previous behaviour. Configured extensions are compared case-insensitively.
 - OpenAPI specification documents ``403 Forbidden`` (instead of ``404 Not Found``) for operations with ``security`` or ``security_post_denormalize``, the same status as returned by the API.
 - [!!!] A new file reference created by ``uidLocal`` requires ``fileToken`` returned for the file by the API, otherwise ``400 Bad Request`` is returned. The same applies to a new file of a property of type ``File`` or a class extending it (``{"uid": 101, "fileToken": "..."}``). The token is returned in the response of upload endpoints and of operations with ``"fileTokens"=true`` in ``normalizationContext`` (files offered for selection, ``file.fileToken`` for file references). Pass ``fileToken`` when saving a reference. Custom upload code has to grant tokens with ``FileTokenService::grant()``. See :ref:`handling_file_upload_file_token`.

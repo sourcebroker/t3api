@@ -5,25 +5,29 @@ declare(strict_types=1);
 namespace SourceBroker\T3api\EventListener;
 
 use SourceBroker\T3api\Event\AfterCreateContextForOperationEvent;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use SourceBroker\T3api\Utility\NormalizedParamsUtility;
 
 class EnrichSerializationContextEventListener
 {
     public function __invoke(AfterCreateContextForOperationEvent $createContextForOperationEvent): void
     {
+        $normalizedParams = NormalizedParamsUtility::get();
+        $port = $normalizedParams->getRequestPort();
+
         $attributes = [
-            'TYPO3_HOST_ONLY' => GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY'),
-            'TYPO3_PORT' => GeneralUtility::getIndpEnv('TYPO3_PORT'),
-            'TYPO3_REQUEST_HOST' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST'),
-            'TYPO3_REQUEST_URL' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'),
-            'TYPO3_REQUEST_SCRIPT' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_SCRIPT'),
-            'TYPO3_REQUEST_DIR' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_DIR'),
-            'TYPO3_SITE_URL' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL'),
-            'TYPO3_SITE_PATH' => GeneralUtility::getIndpEnv('TYPO3_SITE_PATH'),
-            'TYPO3_SITE_SCRIPT' => GeneralUtility::getIndpEnv('TYPO3_SITE_SCRIPT'),
-            'TYPO3_DOCUMENT_ROOT' => GeneralUtility::getIndpEnv('TYPO3_DOCUMENT_ROOT'),
-            'TYPO3_SSL' => GeneralUtility::getIndpEnv('TYPO3_SSL'),
-            'TYPO3_PROXY' => GeneralUtility::getIndpEnv('TYPO3_PROXY'),
+            'TYPO3_HOST_ONLY' => $normalizedParams->getRequestHostOnly(),
+            // string as returned by `GeneralUtility::getIndpEnv()`, empty when the host has no port
+            'TYPO3_PORT' => $port > 0 ? (string)$port : '',
+            'TYPO3_REQUEST_HOST' => $normalizedParams->getRequestHost(),
+            'TYPO3_REQUEST_URL' => $normalizedParams->getRequestUrl(),
+            'TYPO3_REQUEST_SCRIPT' => $normalizedParams->getRequestScript(),
+            'TYPO3_REQUEST_DIR' => $normalizedParams->getRequestDir(),
+            'TYPO3_SITE_URL' => $normalizedParams->getSiteUrl(),
+            'TYPO3_SITE_PATH' => $normalizedParams->getSitePath(),
+            'TYPO3_SITE_SCRIPT' => $normalizedParams->getSiteScript(),
+            'TYPO3_DOCUMENT_ROOT' => $normalizedParams->getDocumentRoot(),
+            'TYPO3_SSL' => $normalizedParams->isHttps(),
+            'TYPO3_PROXY' => $normalizedParams->isBehindReverseProxy(),
         ];
 
         foreach ($attributes as $name => $value) {
