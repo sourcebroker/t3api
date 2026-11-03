@@ -56,3 +56,12 @@ jobs:
             ddev composer config --global github-oauth.github.com ${{ env.GH_TOKEN }}
           fi
       - run: ddev ci ${{ matrix.typo3 }} ${{ matrix.php }} ${{ matrix.composer }}
+
+  # Single check to require in branch protection - names of the matrix jobs change with the matrix.
+  # `always()` - without it the job is skipped when a test fails, and a skipped required check counts as passed.
+  tests-passed:
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - run: '[ "${{ needs.test.result }}" = "success" ]'
