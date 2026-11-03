@@ -14,8 +14,8 @@ class OperationNotAllowedException extends AbstractException implements OpenApiS
     public static function getOpenApiResponse(): OpenApiResponse
     {
         return parent::getOpenApiResponse()
-            ->statusCode(SymfonyResponse::HTTP_NOT_FOUND)
-            ->description(self::translate('exception.resource_not_found.title'));
+            ->statusCode(SymfonyResponse::HTTP_FORBIDDEN)
+            ->description(self::translate('exception.operation_not_allowed.title'));
     }
 
     public function __construct(OperationInterface $operation, int $code)
