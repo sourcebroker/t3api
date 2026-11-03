@@ -121,23 +121,42 @@ Example:
 .. _development_commands_list_ddev_next:
 :bash:`ddev next [major|minor|patch]`
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-This command will help to tag next release of extension.
+This command helps to release the next version of the extension. The default branch can be protected (changes only
+through pull requests), so the version files are changed in a pull request and the command is run twice.
 
-It does several checks. Amongst other it:
+It does several checks first:
 
 1. Checks if you are on default branch.
-2. Checks if you are are up to date with remote default branch.
+2. Checks if you are up to date with remote default branch.
 3. Checks if you do not have any not pushed changes to remote.
 4. Checks validity of last tag.
-5. Increase version in few files:
+5. Checks if the version in :file:`/ext_emconf.php` is the last tag or the next version - otherwise you passed another
+   version type than in the first run.
 
-   * :file:`/ext_emconf.php`
-   * :file:`/Documentation/guides.xml`
+The next version is computed from the last tag, so both runs compute the same version.
 
-After all checks it outputs a command you need to run to push changes and tag to git.
+**First run** updates the version in:
 
-Example output:
+* :file:`/ext_emconf.php`
+* :file:`/composer.json`
+* :file:`/Documentation/guides.xml` (``release`` - full version, ``version`` - major and minor)
+
+and outputs a command which pushes them to a new branch:
 
 .. code-block:: bash
 
-    git add Documentation/guides.xml ext_emconf.php && git commit -m 'Tag version 3.1.0' && git tag -a '3.1.0' -m 'Version 3.1.0' -s && git push origin main --tags
+    zsh -e -c "git switch -c 'version-5.1.0'; git add Documentation/guides.xml ext_emconf.php composer.json; git commit -m 'Tag version 5.1.0'; git push -u origin 'version-5.1.0'"
+
+Open a pull request from this branch to the default branch and merge it.
+
+**Second run** - on the updated default branch (:bash:`git pull`), with the same version type. The version files are up
+to date, so it outputs a command which pushes the tag only:
+
+.. code-block:: bash
+
+    zsh -e -c "git tag -a '5.1.0' -m 'Version 5.1.0' -s; git push origin '5.1.0'"
+
+Pushing the tag starts the release workflow (GitHub release and publishing to TER).
+
+When the version files are already updated in the branch merged to the default branch (e.g. a release branch), the first
+run outputs the tag command right away.
