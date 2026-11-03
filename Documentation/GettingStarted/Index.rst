@@ -7,20 +7,35 @@ Getting started
 What does it do
 ================
 
-T3api extension provides easy configurable and customizable REST API for your Extbase models.
-It allows to configure whole API functionality with annotations for classes, properties and methods.
+T3api provides a configurable and customizable REST API for Extbase models. API resources, their operations, filters
+and access rules are configured with annotations on the model class (or on a class extending a model of another
+extension, see :ref:`integration`), output of the models with annotations or YAML serializer metadata.
 
-Most of configuration options is based on `API Platform <https://api-platform.com>`_ to make it easier to use for
-developers experienced in this awesome framework.
+Most configuration options follow `API Platform <https://api-platform.com>`__, so they are familiar to developers who
+know this framework.
 
-T3api comes with partial support of `JSON-LD <https://json-ld.org/>`__ and `Hydra <http://www.hydra-cg.com/>`__,
-which allows to build smart frontend applications with auto-discoverability capabilities.
+Responses use `JSON-LD <https://json-ld.org/>`__ and `Hydra <https://www.hydra-cg.com/>`__ (partial support), which
+allows frontend applications to discover resources, filters and pagination from the responses.
 
 
 Installation
 ============
 
-T3api supports TYPO3 12.4, 13 and 14 (PHP 8.1 or higher). Run
+Supported versions:
+
+.. list-table::
+   :header-rows: 1
+
+   * - TYPO3
+     - PHP
+   * - 12.4
+     - 8.1 - 8.4
+   * - 13.4
+     - 8.2 - 8.5
+   * - 14
+     - 8.2 - 8.5
+
+Run
 
 .. code-block:: bash
 
@@ -119,3 +134,25 @@ After flushing caches the items are available under ``https://example.com/_api/i
    * | Single news:
      | `https://14.t3api.ddev.site/_api/news/news/1 <https://14.t3api.ddev.site/_api/news/news/1>`__
      |
+
+.. _getting-started_backend-module:
+
+Backend module
+==============
+
+Backend module **Web API** shows the API of a site in `Swagger UI <https://swagger.io/tools/swagger-ui/>`__ - all
+resources and operations with their parameters, filters and response schemas, generated as OpenAPI specification from
+the configuration of the API resources. Select the site in the module header. The site needs the
+:ref:`route enhancer <route-enhancer>`, otherwise the module shows an error message.
+
+Backend users need access to the module (admins have it by default).
+
+.. important::
+
+   "Try it out" in Swagger UI sends real requests to the API of the selected site - ``POST``, ``PATCH``, ``PUT`` and
+   ``DELETE`` change and delete records. The browser sends the requests with its cookies of the API domain, so
+   :ref:`security <security>` expressions see the frontend or backend user logged in on that domain.
+
+The backend Content Security Policy of the module allows requests to the domains of all sites with the t3api route
+enhancer. Swagger UI does not use the online validator of swagger.io, so the URL of the specification is not sent
+outside of the TYPO3 instance.

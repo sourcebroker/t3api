@@ -108,6 +108,8 @@ Filters gives possibility to customize SQL query used to receive results in ``GE
     {
     }
 
+``persistence.storagePid`` limits records of collection operations only. Item operations (``/{id}``) load a record from any page, see :ref:`storage pages <security_storage-pid>`.
+
 It is possible to configure filters only for whole resource. That means filters are available for all ``GET`` collection operations within this resource. It is not possible (yet) to configure filters only for specific operations.
 There are few build-in filters. See the next pages.
 
