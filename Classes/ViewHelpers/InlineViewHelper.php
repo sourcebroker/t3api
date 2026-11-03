@@ -6,6 +6,7 @@ namespace SourceBroker\T3api\ViewHelpers;
 
 use SourceBroker\T3api\Dispatcher\HeadlessDispatcher;
 use SourceBroker\T3api\Service\RouteService;
+use SourceBroker\T3api\Utility\NormalizedParamsUtility;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RequestContext;
 use TYPO3\CMS\Core\Routing\RouteNotFoundException;
@@ -47,7 +48,7 @@ class InlineViewHelper extends AbstractViewHelper
         return implode(
             '/',
             [
-                GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST'),
+                NormalizedParamsUtility::get()->getRequestHost(),
                 RouteService::getFullApiBasePath(),
                 $this->arguments['route'],
             ]

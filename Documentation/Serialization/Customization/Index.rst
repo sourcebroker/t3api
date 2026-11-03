@@ -33,7 +33,7 @@ Context attributes
 
 - ``groups`` - serialization groups of the operation (from ``normalizationContext``).
 - any other key set in ``normalizationContext`` of the operation.
-- ``TYPO3_SITE_URL``, ``TYPO3_REQUEST_HOST``, ``TYPO3_REQUEST_URL``, ``TYPO3_HOST_ONLY``, ``TYPO3_PORT``, ``TYPO3_SSL``, ``TYPO3_PROXY``, ``TYPO3_SITE_PATH``, ``TYPO3_SITE_SCRIPT``, ``TYPO3_REQUEST_SCRIPT``, ``TYPO3_REQUEST_DIR``, ``TYPO3_DOCUMENT_ROOT`` - values of ``GeneralUtility::getIndpEnv()`` for the current request.
+- ``TYPO3_SITE_URL``, ``TYPO3_REQUEST_HOST``, ``TYPO3_REQUEST_URL``, ``TYPO3_HOST_ONLY``, ``TYPO3_PORT``, ``TYPO3_SSL``, ``TYPO3_PROXY``, ``TYPO3_SITE_PATH``, ``TYPO3_SITE_SCRIPT``, ``TYPO3_REQUEST_SCRIPT``, ``TYPO3_REQUEST_DIR``, ``TYPO3_DOCUMENT_ROOT`` - values of ``NormalizedParams`` of the current request (``$_SERVER`` when the request has none, e.g. on CLI). ``TYPO3_SSL`` and ``TYPO3_PROXY`` (request comes through a configured reverse proxy) are booleans, ``TYPO3_PORT`` is empty when the host has no port.
 
 Use ``context.hasAttribute('name')`` before reading an attribute which may not exist - ``context.getAttribute()`` of a missing attribute triggers an error.
 

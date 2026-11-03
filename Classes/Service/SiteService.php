@@ -6,6 +6,7 @@ namespace SourceBroker\T3api\Service;
 
 use Psr\Http\Message\ServerRequestInterface;
 use SourceBroker\T3api\Routing\Enhancer\ResourceEnhancer;
+use SourceBroker\T3api\Utility\NormalizedParamsUtility;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Routing\SiteMatcher;
@@ -112,9 +113,9 @@ class SiteService
 
     protected static function getFirstMatchingCurrentUrl(): ?Site
     {
+        $requestHost = NormalizedParamsUtility::get()->getRequestHost();
         foreach (self::getAll() as $site) {
-            if (rtrim(trim((string)$site->getBase()), '/')
-                === GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST')) {
+            if (rtrim(trim((string)$site->getBase()), '/') === $requestHost) {
                 return $site;
             }
         }
