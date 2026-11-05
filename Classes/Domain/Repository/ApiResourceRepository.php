@@ -17,6 +17,14 @@ class ApiResourceRepository
 {
     protected ?FrontendInterface $cache;
 
+    /**
+     * API resources already read in this process, by cache identifier. `getByEntity()` runs for every serialized
+     * entity, so reading and unserializing the cache entry on each call would make large collections slow.
+     *
+     * @var array<string, ApiResource[]>
+     */
+    protected array $apiResourcesByCacheIdentifier = [];
+
     public function __construct(
         protected readonly CacheManager $cacheManager,
         protected readonly ReflectionService $reflectionService,
@@ -32,6 +40,14 @@ class ApiResourceRepository
     {
         $cacheIdentifier = $this->buildCacheIdentifier();
 
+        return $this->apiResourcesByCacheIdentifier[$cacheIdentifier] ??= $this->loadAll($cacheIdentifier);
+    }
+
+    /**
+     * @return ApiResource[]
+     */
+    protected function loadAll(string $cacheIdentifier): array
+    {
         $apiResources = $this->cache->get($cacheIdentifier);
 
         if ($apiResources !== false) {
