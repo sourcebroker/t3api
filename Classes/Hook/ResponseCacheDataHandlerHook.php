@@ -71,7 +71,7 @@ class ResponseCacheDataHandlerHook
     {
         $ctrl = $GLOBALS['TCA'][$table]['ctrl'] ?? [];
 
-        $fieldNames = array_values($ctrl['enablecolumns'] ?? []);
+        $fieldNames = $this->getEnableColumnFieldNameCandidates($ctrl['enablecolumns'] ?? []);
         $fieldNames[] = 'pid';
 
         if (!empty($ctrl['sortby'])) {
@@ -79,6 +79,53 @@ class ResponseCacheDataHandlerHook
         }
 
         return $fieldNames;
+    }
+
+    /**
+     * Core enable columns map a restriction to a field name. Extensions may register custom restrictions
+     * with an array definition, e.g. `'public' => ['column' => 'public', 'ownerField' => 'author']`, whose
+     * structure is unknown here. So the restriction name and every string key and value of such a definition
+     * are treated as possible field names: a false hit only flushes more than needed, while a missed field
+     * would leave stale collection responses.
+     *
+     * @param array<mixed> $enableColumns
+     * @return string[]
+     */
+    private function getEnableColumnFieldNameCandidates(array $enableColumns): array
+    {
+        $candidates = [];
+        foreach ($enableColumns as $restrictionName => $definition) {
+            if (!is_array($definition)) {
+                $candidates[] = $definition;
+                continue;
+            }
+            $candidates[] = $restrictionName;
+            array_push($candidates, ...$this->getKeysAndValuesRecursively($definition));
+        }
+
+        return array_values(array_filter(
+            $candidates,
+            static fn(mixed $candidate): bool => is_string($candidate) && $candidate !== ''
+        ));
+    }
+
+    /**
+     * @param array<mixed> $array
+     * @return list<mixed>
+     */
+    private function getKeysAndValuesRecursively(array $array): array
+    {
+        $keysAndValues = [];
+        foreach ($array as $key => $value) {
+            $keysAndValues[] = $key;
+            if (!is_array($value)) {
+                $keysAndValues[] = $value;
+                continue;
+            }
+            array_push($keysAndValues, ...$this->getKeysAndValuesRecursively($value));
+        }
+
+        return $keysAndValues;
     }
 
     public function processCmdmap_preProcess(
