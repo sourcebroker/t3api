@@ -473,14 +473,20 @@ Invalidation is granular and driven by what could actually be stale:
   (see "Cache key" above), so it still refreshes correctly - a
   ``<table>--collection`` flush would otherwise also evict unrelated
   collections that never contained the record at all.
-- An **update** that changes visibility or placement - any of the table's
-  TCA ``enablecolumns`` fields (e.g. ``disabled``, ``starttime``,
+- An **update** that changes visibility or placement - any field the
+  table's TCA ``enablecolumns`` point to (e.g. ``hidden``, ``starttime``,
   ``endtime``, ``fe_group``), its ``pid``, or its manual sorting field - is
   treated like create/move/undelete below and flushes both the
   ``<table>--collection`` tag and the record's own ``<table>_<uid>`` tag
   instead, since such a change (e.g. un-hiding a record) can move it into a
   collection that did not contain it before, and can also make the
   record's own previously-cached responses (e.g. its item response) stale.
+
+  Extensions may register custom restrictions in ``enablecolumns`` with an
+  array definition (e.g. ``'public' => ['ownerField' => 'author']``). Its
+  structure is not known to t3api, so the restriction name and every string
+  key and value of such a definition count as visibility fields. At worst,
+  collections are flushed more often than needed.
 - **Create**, **move** and **undelete** flush the same
   ``<table>--collection`` tag and the record's own ``<table>_<uid>`` tag,
   since any of them can change which collections the record belongs to - a
